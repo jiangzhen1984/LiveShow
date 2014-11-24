@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import android.graphics.Bitmap;
 import android.util.SparseArray;
 
+import com.V2.jni.ConfigRequest;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.ind.V2Group;
 import com.V2.jni.util.V2Log;
@@ -27,6 +28,12 @@ import com.v2tech.vo.UserDeviceConfig;
 
 public class GlobalHolder {
 
+	
+	
+	public ConfigRequest mCR ;
+	public UserService us;
+	public ConferenceService cs;
+	
 	private static GlobalHolder holder;
 
 	private User mCurrentUser;

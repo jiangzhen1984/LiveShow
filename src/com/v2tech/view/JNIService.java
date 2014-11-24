@@ -22,6 +22,8 @@ import com.V2.jni.ImRequest;
 import com.V2.jni.ImRequestCallback;
 import com.V2.jni.ImRequestCallbackAdapter;
 import com.V2.jni.V2GlobalEnum;
+import com.V2.jni.VideoRequest;
+import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.ind.GroupJoinErrorJNIObject;
 import com.V2.jni.ind.V2Conference;
 import com.V2.jni.ind.V2Group;
@@ -35,6 +37,7 @@ import com.v2tech.vo.Group;
 import com.v2tech.vo.Group.GroupType;
 import com.v2tech.vo.NetworkStateCode;
 import com.v2tech.vo.User;
+import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
 
 /**
@@ -109,7 +112,7 @@ public class JNIService extends Service
 
 	private GroupRequestCB mGRCB;
 
-
+	private VideoRequestCB mVRCB;
 
 	private ConfRequestCB mCRCB;
 
@@ -148,6 +151,11 @@ public class JNIService extends Service
 		mGRCB = new GroupRequestCB(mCallbackHandler);
 		GroupRequest.getInstance().addCallback(
 				mGRCB);
+
+
+		mVRCB = new VideoRequestCB(mCallbackHandler);
+		VideoRequest.getInstance(this.getApplicationContext()).addCallback(
+				mVRCB);
 
 
 		mCRCB = new ConfRequestCB(mCallbackHandler);
@@ -550,6 +558,28 @@ public class JNIService extends Service
 			sendBroadcast(i);
 		}
 
+	}
+	
+	
+	class VideoRequestCB extends VideoRequestCallbackAdapter {
+
+		private JNICallbackHandler mCallbackHandler;
+
+		public VideoRequestCB(JNICallbackHandler mCallbackHandler) {
+			this.mCallbackHandler = mCallbackHandler;
+		}
+
+	
+		@Override
+		public void OnRemoteUserVideoDevice(long uid, String szXmlData) {
+			if (szXmlData == null) {
+				V2Log.e(" No avaiable user device configuration");
+				return;
+			}
+			List<UserDeviceConfig> ll = UserDeviceConfig.parseFromXml(uid,
+					szXmlData);
+			GlobalHolder.getInstance().updateUserDevice(uid, ll);
+		}
 	}
 
 

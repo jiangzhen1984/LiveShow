@@ -48,7 +48,8 @@
         android:id="@+id/main"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/RelativeLayout3" >
+        android:layout_below="@+id/RelativeLayout3"
+        android:background="#ffffff" >
 
     </FrameLayout>
 

@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import v2av.VideoPlayer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -20,9 +21,12 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +36,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.V2.jni.ConfigRequest;
+import com.V2.jni.util.V2Log;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.MessageListener;
@@ -43,6 +48,8 @@ import com.v2tech.vo.Conference;
 import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.Group;
 import com.v2tech.vo.Group.GroupType;
+import com.v2tech.vo.User;
+import com.v2tech.vo.UserDeviceConfig;
 
 public class MainActivity extends Activity {
 
@@ -54,6 +61,7 @@ public class MainActivity extends Activity {
 	private static final int JOIN_CONFERENCE_DONE = 4;
 	private static final int REQUEST_JOIN_CONF = 5;
 	private static final int SWITCH_VIDEO = 6;
+	private static final int ATTENDEE_DEVICE_LISTENER = 7;
 
 	private FrameLayout mMainLayout;
 	private ImageView mMapBg;
@@ -63,14 +71,17 @@ public class MainActivity extends Activity {
 	private MapThreadState mLock = MapThreadState.DONE;
 	private ConfState mConfState = ConfState.DONE;
 
-	private ConfigRequest mCR = new ConfigRequest();
-	private UserService us = new UserService();
-	private ConferenceService cs = new ConferenceService();
+	private SwitchObject currentOpened;
+	private VideoPlayer currPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
+		
+		GlobalHolder.getInstance().mCR = new ConfigRequest();
+		GlobalHolder.getInstance().us = new UserService();
+		GlobalHolder.getInstance().cs = new ConferenceService();
 
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 		mMapBg = (ImageView) findViewById(R.id.main_background);
@@ -87,18 +98,49 @@ public class MainActivity extends Activity {
 				.sendToTarget();
 
 		new ConnectServerThread().start();
+
+		GlobalHolder.getInstance().cs.registerAttendeeDeviceListener(
+				LocalHandler, ATTENDEE_DEVICE_LISTENER, null);
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		this.unregisterReceiver(localReceiver);
+		if (this.currentOpened != null) {
+			UserDeviceConfig udc = new UserDeviceConfig(
+					GroupType.CONFERENCE.intValue(), conf.getmGId(),
+					currentOpened.uid, currentOpened.devid, currPlayer);
+			GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf, udc,
+					null);
+		}
+		if (conf != null && GlobalHolder.getInstance().cs != null) {
+			GlobalHolder.getInstance().cs.requestExitConference(new Conference(
+					(ConferenceGroup) conf), null);
+		}
+		// Start deamon service
+		getApplicationContext().stopService(
+				new Intent(getApplicationContext(), JNIService.class));
+
+		try {
+			Thread.currentThread().sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.exit(0);
+
 	}
 
 	private Dialog mDialog = null;
 
 	private void showProgressDialog() {
-		mDialog = ProgressDialog.show(this, "", "正在载入.....", false);
+		mDialog = ProgressDialog.show(this, "", "正在载入.....", false, true);
 	}
 
 	private void doLoadMap(LoadMapObject obj) {
@@ -142,11 +184,14 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private Group conf;
+
 	private void requestJoinConf() {
 		List<Group> list = GlobalHolder.getInstance().getGroup(
 				Group.GroupType.CONFERENCE.intValue());
 		if (list.size() > 0) {
 			Group g = list.get(0);
+			conf = g;
 			Message.obtain(LocalHandler, REQUEST_JOIN_CONF,
 					new Conference((ConferenceGroup) g)).sendToTarget();
 		} else {
@@ -161,15 +206,27 @@ public class MainActivity extends Activity {
 			if (mDialog != null) {
 				mDialog.dismiss();
 			}
-			
+
 			refreshVideoUI();
+
+			Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, null);
+			LocalHandler.sendMessageDelayed(msg, 1500);
+
 		} else {
 
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, null);
+		LocalHandler.sendMessageDelayed(msg, 600);
+	}
+
 	private void refreshVideoUI() {
 		RelativeLayout videoLayout = new RelativeLayout(this);
+		videoLayout.setBackgroundColor(Color.BLACK);
 		int width = mMainLayout.getWidth() / 2;
 		width = width - width % 16;
 		int height = width / 4 * 3;
@@ -180,8 +237,50 @@ public class MainActivity extends Activity {
 		fl.leftMargin = mMainLayout.getWidth() - width;
 		fl.topMargin = 10;
 
-		SurfaceView sv = new SurfaceView(this);
-		sv.setBackgroundColor(Color.BLACK);
+		final SurfaceView sv = new SurfaceView(this);
+		sv.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				UserDeviceConfig udc = new UserDeviceConfig(
+						GroupType.CONFERENCE.intValue(), conf.getmGId(),
+						currentOpened.uid, currentOpened.devid, currPlayer);
+				GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf,
+						udc, null);
+
+				Intent i = new Intent();
+				i.setClass(MainActivity.this, VideoList.class);
+				i.putExtra("gid", conf.getmGId());
+				startActivityForResult(i, 100);
+			}
+
+		});
+
+		sv.getHolder().addCallback(new Callback() {
+
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				currPlayer.SetSurface(holder);
+			}
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+				currPlayer.SetSurface(holder);
+			}
+
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				V2Log.e("================dddd==============create");
+			}
+
+		});
+		sv.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		currPlayer = new VideoPlayer();
+		currPlayer.SetSurface(sv.getHolder());
+		currPlayer.SetViewSize(width, height);
+
 		RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -199,8 +298,7 @@ public class MainActivity extends Activity {
 		leftImage.bringToFront();
 		leftImage.setOnClickListener(switchVideo);
 		leftImage.setTag("1");
-		
-		
+
 		ImageView rightImage = new ImageView(this);
 		rightImage.setImageResource(R.drawable.arrow_right_gray);
 		RelativeLayout.LayoutParams rigthRl = new RelativeLayout.LayoutParams(
@@ -215,6 +313,49 @@ public class MainActivity extends Activity {
 		rightImage.setTag("0");
 
 		mMainLayout.addView(videoLayout, fl);
+	}
+
+	private void doSwitch(SwitchObject obj) {
+		if (obj == null) {
+
+			List<User> list = conf.getUsers();
+			for (User u : list) {
+				UserDeviceConfig udc = GlobalHolder.getInstance()
+						.getUserDefaultDevice(u.getmUserId());
+				if (udc != null && !udc.getDeviceID().isEmpty()) {
+					currentOpened = new SwitchObject(u.getmUserId(),
+							udc.getDeviceID());
+					UserDeviceConfig udc1 = new UserDeviceConfig(
+							GroupType.CONFERENCE.intValue(), conf.getmGId(),
+							currentOpened.uid, currentOpened.devid, currPlayer);
+					GlobalHolder.getInstance().cs.requestOpenVideoDevice(conf,
+							udc1, null);
+					return;
+				}
+			}
+		} else {
+			if (currentOpened != null && currentOpened.uid == obj.uid) {
+				return;
+			}
+		}
+
+		if (currentOpened != null) {
+			UserDeviceConfig udc = new UserDeviceConfig(
+					GroupType.CONFERENCE.intValue(), conf.getmGId(),
+					currentOpened.uid, currentOpened.devid, currPlayer);
+			GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf, udc,
+					null);
+			try {
+				Thread.currentThread().sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		currentOpened = obj;
+		UserDeviceConfig udc = new UserDeviceConfig(
+				GroupType.CONFERENCE.intValue(), conf.getmGId(),
+				currentOpened.uid, currentOpened.devid, currPlayer);
+		GlobalHolder.getInstance().cs.requestOpenVideoDevice(conf, udc, null);
 	}
 
 	private Handler LocalHandler = new Handler() {
@@ -237,29 +378,42 @@ public class MainActivity extends Activity {
 			case REQUEST_JOIN_CONF:
 				if (mConfState == ConfState.DONE) {
 					mConfState = ConfState.REQUESTING;
-					cs.requestEnterConference((Conference) msg.obj,
-							new MessageListener(LocalHandler,
-									JOIN_CONFERENCE_DONE, null));
-					JNIResponse res = new JNIResponse(JNIResponse.Result.SUCCESS);
-					
-					Message.obtain(this, JOIN_CONFERENCE_DONE, res).sendToTarget();
+					GlobalHolder.getInstance().cs.requestEnterConference(
+							(Conference) msg.obj, new MessageListener(
+									LocalHandler, JOIN_CONFERENCE_DONE, null));
 				}
 				break;
 			case SWITCH_VIDEO:
+				doSwitch((SwitchObject) msg.obj);
+				break;
+			case ATTENDEE_DEVICE_LISTENER:
 				break;
 			}
 		}
 
 	};
-	
-	
+
 	private OnClickListener switchVideo = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			
+			List<User> list = conf.getUsers();
+			for (int i = 0; i < list.size(); i++) {
+				User u = list.get(i);
+				if (u.getName().equals("v1")) {
+					continue;
+				}
+				if (currentOpened != null) {
+					UserDeviceConfig udc = GlobalHolder.getInstance().getUserDefaultDevice(u.getmUserId());
+					if (udc != null && !udc.getDeviceID().equals(currentOpened.devid)) {
+						Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, new SwitchObject(u.getmUserId(), udc.getDeviceID()));
+						LocalHandler.sendMessage(msg);
+						break;
+					}
+				}
+			}
 		}
-		
+
 	};
 
 	private BroadcastReceiver localReceiver = new BroadcastReceiver() {
@@ -296,13 +450,26 @@ public class MainActivity extends Activity {
 
 	}
 
+	class SwitchObject {
+		long uid;
+		String devid;
+
+		public SwitchObject(long uid, String devid) {
+			super();
+			this.uid = uid;
+			this.devid = devid;
+		}
+
+	}
+
 	class ConnectServerThread extends Thread {
 
 		@Override
 		public void run() {
-			mCR.setServerAddress("111.206.87.107", 5123);
-			us.login("v1", "111111", new MessageListener(LocalHandler,
-					LOGIN_DONE, null));
+			GlobalHolder.getInstance().mCR.setServerAddress("111.206.87.107",
+					5123);
+			GlobalHolder.getInstance().us.login("v1", "111111",
+					new MessageListener(LocalHandler, LOGIN_DONE, null));
 		}
 
 	}
