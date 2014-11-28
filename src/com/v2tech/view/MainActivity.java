@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import v2av.VideoPlayer;
@@ -20,8 +21,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.V2.jni.ConfigRequest;
 import com.V2.jni.util.V2Log;
@@ -78,7 +86,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
-		
+
 		GlobalHolder.getInstance().mCR = new ConfigRequest();
 		GlobalHolder.getInstance().us = new UserService();
 		GlobalHolder.getInstance().cs = new ConferenceService();
@@ -92,15 +100,24 @@ public class MainActivity extends Activity {
 
 		this.registerReceiver(localReceiver, filter);
 
+		LocationManager alm = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+		if (!alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+			Toast.makeText(this, "请先开启GPS定位", Toast.LENGTH_SHORT).show();
+		}
+
+		getLocation();
+		
 		showProgressDialog();
 		Message.obtain(LocalHandler, LOAD_MAP,
-				new LoadMapObject(0, 0, DEFAULT_MAP_LEVEL, "", ""))
+				new LoadMapObject(0, 0, DEFAULT_MAP_LEVEL, "", URLEncoder.encode("北京")))
 				.sendToTarget();
 
 		new ConnectServerThread().start();
 
 		GlobalHolder.getInstance().cs.registerAttendeeDeviceListener(
 				LocalHandler, ATTENDEE_DEVICE_LISTENER, null);
+
 	}
 
 	@Override
@@ -181,6 +198,11 @@ public class MainActivity extends Activity {
 	private void doLoginDone(JNIResponse res) {
 		if (res.getResult() == JNIResponse.Result.SUCCESS) {
 			requestJoinConf();
+		} else {
+			Toast.makeText(this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+			if (mDialog != null) {
+				mDialog.dismiss();
+			}
 		}
 	}
 
@@ -223,6 +245,62 @@ public class MainActivity extends Activity {
 		Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, null);
 		LocalHandler.sendMessageDelayed(msg, 600);
 	}
+	
+	Location location =null;
+	private void updateMap() {
+		if (location != null) {
+			V2Log.e(location.getLatitude()+","+location.getLongitude());
+		Message.obtain(LocalHandler, LOAD_MAP,
+				new LoadMapObject(0, 0, 13, "", location.getLongitude()+","+location.getLatitude()))
+				.sendToTarget();
+		}
+	}
+
+	private void getLocation() {
+		// 获取位置管理服务
+		LocationManager locationManager;
+		String serviceName = Context.LOCATION_SERVICE;
+		locationManager = (LocationManager) this.getSystemService(serviceName);
+		// 查找到服务信息
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE); // 高精度
+		criteria.setAltitudeRequired(false);
+		criteria.setBearingRequired(false);
+		criteria.setCostAllowed(true);
+		criteria.setPowerRequirement(Criteria.ACCURACY_HIGH); // 低功耗
+
+		String provider = locationManager.getBestProvider(criteria, true); // 获取GPS信息
+		location = locationManager.getLastKnownLocation(provider); // 通过GPS获取位置
+		updateMap();
+		// 设置监听器，自动更新的最小时间为间隔N秒(1秒为1*1000，这样写主要为了方便)或最小位移变化超过N米
+		locationManager.requestLocationUpdates(provider, 10 * 1000, 500,
+				new LocationListener() {
+
+					@Override
+					public void onLocationChanged(Location lo) {
+						location = lo;
+						V2Log.e(location.getLatitude()+","+location.getLongitude());
+						updateMap();
+					}
+
+					@Override
+					public void onStatusChanged(String provider, int status,
+							Bundle extras) {
+						
+					}
+
+					@Override
+					public void onProviderEnabled(String provider) {
+						
+					}
+
+					@Override
+					public void onProviderDisabled(String provider) {
+						
+					}
+			
+		});
+	}
 
 	private void refreshVideoUI() {
 		RelativeLayout videoLayout = new RelativeLayout(this);
@@ -234,7 +312,7 @@ public class MainActivity extends Activity {
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
 				height);
-		fl.leftMargin = mMainLayout.getWidth() - width;
+		fl.leftMargin = mMainLayout.getWidth() - width - 10;
 		fl.topMargin = 10;
 
 		final SurfaceView sv = new SurfaceView(this);
@@ -242,7 +320,11 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-
+				if (currentOpened == null) {
+					Toast.makeText(getApplicationContext(), "当前没有视频",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				UserDeviceConfig udc = new UserDeviceConfig(
 						GroupType.CONFERENCE.intValue(), conf.getmGId(),
 						currentOpened.uid, currentOpened.devid, currPlayer);
@@ -262,6 +344,13 @@ public class MainActivity extends Activity {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				currPlayer.SetSurface(holder);
+				Canvas can = holder.lockCanvas();
+				can.drawRGB(0, 0, 0);
+				Paint paint = new Paint();
+				paint.setColor(Color.WHITE);
+				can.drawText("正在搜索视频...", can.getWidth() / 2 - 30,
+						can.getHeight() / 2, paint);
+				holder.unlockCanvasAndPost(can);
 			}
 
 			@Override
@@ -319,6 +408,8 @@ public class MainActivity extends Activity {
 		if (obj == null) {
 
 			List<User> list = conf.getUsers();
+			V2Log.e(obj + "===================" + list.size() + "   "
+					+ currentOpened + "   ");
 			for (User u : list) {
 				UserDeviceConfig udc = GlobalHolder.getInstance()
 						.getUserDefaultDevice(u.getmUserId());
@@ -330,9 +421,11 @@ public class MainActivity extends Activity {
 							currentOpened.uid, currentOpened.devid, currPlayer);
 					GlobalHolder.getInstance().cs.requestOpenVideoDevice(conf,
 							udc1, null);
-					return;
+					break;
+
 				}
 			}
+			return;
 		} else {
 			if (currentOpened != null && currentOpened.uid == obj.uid) {
 				return;
@@ -352,6 +445,8 @@ public class MainActivity extends Activity {
 			}
 		}
 		currentOpened = obj;
+		V2Log.e(obj + "===================" + conf + "   " + currentOpened
+				+ "   ");
 		UserDeviceConfig udc = new UserDeviceConfig(
 				GroupType.CONFERENCE.intValue(), conf.getmGId(),
 				currentOpened.uid, currentOpened.devid, currPlayer);
@@ -404,9 +499,13 @@ public class MainActivity extends Activity {
 					continue;
 				}
 				if (currentOpened != null) {
-					UserDeviceConfig udc = GlobalHolder.getInstance().getUserDefaultDevice(u.getmUserId());
-					if (udc != null && !udc.getDeviceID().equals(currentOpened.devid)) {
-						Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, new SwitchObject(u.getmUserId(), udc.getDeviceID()));
+					UserDeviceConfig udc = GlobalHolder.getInstance()
+							.getUserDefaultDevice(u.getmUserId());
+					if (udc != null
+							&& !udc.getDeviceID().equals(currentOpened.devid)) {
+						Message msg = Message.obtain(LocalHandler,
+								SWITCH_VIDEO, new SwitchObject(u.getmUserId(),
+										udc.getDeviceID()));
 						LocalHandler.sendMessage(msg);
 						break;
 					}
@@ -479,6 +578,7 @@ public class MainActivity extends Activity {
 		private int width;
 		private int height;
 		private int level;
+		private String center;
 
 		public MapThread(int width, int height, int level, String city,
 				String center) {
@@ -486,6 +586,7 @@ public class MainActivity extends Activity {
 			this.width = width;
 			this.height = height;
 			this.level = level;
+			this.center = center;
 		}
 
 		@Override
@@ -495,6 +596,14 @@ public class MainActivity extends Activity {
 			HttpURLConnection urlConnection = null;
 			File f = null;
 			try {
+				V2Log.e(
+						"http://api.go2map.com/engine/api/static/image+%7B'height':"
+								+ height
+								+ ",'width':"
+								+ width
+								+ ",'zoom':"
+								+ level
+								+ ",'center':"+center+",'city':'%E5%8C%97%E4%BA%AC'%7D.png");
 				url = new URL(
 						"http://api.go2map.com/engine/api/static/image+%7B'height':"
 								+ height
@@ -502,7 +611,7 @@ public class MainActivity extends Activity {
 								+ width
 								+ ",'zoom':"
 								+ level
-								+ ",'center':%E2%80%98%E5%8C%97%E4%BA%AC%E2%80%99,'city':'%E5%8C%97%E4%BA%AC'%7D.png");
+								+ ",'center':"+center+",'city':'%E5%8C%97%E4%BA%AC'%7D.png");
 
 				urlConnection = (HttpURLConnection) url.openConnection();
 

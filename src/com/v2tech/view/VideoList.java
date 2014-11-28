@@ -9,6 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -314,6 +317,12 @@ public class VideoList extends Activity {
 
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
+			Canvas can = holder.lockCanvas();
+			can.drawRGB(0, 0, 0);
+			Paint paint = new Paint();
+			paint.setColor(Color.WHITE);
+			can.drawText("正在搜索视频...", can.getWidth() /2 - 30 , can.getHeight() / 2, paint);
+			holder.unlockCanvasAndPost(can);
 			synchronized (st) {
 				if (st == ST.CLOSED) {
 					if (openDevice()) {
