@@ -102,6 +102,12 @@
 
         <service android:name="com.v2tech.view.JNIService" >
         </service>
+        
+         <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
     </application>
 
 </manifest>

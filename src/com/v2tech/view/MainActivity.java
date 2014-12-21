@@ -1,6 +1,5 @@
 package com.v2tech.view;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +25,9 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
 import com.v2tech.v2liveshow.R;
 
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
 	LocationClient mLocClient;
 	private EditText mSearchEdit;
 	public MyLocationListenner myListener = new MyLocationListenner();
+	boolean isFirstLoc = true;// 是否首次定位
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,10 +146,13 @@ public class MainActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
-			LatLng ll = new LatLng(location.getLatitude(),
-					location.getLongitude());
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-			mBaiduMap.animateMapStatus(u);
+			if (isFirstLoc) {
+				isFirstLoc = false;
+				LatLng ll = new LatLng(location.getLatitude(),
+						location.getLongitude());
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+				mBaiduMap.animateMapStatus(u);
+			}
 		}
 
 		public void onReceivePoi(BDLocation poiLocation) {
