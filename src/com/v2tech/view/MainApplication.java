@@ -29,6 +29,7 @@ import com.V2.jni.VideoMixerRequest;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.WBRequest;
 import com.V2.jni.util.V2Log;
+import com.baidu.mapapi.SDKInitializer;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
 import com.v2tech.v2liveshow.R;
@@ -40,6 +41,9 @@ public class MainApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		// 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
+				SDKInitializer.initialize(this);
+				
 		initGloblePath();
 		
 		String path = GlobalConfig.getGlobalPath();

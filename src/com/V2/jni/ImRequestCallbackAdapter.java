@@ -49,6 +49,14 @@ public abstract class ImRequestCallbackAdapter implements ImRequestCallback {
 		
 	}
 
+	/**
+	 * Notify all groups and users are loaded
+	 * @return
+	 */
+	public void OnGroupsLoaded() {
+		
+	}
+	
 	
 	
 }

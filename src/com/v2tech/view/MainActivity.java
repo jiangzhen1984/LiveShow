@@ -1,123 +1,115 @@
 package com.v2tech.view;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.List;
 
-import v2av.VideoPlayer;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.V2.jni.ConfigRequest;
-import com.V2.jni.util.V2Log;
-import com.v2tech.service.ConferenceService;
-import com.v2tech.service.GlobalHolder;
-import com.v2tech.service.MessageListener;
-import com.v2tech.service.UserService;
-import com.v2tech.service.jni.JNIResponse;
-import com.v2tech.util.GlobalConfig;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.cloud.BoundSearchInfo;
+import com.baidu.mapapi.cloud.CloudListener;
+import com.baidu.mapapi.cloud.CloudManager;
+import com.baidu.mapapi.cloud.CloudSearchResult;
+import com.baidu.mapapi.cloud.DetailSearchResult;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.model.LatLng;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.vo.Conference;
-import com.v2tech.vo.ConferenceGroup;
-import com.v2tech.vo.Group;
-import com.v2tech.vo.Group.GroupType;
-import com.v2tech.vo.User;
-import com.v2tech.vo.UserDeviceConfig;
 
 public class MainActivity extends Activity {
 
-	private static final int DEFAULT_MAP_LEVEL = 4;
-
-	private static final int LOAD_MAP = 1;
-	private static final int UPDATE_MAP = 2;
-	private static final int LOGIN_DONE = 3;
-	private static final int JOIN_CONFERENCE_DONE = 4;
-	private static final int REQUEST_JOIN_CONF = 5;
-	private static final int SWITCH_VIDEO = 6;
-	private static final int ATTENDEE_DEVICE_LISTENER = 7;
+	private static final int SEARCH = 1;
 
 	private FrameLayout mMainLayout;
-	private ImageView mMapBg;
-	private Bitmap mMap;
-	private boolean isLoadMap;
-	private boolean isConnectedServer;
-	private MapThreadState mLock = MapThreadState.DONE;
-	private ConfState mConfState = ConfState.DONE;
-
-	private SwitchObject currentOpened;
-	private VideoPlayer currPlayer;
+	private MapView mMapView;
+	private BaiduMap mBaiduMap;
+	LocationClient mLocClient;
+	private EditText mSearchEdit;
+	public MyLocationListenner myListener = new MyLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
-
-		GlobalHolder.getInstance().mCR = new ConfigRequest();
-		GlobalHolder.getInstance().us = new UserService();
-		GlobalHolder.getInstance().cs = new ConferenceService();
-
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
-		mMapBg = (ImageView) findViewById(R.id.main_background);
+		mSearchEdit = (EditText) findViewById(R.id.search_edit);
+		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
-		IntentFilter filter = new IntentFilter();
-		filter.addCategory(JNIService.JNI_BROADCAST_CATEGROY);
-		filter.addAction(JNIService.JNI_BROADCAST_GROUP_NOTIFICATION);
-
-		this.registerReceiver(localReceiver, filter);
-
-		LocationManager alm = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
-		if (!alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
-			Toast.makeText(this, "请先开启GPS定位", Toast.LENGTH_SHORT).show();
+		Intent intent = getIntent();
+		if (intent.hasExtra("x") && intent.hasExtra("y")) {
+			// 当用intent参数时，设置中心点为指定点
+			Bundle b = intent.getExtras();
+			LatLng p = new LatLng(b.getDouble("y"), b.getDouble("x"));
+			mMapView = new MapView(this,
+					new BaiduMapOptions().mapStatus(new MapStatus.Builder()
+							.target(p).build()));
+		} else {
+			mMapView = new MapView(this, new BaiduMapOptions());
 		}
 
-		getLocation();
-		
-		showProgressDialog();
-		Message.obtain(LocalHandler, LOAD_MAP,
-				new LoadMapObject(0, 0, DEFAULT_MAP_LEVEL, "", URLEncoder.encode("北京")))
-				.sendToTarget();
+		mMainLayout.addView(mMapView, new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT,
+				FrameLayout.LayoutParams.MATCH_PARENT));
 
-		new ConnectServerThread().start();
+		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setMyLocationEnabled(true);
 
-		GlobalHolder.getInstance().cs.registerAttendeeDeviceListener(
-				LocalHandler, ATTENDEE_DEVICE_LISTENER, null);
+		init();
+	}
 
+	private void init() {
+		// 定位初始化
+		mLocClient = new LocationClient(this);
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+
+		CloudManager.getInstance().init(mLocalCloudListener);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// activity 暂停时同时暂停地图控件
+		mMapView.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// activity 恢复时同时恢复地图控件
+		mMapView.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// 退出时销毁定位
+		mLocClient.stop();
+		// 关闭定位图层
+		mBaiduMap.setMyLocationEnabled(false);
+		// activity 销毁时同时销毁地图控件
+		mMapView.onDestroy();
+
+		CloudManager.getInstance().destroy();
 	}
 
 	@Override
@@ -126,537 +118,117 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		this.unregisterReceiver(localReceiver);
-		if (this.currentOpened != null) {
-			UserDeviceConfig udc = new UserDeviceConfig(
-					GroupType.CONFERENCE.intValue(), conf.getmGId(),
-					currentOpened.uid, currentOpened.devid, currPlayer);
-			GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf, udc,
-					null);
-		}
-		if (conf != null && GlobalHolder.getInstance().cs != null) {
-			GlobalHolder.getInstance().cs.requestExitConference(new Conference(
-					(ConferenceGroup) conf), null);
-		}
-		// Start deamon service
-		getApplicationContext().stopService(
-				new Intent(getApplicationContext(), JNIService.class));
-
-		try {
-			Thread.currentThread().sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		System.exit(0);
-
-	}
-
-	private Dialog mDialog = null;
-
-	private void showProgressDialog() {
-		mDialog = ProgressDialog.show(this, "", "正在载入.....", false, true);
-	}
-
-	private void doLoadMap(LoadMapObject obj) {
-		if (obj.width <= 0 || obj.height <= 0) {
-			obj.width = mMainLayout.getWidth();
-			obj.height = mMainLayout.getHeight();
-		}
-
-		File f = new File(GlobalConfig.getGlobalPath() + "/s" + obj.width + "_"
-				+ obj.height + "_" + obj.level + ".png");
-		Bitmap bm = null;
-		if (f.exists()) {
-			bm = BitmapFactory.decodeFile(f.getAbsolutePath(),
-					new BitmapFactory.Options());
-			Message.obtain(LocalHandler, UPDATE_MAP, bm).sendToTarget();
-		} else {
-			synchronized (mLock) {
-				if (mLock == MapThreadState.DONE) {
-					mLock = MapThreadState.LOADING;
-					new MapThread(obj.width, obj.height, obj.level, obj.city,
-							obj.center).start();
-				}
-			}
-		}
-
-	}
-
-	private void doUpdateMap(Bitmap bm) {
-		mMapBg.setScaleType(ScaleType.CENTER_CROP);
-		mMapBg.setImageBitmap(bm);
-		if (mMap != null && !mMap.isRecycled()) {
-			mMap.recycle();
-		}
-		mMap = bm;
-		isLoadMap = true;
-	}
-
-	private void doLoginDone(JNIResponse res) {
-		if (res.getResult() == JNIResponse.Result.SUCCESS) {
-			requestJoinConf();
-		} else {
-			Toast.makeText(this, "连接服务器失败", Toast.LENGTH_SHORT).show();
-			if (mDialog != null) {
-				mDialog.dismiss();
-			}
-		}
-	}
-
-	private Group conf;
-
-	private void requestJoinConf() {
-		List<Group> list = GlobalHolder.getInstance().getGroup(
-				Group.GroupType.CONFERENCE.intValue());
-		if (list.size() > 0) {
-			Group g = list.get(0);
-			conf = g;
-			Message.obtain(LocalHandler, REQUEST_JOIN_CONF,
-					new Conference((ConferenceGroup) g)).sendToTarget();
-		} else {
-
-		}
-	}
-
-	private void doJoinConfDone(JNIResponse res) {
-		if (res.getResult() == JNIResponse.Result.SUCCESS) {
-			isConnectedServer = true;
-			//
-			if (mDialog != null) {
-				mDialog.dismiss();
-			}
-
-			refreshVideoUI();
-
-			Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, null);
-			LocalHandler.sendMessageDelayed(msg, 1500);
-
-		} else {
-
-		}
-	}
-
-	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Message msg = Message.obtain(LocalHandler, SWITCH_VIDEO, null);
-		LocalHandler.sendMessageDelayed(msg, 600);
-	}
-	
-	Location location =null;
-	private void updateMap() {
-		if (location != null) {
-			V2Log.e(location.getLatitude()+","+location.getLongitude());
-		Message.obtain(LocalHandler, LOAD_MAP,
-				new LoadMapObject(0, 0, 13, "", location.getLongitude()+","+location.getLatitude()))
-				.sendToTarget();
-		}
 	}
 
-	private void getLocation() {
-		// 获取位置管理服务
-		LocationManager locationManager;
-		String serviceName = Context.LOCATION_SERVICE;
-		locationManager = (LocationManager) this.getSystemService(serviceName);
-		// 查找到服务信息
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE); // 高精度
-		criteria.setAltitudeRequired(false);
-		criteria.setBearingRequired(false);
-		criteria.setCostAllowed(true);
-		criteria.setPowerRequirement(Criteria.ACCURACY_HIGH); // 低功耗
-
-		String provider = locationManager.getBestProvider(criteria, true); // 获取GPS信息
-		location = locationManager.getLastKnownLocation(provider); // 通过GPS获取位置
-		updateMap();
-		// 设置监听器，自动更新的最小时间为间隔N秒(1秒为1*1000，这样写主要为了方便)或最小位移变化超过N米
-		locationManager.requestLocationUpdates(provider, 10 * 1000, 500,
-				new LocationListener() {
-
-					@Override
-					public void onLocationChanged(Location lo) {
-						location = lo;
-						V2Log.e(location.getLatitude()+","+location.getLongitude());
-						updateMap();
-					}
-
-					@Override
-					public void onStatusChanged(String provider, int status,
-							Bundle extras) {
-						
-					}
-
-					@Override
-					public void onProviderEnabled(String provider) {
-						
-					}
-
-					@Override
-					public void onProviderDisabled(String provider) {
-						
-					}
-			
-		});
+	private void doSearch(String key) {
+		BoundSearchInfo info = new BoundSearchInfo();
+		info.ak = "mI2rOQiS9o51DbmSknS0hDtq";
+		info.geoTableId = 31869;
+		info.q = key;
+		info.bound = "116.401663,39.913961;116.406529,39.917396";
+		CloudManager.getInstance().boundSearch(info);
 	}
 
-	private void refreshVideoUI() {
-		RelativeLayout videoLayout = new RelativeLayout(this);
-		videoLayout.setBackgroundColor(Color.BLACK);
-		int width = mMainLayout.getWidth() / 2;
-		width = width - width % 16;
-		int height = width / 4 * 3;
-		height = height - height % 16;
+	public class MyLocationListenner implements BDLocationListener {
 
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
-				height);
-		fl.leftMargin = mMainLayout.getWidth() - width - 10;
-		fl.topMargin = 10;
-
-		final SurfaceView sv = new SurfaceView(this);
-		sv.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (currentOpened == null) {
-					Toast.makeText(getApplicationContext(), "当前没有视频",
-							Toast.LENGTH_SHORT).show();
-					return;
-				}
-				UserDeviceConfig udc = new UserDeviceConfig(
-						GroupType.CONFERENCE.intValue(), conf.getmGId(),
-						currentOpened.uid, currentOpened.devid, currPlayer);
-				GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf,
-						udc, null);
-
-				Intent i = new Intent();
-				i.setClass(MainActivity.this, VideoList.class);
-				i.putExtra("gid", conf.getmGId());
-				startActivityForResult(i, 100);
-			}
-
-		});
-
-		sv.getHolder().addCallback(new Callback() {
-
-			@Override
-			public void surfaceCreated(SurfaceHolder holder) {
-				currPlayer.SetSurface(holder);
-				Canvas can = holder.lockCanvas();
-				can.drawRGB(0, 0, 0);
-				Paint paint = new Paint();
-				paint.setColor(Color.WHITE);
-				can.drawText("正在搜索视频...", can.getWidth() / 2 - 30,
-						can.getHeight() / 2, paint);
-				holder.unlockCanvasAndPost(can);
-			}
-
-			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format,
-					int width, int height) {
-				currPlayer.SetSurface(holder);
-			}
-
-			@Override
-			public void surfaceDestroyed(SurfaceHolder holder) {
-				V2Log.e("================dddd==============create");
-			}
-
-		});
-		sv.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		currPlayer = new VideoPlayer();
-		currPlayer.SetSurface(sv.getHolder());
-		currPlayer.SetViewSize(width, height);
-
-		RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT,
-				RelativeLayout.LayoutParams.MATCH_PARENT);
-		videoLayout.addView(sv, rl);
-
-		ImageView leftImage = new ImageView(this);
-		leftImage.setImageResource(R.drawable.arrow_left_gray);
-		RelativeLayout.LayoutParams leftRl = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		leftRl.addRule(RelativeLayout.CENTER_VERTICAL);
-		leftRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		leftRl.leftMargin = 15;
-		videoLayout.addView(leftImage, leftRl);
-		leftImage.bringToFront();
-		leftImage.setOnClickListener(switchVideo);
-		leftImage.setTag("1");
-
-		ImageView rightImage = new ImageView(this);
-		rightImage.setImageResource(R.drawable.arrow_right_gray);
-		RelativeLayout.LayoutParams rigthRl = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		rigthRl.addRule(RelativeLayout.CENTER_VERTICAL);
-		rigthRl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		rigthRl.rightMargin = 15;
-		videoLayout.addView(rightImage, rigthRl);
-		rightImage.bringToFront();
-		rightImage.setOnClickListener(switchVideo);
-		rightImage.setTag("0");
-
-		mMainLayout.addView(videoLayout, fl);
-	}
-
-	private void doSwitch(SwitchObject obj) {
-		if (obj == null) {
-
-			List<User> list = conf.getUsers();
-			V2Log.e(obj + "===================" + list.size() + "   "
-					+ currentOpened + "   ");
-			for (User u : list) {
-				UserDeviceConfig udc = GlobalHolder.getInstance()
-						.getUserDefaultDevice(u.getmUserId());
-				if (udc != null && !udc.getDeviceID().isEmpty()) {
-					currentOpened = new SwitchObject(u.getmUserId(),
-							udc.getDeviceID());
-					UserDeviceConfig udc1 = new UserDeviceConfig(
-							GroupType.CONFERENCE.intValue(), conf.getmGId(),
-							currentOpened.uid, currentOpened.devid, currPlayer);
-					GlobalHolder.getInstance().cs.requestOpenVideoDevice(conf,
-							udc1, null);
-					break;
-
-				}
-			}
-			return;
-		} else {
-			if (currentOpened != null && currentOpened.uid == obj.uid) {
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			// map view 销毁后不在处理新接收的位置
+			if (location == null || mMapView == null)
 				return;
+			MyLocationData locData = new MyLocationData.Builder()
+					.accuracy(location.getRadius())
+					// 此处设置开发者获取到的方向信息，顺时针0-360
+					.direction(100).latitude(location.getLatitude())
+					.longitude(location.getLongitude()).build();
+			mBaiduMap.setMyLocationData(locData);
+			LatLng ll = new LatLng(location.getLatitude(),
+					location.getLongitude());
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+			mBaiduMap.animateMapStatus(u);
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
+	}
+
+	private LocalState mSearchState = LocalState.DONE;
+
+	private TextWatcher mSearchedTextWatcher = new TextWatcher() {
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			LocalHandler.removeMessages(SEARCH);
+			Message msg = Message.obtain(LocalHandler, SEARCH, s.toString());
+			LocalHandler.sendMessageDelayed(msg, 600);
+		}
+
+	};
+
+	private CloudListener mLocalCloudListener = new CloudListener() {
+
+		@Override
+		public void onGetDetailSearchResult(DetailSearchResult arg0, int arg1) {
+
+		}
+
+		@Override
+		public void onGetSearchResult(CloudSearchResult result, int error) {
+			if (result != null && result.poiList != null
+					&& result.poiList.size() > 0) {
+				mBaiduMap.clear();
+				// BitmapDescriptor bd =
+				// BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding);
+				// LatLng ll;
+				// LatLngBounds.Builder builder = new Builder();
+				// for (CloudPoiInfo info : result.poiList) {
+				// ll = new LatLng(info.latitude, info.longitude);
+				// OverlayOptions oo = new
+				// MarkerOptions().icon(bd).position(ll);
+				// mBaiduMap.addOverlay(oo);
+				// builder.include(ll);
+				// }
+				// LatLngBounds bounds = builder.build();
+				// MapStatusUpdate u =
+				// MapStatusUpdateFactory.newLatLngBounds(bounds);
+				// mBaiduMap.animateMapStatus(u);
 			}
 		}
 
-		if (currentOpened != null) {
-			UserDeviceConfig udc = new UserDeviceConfig(
-					GroupType.CONFERENCE.intValue(), conf.getmGId(),
-					currentOpened.uid, currentOpened.devid, currPlayer);
-			GlobalHolder.getInstance().cs.requestCloseVideoDevice(conf, udc,
-					null);
-			try {
-				Thread.currentThread().sleep(300);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		currentOpened = obj;
-		V2Log.e(obj + "===================" + conf + "   " + currentOpened
-				+ "   ");
-		UserDeviceConfig udc = new UserDeviceConfig(
-				GroupType.CONFERENCE.intValue(), conf.getmGId(),
-				currentOpened.uid, currentOpened.devid, currPlayer);
-		GlobalHolder.getInstance().cs.requestOpenVideoDevice(conf, udc, null);
-	}
+	};
 
 	private Handler LocalHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case LOAD_MAP:
-				doLoadMap((LoadMapObject) msg.obj);
-				break;
-			case UPDATE_MAP:
-				doUpdateMap((Bitmap) msg.obj);
-				break;
-			case LOGIN_DONE:
-				doLoginDone((JNIResponse) msg.obj);
-				break;
-			case JOIN_CONFERENCE_DONE:
-				doJoinConfDone((JNIResponse) msg.obj);
-				break;
-			case REQUEST_JOIN_CONF:
-				if (mConfState == ConfState.DONE) {
-					mConfState = ConfState.REQUESTING;
-					GlobalHolder.getInstance().cs.requestEnterConference(
-							(Conference) msg.obj, new MessageListener(
-									LocalHandler, JOIN_CONFERENCE_DONE, null));
+			case SEARCH:
+				synchronized (mSearchState) {
+					mSearchState = LocalState.DONING;
+					doSearch((String) msg.obj);
 				}
-				break;
-			case SWITCH_VIDEO:
-				doSwitch((SwitchObject) msg.obj);
-				break;
-			case ATTENDEE_DEVICE_LISTENER:
 				break;
 			}
 		}
 
 	};
 
-	private OnClickListener switchVideo = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			List<User> list = conf.getUsers();
-			for (int i = 0; i < list.size(); i++) {
-				User u = list.get(i);
-				if (u.getName().equals("v1")) {
-					continue;
-				}
-				if (currentOpened != null) {
-					UserDeviceConfig udc = GlobalHolder.getInstance()
-							.getUserDefaultDevice(u.getmUserId());
-					if (udc != null
-							&& !udc.getDeviceID().equals(currentOpened.devid)) {
-						Message msg = Message.obtain(LocalHandler,
-								SWITCH_VIDEO, new SwitchObject(u.getmUserId(),
-										udc.getDeviceID()));
-						LocalHandler.sendMessage(msg);
-						break;
-					}
-				}
-			}
-		}
-
-	};
-
-	private BroadcastReceiver localReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (JNIService.JNI_BROADCAST_GROUP_NOTIFICATION.equals(intent
-					.getAction())) {
-				int type = intent.getIntExtra("gtype", -1);
-				if (type == GroupType.CONFERENCE.intValue()) {
-					requestJoinConf();
-				}
-			}
-		}
-
-	};
-
-	class LoadMapObject {
-		int width;
-		int height;
-		int level;
-		String city;
-		String center;
-
-		public LoadMapObject(int width, int height, int level, String city,
-				String center) {
-			super();
-			this.width = width;
-			this.height = height;
-			this.level = level;
-			this.city = city;
-			this.center = center;
-		}
-
-	}
-
-	class SwitchObject {
-		long uid;
-		String devid;
-
-		public SwitchObject(long uid, String devid) {
-			super();
-			this.uid = uid;
-			this.devid = devid;
-		}
-
-	}
-
-	class ConnectServerThread extends Thread {
-
-		@Override
-		public void run() {
-			GlobalHolder.getInstance().mCR.setServerAddress("111.206.87.107",
-					5123);
-			GlobalHolder.getInstance().us.login("v1", "111111",
-					new MessageListener(LocalHandler, LOGIN_DONE, null));
-		}
-
-	}
-
-	class MapThread extends Thread {
-
-		private int width;
-		private int height;
-		private int level;
-		private String center;
-
-		public MapThread(int width, int height, int level, String city,
-				String center) {
-			super();
-			this.width = width;
-			this.height = height;
-			this.level = level;
-			this.center = center;
-		}
-
-		@Override
-		public void run() {
-			URL url = null;
-			OutputStream out = null;
-			HttpURLConnection urlConnection = null;
-			File f = null;
-			try {
-				V2Log.e(
-						"http://api.go2map.com/engine/api/static/image+%7B'height':"
-								+ height
-								+ ",'width':"
-								+ width
-								+ ",'zoom':"
-								+ level
-								+ ",'center':"+center+",'city':'%E5%8C%97%E4%BA%AC'%7D.png");
-				url = new URL(
-						"http://api.go2map.com/engine/api/static/image+%7B'height':"
-								+ height
-								+ ",'width':"
-								+ width
-								+ ",'zoom':"
-								+ level
-								+ ",'center':"+center+",'city':'%E5%8C%97%E4%BA%AC'%7D.png");
-
-				urlConnection = (HttpURLConnection) url.openConnection();
-
-				InputStream in = new BufferedInputStream(
-						urlConnection.getInputStream());
-				f = new File(GlobalConfig.getGlobalPath() + "/s" + width + "_"
-						+ height + "_" + level + ".png");
-
-				out = new FileOutputStream(f);
-				byte[] buf = new byte[1024];
-				int n = 0;
-				while ((n = in.read(buf)) > 0) {
-					out.write(buf, 0, n);
-				}
-				in.close();
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				urlConnection.disconnect();
-				synchronized (mLock) {
-					mLock = MapThreadState.DONE;
-				}
-			}
-
-			Bitmap bm = BitmapFactory.decodeFile(f.getAbsolutePath(),
-					new BitmapFactory.Options());
-			Message.obtain(LocalHandler, UPDATE_MAP, bm).sendToTarget();
-		}
-
-	}
-
-	enum MapThreadState {
-		DONE, LOADING;
-	}
-
-	enum ConfState {
-		REQUESTING, DONE;
+	enum LocalState {
+		DONING, DONE;
 	}
 
 }

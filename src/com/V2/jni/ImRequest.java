@@ -436,7 +436,7 @@ public class ImRequest {
 	private boolean haslogin = false;
 
 	private void OnGetGroupsInfoEnd() {
-
+	
 	}
 
 }

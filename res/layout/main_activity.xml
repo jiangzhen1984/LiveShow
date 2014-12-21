@@ -25,7 +25,7 @@
             android:background="@drawable/input_bg"
             android:hint="输入街道，建筑物名称"
             android:inputType="text"
-            android:paddingLeft="20dp"
+            android:paddingLeft="10dp"
             android:textColor="#000000"
             android:textSize="18sp" >
         </EditText>
@@ -60,13 +60,6 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/RelativeLayout3" >
-
-        <ImageView
-            android:id="@+id/main_background"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher" />
 
     </FrameLayout>
 
