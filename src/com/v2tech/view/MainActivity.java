@@ -155,6 +155,28 @@ public class MainActivity extends Activity implements
 	@Override
 	public void stopDrag() {
 	}
+	
+	
+	
+	
+
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch (id) {
+		case R.id.main_activity_title_bar_button_plus:
+			showPlusPopupWindow(v);
+			break;
+		}
+	}
+	
+	private ArrowPopupWindow arw;
+	private void showPlusPopupWindow(View anchor) {
+		if (arw == null) {
+			arw = new ArrowPopupWindow(this);
+		}
+		arw.showAsDropDown(anchor);
+	}
 
 	@Override
 	public void onWidgetClick(View view) {
