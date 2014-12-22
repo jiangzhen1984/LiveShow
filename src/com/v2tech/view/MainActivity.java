@@ -7,6 +7,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -25,13 +30,12 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.LiveVideoWidget;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LiveVideoWidget.DragListener {
 
 	private static final int SEARCH = 1;
 
@@ -42,6 +46,8 @@ public class MainActivity extends Activity {
 	private EditText mSearchEdit;
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
+	
+	private LiveVideoWidget  lvw;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,7 @@ public class MainActivity extends Activity {
 		mBaiduMap.setMyLocationEnabled(true);
 
 		init();
+		initVideoLayout();
 	}
 
 	private void init() {
@@ -85,6 +92,19 @@ public class MainActivity extends Activity {
 		mLocClient.start();
 
 		CloudManager.getInstance().init(mLocalCloudListener);
+	}
+	
+	
+	private void initVideoLayout() {
+		DisplayMetrics dis = this.getResources().getDisplayMetrics();
+		int width = dis.widthPixels;
+		int height = dis.heightPixels;
+		lvw = new LiveVideoWidget(this);
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width / 2, ((width /2 ) - (width / 2 % 16)) /4 * 3 );
+		fl.leftMargin = dis.widthPixels -fl.width - 10;
+		fl.topMargin = 10;
+		mMainLayout.addView(lvw, fl);
+		lvw.setDragListener(this);
 	}
 
 	@Override
@@ -122,6 +142,19 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	
+	
+	
+	
+	
+	@Override
+	public void startDrag() {
+	}
+
+	@Override
+	public void stopDrag() {
 	}
 
 	private void doSearch(String key) {
