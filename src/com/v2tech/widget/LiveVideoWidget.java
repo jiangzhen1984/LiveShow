@@ -7,11 +7,10 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -26,6 +25,10 @@ public class LiveVideoWidget extends FrameLayout implements
 		public void startDrag();
 		public void stopDrag();
 	}
+	
+	public interface OnWidgetClickListener {
+		public void onWidgetClick(View view);
+	}
 
 	private static final int VIDEO_REQUEST = 1;
 
@@ -36,6 +39,11 @@ public class LiveVideoWidget extends FrameLayout implements
 	private SurfaceView sur;
 	
 	private DragListener dragListener;
+	
+	private OnWidgetClickListener clickListener;
+	
+	private int screenWith;
+	private int screenHeight;
 
 	public LiveVideoWidget(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -59,7 +67,8 @@ public class LiveVideoWidget extends FrameLayout implements
 		this.addView(sur, new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT,
 				FrameLayout.LayoutParams.MATCH_PARENT));
-
+		//DisplayMetrics dm = new DisplayMetrics();
+		//((WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
 	}
 	
 	
@@ -174,16 +183,19 @@ public class LiveVideoWidget extends FrameLayout implements
 	
 	
 
-	public DragListener getDragListener() {
-		return dragListener;
-	}
 
 	public void setDragListener(DragListener dragListener) {
 		this.dragListener = dragListener;
 	}
 
 
-	
+
+	public void setOnWidgetClickListener(OnWidgetClickListener clickListener) {
+		this.clickListener = clickListener;
+	}
+
+
+
 
 
 
@@ -194,6 +206,10 @@ public class LiveVideoWidget extends FrameLayout implements
 	int lastY;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (screenWith == 0 || screenHeight == 0) {
+			screenWith = ((View)this.getParent()).getWidth();
+			screenHeight = ((View)this.getParent()).getHeight();
+		}
 		int action = event.getAction();
 		LayoutParams  lp = (FrameLayout.LayoutParams)this.getLayoutParams();
 		switch(action) {
@@ -206,8 +222,14 @@ public class LiveVideoWidget extends FrameLayout implements
 			break;
 		case  MotionEvent.ACTION_MOVE:
 			startDrag = true;
-			lp.leftMargin += ((int)event.getX() - lastX);
-			lp.topMargin += ((int)event.getY() - lastY);
+			int offsetX =((int)event.getX() - lastX);
+			int offsetY = ((int)event.getY() - lastY);
+			if (lp.leftMargin + offsetX > 0 && lp.leftMargin + offsetX  + this.getWidth() < screenWith) {
+				lp.leftMargin += offsetX;
+			}
+			if (lp.topMargin + offsetY > 0 && lp.topMargin + offsetY + this.getHeight() < screenHeight) {
+				lp.topMargin += offsetY;
+			}
 			((ViewGroup)this.getParent()).updateViewLayout(this, lp);
 			break;
 		case  MotionEvent.ACTION_UP:
@@ -217,6 +239,9 @@ public class LiveVideoWidget extends FrameLayout implements
 				dragListener.stopDrag();
 			}
 			startDrag = false;
+			if (clickListener != null && event.getEventTime() - event.getDownTime() < 200) {
+				clickListener.onWidgetClick(this);
+			}
 			break;
 		}
 		

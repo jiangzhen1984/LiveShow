@@ -8,10 +8,8 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -33,9 +31,12 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.ArrowPopupWindow;
 import com.v2tech.widget.LiveVideoWidget;
 
-public class MainActivity extends Activity implements LiveVideoWidget.DragListener {
+public class MainActivity extends Activity implements
+		LiveVideoWidget.DragListener, OnClickListener,
+		LiveVideoWidget.OnWidgetClickListener {
 
 	private static final int SEARCH = 1;
 
@@ -46,8 +47,8 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 	private EditText mSearchEdit;
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
-	
-	private LiveVideoWidget  lvw;
+
+	private LiveVideoWidget lvw;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 		mSearchEdit = (EditText) findViewById(R.id.search_edit);
 		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		findViewById(R.id.main_activity_title_bar_button_plus)
+				.setOnClickListener(this);
 
 		Intent intent = getIntent();
 		if (intent.hasExtra("x") && intent.hasExtra("y")) {
@@ -93,18 +96,19 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 
 		CloudManager.getInstance().init(mLocalCloudListener);
 	}
-	
-	
+
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels;
 		int height = dis.heightPixels;
 		lvw = new LiveVideoWidget(this);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width / 2, ((width /2 ) - (width / 2 % 16)) /4 * 3 );
-		fl.leftMargin = dis.widthPixels -fl.width - 10;
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width / 2,
+				((width / 2) - (width / 2 % 16)) / 4 * 3);
+		fl.leftMargin = dis.widthPixels - fl.width - 10;
 		fl.topMargin = 10;
 		mMainLayout.addView(lvw, fl);
 		lvw.setDragListener(this);
+		lvw.setOnWidgetClickListener(this);
 	}
 
 	@Override
@@ -144,17 +148,38 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	public void startDrag() {
 	}
 
 	@Override
 	public void stopDrag() {
+	}
+
+	@Override
+	public void onWidgetClick(View view) {
+		//FIXME stop playing
+		Intent i = new Intent(this, VideoList.class);
+		startActivity(i);
+	}
+
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch (id) {
+		case R.id.main_activity_title_bar_button_plus:
+			showPlusPopupWindow(v);
+			break;
+		}
+	}
+
+	private ArrowPopupWindow arw;
+
+	private void showPlusPopupWindow(View anchor) {
+		if (arw == null) {
+			arw = new ArrowPopupWindow(this);
+		}
+		arw.showAsDropDown(anchor);
 	}
 
 	private void doSearch(String key) {
@@ -183,8 +208,11 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 				isFirstLoc = false;
 				LatLng ll = new LatLng(location.getLatitude(),
 						location.getLongitude());
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+				float zoomLevel = 15.0F;
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,
+						zoomLevel);
 				mBaiduMap.animateMapStatus(u);
+
 			}
 		}
 

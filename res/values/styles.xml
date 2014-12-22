@@ -16,5 +16,12 @@
     <style name="AppTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    
+    
+    <style name="TitleBarPopupWindowAnim">
+        <item name="@android:windowEnterAnimation">@animator/translation_down_to_up_related_self</item>
+        <item name="@android:windowExitAnimation">@animator/translation_up_to_down_related_self</item>
+    </style>
 
 </resources>

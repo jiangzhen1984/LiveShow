@@ -21,9 +21,9 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="6dp"
-            android:layout_toLeftOf="@+id/imageView1"
+            android:layout_toLeftOf="@+id/main_activity_title_bar_button_plus"
             android:background="@drawable/input_bg"
-            android:hint="输入街道，建筑物名称"
+            android:hint="@string/main_activity_search_text_hint"
             android:inputType="text"
             android:paddingLeft="10dp"
             android:textColor="#000000"
@@ -39,10 +39,10 @@
             android:src="@drawable/title_bar_feature_more_button_selector" />
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/main_activity_title_bar_button_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/imageView2"
             android:src="@drawable/title_bar_plus_button_selector" />
     </RelativeLayout>
@@ -60,7 +60,6 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/RelativeLayout3" >
-
     </FrameLayout>
 
 </RelativeLayout>

@@ -63,7 +63,7 @@ public class VideoList extends Activity {
 		filter.addAction("fs.exit");
 		filter.addCategory("liveshow");
 		this.registerReceiver(local, filter);
-		
+		this.overridePendingTransition(R.animator.right_to_left_in, 0);
 	}
 	
 	
@@ -116,6 +116,14 @@ public class VideoList extends Activity {
 	public void onBackPressed() {
 		this.setResult(100);
 		finish();
+	}
+
+	
+	
+	@Override
+	public void finish() {
+		super.finish();
+		this.overridePendingTransition(0, R.animator.left_to_right_out);
 	}
 
 	private void updateUI() {
