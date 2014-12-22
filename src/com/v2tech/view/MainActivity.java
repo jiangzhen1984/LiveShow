@@ -8,10 +8,8 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -33,9 +31,10 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.ArrowPopupWindow;
 import com.v2tech.widget.LiveVideoWidget;
 
-public class MainActivity extends Activity implements LiveVideoWidget.DragListener {
+public class MainActivity extends Activity implements LiveVideoWidget.DragListener, OnClickListener {
 
 	private static final int SEARCH = 1;
 
@@ -56,6 +55,7 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 		mSearchEdit = (EditText) findViewById(R.id.search_edit);
 		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		findViewById(R.id.main_activity_title_bar_button_plus).setOnClickListener(this);
 
 		Intent intent = getIntent();
 		if (intent.hasExtra("x") && intent.hasExtra("y")) {
@@ -155,6 +155,28 @@ public class MainActivity extends Activity implements LiveVideoWidget.DragListen
 
 	@Override
 	public void stopDrag() {
+	}
+	
+	
+	
+	
+
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch (id) {
+		case R.id.main_activity_title_bar_button_plus:
+			showPlusPopupWindow(v);
+			break;
+		}
+	}
+	
+	private ArrowPopupWindow arw;
+	private void showPlusPopupWindow(View anchor) {
+		if (arw == null) {
+			arw = new ArrowPopupWindow(this);
+		}
+		arw.showAsDropDown(anchor);
 	}
 
 	private void doSearch(String key) {
