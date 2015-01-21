@@ -39,7 +39,6 @@ public class FileRequest {
 
 		if (mFileRequest == null) {
 			mFileRequest = new FileRequest(context);
-			mFileRequest.initialize(mFileRequest);
 		}
 		return mFileRequest;
 	}
@@ -61,8 +60,6 @@ public class FileRequest {
 			}
 		}
 	}
-
-	public native boolean initialize(FileRequest request);
 
 	public native void unInitialize();
 

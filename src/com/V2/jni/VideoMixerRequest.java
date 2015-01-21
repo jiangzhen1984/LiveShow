@@ -19,9 +19,6 @@ public class VideoMixerRequest {
 	public static synchronized VideoMixerRequest getInstance() {
 		if (mVideoMixerRequest == null) {
 			mVideoMixerRequest = new VideoMixerRequest();
-			if (!mVideoMixerRequest.initialize(mVideoMixerRequest)) {
-				V2Log.e(" VideoMixerRequest initialize failed");
-			}
 		}
 		return mVideoMixerRequest;
 	}
@@ -43,7 +40,6 @@ public class VideoMixerRequest {
 	}
 	
 
-	public native boolean initialize(VideoMixerRequest instance);
 
 	public native void unInitialize();
 

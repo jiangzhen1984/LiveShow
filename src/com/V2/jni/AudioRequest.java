@@ -39,9 +39,6 @@ public class AudioRequest {
 	public static synchronized AudioRequest getInstance(Context context) {
 		if (mAudioRequest == null) {
 			mAudioRequest = new AudioRequest(context);
-			if (!mAudioRequest.initialize(mAudioRequest)) {
-				Log.e("AudioRequest", "can't initialize AudioRequest ");
-			}
 		}
 		return mAudioRequest;
 	}
@@ -49,14 +46,10 @@ public class AudioRequest {
 	public static synchronized AudioRequest getInstance() {
 		if (mAudioRequest == null) {
 			mAudioRequest = new AudioRequest(null);
-			if (!mAudioRequest.initialize(mAudioRequest)) {
-				Log.e("AudioRequest", "can't initialize AudioRequest ");
-			}
 		}
 		return mAudioRequest;
 	}
 
-	public native boolean initialize(AudioRequest request);
 
 	public native void unInitialize();
 

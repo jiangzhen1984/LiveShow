@@ -36,3 +36,27 @@ LOCAL_SRC_FILES := ../libs/libudt.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
 include $(PREBUILT_SHARED_LIBRARY)
 
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := BaiduMapSDK_v3_2_0_15-prebuilt
+LOCAL_SRC_FILES := ../libs/libBaiduMapSDK_v3_2_0_15.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+include $(PREBUILT_SHARED_LIBRARY)
+
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := app_BaiduPanoApplib-prebuilt
+LOCAL_SRC_FILES := ../libs/libapp_BaiduPanoApplib.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := locSDK5-prebuilt
+LOCAL_SRC_FILES := ../libs/liblocSDK5.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+include $(PREBUILT_SHARED_LIBRARY)
+
+ 
+
+
+

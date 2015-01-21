@@ -57,6 +57,9 @@ public class VideoRequest {
 	public native boolean initialize(VideoRequest request);
 
 	public native void unInitialize();
+	
+	public native void enableVideoDev(String device, int type);
+
 
 
 

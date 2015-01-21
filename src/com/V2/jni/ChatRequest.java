@@ -25,9 +25,6 @@ public class ChatRequest {
 	public static synchronized ChatRequest getInstance(Context context) {
 		if (mChatRequest == null) {
 			mChatRequest = new ChatRequest();
-			if (!mChatRequest.initialize(mChatRequest)) {
-				Log.e("mChatRequest", "can't initialize mChatRequest ");
-			}
 		}
 
 		return mChatRequest;
@@ -64,8 +61,6 @@ public class ChatRequest {
 		}
 		return mChatRequest;
 	}
-
-	public native boolean initialize(ChatRequest request);
 
 	public native void unInitialize();
 

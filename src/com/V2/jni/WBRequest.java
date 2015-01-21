@@ -21,7 +21,6 @@ public class WBRequest {
 
 		if (mWBRequest == null) {
 			mWBRequest = new WBRequest(context);
-			mWBRequest.initialize(mWBRequest);
 		}
 		return mWBRequest;
 	}
@@ -29,7 +28,6 @@ public class WBRequest {
 	public static synchronized WBRequest getInstance() {
 		if (mWBRequest == null) {
 			mWBRequest = new WBRequest(null);
-			mWBRequest.initialize(mWBRequest);
 		}
 		return mWBRequest;
 	}
@@ -47,7 +45,6 @@ public class WBRequest {
 		}
 	}
 
-	public native boolean initialize(WBRequest request);
 
 	public native void unInitialize();
 
