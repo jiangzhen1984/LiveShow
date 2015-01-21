@@ -46,7 +46,7 @@ public class ConfRequest {
 	public void addCallback(ConfRequestCallback callback) {
 		this.mCallbacks.add(new WeakReference<ConfRequestCallback>(callback));
 	}
-	
+
 	public void removeCallback(ConfRequestCallback callback) {
 		for (int i = 0; i < this.mCallbacks.size(); i++) {
 			if (this.mCallbacks.get(i).get() == callback) {
@@ -61,6 +61,32 @@ public class ConfRequest {
 	public native boolean initialize(ConfRequest request);
 
 	public native void unInitialize();
+
+	public native void changeSyncConfOpenVideoPos(long ty, String str,
+			String str1);
+
+	private void OnChangeSyncConfOpenVideoPos(long ty, String str, String str1) {
+
+	}
+
+	public native void cancelSyncConfOpenVideoToMobile(long l1, long l2,
+			String str);
+
+	private void onCancelSyncConfOpenVideoToMobile(long l1, long l2, String str) {
+
+	}
+
+	public native void syncConfOpenVideoToMobile(long ty, String str);
+
+	
+	private void OnConfSyncCloseVideoToMobile(long ty, String str) {
+		
+	}
+
+
+	public void OnConfSyncOpenVideoToMobile(String str) {
+
+	}
 
 	// 鍒犻櫎浼氳
 	public native void destroyConf(long nConfID);
@@ -123,32 +149,35 @@ public class ConfRequest {
 	 * 
 	 * @param nConfID
 	 * @param nTime
-	 * @param szUserInfos <user accounttype='2' id='81003' nickname='1234' uetype='1'/>
+	 * @param szUserInfos
+	 *            <user accounttype='2' id='81003' nickname='1234' uetype='1'/>
 	 * 
 	 * @see ConfRequestCallback
 	 */
 	private void OnConfMemberEnter(long nConfID, long nTime, String szUserInfos) {
 		V2Log.d("-->OnConfMemberEnter " + nConfID + " " + nTime + " "
 				+ szUserInfos);
-		
+
 		String uid = XmlAttributeExtractor.extract(szUserInfos, "id='", "'");
-		String act = XmlAttributeExtractor.extract(szUserInfos, "accounttype='", "'");
-		String nickName = XmlAttributeExtractor.extract(szUserInfos, "nickname='", "'");
-		
+		String act = XmlAttributeExtractor.extract(szUserInfos,
+				"accounttype='", "'");
+		String nickName = XmlAttributeExtractor.extract(szUserInfos,
+				"nickname='", "'");
+
 		if (uid == null) {
 			V2Log.e("Can not dispatch request for member joined, cause by uid is null");
 			return;
 		}
-		
-		V2User v2user= new V2User();
+
+		V2User v2user = new V2User();
 		v2user.uid = Long.parseLong(uid);
 		if (act != null) {
 			v2user.type = Integer.parseInt(act);
 		}
 		v2user.name = nickName;
-		
-		for (int i =0; i < this.mCallbacks.size(); i++) {
-			WeakReference<ConfRequestCallback> we  = this.mCallbacks.get(i);
+
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
 			if (obj != null) {
 				ConfRequestCallback cb = (ConfRequestCallback) obj;
@@ -156,11 +185,6 @@ public class ConfRequest {
 			}
 		}
 	}
-	
-	
-	
-	
-	
 
 	/**
 	 * 
@@ -171,8 +195,8 @@ public class ConfRequest {
 	private void OnConfMemberExit(long nConfID, long nTime, long nUserID) {
 		V2Log.d("-->OnConfMemberExit " + nConfID + " " + nTime + " " + nUserID);
 
-		for (int i =0; i < this.mCallbacks.size(); i++) {
-			WeakReference<ConfRequestCallback> we  = this.mCallbacks.get(i);
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
 			if (obj != null) {
 				ConfRequestCallback cb = (ConfRequestCallback) obj;
@@ -183,14 +207,14 @@ public class ConfRequest {
 	}
 
 	/**
-	 * 204 user deleted group
-	 * 203 current user is kicked by chairman
+	 * 204 user deleted group 203 current user is kicked by chairman
+	 * 
 	 * @param nReason
 	 */
 	private void OnKickConf(int nReason) {
 		V2Log.d("-->OnKickConf " + nReason);
-		for (int i =0; i < this.mCallbacks.size(); i++) {
-			WeakReference<ConfRequestCallback> we  = this.mCallbacks.get(i);
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
 			if (obj != null) {
 				ConfRequestCallback cb = (ConfRequestCallback) obj;
@@ -201,10 +225,11 @@ public class ConfRequest {
 	}
 
 	private void OnGrantPermission(long userid, int type, int status) {
-		V2Log.d("OnGrantPermission " + userid + " type:" + type + " status:" + status);
+		V2Log.d("OnGrantPermission " + userid + " type:" + type + " status:"
+				+ status);
 
-		for (int i =0; i < this.mCallbacks.size(); i++) {
-			WeakReference<ConfRequestCallback> we  = this.mCallbacks.get(i);
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
 			if (obj != null) {
 				ConfRequestCallback cb = (ConfRequestCallback) obj;
@@ -212,36 +237,43 @@ public class ConfRequest {
 			}
 		}
 	}
-	
+
 	/**
-	 * User invite current user to join further conference, this function will be called
-	 * @param str {@code <conf createuserid='18' id='514000758190' starttime='1400162220' subject=' 就'/> }
-	 * @param creatorXml {@code <user id='18'/>}
+	 * User invite current user to join further conference, this function will
+	 * be called
+	 * 
+	 * @param str
+	 *            {@code <conf createuserid='18' id='514000758190' starttime='1400162220' subject=' 就'/> }
+	 * @param creatorXml
+	 *            {@code <user id='18'/>}
 	 */
 	private void OnConfNotify(String confXml, String creatorXml) {
 		if (confXml == null || confXml.isEmpty()) {
-			V2Log.e(" confXml is null " );
+			V2Log.e(" confXml is null ");
 			return;
 		}
-		V2Log.d("OnConfNotify " + confXml + " creatorXml:"+ creatorXml);
-		
+		V2Log.d("OnConfNotify " + confXml + " creatorXml:" + creatorXml);
+
 		V2Conference conf = new V2Conference();
 		String confId = XmlAttributeExtractor.extract(creatorXml, "id='", "'");
 		if (confId == null || confId.isEmpty()) {
 			V2Log.e("confId is null  can not pasrse");
 			return;
 		}
-		String startTime = XmlAttributeExtractor.extract(creatorXml, "starttime='", "'");
-		String subject = XmlAttributeExtractor.extract(creatorXml, "subject='", "'");
-		//String creator = XmlAttributeExtractor.extract(creatorXml, "createuserid='", "'");
+		String startTime = XmlAttributeExtractor.extract(creatorXml,
+				"starttime='", "'");
+		String subject = XmlAttributeExtractor.extract(creatorXml, "subject='",
+				"'");
+		// String creator = XmlAttributeExtractor.extract(creatorXml,
+		// "createuserid='", "'");
 		conf.cid = Long.parseLong(confId);
 		conf.name = subject;
-		if(!TextUtils.isEmpty(startTime))
-			conf.startTime = new Date(Long.parseLong(startTime)/1000);
-		else{
+		if (!TextUtils.isEmpty(startTime))
+			conf.startTime = new Date(Long.parseLong(startTime) / 1000);
+		else {
 			V2Log.e("OnConfNotify : get startTime is null...");
 		}
-		
+
 		V2User user = new V2User();
 		String uid = XmlAttributeExtractor.extract(creatorXml, "id='", "'");
 		if (uid == null || uid.isEmpty()) {
@@ -249,18 +281,18 @@ public class ConfRequest {
 			return;
 		}
 		user.uid = Long.parseLong(uid);
-		
-		conf.creator =user;
-		
-		for (int i =0; i < this.mCallbacks.size(); i++) {
-			WeakReference<ConfRequestCallback> we  = this.mCallbacks.get(i);
+
+		conf.creator = user;
+
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
 			if (obj != null) {
 				ConfRequestCallback cb = (ConfRequestCallback) obj;
 				cb.OnConfNotify(conf, user);
 			}
 		}
-		
+
 	}
 
 	public native void openVideoMixer(String szMediaID, int nLayout,
@@ -395,8 +427,6 @@ public class ConfRequest {
 		// MeetingRoom.mMeetingRoom.SendMessage(Constant.USER_LEAVE_CONF,
 		// bundle);
 	}
-
-
 
 	public void OnConfSyncOpenVideo(String str) {
 

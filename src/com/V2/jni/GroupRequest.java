@@ -33,16 +33,16 @@ public class GroupRequest {
 	public static synchronized GroupRequest getInstance() {
 		if (mGroupRequest == null) {
 			mGroupRequest = new GroupRequest();
-			if (!mGroupRequest.initialize(mGroupRequest)) {
-				throw new RuntimeException(
-						" can't not inintialize group request");
-			}
+//			if (!mGroupRequest.initialize(mGroupRequest)) {
+//				throw new RuntimeException(
+//						" can't not inintialize group request");
+//			}
 		}
 		return mGroupRequest;
 	}
 
 
-	public native boolean initialize(GroupRequest request);
+	//public native boolean initialize(GroupRequest request);
 
 	public native void unInitialize();
 

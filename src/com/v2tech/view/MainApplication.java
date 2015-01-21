@@ -12,19 +12,20 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 
 import com.V2.jni.AudioRequest;
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ConfRequest;
+import com.V2.jni.ConfigRequest;
 import com.V2.jni.FileRequest;
 import com.V2.jni.GroupRequest;
 import com.V2.jni.ImRequest;
 import com.V2.jni.NativeInitializer;
+import com.V2.jni.ServerRecordRequest;
+import com.V2.jni.VideoBCRequest;
 import com.V2.jni.VideoMixerRequest;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.WBRequest;
@@ -32,7 +33,6 @@ import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
-import com.v2tech.v2liveshow.R;
 
 public class MainApplication extends Application {
 
@@ -96,13 +96,18 @@ public class MainApplication extends Application {
 		ChatRequest.getInstance(getApplicationContext());
 		VideoMixerRequest.getInstance();
 		FileRequest.getInstance(getApplicationContext());
+		
+		VideoBCRequest.getInstance();//.Initialize(VideoBCRequest.getInstance());
+		
+		ServerRecordRequest.getInstance().initialize(ServerRecordRequest.getInstance());
 
 		// Start deamon service
 		getApplicationContext().startService(
 				new Intent(getApplicationContext(), JNIService.class));
 
 		initGlobalConfiguration();
-
+		
+		new ConfigRequest().setServerAddress("118.145.28.194", 5123);
 	}
 
 	/**

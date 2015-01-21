@@ -100,7 +100,8 @@ public class ImRequest {
 	 * 
 	 * @see #login(String, String, int, int, boolean)
 	 */
-	private void OnLogin(long nUserID, int nStatus, long serverTime, int nResult) {
+	private void OnLogin(long nUserID, int nStatus, long serverTime,
+			String str, int nResult) {
 		V2Log.d("OnLogin --> " + nUserID + ": " + "-:" + nStatus + ":"
 				+ nResult);
 		// GlobalConfig.TIME_SERVER_TIME = serverTime;
@@ -161,13 +162,13 @@ public class ImRequest {
 	private void OnUpdateBaseInfo(long nUserID, String updatexml) {
 		V2Log.d("ImRequest.OnUpdateBaseInfo==>" + "nUserID:" + nUserID + ","
 				+ "updatexml:" + updatexml);
-		V2User user = XmlAttributeExtractor.fromXml(nUserID , updatexml);
+		V2User user = XmlAttributeExtractor.fromXml(nUserID, updatexml);
 		if (user == null) {
-			V2Log.e("ImRequest OnUpdateBaseInfo --> Parsed the xml convert to a V2User Object failed... userID is : " +
-                    "" + nUserID + " and xml is : " + updatexml);
+			V2Log.e("ImRequest OnUpdateBaseInfo --> Parsed the xml convert to a V2User Object failed... userID is : "
+					+ "" + nUserID + " and xml is : " + updatexml);
 			return;
 		}
-		
+
 		for (int i = 0; i < mCallbacks.size(); i++) {
 			Object obj = mCallbacks.get(i).get();
 			if (obj != null) {
@@ -308,8 +309,6 @@ public class ImRequest {
 
 	}
 
-	
-
 	// 鏇存敼绯荤粺澶村儚
 	public native void changeSystemAvatar(String szAvatarName);
 
@@ -355,8 +354,9 @@ public class ImRequest {
 	 */
 	private void OnGetSearchMember(String xmlinfo) {
 		Log.e("ImRequest UI", "OnGetSearchMember:" + xmlinfo);
-		List<V2User> list = XmlAttributeExtractor.parseUserList(xmlinfo, "user");
-		for (int i = 0; i <this.mCallbacks.size(); i++) {
+		List<V2User> list = XmlAttributeExtractor
+				.parseUserList(xmlinfo, "user");
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
 			WeakReference<ImRequestCallback> wf = this.mCallbacks.get(i);
 			Object obj = wf.get();
 			if (obj != null) {
@@ -408,7 +408,6 @@ public class ImRequest {
 		Log.e("ImRequest UI", "OnUpdateDownloadEnd:" + error);
 	}
 
-
 	private void Oncrowdfile(long nCrowdId, String InfoXml) {
 		Log.e("ImRequest UI", "Oncrowdfile:" + nCrowdId);
 	}
@@ -436,7 +435,15 @@ public class ImRequest {
 	private boolean haslogin = false;
 
 	private void OnGetGroupsInfoEnd() {
-	
+
+	}
+
+	private void OnOfflineStart() {
+
+	}
+
+	private void OnOfflineEnd() {
+
 	}
 
 }
