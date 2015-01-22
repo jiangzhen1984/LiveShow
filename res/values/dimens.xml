@@ -1,0 +1,133 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="common_item_text_size_20">20sp</dimen>
+    <dimen name="common_item_text_size">18sp</dimen>
+    <dimen name="common_item_text_size_16">16sp</dimen>
+    <dimen name="common_item_text_size_small">10sp</dimen>
+    <dimen name="button_padding_horizontal">15dp</dimen>
+    <dimen name="button_padding_vertical">12dp</dimen>
+    <dimen name="button_gap_horizontal">10dp</dimen>
+    <dimen name="contact_detail_2_item_margin_left">5dp</dimen>
+    <dimen name="contact_detail_2_item_margin_right">5dp</dimen>
+
+    <dimen name="common_delete_icon_width">50dp</dimen>
+    <dimen name="common_delete_icon_height">50dp</dimen>
+    <dimen name="common_delete_icon_padding">8dp</dimen>
+    
+    <!-- login activity -->
+    <dimen name="login_box_text_size">16sp</dimen>
+    <dimen name="login_box_padding">10sp</dimen>
+
+    <!-- conversation view -->
+    <dimen name="conversation_view_margin">5dp</dimen>
+    <dimen name="conversation_view_notification_margin">7dp</dimen>
+    <dimen name="conversation_view_name_text_size">17sp</dimen>
+    <dimen name="conversation_view_title_margin">20dp</dimen>
+    <dimen name="conversation_view_text_max_width">100dp</dimen>
+
+    
+     <!-- contact group view -->
+     <dimen name="contacts_group_view_arrow_padding_left">5dp</dimen>
+     <dimen name="contacts_group_view_group_name_margin_right">5dp</dimen>
+     <dimen name="contacts_group_view_online_statist_margin_right">5dp</dimen>
+    <dimen name="contacts_group_view_text_max_width">100dp</dimen>
+    <dimen name="contacts_group_view_statist_max_width">90dp</dimen>
+
+    <!-- contact detail item margin -->
+    <dimen name="detail_detail_name_max_width">100dp</dimen>
+    <dimen name="detail_detail_item_margin_top">5dp</dimen>
+    <dimen name="detail_detail_item_margin_bottom">5dp</dimen>
+    <dimen name="detail_detail_signature_margin_left">16dp</dimen>
+    <dimen name="contact_detail_item_margin_left">5dp</dimen>
+    <dimen name="contact_detail_item_margin_right">5dp</dimen>
+
+    <!-- contact detail 2 item margin -->
+    <dimen name="detail_detail_2_item_margin_top">5dp</dimen>
+    <dimen name="detail_detail_2_item_margin_bottom">5dp</dimen>
+    <dimen name="detail_detail_2_name_max_width">90dp</dimen>
+    <dimen name="detail_detail_2_button_padding_vertical">5dp</dimen>
+    <dimen name="video_attendee_device_text_size">16sp</dimen>
+    <dimen name="video_attendee_device_text_max_width">60dp</dimen>
+    <dimen name="video_doc_bottom_button_padding">5dp</dimen>
+    <dimen name="conf_create_contacts_user_text_max_width">40dp</dimen>
+    <dimen name="conf_create_contacts_user_signature_max_width">60dp</dimen>
+    <dimen name="contact_detail_2_item_margin_horizontal">20dp</dimen>
+    <dimen name="contact_detail_2_item_margin_vertical">10dp</dimen>
+
+    <!-- activity contact message -->
+    <dimen name="activity_contact_message_title_max_width">150dp</dimen>
+    <dimen name="activity_contact_audio_button_text_size">18sp</dimen>
+
+    <!-- video msg layout -->
+    <dimen name="video_msg_chatting_send_button_font_size">13sp</dimen>
+
+    <!-- conf_create_contacts_use_layout -->
+    <dimen name="conf_create_contacts_use_layout_name_margin_left">10dp</dimen>
+    <dimen name="conf_create_contacts_use_layout_name_margin_right">10dp</dimen>
+    
+       <!-- about_activity -->
+    <dimen name="about_text_size">30sp</dimen>
+    <dimen name="about_version_text_size">20sp</dimen>
+    <dimen name="about_version_text_padding_left">9dp</dimen>
+    <dimen name="about_version_layout_margin_top">20dp</dimen>
+    
+    
+    <!-- in meeting layout -->
+    <dimen name="in_meeting_feature_menu_button_padding_vertical">10dp</dimen>
+    <dimen name="in_meeting_feature_menu_button_padding_horizontal">16dp</dimen>
+    <dimen name="in_meeting_local_video_layout_width">176dp</dimen>
+    <dimen name="in_meeting_local_video_layout_height">144dp</dimen>
+    <dimen name="in_meeting_tools_bar_margin_right">15dp</dimen>
+    
+    <!-- fragment conversation_waiting layout -->
+    <dimen name="fragment_conversation_waiting_title_text_size">25sp</dimen>
+     <dimen name="fragment_conversation_waiting_invitation_button_padding_vertical">15dp</dimen>
+    <dimen name="fragment_conversation_waiting_invitation_button_margin">20dp</dimen>
+    <dimen name="fragment_conversation_waiting_invitation_button_margin_hor">10dp</dimen>
+    <dimen name="fragment_conversation_waiting_invitation_button_margin_bottom">10dp</dimen>
+    <dimen name="fragment_conversation_waiting_button_text_size">25sp</dimen>
+     <dimen name="fragment_conversation_waiting_invitation_host_name_size">22sp</dimen>
+     <dimen name="fragment_conversation_waiting_video_invitation_host_name_size">16sp</dimen>
+    <dimen name="fragment_conversation_waiting_invitation_voice_avatar_margin_top">40dp</dimen>
+    <dimen name="fragment_conversation_waiting_host_invitation_button_margin_left">20dp</dimen>
+    <dimen name="fragment_conversation_waiting_host_invitation_button_margin_right">20dp</dimen>
+    
+        <!-- fragment conversation connected layout -->
+        <dimen name="fragment_conversation_connected_voice_gray_button_padding_vertical">20dp</dimen>
+    <dimen name="fragment_conversation_connected_gray_button_padding_vertical">10dp</dimen>
+    <dimen name="fragment_conversation_connected_gray_button_margin_hor">10dp</dimen>
+    <dimen name="fragment_conversation_connected_gray_button_margin_screen">10dp</dimen>
+    <dimen name="fragment_conversation_connected_button_text_size">14sp</dimen>
+    <dimen name="fragment_conversation_connected_button_text_size_1">14sp</dimen>
+    <dimen name="fragment_conversation_connected_title_text_margin_top">10dp</dimen>
+    <dimen name="fragment_conversation_connected_title_text_margin_left">10dp</dimen>
+    <dimen name="fragment_conversation_connected_title_text_text_size">16sp</dimen>
+     <dimen name="fragment_conversation_connected_local_video_layout_width">120dp</dimen>
+    <dimen name="fragment_conversation_connected_local_video_layout_height">176dp</dimen>
+    <dimen name="fragment_conversation_connected_local_surface_margin_bottom">10dp</dimen>
+    <dimen name="fragment_conversation_connected_local_surface_margin_right">5dp</dimen>
+    
+    
+    
+        <!-- message voice dialog layout -->
+    <dimen name="message_voice_dialog_width">230dp</dimen>
+    <dimen name="message_voice_dialog_height">180dp</dimen>
+    
+        <!-- message body view layout -->
+    <dimen name="messageBodyView_triangle_margin_top">12dp</dimen> <!-- 三角距内容气泡的上边界的距离 -->
+    <dimen name="message_body_view_item_bubble_space">-1.5dp</dimen>  <!-- 气泡间隙，三角与内容之间 -->
+	<dimen name="message_selected_pop_up_window">-6dp</dimen>
+	<dimen name="message_body_file_item_progress_layout_margin_right">300dp</dimen>
+	<dimen name="message_body_file_item_file_name_text_size">7sp</dimen>
+	<dimen name="message_body_failed_size">15dp</dimen>
+	 
+	   <!-- specific voice item activity  -->
+	<dimen name="specific_voice_message_margin_right">15dp</dimen>
+	<dimen name="specific_voice_message_margin_left">15dp</dimen>
+	
+	<!-- common_conversation_layout -->
+    <dimen name="common_conversation_layout_margin_top">15dp</dimen>
+</resources>

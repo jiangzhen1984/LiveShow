@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.vo.Live;
 
 public class LiveVideoWidget extends FrameLayout implements
@@ -128,26 +129,29 @@ public class LiveVideoWidget extends FrameLayout implements
 				}
 				if (mp == null) {
 					mp = new MediaPlayer();
-					try {
-						mp.setDataSource(live.getUrl());
-					} catch (Exception e) {
-						e.printStackTrace();
-						return;
-					}
 					mp.setDisplay(sur.getHolder());
-					try {
-						mp.prepare();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 					mp.setOnBufferingUpdateListener(this);
 					mp.setOnCompletionListener(this);
 					mp.setOnPreparedListener(this);
 				}
+				
+				try {
+					mp.setDataSource(live.getUrl());
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
+				}
+				try {
+					mp.prepare();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				mp.start();
 				break;
 			case STOPED:
 				if (mp != null) {
 					mp.stop();
+					mp.reset();
 				}
 				break;
 			case PAUSED:

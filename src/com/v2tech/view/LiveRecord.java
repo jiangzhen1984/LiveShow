@@ -66,7 +66,12 @@ public class LiveRecord extends Activity {
 					Message dm = obtainMessage(RECORDING);
 					this.sendMessageDelayed(dm, 300);
 				} else {
-					mCameraView.publishUrl = "rtmp://118.145.28.194/vod/"+VideoBCRequest.getInstance().url;
+					String uuid = null;
+					int index = VideoBCRequest.getInstance().url.indexOf("file=");
+					if (index != -1) {
+						uuid = VideoBCRequest.getInstance().url.substring(index + 5);
+					}
+					mCameraView.publishUrl = "rtmp://118.145.28.194/vod/"+uuid;
 					mCameraView.startPublish();
 				}
 				break;

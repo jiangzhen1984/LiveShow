@@ -12,44 +12,64 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.V2.jni.VideoBCRequest;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.cloud.BoundSearchInfo;
 import com.baidu.mapapi.cloud.CloudListener;
 import com.baidu.mapapi.cloud.CloudManager;
+import com.baidu.mapapi.cloud.CloudPoiInfo;
 import com.baidu.mapapi.cloud.CloudSearchResult;
 import com.baidu.mapapi.cloud.DetailSearchResult;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.model.LatLngBounds.Builder;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Live;
 import com.v2tech.widget.ArrowPopupWindow;
 import com.v2tech.widget.LiveVideoWidget;
 
 public class MainActivity extends Activity implements
 		LiveVideoWidget.DragListener, OnClickListener,
-		LiveVideoWidget.OnWidgetClickListener {
+		LiveVideoWidget.OnWidgetClickListener, 
+		OnGetGeoCoderResultListener {
 
 	private static final int SEARCH = 1;
+	private static final int PLAY_FIRST_LIVE = 2;
 
 	private FrameLayout mMainLayout;
+	private EditText mSearchEdit;
+	
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	LocationClient mLocClient;
-	private EditText mSearchEdit;
+	private GeoCoder mSearch;
+	
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 
 	private LiveVideoWidget lvw;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +116,11 @@ public class MainActivity extends Activity implements
 		mLocClient.start();
 
 		CloudManager.getInstance().init(mLocalCloudListener);
+		// 初始化搜索模块，注册事件监听
+		mSearch = GeoCoder.newInstance();
+		mSearch.setOnGetGeoCodeResultListener(this);
+		
+		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
 	}
 
 	private void initVideoLayout() {
@@ -137,6 +162,7 @@ public class MainActivity extends Activity implements
 		mMapView.onDestroy();
 
 		CloudManager.getInstance().destroy();
+		mSearch.destroy();
 	}
 
 	@Override
@@ -183,17 +209,44 @@ public class MainActivity extends Activity implements
 		arw.showAsDropDown(anchor);
 	}
 
+	private BDLocation mCacheLocation;
+
 	private void doSearch(String key) {
 		VideoBCRequest.getInstance().getNeiborhood(500);
-		// BoundSearchInfo info = new BoundSearchInfo();
-		// info.ak = "mI2rOQiS9o51DbmSknS0hDtq";
-		// info.geoTableId = 31869;
-		// info.q = key;
-		// info.bound = "116.401663,39.913961;116.406529,39.917396";
-		// CloudManager.getInstance().boundSearch(info);
+		//mSearch.geocode(new GeoCodeOption().city("北京").address(key));
+		LocalHandler.removeMessages(PLAY_FIRST_LIVE);
+		LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 1000);
+	}
+	
+	
+	
+	
+
+	@Override
+	public void onGetGeoCodeResult(GeoCodeResult result) {
+		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+			Toast.makeText(MainActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+					.show();
+			return;
+		}
+		mBaiduMap.clear();
+		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.icon_gcoding)));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
+				.getLocation()));
+		String strInfo = String.format("纬度：%f 经度：%f",
+				result.getLocation().latitude, result.getLocation().longitude);
+		Toast.makeText(MainActivity.this, strInfo, Toast.LENGTH_LONG).show();
 	}
 
-	private BDLocation mCacheLocation;
+	@Override
+	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
+		
+	}
+
+
+
 
 	public class MyLocationListenner implements BDLocationListener {
 
@@ -257,7 +310,7 @@ public class MainActivity extends Activity implements
 		public void afterTextChanged(Editable s) {
 			LocalHandler.removeMessages(SEARCH);
 			Message msg = Message.obtain(LocalHandler, SEARCH, s.toString());
-			LocalHandler.sendMessageDelayed(msg, 600);
+			LocalHandler.sendMessageDelayed(msg, 1000);
 		}
 
 	};
@@ -274,24 +327,30 @@ public class MainActivity extends Activity implements
 			if (result != null && result.poiList != null
 					&& result.poiList.size() > 0) {
 				mBaiduMap.clear();
-				// BitmapDescriptor bd =
-				// BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding);
-				// LatLng ll;
-				// LatLngBounds.Builder builder = new Builder();
-				// for (CloudPoiInfo info : result.poiList) {
-				// ll = new LatLng(info.latitude, info.longitude);
-				// OverlayOptions oo = new
-				// MarkerOptions().icon(bd).position(ll);
-				// mBaiduMap.addOverlay(oo);
-				// builder.include(ll);
-				// }
-				// LatLngBounds bounds = builder.build();
-				// MapStatusUpdate u =
-				// MapStatusUpdateFactory.newLatLngBounds(bounds);
-				// mBaiduMap.animateMapStatus(u);
+				BitmapDescriptor bd = BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding);
+				LatLng ll;
+				LatLngBounds.Builder builder = new Builder();
+				for (CloudPoiInfo info : result.poiList) {
+					ll = new LatLng(info.latitude, info.longitude);
+					OverlayOptions oo = new MarkerOptions().icon(bd).position(ll);
+					mBaiduMap.addOverlay(oo);
+					builder.include(ll);
+				}
+				LatLngBounds bounds = builder.build();
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds);
+				mBaiduMap.animateMapStatus(u);
 			}
 		}
 
+	};
+	
+	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
+
+		@Override
+		public boolean onMarkerClick(Marker marker) {
+			return false;
+		}
+		
 	};
 
 	private Handler LocalHandler = new Handler() {
@@ -305,6 +364,13 @@ public class MainActivity extends Activity implements
 					doSearch((String) msg.obj);
 				}
 				break;
+			case PLAY_FIRST_LIVE: 
+				if (VideoBCRequest.getInstance().lives.size() > 0) {
+					lvw.stop();
+					lvw.startLive(new Live(null, VideoBCRequest.getInstance().lives.get(0)[0]));
+				}
+				break;
+			
 			}
 		}
 

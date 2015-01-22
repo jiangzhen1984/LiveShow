@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="common_return_button_color">#057aff</color>
+     <color name="common_confirm_button_color">#057aff</color>
+    
+    <color name="common_black">#000000</color>
+    <color name="text_tab_selected">#007aff</color>
+    <color name="text_tab_unselected">#8c8c8c</color>
+    <color name="button_text_color">#007aff</color>
+    <color name="in_meeting_camera_setting_progress_bar">#c2c2c2</color>
+     <color name="line_color">#cdcdcf</color>
+     <color name="contact_detail_button_font_color">#057aff</color>
+     <color name="conf_create_button_color">#057aff</color>
+     <color name="conf_create_button_unclick_color">#8c8c8c</color>
+     <color name="common_item_text_color">#969799</color>
+     <color name="common_item_text_color_black">#444444</color>
+     <color name="common_item_text_color_red">#ff0000</color>
+     
+     <color name="activiy_contact_detail_title_color">#000000</color>
+     <color name="contacts_group_item_color">#444444</color>
+     <color name="activiy_contact_detail_item_color">#444444</color>
+     <color name="activiy_contact_detail_item_content_color">#444444</color>
+     <color name="activiy_contact_item_color">#444444</color>
+     <color name="activiy_contact_item_content_color">#444444</color>
+     
+     <!-- group create activity -->
+      <color name="activiy_group_create_edit_title">#444444</color>
+    
+     <color name="contacts_user_view_item_color">#444444</color>
+     
+     <color name="contacts_user_view_item_color_offline">#c2c2c2</color>
+
+     <color name="conversation_view_name_color">#444444</color>
+     <color name="conversation_view_text_color">#a2a2a2</color>
+     
+     <color name="conference_msg_content_color">#444444</color>
+     
+     <color name="invitation_attendee_layout_item_color">#444444</color>
+     
+     <color name="conf_create_contacts_user_view_item_color">#444444</color>
+     <color name="conf_create_contacts_user_view_item_color_offline">#c2c2c2</color>
+     
+     <color name="title_color">#000000</color>
+     
+     <color name="common_gray_color_c2">#c2c2c2</color>
+     
+     <color name="common_gray_color_c0">#c0c0c0</color>
+     <color name="common_gray_color_cd">#cdcdcf</color>
+     
+     <color name="common_white_color">#ffffff</color>
+     
+     <color name="video_attendee_chair_man_name_color">#019648</color>
+     <color name="video_attendee_name_color">#000000</color>
+     <color name="video_attendee_name_color_offline">#c2c2c2</color>
+     
+     
+     
+     <color name="login_activity_login_box_text_color">#acacac</color>
+     
+     <color name="attendee_select_bg">#bfe8ff</color>
+     
+     <color name="fragment_conversation_title_text_color">#ffffff</color>
+     <color name="fragment_conversation_connected_gray_text_color">#000000</color>
+     
+     <color name="fragment_conversation_connected_pressed_text_color">#0079fe</color>
+     
+      <color name="fragment_conversation_disable_text_color">#909090</color>
+      
+      <color name="conversation_selectfile_adapter_word">#000000</color>
+      
+      <color name="file_download_prgress_color">#c2c2c2</color>
+      <color name="conference_host_requesting_text_color">#ffd200</color>
+      <color name="conference_acquired_host_text_color">#007aff</color>
+      
+      
+</resources>
