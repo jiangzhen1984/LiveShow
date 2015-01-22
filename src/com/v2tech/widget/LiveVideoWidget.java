@@ -69,6 +69,8 @@ public class LiveVideoWidget extends FrameLayout implements
 				FrameLayout.LayoutParams.MATCH_PARENT));
 		//DisplayMetrics dm = new DisplayMetrics();
 		//((WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+		
+		this.addOnAttachStateChangeListener(attachStateChangeListener);
 	}
 	
 	
@@ -250,7 +252,23 @@ public class LiveVideoWidget extends FrameLayout implements
 
 
 
+   private OnAttachStateChangeListener attachStateChangeListener = new OnAttachStateChangeListener() {
 
+	@Override
+	public void onViewAttachedToWindow(View v) {
+		
+	}
+
+	@Override
+	public void onViewDetachedFromWindow(View v) {
+		if (lState == LocalState.PLAYING) {
+			doVideoRequest(LocalState.STOPED);
+		}
+		lState = LocalState.STOPED;
+	}
+	   
+	   
+   };
 
 
 

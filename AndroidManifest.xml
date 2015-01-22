@@ -99,6 +99,15 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        
+        
+         <activity
+            android:name="com.v2tech.view.LiveRecord"
+            android:label="@string/title_activity_main" 
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
 
         <service android:name="com.v2tech.view.JNIService" >
         </service>

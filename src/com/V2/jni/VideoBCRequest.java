@@ -13,28 +13,34 @@ public class VideoBCRequest {
 	public static VideoBCRequest getInstance() {
 		if (instance == null) {
 			instance = new VideoBCRequest();
+			instance.initialize(instance);
 		}
 		return instance;
 	}
 
-	//public native boolean Initialize(VideoBCRequest instance);
+	public native boolean initialize(VideoBCRequest instance);
 
-	public native void UnInitialize();
+	public native void unInitialize();
 
-	public native void StartLive();
+	public native void startLive();
 
-	public native void StopLive();
+	public native void stopLive();
 
-	public native void UpdateGpsRequest(String gpsxml);
+	public native void updateGpsRequest(String gpsxml);
 
-	public native void GetNeiborhood(int meters);
+	public native void getNeiborhood(int meters);
 
 	private void OnStartLive(long nUserID, String szUrl) {
-
+		V2Log.e(nUserID+"  "+szUrl);
+		url = szUrl;
 	}
+	
+	public static String url = null;
+	
 
 	void OnStopLive(long nUserID) {
 
+		url = null;
 	}
 
 	void OnGPSUpdated() {

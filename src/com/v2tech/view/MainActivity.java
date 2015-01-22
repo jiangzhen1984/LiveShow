@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+import com.V2.jni.VideoBCRequest;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -155,17 +156,10 @@ public class MainActivity extends Activity implements
 	@Override
 	public void stopDrag() {
 	}
-	
-	
-	
-	
-
-
-	
 
 	@Override
 	public void onWidgetClick(View view) {
-		//FIXME stop playing
+		// FIXME stop playing
 		Intent i = new Intent(this, VideoList.class);
 		startActivity(i);
 	}
@@ -190,13 +184,16 @@ public class MainActivity extends Activity implements
 	}
 
 	private void doSearch(String key) {
-		BoundSearchInfo info = new BoundSearchInfo();
-		info.ak = "mI2rOQiS9o51DbmSknS0hDtq";
-		info.geoTableId = 31869;
-		info.q = key;
-		info.bound = "116.401663,39.913961;116.406529,39.917396";
-		CloudManager.getInstance().boundSearch(info);
+		VideoBCRequest.getInstance().getNeiborhood(500);
+		// BoundSearchInfo info = new BoundSearchInfo();
+		// info.ak = "mI2rOQiS9o51DbmSknS0hDtq";
+		// info.geoTableId = 31869;
+		// info.q = key;
+		// info.bound = "116.401663,39.913961;116.406529,39.917396";
+		// CloudManager.getInstance().boundSearch(info);
 	}
+
+	private BDLocation mCacheLocation;
 
 	public class MyLocationListenner implements BDLocationListener {
 
@@ -220,6 +217,19 @@ public class MainActivity extends Activity implements
 						zoomLevel);
 				mBaiduMap.animateMapStatus(u);
 
+			}
+
+			
+			if (mCacheLocation == null
+					|| (mCacheLocation.getLongitude() != location
+							.getLongitude() || mCacheLocation.getLatitude() != location
+							.getLatitude())) {
+				mCacheLocation = location;
+				VideoBCRequest.getInstance().updateGpsRequest(
+						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
+								+ location.getLatitude() + "\"></gps>");
+				
+				VideoBCRequest.getInstance().getNeiborhood(500);
 			}
 		}
 

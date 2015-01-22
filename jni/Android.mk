@@ -57,6 +57,12 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
 include $(PREBUILT_SHARED_LIBRARY)
 
  
+include $(CLEAR_VARS)
+LOCAL_MODULE := encoder-prebuilt
+LOCAL_SRC_FILES := ../libs/libencoder.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+include $(PREBUILT_SHARED_LIBRARY)
+
 
 
 
