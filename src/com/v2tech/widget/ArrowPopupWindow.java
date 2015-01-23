@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.V2.jni.VideoBCRequest;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.LiveRecord;
 
@@ -20,6 +21,11 @@ public class ArrowPopupWindow extends PopupWindow {
 	private View itemLayout;
 	private View arrowUp;
 	private int width;
+	private ItemClickListener listener;
+	
+	public interface ItemClickListener {
+		public void onItemClicked(View v);
+	}
 
 	public ArrowPopupWindow(final Context context) {
 		super(context);
@@ -43,13 +49,24 @@ public class ArrowPopupWindow extends PopupWindow {
 
 					@Override
 					public void onClick(View v) {
-						Intent i = new Intent();
-						i.setClass(context, LiveRecord.class);
-						context.startActivity(i);
-						dismiss();
+						if (listener != null) {
+							listener.onItemClicked(v);
+						}
 					}
 
 				});
+		
+		itemLayout.findViewById(R.id.title_bar_item_neiborhood_video)
+		.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (listener != null) {
+					listener.onItemClicked(v);
+				}
+			}
+
+		});
 	}
 
 	private void init(View view) {
@@ -90,5 +107,15 @@ public class ArrowPopupWindow extends PopupWindow {
 		super.showAsDropDown(anchor);
 		// showAtLocation(anchor, Gravity.RIGHT | Gravity.TOP , 8 , pos[1]);
 	}
+
+	public ItemClickListener getListener() {
+		return listener;
+	}
+
+	public void setListener(ItemClickListener listener) {
+		this.listener = listener;
+	}
+	
+	
 
 }

@@ -2,4 +2,5 @@
 <resources>
 
      <string name="title_bar_share_live">分享视频</string>
+     <string name="title_bar_neiborhood_live">附近视频</string>
 </resources>

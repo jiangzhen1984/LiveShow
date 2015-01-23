@@ -1,9 +1,14 @@
 package com.v2tech.widget;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -13,6 +18,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.vo.Live;
@@ -20,15 +26,19 @@ import com.v2tech.vo.Live;
 public class LiveVideoWidget extends FrameLayout implements
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
 		MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnErrorListener {
-	
-	
+
 	public interface DragListener {
 		public void startDrag();
+
 		public void stopDrag();
 	}
-	
+
 	public interface OnWidgetClickListener {
 		public void onWidgetClick(View view);
+	}
+	
+	public interface MediaStateNotification{
+		public void onPlayStateNotificaiton(MediaState state);
 	}
 
 	private static final int VIDEO_REQUEST = 1;
@@ -38,11 +48,15 @@ public class LiveVideoWidget extends FrameLayout implements
 	private LocalState lState = LocalState.NONE;
 
 	private SurfaceView sur;
-	
+
 	private DragListener dragListener;
-	
+
 	private OnWidgetClickListener clickListener;
 	
+	private MediaStateNotification mediaStateNotification;
+
+	private ProgressBar progressBar;
+
 	private int screenWith;
 	private int screenHeight;
 
@@ -63,19 +77,14 @@ public class LiveVideoWidget extends FrameLayout implements
 
 	private void initInernalLayout() {
 		sur = new SurfaceView(this.getContext());
-		sur.setZOrderOnTop(true);
+		sur.setZOrderMediaOverlay(true);
 		sur.getHolder().addCallback(new LocalCallback());
 		this.addView(sur, new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT,
 				FrameLayout.LayoutParams.MATCH_PARENT));
-		//DisplayMetrics dm = new DisplayMetrics();
-		//((WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
 		
 		this.addOnAttachStateChangeListener(attachStateChangeListener);
 	}
-	
-	
-	
 
 	@Override
 	protected void onAttachedToWindow() {
@@ -114,8 +123,6 @@ public class LiveVideoWidget extends FrameLayout implements
 		Message.obtain(localHandler, VIDEO_REQUEST, LocalState.STOPED)
 				.sendToTarget();
 	}
-	
-	
 
 	private void doVideoRequest(LocalState newSt) {
 		synchronized (lState) {
@@ -127,31 +134,41 @@ public class LiveVideoWidget extends FrameLayout implements
 				if (live == null) {
 					return;
 				}
+				updateProgressBar(true);
 				if (mp == null) {
 					mp = new MediaPlayer();
 					mp.setDisplay(sur.getHolder());
 					mp.setOnBufferingUpdateListener(this);
 					mp.setOnCompletionListener(this);
 					mp.setOnPreparedListener(this);
+					mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					mp.setScreenOnWhilePlaying(true);
 				}
-				
+
 				try {
-					mp.setDataSource(live.getUrl());
+					mp.setDataSource(getContext(), Uri.parse(live.getUrl()), null);
+					mp.prepareAsync();
 				} catch (Exception e) {
 					e.printStackTrace();
+					updateProgressBar(false);
+					if (mediaStateNotification != null) {
+						mediaStateNotification.onPlayStateNotificaiton(MediaState.ERROR);
+					}
+					mp.release();
+					mp = null;
+					lState = LocalState.STOPED;
 					return;
 				}
-				try {
-					mp.prepare();
-				} catch (Exception e) {
-					e.printStackTrace();
+				
+				if (mediaStateNotification != null) {
+					mediaStateNotification.onPlayStateNotificaiton(MediaState.PREPARED);
 				}
-				mp.start();
 				break;
 			case STOPED:
 				if (mp != null) {
 					mp.stop();
-					mp.reset();
+					mp.release();
+					mp = null;
 				}
 				break;
 			case PAUSED:
@@ -165,8 +182,40 @@ public class LiveVideoWidget extends FrameLayout implements
 		}
 	}
 
+	private void updateProgressBar(boolean visible) {
+		if (progressBar == null) {
+			progressBar = new ProgressBar(getContext(), null,
+					android.R.attr.progressBarStyleSmall);
+			FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
+					FrameLayout.LayoutParams.WRAP_CONTENT,
+					FrameLayout.LayoutParams.WRAP_CONTENT);
+			progressBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+			int width,height;
+			if (this.getWidth() == 0) {
+				this.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
+				width = this.getMeasuredWidth();
+				height = this.getMeasuredHeight();
+			} else {
+				width = this.getWidth();
+				height = this.getHeight();
+			}
+			fl.leftMargin = (width - progressBar.getMeasuredWidth()) / 2;
+			fl.topMargin = (height - progressBar.getMeasuredHeight()) / 2;
+			this.addView(progressBar, fl);
+			progressBar.bringToFront();
+			
+		}
+		progressBar.setVisibility(visible?View.VISIBLE:View.GONE);
+		
+	}
+
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
+		V2Log.e("Play  error : " + what +"   extra:"+extra);
+		if (mediaStateNotification != null) {
+			mediaStateNotification.onPlayStateNotificaiton(MediaState.ERROR);
+		}
+		doVideoRequest(LocalState.STOPED);
 		return false;
 	}
 
@@ -177,32 +226,45 @@ public class LiveVideoWidget extends FrameLayout implements
 
 	@Override
 	public void onPrepared(MediaPlayer mp) {
-
+		updateProgressBar(false);
+		mp.start();
+		if (mediaStateNotification != null) {
+			mediaStateNotification.onPlayStateNotificaiton(MediaState.PLAYING);
+		}
 	}
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-
+		lState = LocalState.STOPED;
+		mp.release();
+		mp = null;
+		Canvas can = sur.getHolder().lockCanvas();
+		Bitmap blackframe = Bitmap.createBitmap(can.getWidth(),
+				can.getHeight(), Bitmap.Config.ARGB_4444);
+		can.drawBitmap(blackframe, 0, 0, new Paint());
+		sur.getHolder().unlockCanvasAndPost(can);
+		blackframe.recycle();
+		if (mediaStateNotification != null) {
+			mediaStateNotification.onPlayStateNotificaiton(MediaState.END);
+		}
+		updateProgressBar(false);
 	}
-	
-	
-	
-	
-
 
 	public void setDragListener(DragListener dragListener) {
 		this.dragListener = dragListener;
 	}
 
-
-
 	public void setOnWidgetClickListener(OnWidgetClickListener clickListener) {
 		this.clickListener = clickListener;
 	}
+	
+	
+	
 
-
-
-
+	public void setMediaStateNotification(
+			MediaStateNotification mediaStateNotification) {
+		this.mediaStateNotification = mediaStateNotification;
+	}
 
 
 
@@ -210,80 +272,82 @@ public class LiveVideoWidget extends FrameLayout implements
 	boolean startDrag = false;
 	int lastX;
 	int lastY;
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (screenWith == 0 || screenHeight == 0) {
-			screenWith = ((View)this.getParent()).getWidth();
-			screenHeight = ((View)this.getParent()).getHeight();
+			screenWith = ((View) this.getParent()).getWidth();
+			screenHeight = ((View) this.getParent()).getHeight();
 		}
 		int action = event.getAction();
-		LayoutParams  lp = (FrameLayout.LayoutParams)this.getLayoutParams();
-		switch(action) {
+		LayoutParams lp = (FrameLayout.LayoutParams) this.getLayoutParams();
+		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			lastX = (int)event.getX();
-			lastY = (int)event.getY();
+			lastX = (int) event.getX();
+			lastY = (int) event.getY();
 			if (dragListener != null) {
 				dragListener.startDrag();
 			}
 			break;
-		case  MotionEvent.ACTION_MOVE:
+		case MotionEvent.ACTION_MOVE:
 			startDrag = true;
-			int offsetX =((int)event.getX() - lastX);
-			int offsetY = ((int)event.getY() - lastY);
-			if (lp.leftMargin + offsetX > 0 && lp.leftMargin + offsetX  + this.getWidth() < screenWith) {
+			int offsetX = ((int) event.getX() - lastX);
+			int offsetY = ((int) event.getY() - lastY);
+			if (lp.leftMargin + offsetX > 0
+					&& lp.leftMargin + offsetX + this.getWidth() < screenWith) {
 				lp.leftMargin += offsetX;
 			}
-			if (lp.topMargin + offsetY > 0 && lp.topMargin + offsetY + this.getHeight() < screenHeight) {
+			if (lp.topMargin + offsetY > 0
+					&& lp.topMargin + offsetY + this.getHeight() < screenHeight) {
 				lp.topMargin += offsetY;
 			}
-			((ViewGroup)this.getParent()).updateViewLayout(this, lp);
+			((ViewGroup) this.getParent()).updateViewLayout(this, lp);
 			break;
-		case  MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_UP:
 			lastX = 0;
 			lastY = 0;
 			if (dragListener != null) {
 				dragListener.stopDrag();
 			}
 			startDrag = false;
-			if (clickListener != null && event.getEventTime() - event.getDownTime() < 200) {
+			if (clickListener != null
+					&& event.getEventTime() - event.getDownTime() < 200) {
 				clickListener.onWidgetClick(this);
 			}
 			break;
 		}
-		
+
 		return true;
 	}
 
+	private OnAttachStateChangeListener attachStateChangeListener = new OnAttachStateChangeListener() {
 
+		@Override
+		public void onViewAttachedToWindow(View v) {
 
-   private OnAttachStateChangeListener attachStateChangeListener = new OnAttachStateChangeListener() {
-
-	@Override
-	public void onViewAttachedToWindow(View v) {
-		
-	}
-
-	@Override
-	public void onViewDetachedFromWindow(View v) {
-		if (lState == LocalState.PLAYING) {
-			doVideoRequest(LocalState.STOPED);
 		}
-		lState = LocalState.STOPED;
-	}
-	   
-	   
-   };
 
+		@Override
+		public void onViewDetachedFromWindow(View v) {
+			if (lState == LocalState.PLAYING) {
+				doVideoRequest(LocalState.STOPED);
+			}
+			lState = LocalState.STOPED;
+		}
 
-
+	};
 
 	class LocalCallback implements SurfaceHolder.Callback {
 
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
 			Canvas can = holder.lockCanvas();
-			can.drawColor(Color.BLACK);
+			Bitmap tmp = Bitmap.createBitmap(can.getWidth(), can.getHeight(), Bitmap.Config.ARGB_4444);
+			Canvas c = new Canvas(tmp);
+			c.drawColor(Color.BLACK);
+			can.drawBitmap(tmp, 0, 0, new Paint());
 			holder.unlockCanvasAndPost(can);
+			tmp.recycle();
 			Message.obtain(localHandler, VIDEO_REQUEST, LocalState.PLAYING)
 					.sendToTarget();
 		}
@@ -318,5 +382,9 @@ public class LiveVideoWidget extends FrameLayout implements
 
 	enum LocalState {
 		NONE, PLAYING, LOADING, PAUSED, STOPED,
+	}
+	
+	public enum MediaState {
+		END,PLAYING,PREPARED,STOPPED,ERROR;
 	}
 }

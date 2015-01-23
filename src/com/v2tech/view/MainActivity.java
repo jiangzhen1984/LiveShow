@@ -1,5 +1,8 @@
 package com.v2tech.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,28 +51,30 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.ArrowPopupWindow;
 import com.v2tech.widget.LiveVideoWidget;
+import com.v2tech.widget.LiveVideoWidget.MediaState;
 
 public class MainActivity extends Activity implements
 		LiveVideoWidget.DragListener, OnClickListener,
-		LiveVideoWidget.OnWidgetClickListener, 
-		OnGetGeoCoderResultListener {
+		LiveVideoWidget.OnWidgetClickListener, OnGetGeoCoderResultListener {
 
 	private static final int SEARCH = 1;
 	private static final int PLAY_FIRST_LIVE = 2;
+	private static final int PLAY_LIVE = 3;
+	private static final int INTERVAL_GET_NEIBERHOOD = 4;
+	private static final int UPDATE_LIVE_MARK = 5;
 
 	private FrameLayout mMainLayout;
 	private EditText mSearchEdit;
-	
+
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	LocationClient mLocClient;
 	private GeoCoder mSearch;
-	
+
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 
 	private LiveVideoWidget lvw;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +124,7 @@ public class MainActivity extends Activity implements
 		// 初始化搜索模块，注册事件监听
 		mSearch = GeoCoder.newInstance();
 		mSearch.setOnGetGeoCodeResultListener(this);
-		
+
 		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
 	}
 
@@ -133,8 +138,10 @@ public class MainActivity extends Activity implements
 		fl.leftMargin = dis.widthPixels - fl.width - 10;
 		fl.topMargin = 10;
 		mMainLayout.addView(lvw, fl);
+		lvw.bringToFront();
 		lvw.setDragListener(this);
 		lvw.setOnWidgetClickListener(this);
+		lvw.setMediaStateNotification(mediaStateNotificaiton);
 	}
 
 	@Override
@@ -205,6 +212,28 @@ public class MainActivity extends Activity implements
 	private void showPlusPopupWindow(View anchor) {
 		if (arw == null) {
 			arw = new ArrowPopupWindow(this);
+			arw.setListener(new ArrowPopupWindow.ItemClickListener() {
+
+				@Override
+				public void onItemClicked(View v) {
+					int id = v.getId();
+					switch (id) {
+					case R.id.title_bar_item_share_video:
+						Intent i = new Intent();
+						i.setClass(MainActivity.this, LiveRecord.class);
+						MainActivity.this.startActivity(i);
+						arw.dismiss();
+						break;
+					case R.id.title_bar_item_neiborhood_video:
+						VideoBCRequest.getInstance().getNeiborhood(1000);
+						arw.dismiss();
+						LocalHandler.removeMessages(PLAY_FIRST_LIVE);
+						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
+								1000);
+						break;
+					}
+				}
+			});
 		}
 		arw.showAsDropDown(anchor);
 	}
@@ -212,15 +241,13 @@ public class MainActivity extends Activity implements
 	private BDLocation mCacheLocation;
 
 	private void doSearch(String key) {
-		VideoBCRequest.getInstance().getNeiborhood(500);
-		//mSearch.geocode(new GeoCodeOption().city("北京").address(key));
-		LocalHandler.removeMessages(PLAY_FIRST_LIVE);
-		LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 1000);
+		Toast.makeText(MainActivity.this, "暂不支持位置搜索， 只支持附近的人",
+				Toast.LENGTH_LONG).show();
+		// VideoBCRequest.getInstance().getNeiborhood(1000);
+		// mSearch.geocode(new GeoCodeOption().city("北京").address(key));
+		// LocalHandler.removeMessages(PLAY_FIRST_LIVE);
+		// LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 1000);
 	}
-	
-	
-	
-	
 
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
@@ -229,10 +256,6 @@ public class MainActivity extends Activity implements
 					.show();
 			return;
 		}
-		mBaiduMap.clear();
-		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.icon_gcoding)));
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
 				.getLocation()));
 		String strInfo = String.format("纬度：%f 经度：%f",
@@ -242,11 +265,8 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-		
+
 	}
-
-
-
 
 	public class MyLocationListenner implements BDLocationListener {
 
@@ -272,7 +292,6 @@ public class MainActivity extends Activity implements
 
 			}
 
-			
 			if (mCacheLocation == null
 					|| (mCacheLocation.getLongitude() != location
 							.getLongitude() || mCacheLocation.getLatitude() != location
@@ -281,8 +300,8 @@ public class MainActivity extends Activity implements
 				VideoBCRequest.getInstance().updateGpsRequest(
 						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
 								+ location.getLatitude() + "\"></gps>");
-				
-				VideoBCRequest.getInstance().getNeiborhood(500);
+
+				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 1000);
 			}
 		}
 
@@ -327,30 +346,64 @@ public class MainActivity extends Activity implements
 			if (result != null && result.poiList != null
 					&& result.poiList.size() > 0) {
 				mBaiduMap.clear();
-				BitmapDescriptor bd = BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding);
+				BitmapDescriptor bd = BitmapDescriptorFactory
+						.fromResource(R.drawable.icon_gcoding);
 				LatLng ll;
 				LatLngBounds.Builder builder = new Builder();
 				for (CloudPoiInfo info : result.poiList) {
 					ll = new LatLng(info.latitude, info.longitude);
-					OverlayOptions oo = new MarkerOptions().icon(bd).position(ll);
+					OverlayOptions oo = new MarkerOptions().icon(bd).position(
+							ll);
 					mBaiduMap.addOverlay(oo);
 					builder.include(ll);
 				}
 				LatLngBounds bounds = builder.build();
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds);
+				MapStatusUpdate u = MapStatusUpdateFactory
+						.newLatLngBounds(bounds);
 				mBaiduMap.animateMapStatus(u);
 			}
 		}
 
 	};
-	
+
+	private void updateLiveMarkOnMap(List<Live> list) {
+		mBaiduMap.clear();
+		BitmapDescriptor bd = BitmapDescriptorFactory
+				.fromResource(R.drawable.icon_gcoding);
+		for (Live l : list) {
+			LatLng ll = new LatLng(l.getLat(), l.getLan());
+			Bundle bundle = new Bundle();
+			bundle.putString("url", l.getUrl());
+			OverlayOptions oo = new MarkerOptions().icon(bd).position(ll).extraInfo(bundle);
+			mBaiduMap.addOverlay(oo);
+		}
+	}
+
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
 
 		@Override
 		public boolean onMarkerClick(Marker marker) {
-			return false;
+			String url = (String) marker.getExtraInfo().get("url");
+			Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
+					.sendToTarget();
+			return true;
 		}
+
+	};
+	
+	
+	private LiveVideoWidget.MediaStateNotification mediaStateNotificaiton = new LiveVideoWidget.MediaStateNotification() {
 		
+		@Override
+		public void onPlayStateNotificaiton(MediaState state) {
+			if (state == MediaState.ERROR) {
+				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT).show();
+			} else if (state == MediaState.PREPARED || state == MediaState.PLAYING) {
+				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT).show();
+			}else if (state == MediaState.END) {
+				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT).show();
+			}
+		}
 	};
 
 	private Handler LocalHandler = new Handler() {
@@ -364,13 +417,36 @@ public class MainActivity extends Activity implements
 					doSearch((String) msg.obj);
 				}
 				break;
-			case PLAY_FIRST_LIVE: 
+			case PLAY_FIRST_LIVE:
 				if (VideoBCRequest.getInstance().lives.size() > 0) {
 					lvw.stop();
-					lvw.startLive(new Live(null, VideoBCRequest.getInstance().lives.get(0)[0]));
+					lvw.startLive(new Live(null,
+							VideoBCRequest.getInstance().lives.get(0)[0]));
+				} else {
+					Toast.makeText(MainActivity.this, "抱歉，未能找到结果",
+							Toast.LENGTH_SHORT).show();
 				}
 				break;
-			
+			case PLAY_LIVE:
+				lvw.stop();
+				lvw.startLive((Live) msg.obj);
+				break;
+			case INTERVAL_GET_NEIBERHOOD:
+				VideoBCRequest.getInstance().getNeiborhood(1000);
+				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 10000);
+				LocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+				break;
+			case UPDATE_LIVE_MARK:
+				List<String[]> liveList = VideoBCRequest.getInstance().lives;
+				List<Live> lList = new ArrayList<Live>();
+				for (String[] str : liveList) {
+					Live lv = new Live(null, str[0]);
+					lv.setLat(Double.parseDouble(str[1]));
+					lv.setLan(Double.parseDouble(str[2]));
+					lList.add(lv);
+				}
+				updateLiveMarkOnMap(lList);
+				break;
 			}
 		}
 

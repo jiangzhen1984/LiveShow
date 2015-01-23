@@ -43,11 +43,17 @@ public class LiveRecord extends Activity {
 					VideoBCRequest.getInstance().startLive();
 					mLocalHandler.sendEmptyMessage(RECORDING);
 					mRecordButton.setText(R.string.live_video_stop_recording);
+					getWindow()
+					.addFlags(
+							android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				} else if (mState == LocalState.RECORDING) {
 					mState = LocalState.STOPPED;
 					mCameraView.stopPublish();
 					VideoBCRequest.getInstance().stopLive();
 					mRecordButton.setText(R.string.live_video_start_record);
+					getWindow()
+					.clearFlags(
+							android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				}
 			}
 			
@@ -82,6 +88,22 @@ public class LiveRecord extends Activity {
 
 	
 	
+	
+	
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		mState = LocalState.STOPPED;
+		mCameraView.stopPublish();
+		VideoBCRequest.getInstance().stopLive();
+		mRecordButton.setText(R.string.live_video_start_record);
+		getWindow()
+		.clearFlags(
+				android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	}
+
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

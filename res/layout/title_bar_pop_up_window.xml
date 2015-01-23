@@ -28,6 +28,17 @@
             android:paddingRight="@dimen/title_bar_item_hori_padding"
             android:paddingTop="@dimen/title_bar_item_veri_padding"
             android:paddingBottom="@dimen/title_bar_item_veri_padding" />
+        
+        
+         <TextView
+            android:id="@+id/title_bar_item_neiborhood_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_bar_neiborhood_live"
+            android:paddingLeft="@dimen/title_bar_item_hori_padding"
+            android:paddingRight="@dimen/title_bar_item_hori_padding"
+            android:paddingTop="@dimen/title_bar_item_veri_padding"
+            android:paddingBottom="@dimen/title_bar_item_veri_padding" />
     </LinearLayout>
 
 </RelativeLayout>
