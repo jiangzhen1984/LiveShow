@@ -4,6 +4,6 @@
     <string name="app_name">点播</string>
     <string name="title_activity_main">点播</string>
     
-     <string name="live_video_start_record">开始录制</string>
-     <string name="live_video_stop_recording">停止录制</string>
+     <string name="live_video_start_record">开始共享</string>
+     <string name="live_video_stop_recording">停止共享</string>
 </resources>

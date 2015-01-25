@@ -43,6 +43,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
@@ -73,6 +74,7 @@ public class MainActivity extends Activity implements
 
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
+	private boolean isSuspended;
 
 	private LiveVideoWidget lvw;
 
@@ -142,6 +144,15 @@ public class MainActivity extends Activity implements
 		lvw.setDragListener(this);
 		lvw.setOnWidgetClickListener(this);
 		lvw.setMediaStateNotification(mediaStateNotificaiton);
+		
+	}
+	
+	
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		isSuspended = false;
 	}
 
 	@Override
@@ -156,6 +167,15 @@ public class MainActivity extends Activity implements
 		super.onResume();
 		// activity 恢复时同时恢复地图控件
 		mMapView.onResume();
+	}
+
+	
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		isSuspended = true;
+		lvw.stop();
 	}
 
 	@Override
@@ -190,11 +210,26 @@ public class MainActivity extends Activity implements
 	public void stopDrag() {
 	}
 
+	FrameLayout.LayoutParams originFl;
+	
 	@Override
 	public void onWidgetClick(View view) {
-		// FIXME stop playing
-		Intent i = new Intent(this, VideoList.class);
-		startActivity(i);
+//		// FIXME stop playing
+//		Intent i = new Intent(this, VideoList.class);
+//		startActivity(i);
+		
+		
+		FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams)lvw.getLayoutParams();
+		if (fl.width == FrameLayout.LayoutParams.MATCH_PARENT) {
+			lvw.setLayoutParams(originFl);
+		} else {
+			originFl = fl;
+			lvw.setLayoutParams(new FrameLayout.LayoutParams(
+					FrameLayout.LayoutParams.MATCH_PARENT,
+					FrameLayout.LayoutParams.MATCH_PARENT));
+		}
+		
+		lvw.requestLayout();
 	}
 
 	@Override
@@ -225,7 +260,14 @@ public class MainActivity extends Activity implements
 						arw.dismiss();
 						break;
 					case R.id.title_bar_item_neiborhood_video:
-						VideoBCRequest.getInstance().getNeiborhood(1000);
+						//VideoBCRequest.getInstance().getNeiborhood(1000);
+						mBaiduMap.setMapStatus(MapStatusUpdateFactory
+								.newLatLng(new LatLng(mBaiduMap
+										.getLocationData().latitude, mBaiduMap
+										.getLocationData().longitude)));
+						lat = mBaiduMap.getLocationData().latitude;
+						lan = mBaiduMap.getLocationData().longitude;
+						
 						arw.dismiss();
 						LocalHandler.removeMessages(PLAY_FIRST_LIVE);
 						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
@@ -241,26 +283,23 @@ public class MainActivity extends Activity implements
 	private BDLocation mCacheLocation;
 
 	private void doSearch(String key) {
-		Toast.makeText(MainActivity.this, "暂不支持位置搜索， 只支持附近的人",
-				Toast.LENGTH_LONG).show();
-		// VideoBCRequest.getInstance().getNeiborhood(1000);
-		// mSearch.geocode(new GeoCodeOption().city("北京").address(key));
-		// LocalHandler.removeMessages(PLAY_FIRST_LIVE);
-		// LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 1000);
+		mSearch.geocode(new GeoCodeOption().city("北京").address(key));
 	}
 
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(MainActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+			Toast.makeText(MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
 				.getLocation()));
-		String strInfo = String.format("纬度：%f 经度：%f",
-				result.getLocation().latitude, result.getLocation().longitude);
-		Toast.makeText(MainActivity.this, strInfo, Toast.LENGTH_LONG).show();
+			
+		lat = result
+				.getLocation().latitude;
+		lan = result
+				.getLocation().longitude;
 	}
 
 	@Override
@@ -268,6 +307,9 @@ public class MainActivity extends Activity implements
 
 	}
 
+	
+	private double lat;
+	private double lan;
 	public class MyLocationListenner implements BDLocationListener {
 
 		@Override
@@ -301,6 +343,8 @@ public class MainActivity extends Activity implements
 						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
 								+ location.getLatitude() + "\"></gps>");
 
+				lat = location.getLatitude();
+				lan = location.getLongitude();
 				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 1000);
 			}
 		}
@@ -432,11 +476,18 @@ public class MainActivity extends Activity implements
 				lvw.startLive((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
-				VideoBCRequest.getInstance().getNeiborhood(1000);
-				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 10000);
-				LocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+				//VideoBCRequest.getInstance().getNeiborhood(1000);
+				VideoBCRequest.getInstance().getNeiborhood_region("<gps lon=\"" + lan + "\" lat=\""
+						+ lat + "\" distance=\"1000\" ></gps>");
+				if (!isSuspended) {
+					LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 10000);
+					LocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+				}
 				break;
 			case UPDATE_LIVE_MARK:
+				if (isSuspended) {
+					break;
+				}
 				List<String[]> liveList = VideoBCRequest.getInstance().lives;
 				List<Live> lList = new ArrayList<Live>();
 				for (String[] str : liveList) {

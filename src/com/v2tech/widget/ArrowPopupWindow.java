@@ -2,7 +2,6 @@ package com.v2tech.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.DisplayMetrics;
@@ -12,9 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import com.V2.jni.VideoBCRequest;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.view.LiveRecord;
 
 public class ArrowPopupWindow extends PopupWindow {
 
@@ -33,7 +30,7 @@ public class ArrowPopupWindow extends PopupWindow {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.title_bar_pop_up_window, null);
 
-		itemLayout = layout.findViewById(R.id.common_pop_window_container);
+		itemLayout = layout.findViewById(R.id.common_pop_window_container_root);
 
 		arrowUp = layout.findViewById(R.id.common_pop_up_arrow_up);
 
@@ -41,7 +38,10 @@ public class ArrowPopupWindow extends PopupWindow {
 		((Activity) context).getWindowManager().getDefaultDisplay()
 				.getMetrics(dm);
 		width = dm.widthPixels;
-
+		itemLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+		this.setWidth(itemLayout.getMeasuredWidth());
+		this.setHeight(itemLayout.getMeasuredHeight());
+		
 		init(layout);
 
 		itemLayout.findViewById(R.id.title_bar_item_share_video)
@@ -81,9 +81,6 @@ public class ArrowPopupWindow extends PopupWindow {
 		this.setFocusable(true);
 		this.setTouchable(true);
 		this.setOutsideTouchable(true);
-		view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-		this.setWidth(view.getMeasuredWidth());
-		this.setHeight(view.getMeasuredHeight());
 		this.setContentView(view);
 
 		arrowUp.measure(View.MeasureSpec.UNSPECIFIED,

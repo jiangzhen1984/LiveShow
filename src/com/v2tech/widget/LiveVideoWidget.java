@@ -1,6 +1,5 @@
 package com.v2tech.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -36,12 +35,13 @@ public class LiveVideoWidget extends FrameLayout implements
 	public interface OnWidgetClickListener {
 		public void onWidgetClick(View view);
 	}
-	
-	public interface MediaStateNotification{
+
+	public interface MediaStateNotification {
 		public void onPlayStateNotificaiton(MediaState state);
 	}
 
 	private static final int VIDEO_REQUEST = 1;
+	private static final int DRAW_END_FRAME = 2;
 
 	private Live live;
 	private MediaPlayer mp;
@@ -52,7 +52,7 @@ public class LiveVideoWidget extends FrameLayout implements
 	private DragListener dragListener;
 
 	private OnWidgetClickListener clickListener;
-	
+
 	private MediaStateNotification mediaStateNotification;
 
 	private ProgressBar progressBar;
@@ -82,7 +82,7 @@ public class LiveVideoWidget extends FrameLayout implements
 		this.addView(sur, new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT,
 				FrameLayout.LayoutParams.MATCH_PARENT));
-		
+
 		this.addOnAttachStateChangeListener(attachStateChangeListener);
 	}
 
@@ -124,6 +124,8 @@ public class LiveVideoWidget extends FrameLayout implements
 				.sendToTarget();
 	}
 
+	int sessionID;
+
 	private void doVideoRequest(LocalState newSt) {
 		synchronized (lState) {
 			if (lState == newSt) {
@@ -137,31 +139,40 @@ public class LiveVideoWidget extends FrameLayout implements
 				updateProgressBar(true);
 				if (mp == null) {
 					mp = new MediaPlayer();
+					if (sessionID != 0) {
+						mp.setAudioSessionId(sessionID);
+					} else {
+						sessionID = mp.getAudioSessionId();
+					}
 					mp.setDisplay(sur.getHolder());
 					mp.setOnBufferingUpdateListener(this);
 					mp.setOnCompletionListener(this);
 					mp.setOnPreparedListener(this);
 					mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					mp.setScreenOnWhilePlaying(true);
+					mp.reset();
 				}
 
 				try {
-					mp.setDataSource(getContext(), Uri.parse(live.getUrl()), null);
+					mp.setDataSource(getContext(), Uri.parse(live.getUrl()),
+							null);
 					mp.prepareAsync();
 				} catch (Exception e) {
 					e.printStackTrace();
 					updateProgressBar(false);
 					if (mediaStateNotification != null) {
-						mediaStateNotification.onPlayStateNotificaiton(MediaState.ERROR);
+						mediaStateNotification
+								.onPlayStateNotificaiton(MediaState.ERROR);
 					}
 					mp.release();
 					mp = null;
 					lState = LocalState.STOPED;
 					return;
 				}
-				
+
 				if (mediaStateNotification != null) {
-					mediaStateNotification.onPlayStateNotificaiton(MediaState.PREPARED);
+					mediaStateNotification
+							.onPlayStateNotificaiton(MediaState.PREPARED);
 				}
 				break;
 			case STOPED:
@@ -189,8 +200,9 @@ public class LiveVideoWidget extends FrameLayout implements
 			FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 					FrameLayout.LayoutParams.WRAP_CONTENT,
 					FrameLayout.LayoutParams.WRAP_CONTENT);
-			progressBar.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-			int width,height;
+			progressBar.measure(View.MeasureSpec.UNSPECIFIED,
+					View.MeasureSpec.UNSPECIFIED);
+			int width, height;
 			if (this.getWidth() == 0) {
 				this.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
 				width = this.getMeasuredWidth();
@@ -203,15 +215,15 @@ public class LiveVideoWidget extends FrameLayout implements
 			fl.topMargin = (height - progressBar.getMeasuredHeight()) / 2;
 			this.addView(progressBar, fl);
 			progressBar.bringToFront();
-			
+
 		}
-		progressBar.setVisibility(visible?View.VISIBLE:View.GONE);
-		
+		progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+
 	}
 
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
-		V2Log.e("Play  error : " + what +"   extra:"+extra);
+		V2Log.e("Play  error : " + what + "   extra:" + extra);
 		if (mediaStateNotification != null) {
 			mediaStateNotification.onPlayStateNotificaiton(MediaState.ERROR);
 		}
@@ -236,18 +248,13 @@ public class LiveVideoWidget extends FrameLayout implements
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		lState = LocalState.STOPED;
-		mp.release();
-		mp = null;
-		Canvas can = sur.getHolder().lockCanvas();
-		Bitmap blackframe = Bitmap.createBitmap(can.getWidth(),
-				can.getHeight(), Bitmap.Config.ARGB_4444);
-		can.drawBitmap(blackframe, 0, 0, new Paint());
-		sur.getHolder().unlockCanvasAndPost(can);
-		blackframe.recycle();
+		// mp.release();
+		// mp = null;
 		if (mediaStateNotification != null) {
 			mediaStateNotification.onPlayStateNotificaiton(MediaState.END);
 		}
 		updateProgressBar(false);
+		localHandler.sendEmptyMessageDelayed(DRAW_END_FRAME, 500);
 	}
 
 	public void setDragListener(DragListener dragListener) {
@@ -257,17 +264,11 @@ public class LiveVideoWidget extends FrameLayout implements
 	public void setOnWidgetClickListener(OnWidgetClickListener clickListener) {
 		this.clickListener = clickListener;
 	}
-	
-	
-	
 
 	public void setMediaStateNotification(
 			MediaStateNotification mediaStateNotification) {
 		this.mediaStateNotification = mediaStateNotification;
 	}
-
-
-
 
 	boolean startDrag = false;
 	int lastX;
@@ -342,7 +343,8 @@ public class LiveVideoWidget extends FrameLayout implements
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
 			Canvas can = holder.lockCanvas();
-			Bitmap tmp = Bitmap.createBitmap(can.getWidth(), can.getHeight(), Bitmap.Config.ARGB_4444);
+			Bitmap tmp = Bitmap.createBitmap(can.getWidth(), can.getHeight(),
+					Bitmap.Config.ARGB_4444);
 			Canvas c = new Canvas(tmp);
 			c.drawColor(Color.BLACK);
 			can.drawBitmap(tmp, 0, 0, new Paint());
@@ -355,6 +357,16 @@ public class LiveVideoWidget extends FrameLayout implements
 		@Override
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
+			if (lState != LocalState.PLAYING) {
+				Canvas can = holder.lockCanvas();
+				Bitmap tmp = Bitmap.createBitmap(can.getWidth(),
+						can.getHeight(), Bitmap.Config.ARGB_4444);
+				Canvas c = new Canvas(tmp);
+				c.drawColor(Color.BLACK);
+				can.drawBitmap(tmp, 0, 0, new Paint());
+				holder.unlockCanvasAndPost(can);
+				tmp.recycle();
+			}
 			Message.obtain(localHandler, VIDEO_REQUEST, LocalState.PLAYING)
 					.sendToTarget();
 		}
@@ -375,6 +387,16 @@ public class LiveVideoWidget extends FrameLayout implements
 			case VIDEO_REQUEST:
 				doVideoRequest((LocalState) msg.obj);
 				break;
+			case DRAW_END_FRAME:
+//				Canvas can = sur.getHolder().lockCanvas();
+//				if (can != null) {
+//					Bitmap blackframe = Bitmap.createBitmap(can.getWidth(),
+//							can.getHeight(), Bitmap.Config.ARGB_4444);
+//					can.drawBitmap(blackframe, 0, 0, new Paint());
+//					sur.getHolder().unlockCanvasAndPost(can);
+//					blackframe.recycle();
+//				}
+				break;
 			}
 		}
 
@@ -383,8 +405,8 @@ public class LiveVideoWidget extends FrameLayout implements
 	enum LocalState {
 		NONE, PLAYING, LOADING, PAUSED, STOPED,
 	}
-	
+
 	public enum MediaState {
-		END,PLAYING,PREPARED,STOPPED,ERROR;
+		END, PLAYING, PREPARED, STOPPED, ERROR;
 	}
 }

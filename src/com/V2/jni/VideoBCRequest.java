@@ -43,6 +43,9 @@ public class VideoBCRequest {
 	public native void updateGpsRequest(String gpsxml);
 
 	public native void getNeiborhood(int meters);
+	
+
+	public native void getNeiborhood_region(String str);
 
 	private void OnStartLive(long nUserID, String szUrl) {
 		V2Log.e(nUserID + "  " + szUrl);
@@ -58,6 +61,32 @@ public class VideoBCRequest {
 
 	void OnGPSUpdated() {
 
+	}
+	
+	
+	void OnNeiborhood_region(String szXml) {
+		V2Log.e(szXml);
+		lives.clear();
+		Document doc = buildDocument(szXml);
+		NodeList userNodeList = doc.getElementsByTagName("user");
+		Element userElement;
+		for (int i = 0; i < userNodeList.getLength(); i++) {
+			userElement = (Element) userNodeList.item(i);
+			String url = userElement.getAttribute("url");
+			int index = url.indexOf("file=");
+			String uuid = null;
+			if (index != -1) {
+				uuid = "http://118.145.28.194:8090/hls/"+url.substring(index + 5)+".m3u8";
+			} else {
+				uuid = "http://118.145.28.194:8090/hls/"+url+".m3u8";
+			}
+			
+			String lat = userElement.getAttribute("lat");
+			String lan = userElement.getAttribute("lon");
+			String uid = userElement.getAttribute("userid");
+			lives.add(new String[]{uuid,lat,lan,uid});
+		}
+		
 	}
 	
 	public List<String[]> lives = new ArrayList<String[]>(); 
