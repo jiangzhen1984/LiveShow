@@ -5,12 +5,16 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -50,7 +54,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
-import com.v2tech.widget.ArrowPopupWindow;
+import com.v2tech.widget.CrossLayout;
 import com.v2tech.widget.LiveVideoWidget;
 import com.v2tech.widget.LiveVideoWidget.MediaState;
 
@@ -85,8 +89,6 @@ public class MainActivity extends Activity implements
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 		mSearchEdit = (EditText) findViewById(R.id.search_edit);
 		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
-		findViewById(R.id.main_activity_title_bar_button_plus)
-				.setOnClickListener(this);
 
 		Intent intent = getIntent();
 		if (intent.hasExtra("x") && intent.hasExtra("y")) {
@@ -130,20 +132,150 @@ public class MainActivity extends Activity implements
 		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
 	}
 
+	CrossLayout cl;
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels;
 		int height = dis.heightPixels;
-		lvw = new LiveVideoWidget(this);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width / 2,
-				((width / 2) - (width / 2 % 16)) / 4 * 3);
-		fl.leftMargin = dis.widthPixels - fl.width - 10;
-		fl.topMargin = 10;
-		mMainLayout.addView(lvw, fl);
-		lvw.bringToFront();
-		lvw.setDragListener(this);
-		lvw.setOnWidgetClickListener(this);
-		lvw.setMediaStateNotification(mediaStateNotificaiton);
+		//lvw = new LiveVideoWidget(this);
+		
+		cl = new CrossLayout(this);
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width ,
+				((width ) - (width % 16)) / 4 * 3);
+		fl.leftMargin = (dis.widthPixels - width) / 2;
+		fl.topMargin = (dis.heightPixels - dis.widthPixels) / 2;
+		
+//		lvw.bringToFront();
+//		lvw.setDragListener(this);
+//		lvw.setOnWidgetClickListener(this);
+//		lvw.setMediaStateNotification(mediaStateNotificaiton);
+		
+		
+		SurfaceView sv2 = new SurfaceView(this);
+		sv2.setZOrderMediaOverlay(true);
+		sv2.getHolder().addCallback(new SurfaceHolder.Callback() {
+			
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				
+			}
+			
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				MediaPlayer mp = new MediaPlayer();
+				mp.setDisplay(holder);
+				mp.setVolume(0, 0);
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mp.setScreenOnWhilePlaying(true);
+				mp.reset();
+				try {
+					mp.setDataSource("/sdcard1/DCIM/100ANDRO/c.mp4");
+					mp.prepare();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				mp.start();
+			}
+			
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width,
+					int height) {
+				
+			}
+		});
+		
+		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width ,
+				((width ) - (width  % 16)) / 4 * 3);
+		fl3.topMargin = 0;
+		fl3.leftMargin = -width;
+		cl.addView(sv2, fl3);
+		
+		
+		
+		SurfaceView sv = new SurfaceView(this);
+		sv.setZOrderMediaOverlay(true);
+		sv.getHolder().addCallback(new SurfaceHolder.Callback() {
+			
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				
+			}
+			
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				MediaPlayer mp = new MediaPlayer();
+				mp.setDisplay(holder);
+				mp.setVolume(0, 0);
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mp.setScreenOnWhilePlaying(true);
+				mp.reset();
+				try {
+					mp.setDataSource("/sdcard1/DCIM/100ANDRO/a.mp4");
+					mp.prepare();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				mp.start();
+			}
+			
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width,
+					int height) {
+				
+			}
+		});
+		
+		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,
+				((width ) - (width  % 16)) / 4 * 3);
+		fl1.topMargin = 0;
+		fl1.leftMargin = 0;
+		cl.addView(sv, fl1);
+		
+		
+		
+		SurfaceView sv1 = new SurfaceView(this);
+		sv1.setZOrderMediaOverlay(true);
+		sv1.getHolder().addCallback(new SurfaceHolder.Callback() {
+			
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				
+			}
+			
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				MediaPlayer mp = new MediaPlayer();
+				mp.setDisplay(holder);
+				mp.setVolume(0, 0);
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mp.setScreenOnWhilePlaying(true);
+				mp.reset();
+				try {
+					mp.setDataSource("/sdcard1/DCIM/100ANDRO/b.mp4");
+					mp.prepare();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				mp.start();
+			}
+			
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width,
+					int height) {
+				
+			}
+		});
+		
+		FrameLayout.LayoutParams fl2 = new FrameLayout.LayoutParams(width ,
+				((width ) - (width  % 16)) / 4 * 3);
+		fl2.topMargin = 0;
+		fl2.leftMargin = width;
+		cl.addView(sv1, fl2);
+		
+		
+		
+		mMainLayout.addView(cl, fl);
+		cl.bringToFront();
 		
 	}
 	
@@ -236,49 +368,10 @@ public class MainActivity extends Activity implements
 	public void onClick(View v) {
 		int id = v.getId();
 		switch (id) {
-		case R.id.main_activity_title_bar_button_plus:
-			showPlusPopupWindow(v);
-			break;
 		}
 	}
 
-	private ArrowPopupWindow arw;
 
-	private void showPlusPopupWindow(View anchor) {
-		if (arw == null) {
-			arw = new ArrowPopupWindow(this);
-			arw.setListener(new ArrowPopupWindow.ItemClickListener() {
-
-				@Override
-				public void onItemClicked(View v) {
-					int id = v.getId();
-					switch (id) {
-					case R.id.title_bar_item_share_video:
-						Intent i = new Intent();
-						i.setClass(MainActivity.this, LiveRecord.class);
-						MainActivity.this.startActivity(i);
-						arw.dismiss();
-						break;
-					case R.id.title_bar_item_neiborhood_video:
-						//VideoBCRequest.getInstance().getNeiborhood(1000);
-						mBaiduMap.setMapStatus(MapStatusUpdateFactory
-								.newLatLng(new LatLng(mBaiduMap
-										.getLocationData().latitude, mBaiduMap
-										.getLocationData().longitude)));
-						lat = mBaiduMap.getLocationData().latitude;
-						lan = mBaiduMap.getLocationData().longitude;
-						
-						arw.dismiss();
-						LocalHandler.removeMessages(PLAY_FIRST_LIVE);
-						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
-								1000);
-						break;
-					}
-				}
-			});
-		}
-		arw.showAsDropDown(anchor);
-	}
 
 	private BDLocation mCacheLocation;
 

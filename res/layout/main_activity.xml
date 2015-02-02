@@ -14,14 +14,13 @@
             android:id="@+id/search_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@+id/imageView1"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="6dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="6dp"
-            android:layout_toLeftOf="@+id/main_activity_title_bar_button_plus"
             android:background="@drawable/input_bg"
             android:hint="@string/main_activity_search_text_hint"
             android:inputType="text"
@@ -31,20 +30,14 @@
         </EditText>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/title_bar_feature_more_button_selector" />
+            android:padding="3dp"
+            android:src="@drawable/search" />
 
-        <ImageView
-            android:id="@+id/main_activity_title_bar_button_plus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/imageView2"
-            android:src="@drawable/title_bar_plus_button_selector" />
     </RelativeLayout>
 
     <RelativeLayout
