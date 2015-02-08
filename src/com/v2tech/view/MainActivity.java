@@ -52,6 +52,7 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.CrossLayout;
@@ -136,12 +137,12 @@ public class MainActivity extends Activity implements
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels;
-		int height = dis.heightPixels;
+		int height = ((width ) - (width % 16)) / 4 * 3;
 		//lvw = new LiveVideoWidget(this);
 		
 		cl = new CrossLayout(this);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width ,
-				((width ) - (width % 16)) / 4 * 3);
+				height);
 		fl.leftMargin = (dis.widthPixels - width) / 2;
 		fl.topMargin = (dis.heightPixels - dis.widthPixels) / 2;
 		
@@ -152,7 +153,7 @@ public class MainActivity extends Activity implements
 		
 		
 		SurfaceView sv2 = new SurfaceView(this);
-		sv2.setZOrderMediaOverlay(true);
+		sv2.setZOrderOnTop(true);
 		sv2.getHolder().addCallback(new SurfaceHolder.Callback() {
 			
 			@Override
@@ -162,14 +163,13 @@ public class MainActivity extends Activity implements
 			
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = new MediaPlayer();
+				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.c);
 				mp.setDisplay(holder);
 				mp.setVolume(0, 0);
+				mp.setLooping(true);
 				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 				mp.setScreenOnWhilePlaying(true);
-				mp.reset();
 				try {
-					mp.setDataSource("/sdcard1/DCIM/100ANDRO/c.mp4");
 					mp.prepare();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -184,16 +184,17 @@ public class MainActivity extends Activity implements
 			}
 		});
 		
-		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width ,
-				((width ) - (width  % 16)) / 4 * 3);
+		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width ,height);
 		fl3.topMargin = 0;
 		fl3.leftMargin = -width;
 		cl.addView(sv2, fl3);
+		cl.setLeft(sv2);
 		
 		
 		
 		SurfaceView sv = new SurfaceView(this);
-		sv.setZOrderMediaOverlay(true);
+		sv.setZOrderOnTop(true);
+		sv.bringToFront();
 		sv.getHolder().addCallback(new SurfaceHolder.Callback() {
 			
 			@Override
@@ -203,14 +204,13 @@ public class MainActivity extends Activity implements
 			
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = new MediaPlayer();
+				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.a);
 				mp.setDisplay(holder);
 				mp.setVolume(0, 0);
+				mp.setLooping(true);
 				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 				mp.setScreenOnWhilePlaying(true);
-				mp.reset();
 				try {
-					mp.setDataSource("/sdcard1/DCIM/100ANDRO/a.mp4");
 					mp.prepare();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -225,16 +225,17 @@ public class MainActivity extends Activity implements
 			}
 		});
 		
-		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,
-				((width ) - (width  % 16)) / 4 * 3);
+		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,height);
 		fl1.topMargin = 0;
 		fl1.leftMargin = 0;
 		cl.addView(sv, fl1);
+		cl.setMiddle(sv);
+		cl.bringChildToFront(sv);
 		
 		
 		
 		SurfaceView sv1 = new SurfaceView(this);
-		sv1.setZOrderMediaOverlay(true);
+		sv1.setZOrderOnTop(true);
 		sv1.getHolder().addCallback(new SurfaceHolder.Callback() {
 			
 			@Override
@@ -244,14 +245,13 @@ public class MainActivity extends Activity implements
 			
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = new MediaPlayer();
+				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
 				mp.setDisplay(holder);
 				mp.setVolume(0, 0);
+				mp.setLooping(true);
 				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 				mp.setScreenOnWhilePlaying(true);
-				mp.reset();
 				try {
-					mp.setDataSource("/sdcard1/DCIM/100ANDRO/b.mp4");
 					mp.prepare();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -271,10 +271,21 @@ public class MainActivity extends Activity implements
 		fl2.topMargin = 0;
 		fl2.leftMargin = width;
 		cl.addView(sv1, fl2);
+		cl.setRight(sv1);
 		
 		
+		
+		FrameLayout.LayoutParams flbottom = new FrameLayout.LayoutParams(width ,height);
+		flbottom.topMargin = 0;
+		flbottom.leftMargin = width * 2;
+		CameraView cv = new CameraView(this);
+		cv.setZOrderMediaOverlay(true);
+		cv.bringToFront();
+		cl.addView(cv, flbottom);
+		cl.setrView2(cv);
 		
 		mMainLayout.addView(cl, fl);
+		mMainLayout.bringChildToFront(cl);
 		cl.bringToFront();
 		
 	}
@@ -307,7 +318,7 @@ public class MainActivity extends Activity implements
 	protected void onStop() {
 		super.onStop();
 		isSuspended = true;
-		lvw.stop();
+		//lvw.stop();
 	}
 
 	@Override
@@ -401,6 +412,7 @@ public class MainActivity extends Activity implements
 	}
 
 	
+	private LatLng selfLocation;
 	private double lat;
 	private double lan;
 	public class MyLocationListenner implements BDLocationListener {
@@ -410,21 +422,25 @@ public class MainActivity extends Activity implements
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
+			
+			LatLng ll = new LatLng(location.getLatitude() ,
+					location.getLongitude());
+			selfLocation = ll;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
 					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(100).latitude(location.getLatitude())
-					.longitude(location.getLongitude()).build();
+					.direction(100).latitude(ll.latitude)
+					.longitude(ll.longitude).build();
 			mBaiduMap.setMyLocationData(locData);
 			if (isFirstLoc) {
 				isFirstLoc = false;
-				LatLng ll = new LatLng(location.getLatitude(),
-						location.getLongitude());
 				float zoomLevel = 15.0F;
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,
+				LatLng bounds = new LatLng(location.getLatitude() - 0.014D,
+						location.getLongitude());
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(bounds,
 						zoomLevel);
 				mBaiduMap.animateMapStatus(u);
-
+		
 			}
 
 			if (mCacheLocation == null
@@ -439,6 +455,7 @@ public class MainActivity extends Activity implements
 				lat = location.getLatitude();
 				lan = location.getLongitude();
 				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 1000);
+				
 			}
 		}
 
@@ -506,7 +523,7 @@ public class MainActivity extends Activity implements
 	private void updateLiveMarkOnMap(List<Live> list) {
 		mBaiduMap.clear();
 		BitmapDescriptor bd = BitmapDescriptorFactory
-				.fromResource(R.drawable.icon_gcoding);
+				.fromResource(R.drawable.marker_online);
 		for (Live l : list) {
 			LatLng ll = new LatLng(l.getLat(), l.getLan());
 			Bundle bundle = new Bundle();
@@ -514,15 +531,21 @@ public class MainActivity extends Activity implements
 			OverlayOptions oo = new MarkerOptions().icon(bd).position(ll).extraInfo(bundle);
 			mBaiduMap.addOverlay(oo);
 		}
+		
+
+		OverlayOptions oo = new MarkerOptions().icon(bd).position(selfLocation);
+		mBaiduMap.addOverlay(oo);
 	}
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
 
 		@Override
 		public boolean onMarkerClick(Marker marker) {
-			String url = (String) marker.getExtraInfo().get("url");
-			Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
-					.sendToTarget();
+			if (marker.getExtraInfo() != null) {
+				String url = (String) marker.getExtraInfo().get("url");
+				Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
+						.sendToTarget();
+			}
 			return true;
 		}
 

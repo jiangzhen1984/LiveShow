@@ -83,6 +83,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();
 		context.unregisterReceiver(myBroadCast);
+		mCamera.stopPreview();
+		mCamera.release();
 	}
 
 
@@ -257,7 +259,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		{
 			deal();
 			// mCamera.autoFocus(null);
-			mCamera.startPreview();
+			//
 			bIfPreview = true;
 			// verify if successfully set
 			realsize = mCamera.getParameters().getPreviewSize();
@@ -266,6 +268,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 			realfmt = mCamera.getParameters().getPreviewFormat();
 			realfps = mCamera.getParameters().getPreviewFrameRate();
 		}
+	}
+	
+	public void startPreView() {
+		mCamera.startPreview();
+	}
+	
+	public void stopPreView() {
+		mCamera.stopPreview();
 	}
 
 	private Camera.Parameters deal() 
