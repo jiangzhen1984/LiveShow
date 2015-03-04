@@ -370,8 +370,6 @@ public class MainActivity extends Activity implements
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
 	}
-	
-	
 
 	@Override
 	protected void onStart() {
@@ -594,14 +592,10 @@ public class MainActivity extends Activity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
-			LatLng ll = new LatLng(l.getLat(), l.getLan());
+			LatLng ll = new LatLng(selfLocation.latitude+0.012D, selfLocation.longitude+0.022D);
 			Bundle bundle = new Bundle();
 			V2Log.e(l.getLat() +"  "+ l.getLan());
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {
-				OverlayOptions oo = new MarkerOptions().icon(online).position(ll);
-				mBaiduMap.addOverlay(oo);
-			} else {
-				bundle.putString("url", l.getUrl());
 				OverlayOptions oo = new MarkerOptions().icon(live).position(ll).extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
 			}
@@ -657,6 +651,18 @@ public class MainActivity extends Activity implements
 			e.printStackTrace();
 		}
 		mpArr[index].start();
+=======
+				OverlayOptions oo = new MarkerOptions().icon(live).position(ll);
+				mBaiduMap.addOverlay(oo);
+			}
+			
+			OverlayOptions oo = new MarkerOptions().icon(live).position(ll);
+			mBaiduMap.addOverlay(oo);
+		}
+
+		OverlayOptions oo = new MarkerOptions().icon(online).position(selfLocation);
+		mBaiduMap.addOverlay(oo);
+>>>>>>> Temp update
 	}
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
@@ -750,6 +756,11 @@ public class MainActivity extends Activity implements
 					lv.setLat(Double.parseDouble(str[1]));
 					lv.setLan(Double.parseDouble(str[2]));
 					lList.add(lv);
+					
+					Live lv1 = new Live(null, "sdfsdfs");
+					lv1.setLat(Double.parseDouble(str[1]) + 0.016D);
+					lv1.setLan(Double.parseDouble(str[2])+ 0.026D);
+					lList.add(lv1);
 				}
 				updateLiveMarkOnMap(lList);
 				break;
