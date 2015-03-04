@@ -15,6 +15,7 @@ import org.w3c.dom.NodeList;
 
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
+import com.v2tech.view.Constants;
 
 public class VideoBCRequest {
 
@@ -75,11 +76,14 @@ public class VideoBCRequest {
 			String url = userElement.getAttribute("url");
 			int index = url.indexOf("file=");
 			String uuid = null;
-			if (index != -1) {
-				uuid = "http://118.145.28.194:8090/hls/"+url.substring(index + 5)+".m3u8";
-			} else {
-				uuid = "http://118.145.28.194:8090/hls/"+url+".m3u8";
+			if (url != null && !url.isEmpty() ) {
+				if (index != -1) {
+					uuid = "http://"+Constants.SERVER+":8090/hls/"+url.substring(index + 5)+".m3u8";
+				} else {
+					uuid = "http://"+Constants.SERVER+":8090/hls/"+url+".m3u8";
+				}
 			}
+			
 			
 			String lat = userElement.getAttribute("lat");
 			String lan = userElement.getAttribute("lon");
@@ -100,12 +104,17 @@ public class VideoBCRequest {
 		for (int i = 0; i < userNodeList.getLength(); i++) {
 			userElement = (Element) userNodeList.item(i);
 			String url = userElement.getAttribute("url");
-			int index = url.indexOf("file=");
-			String uuid = null;
-			if (index != -1) {
-				uuid = "http://118.145.28.194:8090/hls/"+url.substring(index + 5)+".m3u8";
-			} else {
-				uuid = "http://118.145.28.194:8090/hls/"+url+".m3u8";
+			String uuid = url;
+			if (url != null && !url.isEmpty() ) {
+				int index = url.indexOf("file=");
+				if (index != -1) {
+					uuid = "http://"+Constants.SERVER+":8090/hls/"+url.substring(index + 5)+".m3u8";
+					//uuid = "http://"+Constants.SERVER+":8090/hls/1c64f0cd-4acd-44fc-966f-8ee5583d554b.m3u8";
+					 
+				} else {
+					uuid = "http://"+Constants.SERVER+":8090/hls/"+url+".m3u8";
+					//uuid = "http://"+Constants.SERVER+":8090/hls/1c64f0cd-4acd-44fc-966f-8ee5583d554b.m3u8";
+				}
 			}
 			
 			String lat = userElement.getAttribute("lat");

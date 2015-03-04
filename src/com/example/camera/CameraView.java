@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import com.V2.jni.VideoBCRequest;
+import com.V2.jni.util.V2Log;
+import com.v2tech.view.Constants;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +22,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Handler;
+import android.os.Message;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		Camera.PreviewCallback 
@@ -83,8 +89,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();
 		context.unregisterReceiver(myBroadCast);
-		mCamera.stopPreview();
-		mCamera.release();
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			mCamera.release();
+		}
 	}
 
 
@@ -202,6 +210,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public boolean startPublish() 
 	{
+		V2Log.e("start publish===="+publishUrl);
 		streamStarted = openPublisher(publishUrl);
 
 		if (streamStarted == false) 
@@ -270,12 +279,25 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		}
 	}
 	
+	
+	private boolean isPreViewing;
+	
 	public void startPreView() {
-		mCamera.startPreview();
+		if (!isPreViewing) {
+			mCamera.setPreviewCallback(this);
+			mCamera.startPreview();
+			isPreViewing = true;
+			this.setKeepScreenOn(true);
+		}
+		
 	}
 	
 	public void stopPreView() {
-		mCamera.stopPreview();
+		isPreViewing = false;
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			this.setKeepScreenOn(false);
+		}
 	}
 
 	private Camera.Parameters deal() 
@@ -380,6 +402,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		} 
 		catch (Exception e) 
 		{
+			e.printStackTrace();
 		}
 	}
 

@@ -1,15 +1,25 @@
 package com.v2tech.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -21,7 +31,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.V2.jni.ImRequest;
+import com.V2.jni.V2ClientType;
+import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
+import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -56,6 +70,7 @@ import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.CrossLayout;
+import com.v2tech.widget.CrossLayout.ViewStateListener;
 import com.v2tech.widget.LiveVideoWidget;
 import com.v2tech.widget.LiveVideoWidget.MediaState;
 
@@ -68,6 +83,8 @@ public class MainActivity extends Activity implements
 	private static final int PLAY_LIVE = 3;
 	private static final int INTERVAL_GET_NEIBERHOOD = 4;
 	private static final int UPDATE_LIVE_MARK = 5;
+	private static final int RECORDING = 6;
+	private static final int STOP_RECORDING = 7;
 
 	private FrameLayout mMainLayout;
 	private EditText mSearchEdit;
@@ -81,7 +98,14 @@ public class MainActivity extends Activity implements
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
 
-	private LiveVideoWidget lvw;
+	private Set<String> showingURL = new HashSet<String>();
+	private MediaPlayer[] mpArr = new MediaPlayer[3];
+	SurfaceHolder[] holderArr = new SurfaceHolder[3];
+	View[] viewArr = new View[3];
+	private int currentIndex = 1;
+	private CameraView cv;
+	private boolean isRecording;
+	private boolean isFirstPlayed;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +136,13 @@ public class MainActivity extends Activity implements
 
 		init();
 		initVideoLayout();
+		
+
+		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		ImRequest.getInstance().login(
+				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+						: tl.getLine1Number(), "111111",
+				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
 	}
 
 	private void init() {
@@ -134,77 +165,83 @@ public class MainActivity extends Activity implements
 	}
 
 	CrossLayout cl;
+
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels;
-		int height = ((width ) - (width % 16)) / 4 * 3;
-		//lvw = new LiveVideoWidget(this);
-		
+		int height = ((width) - (width % 16)) / 4 * 3;
+		// lvw = new LiveVideoWidget(this);
+
 		cl = new CrossLayout(this);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width ,
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
 				height);
 		fl.leftMargin = (dis.widthPixels - width) / 2;
 		fl.topMargin = (dis.heightPixels - dis.widthPixels) / 2;
-		
-//		lvw.bringToFront();
-//		lvw.setDragListener(this);
-//		lvw.setOnWidgetClickListener(this);
-//		lvw.setMediaStateNotification(mediaStateNotificaiton);
-		
-		
+
+		// lvw.bringToFront();
+		// lvw.setDragListener(this);
+		// lvw.setOnWidgetClickListener(this);
+		// lvw.setMediaStateNotification(mediaStateNotificaiton);
+
 		SurfaceView sv2 = new SurfaceView(this);
+		viewArr[0] = sv2;
 		sv2.setZOrderOnTop(true);
 		sv2.getHolder().addCallback(new SurfaceHolder.Callback() {
-			
+
 			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
-				
+				holderArr[0] = null;
 			}
-			
+
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.c);
-				mp.setDisplay(holder);
-				mp.setVolume(0, 0);
-				mp.setLooping(true);
-				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				mp.setScreenOnWhilePlaying(true);
-				try {
-					mp.prepare();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				mp.start();
+				holderArr[0] = holder;
+//				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.c);
+//				mp.setDisplay(holder);
+//				mp.setVolume(0, 0);
+//				mp.setLooping(true);
+//				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//				mp.setScreenOnWhilePlaying(true);
+//				try {
+//					mp.prepare();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				mp.start();
+				Canvas c = holder.lockCanvas();
+				drawFirstBlankFrame(c);
+				holder.unlockCanvasAndPost(c);
 			}
-			
+
 			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format, int width,
-					int height) {
-				
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
 			}
 		});
-		
-		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width ,height);
+
+		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width,
+				height);
 		fl3.topMargin = 0;
 		fl3.leftMargin = -width;
 		cl.addView(sv2, fl3);
 		cl.setLeft(sv2);
-		
-		
-		
+
 		SurfaceView sv = new SurfaceView(this);
 		sv.setZOrderOnTop(true);
+		viewArr[1] = sv;
 		sv.bringToFront();
 		sv.getHolder().addCallback(new SurfaceHolder.Callback() {
-			
+
 			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
-				
+				holderArr[1] = null;
 			}
-			
+
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.a);
+				holderArr[1] = holder;
+				/*MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.a);
 				mp.setDisplay(holder);
 				mp.setVolume(0, 0);
 				mp.setLooping(true);
@@ -215,79 +252,123 @@ public class MainActivity extends Activity implements
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				mp.start();
+				mp.start();*/
+				Canvas c = holder.lockCanvas();
+				drawFirstBlankFrame(c);
+				holder.unlockCanvasAndPost(c);
 			}
-			
+
 			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format, int width,
-					int height) {
-				
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
 			}
 		});
-		
-		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,height);
+
+		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,
+				height);
 		fl1.topMargin = 0;
 		fl1.leftMargin = 0;
 		cl.addView(sv, fl1);
 		cl.setMiddle(sv);
 		cl.bringChildToFront(sv);
-		
-		
-		
+
 		SurfaceView sv1 = new SurfaceView(this);
+		viewArr[2] = sv1;
 		sv1.setZOrderOnTop(true);
 		sv1.getHolder().addCallback(new SurfaceHolder.Callback() {
-			
+
 			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
-				
+				holderArr[2] = null;
 			}
-			
+
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
-				mp.setDisplay(holder);
-				mp.setVolume(0, 0);
-				mp.setLooping(true);
-				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				mp.setScreenOnWhilePlaying(true);
-				try {
-					mp.prepare();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				mp.start();
+				holderArr[2] = holder;
+//				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
+//				mp.setDisplay(holder);
+//				mp.setVolume(0, 0);
+//				mp.setLooping(true);
+//				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//				mp.setScreenOnWhilePlaying(true);
+//				try {
+//					mp.prepare();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				mp.start();
+				Canvas c = holder.lockCanvas();
+				drawFirstBlankFrame(c);
+				holder.unlockCanvasAndPost(c);
 			}
-			
+
 			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format, int width,
-					int height) {
-				
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
 			}
 		});
-		
-		FrameLayout.LayoutParams fl2 = new FrameLayout.LayoutParams(width ,
-				((width ) - (width  % 16)) / 4 * 3);
+
+		FrameLayout.LayoutParams fl2 = new FrameLayout.LayoutParams(width,
+				((width) - (width % 16)) / 4 * 3);
 		fl2.topMargin = 0;
 		fl2.leftMargin = width;
 		cl.addView(sv1, fl2);
 		cl.setRight(sv1);
-		
-		
-		
-		FrameLayout.LayoutParams flbottom = new FrameLayout.LayoutParams(width ,height);
+
+		FrameLayout.LayoutParams flbottom = new FrameLayout.LayoutParams(width,
+				height);
 		flbottom.topMargin = 0;
 		flbottom.leftMargin = width * 2;
-		CameraView cv = new CameraView(this);
+		cv = new CameraView(this);
 		cv.setZOrderMediaOverlay(true);
 		cv.bringToFront();
 		cl.addView(cv, flbottom);
 		cl.setrView2(cv);
-		
+
 		mMainLayout.addView(cl, fl);
 		mMainLayout.bringChildToFront(cl);
 		cl.bringToFront();
 		
+		cl.setVsl(new ViewStateListener() {
+
+			@Override
+			public void onShow(View view) {
+				for (int i = 0; i < viewArr.length; i ++) {
+					if (viewArr[i] == view) {
+						currentIndex = i;
+						break;
+					}
+				}
+				
+				if (view instanceof CameraView) {
+					if (!isRecording) {
+						VideoBCRequest.getInstance().startLive();
+						LocalHandler.sendEmptyMessage(RECORDING);
+						isRecording = true;
+					}
+				} else if (isRecording){
+					LocalHandler.sendEmptyMessage(STOP_RECORDING);
+					 isRecording = false;
+				}
+				
+				V2Log.e("CurrentIndex:"+currentIndex+"   class:"+view);
+			}
+			
+		});
+	}
+	
+	
+	private void drawFirstBlankFrame(Canvas c) {
+		int width = c.getWidth();
+		int height = c.getHeight();
+		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+		Canvas tmp = new Canvas(bp);
+		tmp.drawColor(Color.BLACK);
+		
+		c.drawBitmap(bp, 0, 0, new Paint());
+		bp.recycle();
 	}
 	
 	
@@ -312,13 +393,13 @@ public class MainActivity extends Activity implements
 		mMapView.onResume();
 	}
 
-	
-	
 	@Override
 	protected void onStop() {
 		super.onStop();
 		isSuspended = true;
-		//lvw.stop();
+		cv.stopPreView();
+		cv.stopPublish();
+		// lvw.stop();
 	}
 
 	@Override
@@ -354,25 +435,13 @@ public class MainActivity extends Activity implements
 	}
 
 	FrameLayout.LayoutParams originFl;
-	
+
 	@Override
 	public void onWidgetClick(View view) {
-//		// FIXME stop playing
-//		Intent i = new Intent(this, VideoList.class);
-//		startActivity(i);
-		
-		
-		FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams)lvw.getLayoutParams();
-		if (fl.width == FrameLayout.LayoutParams.MATCH_PARENT) {
-			lvw.setLayoutParams(originFl);
-		} else {
-			originFl = fl;
-			lvw.setLayoutParams(new FrameLayout.LayoutParams(
-					FrameLayout.LayoutParams.MATCH_PARENT,
-					FrameLayout.LayoutParams.MATCH_PARENT));
-		}
-		
-		lvw.requestLayout();
+		// // FIXME stop playing
+		// Intent i = new Intent(this, VideoList.class);
+		// startActivity(i);
+
 	}
 
 	@Override
@@ -381,8 +450,6 @@ public class MainActivity extends Activity implements
 		switch (id) {
 		}
 	}
-
-
 
 	private BDLocation mCacheLocation;
 
@@ -399,11 +466,9 @@ public class MainActivity extends Activity implements
 		}
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
 				.getLocation()));
-			
-		lat = result
-				.getLocation().latitude;
-		lan = result
-				.getLocation().longitude;
+
+		lat = result.getLocation().latitude;
+		lan = result.getLocation().longitude;
 	}
 
 	@Override
@@ -411,10 +476,10 @@ public class MainActivity extends Activity implements
 
 	}
 
-	
 	private LatLng selfLocation;
 	private double lat;
 	private double lan;
+
 	public class MyLocationListenner implements BDLocationListener {
 
 		@Override
@@ -422,8 +487,8 @@ public class MainActivity extends Activity implements
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
-			
-			LatLng ll = new LatLng(location.getLatitude() ,
+
+			LatLng ll = new LatLng(location.getLatitude(),
 					location.getLongitude());
 			selfLocation = ll;
 			MyLocationData locData = new MyLocationData.Builder()
@@ -437,10 +502,10 @@ public class MainActivity extends Activity implements
 				float zoomLevel = 15.0F;
 				LatLng bounds = new LatLng(location.getLatitude() - 0.014D,
 						location.getLongitude());
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(bounds,
-						zoomLevel);
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
+						bounds, zoomLevel);
 				mBaiduMap.animateMapStatus(u);
-		
+
 			}
 
 			if (mCacheLocation == null
@@ -449,13 +514,15 @@ public class MainActivity extends Activity implements
 							.getLatitude())) {
 				mCacheLocation = location;
 				VideoBCRequest.getInstance().updateGpsRequest(
-						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
-								+ location.getLatitude() + "\"></gps>");
+						"<gps lon=\"" + location.getLongitude() 
+								+ "\" lat=\"" + location.getLatitude() 
+								+ "\"></gps>");
 
 				lat = location.getLatitude();
 				lan = location.getLongitude();
-				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 1000);
-				
+				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
+						1000);
+
 			}
 		}
 
@@ -522,19 +589,74 @@ public class MainActivity extends Activity implements
 
 	private void updateLiveMarkOnMap(List<Live> list) {
 		mBaiduMap.clear();
-		BitmapDescriptor bd = BitmapDescriptorFactory
+		BitmapDescriptor online = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_online);
+		BitmapDescriptor live = BitmapDescriptorFactory
+				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
 			LatLng ll = new LatLng(l.getLat(), l.getLan());
 			Bundle bundle = new Bundle();
-			bundle.putString("url", l.getUrl());
-			OverlayOptions oo = new MarkerOptions().icon(bd).position(ll).extraInfo(bundle);
-			mBaiduMap.addOverlay(oo);
+			V2Log.e(l.getLat() +"  "+ l.getLan());
+			if (l.getUrl() == null || l.getUrl().isEmpty()) {
+				OverlayOptions oo = new MarkerOptions().icon(online).position(ll);
+				mBaiduMap.addOverlay(oo);
+			} else {
+				bundle.putString("url", l.getUrl());
+				OverlayOptions oo = new MarkerOptions().icon(live).position(ll).extraInfo(bundle);
+				mBaiduMap.addOverlay(oo);
+			}
+		}
+
+//		OverlayOptions oo = new MarkerOptions().icon(online).position(selfLocation);
+//		mBaiduMap.addOverlay(oo);
+	}
+	
+	
+	private void doSelect(int index, String url, boolean force) {
+		if (url == null) {
+			return;
+		}
+		if (mpArr[index] == null) {
+			mpArr[index] = new MediaPlayer();
+		} else {
+			if (force) {
+				mpArr[index].stop();
+			} else {
+				return;
+			}
 		}
 		
+		
+//		MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
+		mpArr[index].setDisplay(holderArr[index]);
+		mpArr[index].setOnErrorListener(new OnErrorListener() {
 
-		OverlayOptions oo = new MarkerOptions().icon(bd).position(selfLocation);
-		mBaiduMap.addOverlay(oo);
+			@Override
+			public boolean onError(MediaPlayer mp, int what, int extra) {
+				Toast.makeText(getApplicationContext(), "视频源无法播放", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+		});
+		mpArr[index].setOnCompletionListener(new OnCompletionListener() {
+
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+			}
+			
+		});
+		
+		mpArr[index].setVolume(0, 0);
+//		mp.setLooping(true);
+//		mpArr[index].setAudioStreamType(AudioManager.STREAM_MUSIC);
+//		mp.setScreenOnWhilePlaying(true);
+		try {
+			mpArr[index].setDataSource(this, Uri.parse(url));
+			mpArr[index].prepare();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mpArr[index].start();
 	}
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
@@ -543,25 +665,30 @@ public class MainActivity extends Activity implements
 		public boolean onMarkerClick(Marker marker) {
 			if (marker.getExtraInfo() != null) {
 				String url = (String) marker.getExtraInfo().get("url");
-				Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
-						.sendToTarget();
+				if (url != null && !url.isEmpty()) {
+					Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
+							.sendToTarget();
+				}
 			}
 			return true;
 		}
 
 	};
-	
-	
+
 	private LiveVideoWidget.MediaStateNotification mediaStateNotificaiton = new LiveVideoWidget.MediaStateNotification() {
-		
+
 		@Override
 		public void onPlayStateNotificaiton(MediaState state) {
 			if (state == MediaState.ERROR) {
-				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT).show();
-			} else if (state == MediaState.PREPARED || state == MediaState.PLAYING) {
-				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT).show();
-			}else if (state == MediaState.END) {
-				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT)
+						.show();
+			} else if (state == MediaState.PREPARED
+					|| state == MediaState.PLAYING) {
+				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT)
+						.show();
+			} else if (state == MediaState.END) {
+				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT)
+						.show();
 			}
 		}
 	};
@@ -578,26 +705,38 @@ public class MainActivity extends Activity implements
 				}
 				break;
 			case PLAY_FIRST_LIVE:
-				if (VideoBCRequest.getInstance().lives.size() > 0) {
-					lvw.stop();
-					lvw.startLive(new Live(null,
-							VideoBCRequest.getInstance().lives.get(0)[0]));
-				} else {
-					Toast.makeText(MainActivity.this, "抱歉，未能找到结果",
-							Toast.LENGTH_SHORT).show();
+				int index = 1;
+				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
+					String url = VideoBCRequest.getInstance().lives.get(i)[0];
+					if (url != null && !url.isEmpty()) {
+						doSelect(index, url, true);
+					}
+					index = index == 1? 0:(index == 0?2:(index == 2?-1:-1));
+					if (index == -1) {
+						break;
+					}
+					isFirstPlayed = true;
 				}
+				
 				break;
 			case PLAY_LIVE:
-				lvw.stop();
-				lvw.startLive((Live) msg.obj);
+				doSelect(currentIndex, ((Live)msg.obj).getUrl(), true);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
-				//VideoBCRequest.getInstance().getNeiborhood(1000);
-				VideoBCRequest.getInstance().getNeiborhood_region("<gps lon=\"" + lan + "\" lat=\""
-						+ lat + "\" distance=\"1000\" ></gps>");
+				// VideoBCRequest.getInstance().getNeiborhood(1000);
+				VideoBCRequest.getInstance().getNeiborhood_region(
+						"<gps lon=\"" + lan + "\" lat=\"" + lat
+								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
-					LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD, 10000);
-					LocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+					LocalHandler.sendEmptyMessageDelayed(
+							INTERVAL_GET_NEIBERHOOD, 10000);
+					LocalHandler
+							.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+					
+					if (!isFirstPlayed) {
+						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
+								1000);
+					}
 				}
 				break;
 			case UPDATE_LIVE_MARK:
@@ -613,6 +752,24 @@ public class MainActivity extends Activity implements
 					lList.add(lv);
 				}
 				updateLiveMarkOnMap(lList);
+				break;
+			case RECORDING:
+				if (VideoBCRequest.getInstance().url == null) {
+					Message dm = obtainMessage(RECORDING);
+					this.sendMessageDelayed(dm, 300);
+				} else {
+					String uuid = null;
+					int ind = VideoBCRequest.getInstance().url.indexOf("file=");
+					if (ind != -1) {
+						uuid = VideoBCRequest.getInstance().url.substring(ind + 5);
+					}
+					cv.publishUrl = "rtmp://"+Constants.SERVER+"/vod/"+uuid;
+					cv.startPublish();
+				}
+				break;
+			case STOP_RECORDING:
+				cv.stopPublish();
+				 VideoBCRequest.getInstance().stopLive();
 				break;
 			}
 		}

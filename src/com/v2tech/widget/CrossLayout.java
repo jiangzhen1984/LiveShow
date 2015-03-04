@@ -22,6 +22,12 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 	
 	private View cur;
 	
+	private ViewStateListener vsl;
+	
+	public interface ViewStateListener {
+		public void onShow(View view);
+	}
+	
 	public CrossLayout(Context context) {
 		super(context);
 		this.setOnTouchListener(this);
@@ -60,7 +66,6 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 			int count = getChildCount();
 			boolean canMove = false;
 			
-			V2Log.e("=====" + deltaX);
 			View left = lView;
 			View right = rView2;
 			if (deltaX < 0) {
@@ -131,11 +136,15 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 			
 			View left = lView;
 			View right = rView2;
-			int dx = deltaX < 0 ? -20 : 20;
+			View currentView = null;
+			int dx = deltaX < 0 ? -35 : 35;
 			if (deltaX < 0 && distance > 0) {
 				if (right != null) {
 					FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams) right.getLayoutParams();
-					if (fl.leftMargin + dx > 0) {
+					if (fl.leftMargin  > 0) {
+						if (fl.leftMargin + dx <= 0) {
+							dx = dx - (fl.leftMargin + dx);
+						}
 						canMove = true;
 					}
 					
@@ -143,7 +152,10 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 			} else if (deltaX > 0 && distance > 0) {
 				if (left != null) {
 					FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams) left.getLayoutParams();
-					if (fl.leftMargin + dx < 0) {
+					if (fl.leftMargin  < 0) {
+						if (fl.leftMargin + dx >= 0) {
+							dx = dx - (fl.leftMargin + dx);
+						}
 						canMove = true;
 					}
 				}
@@ -154,18 +166,28 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 					FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams) child.getLayoutParams();
 					fl.leftMargin += dx;
 					child.setLayoutParams(fl);
-					if (child == rView2) {
-						if (fl.leftMargin + dx >= 0 && fl.leftMargin + dx <= getWidth()) {
-							((CameraView)child).startPreView();
-						} else if (fl.leftMargin + dx > getWidth()) {
-							((CameraView)child).stopPreView();
-						}
-					}
 				}
 			}
 			distance -= Math.abs(dx);
 			if (distance > 0) {
-				post(Flying);
+				postDelayed(Flying, 30);
+			} else {
+				
+				
+				for (int i = 0; i < count; i++) {
+					View child =  getChildAt(i);
+					FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams) child.getLayoutParams();
+					if (Math.abs(fl.leftMargin) < 20) {
+						if (vsl != null) {
+							vsl.onShow(child);
+						}
+						break;
+					}
+				}
+				
+				
+				
+				
 			}
 			
 		}
@@ -173,6 +195,16 @@ public class CrossLayout extends FrameLayout implements OnTouchListener {
 	};
 	
 	
+	
+	
+	public ViewStateListener getVsl() {
+		return vsl;
+	}
+
+	public void setVsl(ViewStateListener vsl) {
+		this.vsl = vsl;
+	}
+
 	private View cv;
 	
 

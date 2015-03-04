@@ -9,6 +9,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.V2.jni.ImRequest;
+import com.V2.jni.V2ClientType;
+import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
 import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
@@ -24,9 +27,13 @@ public class LiveRecord extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.live_video);
+		
+		ImRequest.getInstance().login("dssfw", "111111",
+				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
 
 		root = (ViewGroup) findViewById(R.id.live_record_root_container);
 		mCameraView = new CameraView(this);
+		
 
 		root.addView(mCameraView, new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
@@ -60,7 +67,21 @@ public class LiveRecord extends Activity {
 		});
 	}
 	
+	
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Message m = Message.obtain(mLocalHandler, INIT);
+		mLocalHandler.sendMessageDelayed(m, 3000);
+	}
+
+
+
+
 	private static final int RECORDING = 1;
+	private static final int INIT = 2;
 	
 	private Handler mLocalHandler = new Handler() {
 
@@ -80,6 +101,9 @@ public class LiveRecord extends Activity {
 					mCameraView.publishUrl = "rtmp://118.145.28.194/vod/"+uuid;
 					mCameraView.startPublish();
 				}
+				break;
+			case INIT:
+				mCameraView.startPreView();
 				break;
 			}
 		}

@@ -107,7 +107,7 @@ public class MainApplication extends Application {
 
 		initGlobalConfiguration();
 		
-		new ConfigRequest().setServerAddress("118.145.28.194", 5123);
+		new ConfigRequest().setServerAddress(Constants.SERVER, 5123);
 	}
 
 	/**
