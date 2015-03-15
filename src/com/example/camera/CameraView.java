@@ -13,6 +13,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -174,6 +178,33 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceCreated(SurfaceHolder holder)
 	{
+		Canvas c = holder.lockCanvas();
+		int width = c.getWidth();
+		int height = c.getHeight();
+		Bitmap bp = Bitmap.createBitmap(width, height,
+				Bitmap.Config.ARGB_4444);
+		Canvas tmp = new Canvas(bp);
+		tmp.drawColor(Color.BLACK);
+
+		c.drawBitmap(bp, 0, 0, new Paint());
+		bp.recycle();
+		holder.unlockCanvasAndPost(c);
+		tryOpenCamera();
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) 
+	{
+		initCamera();
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) 
+	{
+		deinitCamera();
+	}
+	
+	private void tryOpenCamera() {
 		if (cameraPosition == 1)
 		{
 			mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -194,18 +225,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 				mCamera = null;
 			}
 		}
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) 
-	{
-		initCamera(w, h);
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) 
-	{
-		deinitCamera();
 	}
 
 	public boolean startPublish() 
@@ -258,7 +277,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	int mPreviewWidth;
 	int mPreviewHeight;
 
-	private void initCamera(int width, int height) 
+	private void initCamera() 
 	{
 		if (bIfPreview) 
 		{
@@ -284,6 +303,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	
 	public void startPreView() {
 		if (!isPreViewing) {
+			if (mCamera == null) {
+				tryOpenCamera();
+				initCamera();
+			}
 			mCamera.setPreviewCallback(this);
 			mCamera.startPreview();
 			isPreViewing = true;

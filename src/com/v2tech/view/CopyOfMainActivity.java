@@ -1,7 +1,9 @@
 package com.v2tech.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,18 +23,12 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.animation.ScaleAnimation;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
@@ -74,10 +70,11 @@ import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.CrossLayout;
+import com.v2tech.widget.CrossLayout.ViewStateListener;
 import com.v2tech.widget.LiveVideoWidget;
 import com.v2tech.widget.LiveVideoWidget.MediaState;
 
-public class MainActivity extends Activity implements
+public class CopyOfMainActivity extends Activity implements
 		LiveVideoWidget.DragListener, OnClickListener,
 		LiveVideoWidget.OnWidgetClickListener, OnGetGeoCoderResultListener {
 
@@ -88,8 +85,6 @@ public class MainActivity extends Activity implements
 	private static final int UPDATE_LIVE_MARK = 5;
 	private static final int RECORDING = 6;
 	private static final int STOP_RECORDING = 7;
-	private static final int START_PUBLISH = 8;
-	private static final int STOP_PUBLISH = 9;
 
 	private FrameLayout mMainLayout;
 	private EditText mSearchEdit;
@@ -103,21 +98,22 @@ public class MainActivity extends Activity implements
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
 
-	private MediaPlayer mp = new MediaPlayer();
-	private SurfaceHolder sh;
+	private Set<String> showingURL = new HashSet<String>();
+	private MediaPlayer[] mpArr = new MediaPlayer[3];
+	SurfaceHolder[] holderArr = new SurfaceHolder[3];
+	View[] viewArr = new View[3];
+	private int currentIndex = 1;
 	private CameraView cv;
-	private boolean playing = false;
+	private boolean isRecording;
 	private boolean isFirstPlayed;
-	private boolean isRecording = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
-		mMainLayout.setOnTouchListener(dragListener);
-		// mSearchEdit = (EditText) findViewById(R.id.search_edit);
-		// mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		mSearchEdit = (EditText) findViewById(R.id.search_edit);
+		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
 		Intent intent = getIntent();
 		if (intent.hasExtra("x") && intent.hasExtra("y")) {
@@ -131,13 +127,16 @@ public class MainActivity extends Activity implements
 			mMapView = new MapView(this, new BaiduMapOptions());
 		}
 
+		mMainLayout.addView(mMapView, new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT,
+				FrameLayout.LayoutParams.MATCH_PARENT));
+
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMyLocationEnabled(true);
 
 		init();
-		initMapviewLayout();
 		initVideoLayout();
-		initVideoShareLayout();
+		
 
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		ImRequest.getInstance().login(
@@ -165,93 +164,50 @@ public class MainActivity extends Activity implements
 		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
 	}
 
-	private void initMapviewLayout() {
-		final DisplayMetrics dis = this.getResources().getDisplayMetrics();
-		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.MATCH_PARENT, dis.heightPixels
-						- height);
-		fl.topMargin = height;
-		mMainLayout.addView(mMapView, fl);
-
-		ImageView searchIcon = new ImageView(this);
-		searchIcon.setImageResource(R.drawable.search);
-		searchIcon.setPadding(5, 5, 5, 5);
-		searchIcon.measure(View.MeasureSpec.UNSPECIFIED,
-				View.MeasureSpec.UNSPECIFIED);
-		FrameLayout.LayoutParams iconFl = new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.WRAP_CONTENT,
-				FrameLayout.LayoutParams.WRAP_CONTENT);
-		iconFl.leftMargin = 30;
-		iconFl.topMargin = dis.heightPixels - 170
-				- searchIcon.getMeasuredHeight();
-		mMainLayout.addView(searchIcon, iconFl);
-		searchIcon.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (mSearchEdit == null) {
-					mSearchEdit = new EditText(MainActivity.this);
-					mSearchEdit.setTextSize(18);
-					mSearchEdit.setBackgroundResource(R.drawable.input_bg);
-					mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
-					mSearchEdit.setVisibility(View.GONE);
-					FrameLayout.LayoutParams searchFl = new FrameLayout.LayoutParams(
-							FrameLayout.LayoutParams.MATCH_PARENT,
-							FrameLayout.LayoutParams.WRAP_CONTENT);
-
-					FrameLayout.LayoutParams vfl = (FrameLayout.LayoutParams) v
-							.getLayoutParams();
-					searchFl.leftMargin = vfl.leftMargin + v.getWidth() + 15;
-					searchFl.rightMargin = searchFl.leftMargin;
-					searchFl.topMargin = vfl.topMargin;
-
-					mMainLayout.addView(mSearchEdit, searchFl);
-				}
-				if (mSearchEdit.getVisibility() == View.GONE) {
-					ScaleAnimation sal = new ScaleAnimation(0F, 1.0f, 1.0F,
-							1.0F, 0F, 1F);
-					sal.setDuration(1000);
-					mSearchEdit.startAnimation(sal);
-					mSearchEdit.setVisibility(View.VISIBLE);
-				} else {
-					ScaleAnimation sal = new ScaleAnimation(1.0F, 0F, 1.0F,
-							1.0F, 0F, 1F);
-					mSearchEdit.startAnimation(sal);
-					sal.setDuration(1000);
-					mSearchEdit.setVisibility(View.GONE);
-				}
-
-			}
-
-		});
-
-	}
-
 	CrossLayout cl;
-	
+
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
-		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
+		int width = dis.widthPixels;
+		int height = ((width) - (width % 16)) / 4 * 3;
+		// lvw = new LiveVideoWidget(this);
 
+		cl = new CrossLayout(this);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
 				height);
 		fl.leftMargin = (dis.widthPixels - width) / 2;
+		fl.topMargin = (dis.heightPixels - dis.widthPixels) / 2;
+
+		// lvw.bringToFront();
+		// lvw.setDragListener(this);
+		// lvw.setOnWidgetClickListener(this);
+		// lvw.setMediaStateNotification(mediaStateNotificaiton);
 
 		SurfaceView sv2 = new SurfaceView(this);
+		viewArr[0] = sv2;
 		sv2.setZOrderOnTop(true);
 		sv2.getHolder().addCallback(new SurfaceHolder.Callback() {
 
 			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
+				holderArr[0] = null;
 			}
 
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				sh = holder;
-				mp.setDisplay(holder);
+				holderArr[0] = holder;
+//				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.c);
+//				mp.setDisplay(holder);
+//				mp.setVolume(0, 0);
+//				mp.setLooping(true);
+//				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//				mp.setScreenOnWhilePlaying(true);
+//				try {
+//					mp.prepare();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				mp.start();
 				Canvas c = holder.lockCanvas();
 				drawFirstBlankFrame(c);
 				holder.unlockCanvasAndPost(c);
@@ -264,72 +220,155 @@ public class MainActivity extends Activity implements
 			}
 		});
 
-		mMainLayout.addView(sv2, fl);
+		FrameLayout.LayoutParams fl3 = new FrameLayout.LayoutParams(width,
+				height);
+		fl3.topMargin = 0;
+		fl3.leftMargin = -width;
+		cl.addView(sv2, fl3);
+		cl.setLeft(sv2);
 
-	}
-	
-	private Button mShareVideoButton;
-	private FrameLayout videoShareLayout;
-	private void initVideoShareLayout() {
-		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
-		videoShareLayout.setOnTouchListener(dragListener);
-		DisplayMetrics dis = this.getResources().getDisplayMetrics();
-		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
-		cv = new CameraView(this);
-		cv.setZOrderOnTop(false);
-		cv.setZOrderMediaOverlay(false);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width, height);
-		fl.leftMargin = (dis.widthPixels - width) / 2;
-		videoShareLayout.addView(cv, fl);
-		
-		
-		mShareVideoButton = new Button(this);
-		mShareVideoButton.setText("分享视频");
-		mShareVideoButton.setPadding(8, 4, 8, 4);
-		mShareVideoButton.setBackgroundResource(R.drawable.video_share_button_bg);
-		mShareVideoButton.setTextSize(18);
-		mShareVideoButton.setTag("none");
-		mShareVideoButton.setOnClickListener(new OnClickListener() {
+		SurfaceView sv = new SurfaceView(this);
+		sv.setZOrderOnTop(true);
+		viewArr[1] = sv;
+		sv.bringToFront();
+		sv.getHolder().addCallback(new SurfaceHolder.Callback() {
 
 			@Override
-			public void onClick(View v) {
-				if ("none".equals(mShareVideoButton.getTag())) {
-					mShareVideoButton.setTag("recording");
-					mShareVideoButton.setText("取消分享");
-					Message.obtain(LocalHandler, START_PUBLISH).sendToTarget();
-				} else {
-					mShareVideoButton.setTag("none");
-					mShareVideoButton.setText("分享视频");
-					Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				holderArr[1] = null;
+			}
+
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				holderArr[1] = holder;
+				/*MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.a);
+				mp.setDisplay(holder);
+				mp.setVolume(0, 0);
+				mp.setLooping(true);
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mp.setScreenOnWhilePlaying(true);
+				try {
+					mp.prepare();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				mp.start();*/
+				Canvas c = holder.lockCanvas();
+				drawFirstBlankFrame(c);
+				holder.unlockCanvasAndPost(c);
+			}
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
+			}
+		});
+
+		FrameLayout.LayoutParams fl1 = new FrameLayout.LayoutParams(width,
+				height);
+		fl1.topMargin = 0;
+		fl1.leftMargin = 0;
+		cl.addView(sv, fl1);
+		cl.setMiddle(sv);
+		cl.bringChildToFront(sv);
+
+		SurfaceView sv1 = new SurfaceView(this);
+		viewArr[2] = sv1;
+		sv1.setZOrderOnTop(true);
+		sv1.getHolder().addCallback(new SurfaceHolder.Callback() {
+
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				holderArr[2] = null;
+			}
+
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				holderArr[2] = holder;
+//				MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
+//				mp.setDisplay(holder);
+//				mp.setVolume(0, 0);
+//				mp.setLooping(true);
+//				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//				mp.setScreenOnWhilePlaying(true);
+//				try {
+//					mp.prepare();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				mp.start();
+				Canvas c = holder.lockCanvas();
+				drawFirstBlankFrame(c);
+				holder.unlockCanvasAndPost(c);
+			}
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
+			}
+		});
+
+		FrameLayout.LayoutParams fl2 = new FrameLayout.LayoutParams(width,
+				((width) - (width % 16)) / 4 * 3);
+		fl2.topMargin = 0;
+		fl2.leftMargin = width;
+		cl.addView(sv1, fl2);
+		cl.setRight(sv1);
+
+		FrameLayout.LayoutParams flbottom = new FrameLayout.LayoutParams(width,
+				height);
+		flbottom.topMargin = 0;
+		flbottom.leftMargin = width * 2;
+		cv = new CameraView(this);
+		cv.setZOrderMediaOverlay(true);
+		cv.bringToFront();
+		cl.addView(cv, flbottom);
+		cl.setrView2(cv);
+
+		mMainLayout.addView(cl, fl);
+		mMainLayout.bringChildToFront(cl);
+		cl.bringToFront();
+		
+		cl.setVsl(new ViewStateListener() {
+
+			@Override
+			public void onShow(View view) {
+				for (int i = 0; i < viewArr.length; i ++) {
+					if (viewArr[i] == view) {
+						currentIndex = i;
+						break;
+					}
+				}
+				
+				if (view instanceof CameraView) {
+					if (!isRecording) {
+						VideoBCRequest.getInstance().startLive();
+						LocalHandler.sendEmptyMessage(RECORDING);
+						isRecording = true;
+					}
+				} else if (isRecording){
+					LocalHandler.sendEmptyMessage(STOP_RECORDING);
+					 isRecording = false;
+				}
+				
+				V2Log.e("CurrentIndex:"+currentIndex+"   class:"+view);
 			}
 			
 		});
-		
-		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-		mShareVideoButton.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-		buttonfl.leftMargin = (dis.widthPixels - mShareVideoButton.getMeasuredWidth()) / 2;
-		buttonfl.topMargin = height + (dis.heightPixels - height - mShareVideoButton.getMeasuredHeight()) / 2; 
-		videoShareLayout.addView(mShareVideoButton, buttonfl);
-		mMainLayout.bringToFront();
 	}
-
+	
+	
 	private void drawFirstBlankFrame(Canvas c) {
-		synchronized (mp) {
-			if (playing) {
-				return;
-			}
-			int width = c.getWidth();
-			int height = c.getHeight();
-			Bitmap bp = Bitmap.createBitmap(width, height,
-					Bitmap.Config.ARGB_4444);
-			Canvas tmp = new Canvas(bp);
-			tmp.drawColor(Color.BLACK);
-
-			c.drawBitmap(bp, 0, 0, new Paint());
-			bp.recycle();
-		}
+		int width = c.getWidth();
+		int height = c.getHeight();
+		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+		Canvas tmp = new Canvas(bp);
+		tmp.drawColor(Color.BLACK);
+		
+		c.drawBitmap(bp, 0, 0, new Paint());
+		bp.recycle();
 	}
 
 	@Override
@@ -356,8 +395,8 @@ public class MainActivity extends Activity implements
 	protected void onStop() {
 		super.onStop();
 		isSuspended = true;
-		 cv.stopPreView();
-		 Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+		cv.stopPreView();
+		cv.stopPublish();
 		// lvw.stop();
 	}
 
@@ -409,76 +448,6 @@ public class MainActivity extends Activity implements
 		switch (id) {
 		}
 	}
-	
-	
-	
-	int initY;
-	int offsetY;
-	int deltaY;
-	int lastY;
-	private OnTouchListener dragListener = new OnTouchListener() {
-
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			DisplayMetrics dis = getResources().getDisplayMetrics();
-			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
-			int action = event.getAction();
-			switch(action) {
-			case MotionEvent.ACTION_DOWN:
-				initY = (int)event.getY();
-				lastY = initY;
-				break;
-			case MotionEvent.ACTION_MOVE:
-				offsetY = (int)event.getY() - initY;
-				deltaY = (int) event.getY() - lastY;
-				if (deltaY > 0 && fl.topMargin < dis.heightPixels){
-					fl.topMargin += deltaY;
-					mMainLayout.setLayoutParams(fl);
-				} else if (deltaY < 0 && fl.topMargin > 0) {
-					fl.topMargin += deltaY;
-					mMainLayout.setLayoutParams(fl);
-				}
-				lastY = (int) event.getY();
-				break;
-			case MotionEvent.ACTION_UP:
-				mMainLayout.post(Flying);
-				break;
-			}
-			return true;
-		}
-		
-	};
-	
-	
-	
-	private Runnable Flying = new  Runnable() {
-		
-		@Override
-		public void run() {
-			DisplayMetrics dis = getResources().getDisplayMetrics();
-			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
-			if (deltaY > 0 && fl.topMargin < dis.heightPixels){
-				fl.topMargin += 55;
-				if (fl.topMargin >  dis.heightPixels) {
-					fl.topMargin =  dis.heightPixels;
-					if (!isRecording) {
-						cv.startPreView();
-					}
-				}
-			} else if (deltaY < 0 && fl.topMargin > 0) {
-				fl.topMargin += -55;
-				if (fl.topMargin < 0) {
-					fl.topMargin = 0;
-					cv.stopPreView();
-				}
-			} else {
-				return;
-			}
-			mMainLayout.setLayoutParams(fl);
-			mMainLayout.postDelayed(Flying, 6);
-		}
-		
-	};
 
 	private BDLocation mCacheLocation;
 
@@ -489,7 +458,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
+			Toast.makeText(CopyOfMainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
@@ -529,7 +498,7 @@ public class MainActivity extends Activity implements
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				float zoomLevel = 15.0F;
-				LatLng bounds = new LatLng(location.getLatitude(),
+				LatLng bounds = new LatLng(location.getLatitude() - 0.014D,
 						location.getLongitude());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
 						bounds, zoomLevel);
@@ -543,8 +512,9 @@ public class MainActivity extends Activity implements
 							.getLatitude())) {
 				mCacheLocation = location;
 				VideoBCRequest.getInstance().updateGpsRequest(
-						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
-								+ location.getLatitude() + "\"></gps>");
+						"<gps lon=\"" + location.getLongitude() 
+								+ "\" lat=\"" + location.getLatitude() 
+								+ "\"></gps>");
 
 				lat = location.getLatitude();
 				lan = location.getLongitude();
@@ -622,75 +592,69 @@ public class MainActivity extends Activity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
-			LatLng ll = new LatLng(selfLocation.latitude,
-					selfLocation.longitude);
+			LatLng ll = new LatLng(selfLocation.latitude, selfLocation.longitude);
 			Bundle bundle = new Bundle();
-			V2Log.e(l.getLat() + "  " + l.getLan());
+			V2Log.e(l.getLat() +"  "+ l.getLan());
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {
-				OverlayOptions oo = new MarkerOptions().icon(online)
-						.position(ll).extraInfo(bundle);
+				OverlayOptions oo = new MarkerOptions().icon(online).position(ll).extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
 			} else {
 				bundle.putString("url", l.getUrl());
-				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
-						.extraInfo(bundle);
+				OverlayOptions oo = new MarkerOptions().icon(live).position(ll).extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
 			}
 		}
 
-		// OverlayOptions oo = new
-		// MarkerOptions().icon(online).position(selfLocation);
-		// mBaiduMap.addOverlay(oo);
+//		OverlayOptions oo = new MarkerOptions().icon(online).position(selfLocation);
+//		mBaiduMap.addOverlay(oo);
 	}
-
-	private void doSelect(String url, boolean force) {
-		synchronized (mp) {
-			playing = true;
-			if (url == null) {
-				return;
-			}
+	
+	
+	private void doSelect(int index, String url, boolean force) {
+		if (url == null) {
+			return;
+		}
+		if (mpArr[index] == null) {
+			mpArr[index] = new MediaPlayer();
+		} else {
 			if (force) {
-				mp.stop();
+				mpArr[index].stop();
 			} else {
 				return;
 			}
-
-			mp.setOnErrorListener(new OnErrorListener() {
-
-				@Override
-				public boolean onError(MediaPlayer mp, int what, int extra) {
-					playing =false;
-					Toast.makeText(getApplicationContext(), "视频源无法播放",
-							Toast.LENGTH_SHORT).show();
-					return false;
-				}
-
-			});
-			mp.setOnCompletionListener(new OnCompletionListener() {
-
-				@Override
-				public void onCompletion(MediaPlayer mp) {
-					if (!mp.isPlaying()) {
-						playing = false;
-						Canvas c = sh.lockCanvas();
-						if (c != null) {
-							drawFirstBlankFrame(c);
-							sh.unlockCanvasAndPost(c);
-						}
-					}
-
-				}
-
-			});
-
-			try {
-				mp.setDataSource(this, Uri.parse(url));
-				mp.prepare();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			mp.start();
 		}
+		
+		
+//		MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.b);
+		mpArr[index].setDisplay(holderArr[index]);
+		mpArr[index].setOnErrorListener(new OnErrorListener() {
+
+			@Override
+			public boolean onError(MediaPlayer mp, int what, int extra) {
+				Toast.makeText(getApplicationContext(), "视频源无法播放", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+		});
+		mpArr[index].setOnCompletionListener(new OnCompletionListener() {
+
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+			}
+			
+		});
+		
+		mpArr[index].setVolume(0, 0);
+//		mp.setLooping(true);
+//		mpArr[index].setAudioStreamType(AudioManager.STREAM_MUSIC);
+//		mp.setScreenOnWhilePlaying(true);
+		try {
+			mpArr[index].setDataSource(this, Uri.parse(url));
+			mpArr[index].prepare();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mpArr[index].start();
 	}
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
@@ -714,14 +678,14 @@ public class MainActivity extends Activity implements
 		@Override
 		public void onPlayStateNotificaiton(MediaState state) {
 			if (state == MediaState.ERROR) {
-				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT)
+				Toast.makeText(CopyOfMainActivity.this, "播放失败", Toast.LENGTH_SHORT)
 						.show();
 			} else if (state == MediaState.PREPARED
 					|| state == MediaState.PLAYING) {
-				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT)
+				Toast.makeText(CopyOfMainActivity.this, "开始播放", Toast.LENGTH_SHORT)
 						.show();
 			} else if (state == MediaState.END) {
-				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT)
+				Toast.makeText(CopyOfMainActivity.this, "播放结束", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
@@ -739,18 +703,22 @@ public class MainActivity extends Activity implements
 				}
 				break;
 			case PLAY_FIRST_LIVE:
+				int index = 1;
 				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
 					String url = VideoBCRequest.getInstance().lives.get(i)[0];
 					if (url != null && !url.isEmpty()) {
-						doSelect(url, true);
+						doSelect(index, url, true);
+					}
+					index = index == 1? 0:(index == 0?2:(index == 2?-1:-1));
+					if (index == -1) {
+						break;
 					}
 					isFirstPlayed = true;
-					break;
 				}
-
+				
 				break;
 			case PLAY_LIVE:
-				doSelect(((Live) msg.obj).getUrl(), true);
+				doSelect(currentIndex, ((Live)msg.obj).getUrl(), true);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
@@ -762,7 +730,7 @@ public class MainActivity extends Activity implements
 							INTERVAL_GET_NEIBERHOOD, 10000);
 					LocalHandler
 							.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
-
+					
 					if (!isFirstPlayed) {
 						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
 								1000);
@@ -784,7 +752,6 @@ public class MainActivity extends Activity implements
 				updateLiveMarkOnMap(lList);
 				break;
 			case RECORDING:
-				isRecording = true;
 				if (VideoBCRequest.getInstance().url == null) {
 					Message dm = obtainMessage(RECORDING);
 					this.sendMessageDelayed(dm, 300);
@@ -792,27 +759,15 @@ public class MainActivity extends Activity implements
 					String uuid = null;
 					int ind = VideoBCRequest.getInstance().url.indexOf("file=");
 					if (ind != -1) {
-						uuid = VideoBCRequest.getInstance().url
-								.substring(ind + 5);
+						uuid = VideoBCRequest.getInstance().url.substring(ind + 5);
 					}
-					cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
-							+ uuid;
+					cv.publishUrl = "rtmp://"+Constants.SERVER+"/vod/"+uuid;
 					cv.startPublish();
 				}
 				break;
 			case STOP_RECORDING:
 				cv.stopPublish();
-				VideoBCRequest.getInstance().stopLive();
-				break;
-			case START_PUBLISH:
-				VideoBCRequest.getInstance().startLive();
-				Message m = Message.obtain(this, RECORDING);
-				this.sendMessageDelayed(m, 300);
-				break;
-			case STOP_PUBLISH:
-				VideoBCRequest.getInstance().stopLive();
-				cv.stopPublish();
-				isRecording = false;
+				 VideoBCRequest.getInstance().stopLive();
 				break;
 			}
 		}

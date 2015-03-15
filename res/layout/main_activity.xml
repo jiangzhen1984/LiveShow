@@ -3,56 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff" >
-
-    <RelativeLayout
-        android:id="@+id/RelativeLayout2"
+    
+        
+    
+     <FrameLayout
+        android:id="@+id/video_share_ly"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" >
-
-        <EditText
-            android:id="@+id/search_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/imageView1"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/input_bg"
-            android:hint="@string/main_activity_search_text_hint"
-            android:inputType="text"
-            android:paddingLeft="10dp"
-            android:textColor="#000000"
-            android:textSize="18sp" >
-        </EditText>
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:padding="3dp"
-            android:src="@drawable/search" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/RelativeLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/RelativeLayout2"
-        android:background="#f2f2f2" >
-    </RelativeLayout>
-
+        android:layout_height="match_parent"
+        android:background="#000000"
+         >
+    </FrameLayout>
+ 
     <FrameLayout
         android:id="@+id/main"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/RelativeLayout3" >
+         >
     </FrameLayout>
+
+    
 
 </RelativeLayout>
