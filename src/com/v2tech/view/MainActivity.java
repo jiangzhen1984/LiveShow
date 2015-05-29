@@ -17,15 +17,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.MotionEventCompat;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -115,7 +118,8 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
-		mMainLayout.setOnTouchListener(dragListener);
+		//mMainLayout.setOnTouchListener(dragListener);
+//		mMainLayout.setOnDragListener(dListener);
 		// mSearchEdit = (EditText) findViewById(R.id.search_edit);
 		// mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
@@ -416,6 +420,7 @@ public class MainActivity extends Activity implements
 	int offsetY;
 	int deltaY;
 	int lastY;
+	int mActivePointerId;
 	private OnTouchListener dragListener = new OnTouchListener() {
 
 		@Override
@@ -427,8 +432,51 @@ public class MainActivity extends Activity implements
 			case MotionEvent.ACTION_DOWN:
 				initY = (int)event.getY();
 				lastY = initY;
+			     mActivePointerId = MotionEventCompat.getPointerId(event, 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
+				
+				final int pointerIndex = 
+                MotionEventCompat.findPointerIndex(event, mActivePointerId);  
+            
+				
+				offsetY = (int)MotionEventCompat.getY(event, pointerIndex) - initY;
+				deltaY = (int) MotionEventCompat.getY(event, pointerIndex) - lastY;
+				if (deltaY > 0 && fl.topMargin < dis.heightPixels){
+					fl.topMargin += deltaY;
+					mMainLayout.setLayoutParams(fl);
+				} else if (deltaY < 0 && fl.topMargin > 0) {
+					fl.topMargin += deltaY;
+					mMainLayout.setLayoutParams(fl);
+				}
+				lastY = (int) MotionEventCompat.getY(event, pointerIndex);
+				break;
+			case MotionEvent.ACTION_UP:
+				mMainLayout.post(Flying);
+				break;
+			}
+			return true;
+		}
+		
+	};
+	
+	
+	private OnDragListener dListener = new OnDragListener() {
+
+		@Override
+		public boolean onDrag(View v, DragEvent event) {
+			DisplayMetrics dis = getResources().getDisplayMetrics();
+			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
+			
+			boolean ret = false;
+			switch (event.getAction()) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				initY = (int)event.getY();
+				lastY = initY;
+				ret = true;
+				break;
+			case DragEvent.ACTION_DRAG_LOCATION:
+				
 				offsetY = (int)event.getY() - initY;
 				deltaY = (int) event.getY() - lastY;
 				if (deltaY > 0 && fl.topMargin < dis.heightPixels){
@@ -438,13 +486,16 @@ public class MainActivity extends Activity implements
 					fl.topMargin += deltaY;
 					mMainLayout.setLayoutParams(fl);
 				}
-				lastY = (int) event.getY();
+				lastY = (int)event.getY();
+				
+				ret = true;
 				break;
-			case MotionEvent.ACTION_UP:
+			case DragEvent.ACTION_DRAG_EXITED:
 				mMainLayout.post(Flying);
+				ret = true;
 				break;
 			}
-			return true;
+			return ret;
 		}
 		
 	};
