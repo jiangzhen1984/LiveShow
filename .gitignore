@@ -7,10 +7,13 @@
 
 # Java class files
 *.class
+*.classpath
+*.project
 
 # Generated files
 bin/
 gen/
+obj/
 
 # Gradle files
 .gradle/
