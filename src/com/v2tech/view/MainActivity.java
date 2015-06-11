@@ -1,15 +1,19 @@
 package com.v2tech.view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -22,7 +26,9 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -30,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
@@ -118,8 +125,8 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
-		//mMainLayout.setOnTouchListener(dragListener);
-//		mMainLayout.setOnDragListener(dListener);
+		// mMainLayout.setOnTouchListener(dragListener);
+		// mMainLayout.setOnDragListener(dListener);
 		// mSearchEdit = (EditText) findViewById(R.id.search_edit);
 		// mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
@@ -132,7 +139,10 @@ public class MainActivity extends Activity implements
 					new BaiduMapOptions().mapStatus(new MapStatus.Builder()
 							.target(p).build()));
 		} else {
-			mMapView = new MapView(this, new BaiduMapOptions());
+		    BaiduMapOptions mapOptions = new BaiduMapOptions();  
+		    mapOptions.scaleControlEnabled(false);
+		    mapOptions.zoomControlsEnabled(false);
+			mMapView = new MapView(this, mapOptions);
 		}
 
 		mBaiduMap = mMapView.getMap();
@@ -148,6 +158,8 @@ public class MainActivity extends Activity implements
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+
+		LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 2000);
 	}
 
 	private void init() {
@@ -157,7 +169,7 @@ public class MainActivity extends Activity implements
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
+		option.setScanSpan(5000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 
@@ -180,13 +192,13 @@ public class MainActivity extends Activity implements
 		mMainLayout.addView(mMapView, fl);
 
 		ImageView searchIcon = new ImageView(this);
-		searchIcon.setImageResource(R.drawable.search);
+		searchIcon.setImageResource(R.drawable.location);
 		searchIcon.setPadding(5, 5, 5, 5);
 		searchIcon.measure(View.MeasureSpec.UNSPECIFIED,
 				View.MeasureSpec.UNSPECIFIED);
 		FrameLayout.LayoutParams iconFl = new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.WRAP_CONTENT,
-				FrameLayout.LayoutParams.WRAP_CONTENT);
+				80,
+				80);
 		iconFl.leftMargin = 30;
 		iconFl.topMargin = dis.heightPixels - 170
 				- searchIcon.getMeasuredHeight();
@@ -195,46 +207,75 @@ public class MainActivity extends Activity implements
 
 			@Override
 			public void onClick(View v) {
-				if (mSearchEdit == null) {
-					mSearchEdit = new EditText(MainActivity.this);
-					mSearchEdit.setTextSize(18);
-					mSearchEdit.setBackgroundResource(R.drawable.input_bg);
-					mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
-					mSearchEdit.setVisibility(View.GONE);
-					FrameLayout.LayoutParams searchFl = new FrameLayout.LayoutParams(
-							FrameLayout.LayoutParams.MATCH_PARENT,
-							FrameLayout.LayoutParams.WRAP_CONTENT);
-
-					FrameLayout.LayoutParams vfl = (FrameLayout.LayoutParams) v
-							.getLayoutParams();
-					searchFl.leftMargin = vfl.leftMargin + v.getWidth() + 15;
-					searchFl.rightMargin = searchFl.leftMargin;
-					searchFl.topMargin = vfl.topMargin;
-
-					mMainLayout.addView(mSearchEdit, searchFl);
-				}
-				if (mSearchEdit.getVisibility() == View.GONE) {
-					ScaleAnimation sal = new ScaleAnimation(0F, 1.0f, 1.0F,
-							1.0F, 0F, 1F);
-					sal.setDuration(1000);
-					mSearchEdit.startAnimation(sal);
-					mSearchEdit.setVisibility(View.VISIBLE);
-				} else {
-					ScaleAnimation sal = new ScaleAnimation(1.0F, 0F, 1.0F,
-							1.0F, 0F, 1F);
-					mSearchEdit.startAnimation(sal);
-					sal.setDuration(1000);
-					mSearchEdit.setVisibility(View.GONE);
-				}
-
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
+						selfLocation, 15);
+				mBaiduMap.animateMapStatus(u);
 			}
+			
+
+//			@Override
+//			public void onClick(View v) {
+//				if (mSearchEdit == null) {
+//					mSearchEdit = new EditText(MainActivity.this);
+//					mSearchEdit.setTextSize(18);
+//					mSearchEdit.setBackgroundResource(R.drawable.input_bg);
+//					mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+//					mSearchEdit.setVisibility(View.GONE);
+//					FrameLayout.LayoutParams searchFl = new FrameLayout.LayoutParams(
+//							FrameLayout.LayoutParams.MATCH_PARENT,
+//							FrameLayout.LayoutParams.WRAP_CONTENT);
+//
+//					FrameLayout.LayoutParams vfl = (FrameLayout.LayoutParams) v
+//							.getLayoutParams();
+//					searchFl.leftMargin = vfl.leftMargin + v.getWidth() + 15;
+//					searchFl.rightMargin = searchFl.leftMargin;
+//					searchFl.topMargin = vfl.topMargin;
+//
+//					mMainLayout.addView(mSearchEdit, searchFl);
+//				}
+//				if (mSearchEdit.getVisibility() == View.GONE) {
+//					ScaleAnimation sal = new ScaleAnimation(0F, 1.0f, 1.0F,
+//							1.0F, 0F, 1F);
+//					sal.setDuration(1000);
+//					mSearchEdit.startAnimation(sal);
+//					mSearchEdit.setVisibility(View.VISIBLE);
+//				} else {
+//					ScaleAnimation sal = new ScaleAnimation(1.0F, 0F, 1.0F,
+//							1.0F, 0F, 1F);
+//					mSearchEdit.startAnimation(sal);
+//					sal.setDuration(1000);
+//					mSearchEdit.setVisibility(View.GONE);
+//				}
+//
+//			}
 
 		});
+		
+		
+		View bottomView = LayoutInflater.from(this).inflate(
+				R.layout.main_bottom_layout, null, false);
+		
+		mSearchEdit = (EditText)bottomView.findViewById(R.id.message_text);
+		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		bottomView.measure(View.MeasureSpec.UNSPECIFIED,
+				View.MeasureSpec.UNSPECIFIED);
+		
+		 int[] location = {0,0};
+         mMainLayout.getLocationOnScreen(location);
+		
+	
+		
+		FrameLayout.LayoutParams flBottom = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT, bottomView.getMeasuredHeight());
+		flBottom.topMargin = dis.heightPixels - location[1] - bottomView.getMeasuredHeight() - 70;
+		mMainLayout.addView(bottomView, flBottom);
 
 	}
 
+
+
 	CrossLayout cl;
-	
+
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels - dis.widthPixels % 16;
@@ -256,6 +297,9 @@ public class MainActivity extends Activity implements
 			public void surfaceCreated(SurfaceHolder holder) {
 				sh = holder;
 				mp.setDisplay(holder);
+				if (playing) {
+					return;
+				}
 				Canvas c = holder.lockCanvas();
 				drawFirstBlankFrame(c);
 				holder.unlockCanvasAndPost(c);
@@ -272,10 +316,15 @@ public class MainActivity extends Activity implements
 
 	}
 	
+	
+
+	
+	
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
+
 	private void initVideoShareLayout() {
-		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
+		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
 		videoShareLayout.setOnTouchListener(dragListener);
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels - dis.widthPixels % 16;
@@ -283,15 +332,16 @@ public class MainActivity extends Activity implements
 		cv = new CameraView(this);
 		cv.setZOrderOnTop(false);
 		cv.setZOrderMediaOverlay(false);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width, height);
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
+				height);
 		fl.leftMargin = (dis.widthPixels - width) / 2;
 		videoShareLayout.addView(cv, fl);
-		
-		
+
 		mShareVideoButton = new Button(this);
 		mShareVideoButton.setText("分享视频");
 		mShareVideoButton.setPadding(8, 4, 8, 4);
-		mShareVideoButton.setBackgroundResource(R.drawable.video_share_button_bg);
+		mShareVideoButton
+				.setBackgroundResource(R.drawable.video_share_button_bg);
 		mShareVideoButton.setTextSize(18);
 		mShareVideoButton.setTag("none");
 		mShareVideoButton.setOnClickListener(new OnClickListener() {
@@ -308,16 +358,25 @@ public class MainActivity extends Activity implements
 					Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
 				}
 			}
-			
+
 		});
-		
-		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-		mShareVideoButton.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-		buttonfl.leftMargin = (dis.widthPixels - mShareVideoButton.getMeasuredWidth()) / 2;
-		buttonfl.topMargin = height + (dis.heightPixels - height - mShareVideoButton.getMeasuredHeight()) / 2; 
+
+		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.WRAP_CONTENT,
+				FrameLayout.LayoutParams.WRAP_CONTENT);
+		mShareVideoButton.measure(View.MeasureSpec.UNSPECIFIED,
+				View.MeasureSpec.UNSPECIFIED);
+		buttonfl.leftMargin = (dis.widthPixels - mShareVideoButton
+				.getMeasuredWidth()) / 2;
+		buttonfl.topMargin = height
+				+ (dis.heightPixels - height - mShareVideoButton
+						.getMeasuredHeight()) / 2;
 		videoShareLayout.addView(mShareVideoButton, buttonfl);
 		mMainLayout.bringToFront();
 	}
+	
+	
+	
 
 	private void drawFirstBlankFrame(Canvas c) {
 		synchronized (mp) {
@@ -360,14 +419,22 @@ public class MainActivity extends Activity implements
 	protected void onStop() {
 		super.onStop();
 		isSuspended = true;
-		 cv.stopPreView();
-		 Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+		cv.stopPreView();
+
+		if (mp.isPlaying()) {
+			mp.stop();
+		}
+		Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
 		// lvw.stop();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (mp != null) {
+			mp.release();
+			mp = null;
+		}
 		// 退出时销毁定位
 		mLocClient.stop();
 		// 关闭定位图层
@@ -413,9 +480,7 @@ public class MainActivity extends Activity implements
 		switch (id) {
 		}
 	}
-	
-	
-	
+
 	int initY;
 	int offsetY;
 	int deltaY;
@@ -426,23 +491,25 @@ public class MainActivity extends Activity implements
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			DisplayMetrics dis = getResources().getDisplayMetrics();
-			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
+			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams) mMainLayout
+					.getLayoutParams();
 			int action = event.getAction();
-			switch(action) {
+			switch (action) {
 			case MotionEvent.ACTION_DOWN:
-				initY = (int)event.getY();
+				initY = (int) event.getY();
 				lastY = initY;
-			     mActivePointerId = MotionEventCompat.getPointerId(event, 0);
+				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				
-				final int pointerIndex = 
-                MotionEventCompat.findPointerIndex(event, mActivePointerId);  
-            
-				
-				offsetY = (int)MotionEventCompat.getY(event, pointerIndex) - initY;
-				deltaY = (int) MotionEventCompat.getY(event, pointerIndex) - lastY;
-				if (deltaY > 0 && fl.topMargin < dis.heightPixels){
+
+				final int pointerIndex = MotionEventCompat.findPointerIndex(
+						event, mActivePointerId);
+
+				offsetY = (int) MotionEventCompat.getY(event, pointerIndex)
+						- initY;
+				deltaY = (int) MotionEventCompat.getY(event, pointerIndex)
+						- lastY;
+				if (deltaY > 0 && fl.topMargin < dis.heightPixels) {
 					fl.topMargin += deltaY;
 					mMainLayout.setLayoutParams(fl);
 				} else if (deltaY < 0 && fl.topMargin > 0) {
@@ -457,37 +524,37 @@ public class MainActivity extends Activity implements
 			}
 			return true;
 		}
-		
+
 	};
-	
-	
+
 	private OnDragListener dListener = new OnDragListener() {
 
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			DisplayMetrics dis = getResources().getDisplayMetrics();
-			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
-			
+			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams) mMainLayout
+					.getLayoutParams();
+
 			boolean ret = false;
 			switch (event.getAction()) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				initY = (int)event.getY();
+				initY = (int) event.getY();
 				lastY = initY;
 				ret = true;
 				break;
 			case DragEvent.ACTION_DRAG_LOCATION:
-				
-				offsetY = (int)event.getY() - initY;
+
+				offsetY = (int) event.getY() - initY;
 				deltaY = (int) event.getY() - lastY;
-				if (deltaY > 0 && fl.topMargin < dis.heightPixels){
+				if (deltaY > 0 && fl.topMargin < dis.heightPixels) {
 					fl.topMargin += deltaY;
 					mMainLayout.setLayoutParams(fl);
 				} else if (deltaY < 0 && fl.topMargin > 0) {
 					fl.topMargin += deltaY;
 					mMainLayout.setLayoutParams(fl);
 				}
-				lastY = (int)event.getY();
-				
+				lastY = (int) event.getY();
+
 				ret = true;
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
@@ -497,21 +564,20 @@ public class MainActivity extends Activity implements
 			}
 			return ret;
 		}
-		
+
 	};
-	
-	
-	
-	private Runnable Flying = new  Runnable() {
-		
+
+	private Runnable Flying = new Runnable() {
+
 		@Override
 		public void run() {
 			DisplayMetrics dis = getResources().getDisplayMetrics();
-			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)mMainLayout.getLayoutParams();
-			if (deltaY > 0 && fl.topMargin < dis.heightPixels){
+			RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams) mMainLayout
+					.getLayoutParams();
+			if (deltaY > 0 && fl.topMargin < dis.heightPixels) {
 				fl.topMargin += 55;
-				if (fl.topMargin >  dis.heightPixels) {
-					fl.topMargin =  dis.heightPixels;
+				if (fl.topMargin > dis.heightPixels) {
+					fl.topMargin = dis.heightPixels;
 					if (!isRecording) {
 						cv.startPreView();
 					}
@@ -528,7 +594,7 @@ public class MainActivity extends Activity implements
 			mMainLayout.setLayoutParams(fl);
 			mMainLayout.postDelayed(Flying, 6);
 		}
-		
+
 	};
 
 	private BDLocation mCacheLocation;
@@ -694,10 +760,27 @@ public class MainActivity extends Activity implements
 		// mBaiduMap.addOverlay(oo);
 	}
 
-	private void doSelect(String url, boolean force) {
+	private void doSelect(String url, boolean force, AssetFileDescriptor ad) {
 		synchronized (mp) {
 			playing = true;
 			if (url == null) {
+				if (ad != null) {
+					// mp.stop();
+					try {
+						mp.setDataSource(ad.getFileDescriptor(),
+								ad.getStartOffset(), ad.getLength());
+						ad.close();
+						mp.prepare();
+						mp.start();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalStateException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
 				return;
 			}
 			if (force) {
@@ -710,7 +793,7 @@ public class MainActivity extends Activity implements
 
 				@Override
 				public boolean onError(MediaPlayer mp, int what, int extra) {
-					playing =false;
+					playing = false;
 					Toast.makeText(getApplicationContext(), "视频源无法播放",
 							Toast.LENGTH_SHORT).show();
 					return false;
@@ -793,15 +876,23 @@ public class MainActivity extends Activity implements
 				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
 					String url = VideoBCRequest.getInstance().lives.get(i)[0];
 					if (url != null && !url.isEmpty()) {
-						doSelect(url, true);
+						doSelect(url, true, null);
 					}
-					isFirstPlayed = true;
+
 					break;
 				}
 
+				// TODO show default local media
+				try {
+					doSelect(null, true,
+							MainActivity.this.getAssets().openFd("a.mp4"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				isFirstPlayed = true;
 				break;
 			case PLAY_LIVE:
-				doSelect(((Live) msg.obj).getUrl(), true);
+				doSelect(((Live) msg.obj).getUrl(), true, null);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
