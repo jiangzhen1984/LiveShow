@@ -15,7 +15,7 @@ import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
 import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
-
+ 
 public class LiveRecord extends Activity {
 
 	private Button mRecordButton;

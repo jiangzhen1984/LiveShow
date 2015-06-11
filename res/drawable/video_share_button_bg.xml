@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!--
     <item
         android:bottom="0dp"
         android:left="0dp"
         android:right="0dp"
         android:top="0dp">
-        <shape android:shape="rectangle" >
+        <shape android:shape="oval" >
             <stroke
                 android:width="1dp"
                 android:color="#cdcdcf" />
@@ -18,34 +19,50 @@
                 android:top="1dp" />
 
             <corners
-                android:bottomLeftRadius="15dp"
-                android:bottomRightRadius="15dp"
-                android:topLeftRadius="15dp"
-                android:topRightRadius="15dp" />
+                android:radius= "360dip"
+                />
             
         </shape>
     </item>
-    
+     <item
+        android:bottom="0dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        </item>
+    -->
     
       <item
         android:bottom="0dp"
         android:left="0dp"
         android:right="0dp"
         android:top="0dp">
-        <shape android:shape="rectangle" >
-       		<solid android:color="#ffffff" />
+        <shape android:shape="oval" >
+            <stroke
+                android:width="1dp"
+                android:color="#f3876f" />
+
             <padding
-                android:bottom="5dp"
-                android:left="5dp"
-                android:right="5dp"
-                android:top="5dp" />
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
 
             <corners
-                android:bottomLeftRadius="15dp"
-                android:bottomRightRadius="15dp"
-                android:topLeftRadius="15dp"
-                android:topRightRadius="15dp" />
+                android:radius= "360dip"
+                />
             
+        </shape>
+    </item>
+    
+    
+    <item>
+        <shape android:shape="oval" >
+            <solid android:color="#ffffff" /><size
+                android:height="150dp"
+                android:width="150dp" />
+
+            <corners android:radius="360dip" />
         </shape>
     </item>
 

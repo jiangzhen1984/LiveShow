@@ -4,44 +4,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewPager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
-import android.view.Window;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -87,7 +78,7 @@ import com.v2tech.widget.CrossLayout;
 import com.v2tech.widget.LiveVideoWidget;
 import com.v2tech.widget.LiveVideoWidget.MediaState;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends FragmentActivity implements
 		LiveVideoWidget.DragListener, OnClickListener,
 		LiveVideoWidget.OnWidgetClickListener, OnGetGeoCoderResultListener {
 
@@ -120,15 +111,16 @@ public class MainActivity extends Activity implements
 	private boolean isFirstPlayed;
 	private boolean isRecording = false;
 
+	private ViewPager mViewPager;
+	private VideoShowFragmentAdapter mViewPagerAdapter;
+	private VideoShowFragment mCurrentVideoShow;
+	private LinearLayout dragLayer; 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
-		// mMainLayout.setOnTouchListener(dragListener);
-		// mMainLayout.setOnDragListener(dListener);
-		// mSearchEdit = (EditText) findViewById(R.id.search_edit);
-		// mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
 		Intent intent = getIntent();
 		if (intent.hasExtra("x") && intent.hasExtra("y")) {
@@ -139,11 +131,21 @@ public class MainActivity extends Activity implements
 					new BaiduMapOptions().mapStatus(new MapStatus.Builder()
 							.target(p).build()));
 		} else {
-		    BaiduMapOptions mapOptions = new BaiduMapOptions();  
-		    mapOptions.scaleControlEnabled(false);
-		    mapOptions.zoomControlsEnabled(false);
+			BaiduMapOptions mapOptions = new BaiduMapOptions();
+			mapOptions.scaleControlEnabled(false);
+			mapOptions.zoomControlsEnabled(false);
 			mMapView = new MapView(this, mapOptions);
 		}
+
+		mViewPager = new ViewPager(this);
+		mViewPager.setId(0x10000001);
+		mViewPagerAdapter = new VideoShowFragmentAdapter(
+				getSupportFragmentManager());
+		mViewPager.setAdapter(mViewPagerAdapter);
+		mViewPager.setCurrentItem(1);
+		mViewPager.setOnPageChangeListener(mViewPagerAdapter);
+		mCurrentVideoShow = (VideoShowFragment) mViewPagerAdapter
+				.getItem(mViewPager.getCurrentItem());
 
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMyLocationEnabled(true);
@@ -152,6 +154,7 @@ public class MainActivity extends Activity implements
 		initMapviewLayout();
 		initVideoLayout();
 		initVideoShareLayout();
+		initDragLayout();
 
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		ImRequest.getInstance().login(
@@ -184,7 +187,7 @@ public class MainActivity extends Activity implements
 	private void initMapviewLayout() {
 		final DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
+		int height = width / 4 * 3;
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT, dis.heightPixels
 						- height);
@@ -196,9 +199,7 @@ public class MainActivity extends Activity implements
 		searchIcon.setPadding(5, 5, 5, 5);
 		searchIcon.measure(View.MeasureSpec.UNSPECIFIED,
 				View.MeasureSpec.UNSPECIFIED);
-		FrameLayout.LayoutParams iconFl = new FrameLayout.LayoutParams(
-				80,
-				80);
+		FrameLayout.LayoutParams iconFl = new FrameLayout.LayoutParams(80, 80);
 		iconFl.leftMargin = 30;
 		iconFl.topMargin = dis.heightPixels - 170
 				- searchIcon.getMeasuredHeight();
@@ -211,124 +212,60 @@ public class MainActivity extends Activity implements
 						selfLocation, 15);
 				mBaiduMap.animateMapStatus(u);
 			}
-			
-
-//			@Override
-//			public void onClick(View v) {
-//				if (mSearchEdit == null) {
-//					mSearchEdit = new EditText(MainActivity.this);
-//					mSearchEdit.setTextSize(18);
-//					mSearchEdit.setBackgroundResource(R.drawable.input_bg);
-//					mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
-//					mSearchEdit.setVisibility(View.GONE);
-//					FrameLayout.LayoutParams searchFl = new FrameLayout.LayoutParams(
-//							FrameLayout.LayoutParams.MATCH_PARENT,
-//							FrameLayout.LayoutParams.WRAP_CONTENT);
-//
-//					FrameLayout.LayoutParams vfl = (FrameLayout.LayoutParams) v
-//							.getLayoutParams();
-//					searchFl.leftMargin = vfl.leftMargin + v.getWidth() + 15;
-//					searchFl.rightMargin = searchFl.leftMargin;
-//					searchFl.topMargin = vfl.topMargin;
-//
-//					mMainLayout.addView(mSearchEdit, searchFl);
-//				}
-//				if (mSearchEdit.getVisibility() == View.GONE) {
-//					ScaleAnimation sal = new ScaleAnimation(0F, 1.0f, 1.0F,
-//							1.0F, 0F, 1F);
-//					sal.setDuration(1000);
-//					mSearchEdit.startAnimation(sal);
-//					mSearchEdit.setVisibility(View.VISIBLE);
-//				} else {
-//					ScaleAnimation sal = new ScaleAnimation(1.0F, 0F, 1.0F,
-//							1.0F, 0F, 1F);
-//					mSearchEdit.startAnimation(sal);
-//					sal.setDuration(1000);
-//					mSearchEdit.setVisibility(View.GONE);
-//				}
-//
-//			}
 
 		});
-		
-		
+
 		View bottomView = LayoutInflater.from(this).inflate(
 				R.layout.main_bottom_layout, null, false);
-		
-		mSearchEdit = (EditText)bottomView.findViewById(R.id.message_text);
+
+		mSearchEdit = (EditText) bottomView.findViewById(R.id.message_text);
 		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 		bottomView.measure(View.MeasureSpec.UNSPECIFIED,
 				View.MeasureSpec.UNSPECIFIED);
-		
-		 int[] location = {0,0};
-         mMainLayout.getLocationOnScreen(location);
-		
-	
-		
+
+		int[] location = { 0, 0 };
+		mMainLayout.getLocationOnScreen(location);
+
 		FrameLayout.LayoutParams flBottom = new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.MATCH_PARENT, bottomView.getMeasuredHeight());
-		flBottom.topMargin = dis.heightPixels - location[1] - bottomView.getMeasuredHeight() - 70;
+				FrameLayout.LayoutParams.MATCH_PARENT,
+				bottomView.getMeasuredHeight());
+		flBottom.topMargin = dis.heightPixels - location[1]
+				- bottomView.getMeasuredHeight() - 70;
 		mMainLayout.addView(bottomView, flBottom);
-
 	}
-
-
 
 	CrossLayout cl;
 
 	private void initVideoLayout() {
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
+		int height = width / 4 * 3;
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
 				height);
 		fl.leftMargin = (dis.widthPixels - width) / 2;
-
-		SurfaceView sv2 = new SurfaceView(this);
-		sv2.setZOrderOnTop(true);
-		sv2.getHolder().addCallback(new SurfaceHolder.Callback() {
-
-			@Override
-			public void surfaceDestroyed(SurfaceHolder holder) {
-			}
-
-			@Override
-			public void surfaceCreated(SurfaceHolder holder) {
-				sh = holder;
-				mp.setDisplay(holder);
-				if (playing) {
-					return;
-				}
-				Canvas c = holder.lockCanvas();
-				drawFirstBlankFrame(c);
-				holder.unlockCanvasAndPost(c);
-			}
-
-			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format,
-					int width, int height) {
-
-			}
-		});
-
-		mMainLayout.addView(sv2, fl);
+		mMainLayout.addView(mViewPager, fl);
 
 	}
-	
-	
 
-	
-	
+	private void initDragLayout() {
+
+		dragLayer = new LinearLayout(this);
+		FrameLayout.LayoutParams dragLayerLP = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT, 200);
+		dragLayer.setOnTouchListener(dragListener);
+		dragLayer.bringToFront();
+		mMainLayout.addView(dragLayer, dragLayerLP);
+	}
+
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
 
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
-		videoShareLayout.setOnTouchListener(dragListener);
 		DisplayMetrics dis = this.getResources().getDisplayMetrics();
 		int width = dis.widthPixels - dis.widthPixels % 16;
-		int height = width / 16 * 9;
+		int height = width / 4 * 3;
 		cv = new CameraView(this);
 		cv.setZOrderOnTop(false);
 		cv.setZOrderMediaOverlay(false);
@@ -339,7 +276,7 @@ public class MainActivity extends Activity implements
 
 		mShareVideoButton = new Button(this);
 		mShareVideoButton.setText("分享视频");
-		mShareVideoButton.setPadding(8, 4, 8, 4);
+		mShareVideoButton.setPadding(12, 12, 12, 12);
 		mShareVideoButton
 				.setBackgroundResource(R.drawable.video_share_button_bg);
 		mShareVideoButton.setTextSize(18);
@@ -374,26 +311,6 @@ public class MainActivity extends Activity implements
 		videoShareLayout.addView(mShareVideoButton, buttonfl);
 		mMainLayout.bringToFront();
 	}
-	
-	
-	
-
-	private void drawFirstBlankFrame(Canvas c) {
-		synchronized (mp) {
-			if (playing) {
-				return;
-			}
-			int width = c.getWidth();
-			int height = c.getHeight();
-			Bitmap bp = Bitmap.createBitmap(width, height,
-					Bitmap.Config.ARGB_4444);
-			Canvas tmp = new Canvas(bp);
-			tmp.drawColor(Color.BLACK);
-
-			c.drawBitmap(bp, 0, 0, new Paint());
-			bp.recycle();
-		}
-	}
 
 	@Override
 	protected void onStart() {
@@ -404,14 +321,12 @@ public class MainActivity extends Activity implements
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// activity 暂停时同时暂停地图控件
 		mMapView.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// activity 恢复时同时恢复地图控件
 		mMapView.onResume();
 	}
 
@@ -589,6 +504,13 @@ public class MainActivity extends Activity implements
 					cv.stopPreView();
 				}
 			} else {
+				if (fl.topMargin == 0) {
+					dragLayer.setOnTouchListener(dragListener);
+					videoShareLayout.setOnTouchListener(null);
+				} else {
+					dragLayer.setOnTouchListener(null);
+					videoShareLayout.setOnTouchListener(dragListener);
+				}
 				return;
 			}
 			mMainLayout.setLayoutParams(fl);
@@ -755,76 +677,6 @@ public class MainActivity extends Activity implements
 			}
 		}
 
-		// OverlayOptions oo = new
-		// MarkerOptions().icon(online).position(selfLocation);
-		// mBaiduMap.addOverlay(oo);
-	}
-
-	private void doSelect(String url, boolean force, AssetFileDescriptor ad) {
-		synchronized (mp) {
-			playing = true;
-			if (url == null) {
-				if (ad != null) {
-					// mp.stop();
-					try {
-						mp.setDataSource(ad.getFileDescriptor(),
-								ad.getStartOffset(), ad.getLength());
-						ad.close();
-						mp.prepare();
-						mp.start();
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (IllegalStateException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-				}
-				return;
-			}
-			if (force) {
-				mp.stop();
-			} else {
-				return;
-			}
-
-			mp.setOnErrorListener(new OnErrorListener() {
-
-				@Override
-				public boolean onError(MediaPlayer mp, int what, int extra) {
-					playing = false;
-					Toast.makeText(getApplicationContext(), "视频源无法播放",
-							Toast.LENGTH_SHORT).show();
-					return false;
-				}
-
-			});
-			mp.setOnCompletionListener(new OnCompletionListener() {
-
-				@Override
-				public void onCompletion(MediaPlayer mp) {
-					if (!mp.isPlaying()) {
-						playing = false;
-						Canvas c = sh.lockCanvas();
-						if (c != null) {
-							drawFirstBlankFrame(c);
-							sh.unlockCanvasAndPost(c);
-						}
-					}
-
-				}
-
-			});
-
-			try {
-				mp.setDataSource(this, Uri.parse(url));
-				mp.prepare();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			mp.start();
-		}
 	}
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
@@ -876,23 +728,24 @@ public class MainActivity extends Activity implements
 				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
 					String url = VideoBCRequest.getInstance().lives.get(i)[0];
 					if (url != null && !url.isEmpty()) {
-						doSelect(url, true, null);
+						mCurrentVideoShow.play(url);
 					}
 
 					break;
 				}
 
-				// TODO show default local media
-				try {
-					doSelect(null, true,
-							MainActivity.this.getAssets().openFd("a.mp4"));
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (!isFirstPlayed) {
+					try {
+						mCurrentVideoShow.play(MainActivity.this.getAssets()
+								.openFd("a.mp4"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				isFirstPlayed = true;
 				break;
 			case PLAY_LIVE:
-				doSelect(((Live) msg.obj).getUrl(), true, null);
+				mCurrentVideoShow.play((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
@@ -960,6 +813,47 @@ public class MainActivity extends Activity implements
 		}
 
 	};
+
+	class VideoShowFragmentAdapter extends FragmentPagerAdapter implements
+			ViewPager.OnPageChangeListener {
+
+		private VideoShowFragment[] fragments;
+
+		public VideoShowFragmentAdapter(FragmentManager fm) {
+			super(fm);
+			fragments = new VideoShowFragment[3];
+		}
+
+		@Override
+		public Fragment getItem(int pos) {
+			if (fragments[pos] == null) {
+				fragments[pos] = new VideoShowFragment();
+			}
+			return fragments[pos];
+		}
+
+		@Override
+		public int getCount() {
+			return 3;
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int state) {
+
+		}
+
+		@Override
+		public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
+
+		}
+
+		@Override
+		public void onPageSelected(int page) {
+			mCurrentVideoShow = fragments[page];
+		}
+
+	}
 
 	enum LocalState {
 		DONING, DONE;
