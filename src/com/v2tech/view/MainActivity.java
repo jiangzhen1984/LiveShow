@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +54,9 @@ import com.baidu.mapapi.cloud.CloudPoiInfo;
 import com.baidu.mapapi.cloud.CloudSearchResult;
 import com.baidu.mapapi.cloud.DetailSearchResult;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapDrawFrameCallback;
+import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
+import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -91,6 +97,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int STOP_RECORDING = 7;
 	private static final int START_PUBLISH = 8;
 	private static final int STOP_PUBLISH = 9;
+	private static final int GET_MAP_SNAPSHOT = 10;
 
 	private FrameLayout mMainLayout;
 	private EditText mSearchEdit;
@@ -115,6 +122,7 @@ public class MainActivity extends FragmentActivity implements
 	private VideoShowFragmentAdapter mViewPagerAdapter;
 	private VideoShowFragment mCurrentVideoShow;
 	private LinearLayout dragLayer; 
+	private ImageView mapSnapshot;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +201,36 @@ public class MainActivity extends FragmentActivity implements
 						- height);
 		fl.topMargin = height;
 		mMainLayout.addView(mMapView, fl);
+		mBaiduMap.setOnMapStatusChangeListener(new OnMapStatusChangeListener() {
+
+			@Override
+			public void onMapStatusChange(MapStatus arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onMapStatusChangeFinish(MapStatus arg0) {
+				mBaiduMap.snapshot(new SnapshotReadyCallback () {
+
+					@Override
+					public void onSnapshotReady(Bitmap bm) {
+						mapSnapshot.setImageBitmap(bm);
+					}
+					
+				});
+				
+			}
+
+			@Override
+			public void onMapStatusChangeStart(MapStatus arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+
+
 
 		ImageView searchIcon = new ImageView(this);
 		searchIcon.setImageResource(R.drawable.location);
@@ -298,6 +336,24 @@ public class MainActivity extends FragmentActivity implements
 
 		});
 
+		
+		
+	
+		mapSnapshot = new ImageView(this);
+		mapSnapshot.setAlpha(0.5f);
+		FrameLayout.LayoutParams flMapView = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT, dis.heightPixels
+						- height);
+		flMapView.topMargin = height;
+		videoShareLayout.addView(mapSnapshot, flMapView);
+		
+		LinearLayout ll = new LinearLayout(this);
+		ll.setAlpha(0.5F);
+		videoShareLayout.addView(ll, flMapView);
+		ll.bringToFront();
+		
+		
+		
 		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.WRAP_CONTENT,
 				FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -309,6 +365,8 @@ public class MainActivity extends FragmentActivity implements
 				+ (dis.heightPixels - height - mShareVideoButton
 						.getMeasuredHeight()) / 2;
 		videoShareLayout.addView(mShareVideoButton, buttonfl);
+		
+		
 		mMainLayout.bringToFront();
 	}
 
@@ -573,7 +631,6 @@ public class MainActivity extends FragmentActivity implements
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
 						bounds, zoomLevel);
 				mBaiduMap.animateMapStatus(u);
-
 			}
 
 			if (mCacheLocation == null
@@ -808,6 +865,9 @@ public class MainActivity extends FragmentActivity implements
 				VideoBCRequest.getInstance().stopLive();
 				cv.stopPublish();
 				isRecording = false;
+				break;
+			case GET_MAP_SNAPSHOT:
+				
 				break;
 			}
 		}
