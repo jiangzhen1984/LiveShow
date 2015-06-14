@@ -3,24 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff" >
-    
-        
-    
-     <FrameLayout
-        android:id="@+id/video_share_ly"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:background="#000000"
-         >
-    </FrameLayout>
- 
+
     <FrameLayout
-        android:id="@+id/main"
-        android:layout_width="fill_parent"
+        android:id="@+id/video_share_ly"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-         >
+        android:background="#000000" >
     </FrameLayout>
 
-    
+    <FrameLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+         >
+
+        <ImageView
+            android:id="@+id/location"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/location" />
+
+        <EditText
+            android:id="@+id/message_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_bg"
+            android:ems="10"
+            android:inputType="text|textCapCharacters|textCapSentences|textMultiLine"
+            android:maxLength="4500"
+            android:maxLines="3"
+            android:minHeight="40dp"
+            android:minLines="1" >
+        </EditText>
+    </RelativeLayout>
 
 </RelativeLayout>

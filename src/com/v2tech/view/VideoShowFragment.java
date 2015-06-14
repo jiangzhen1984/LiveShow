@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.V2.jni.util.V2Log;
 import com.v2tech.vo.Live;
 
 public class VideoShowFragment extends Fragment {
@@ -24,6 +23,9 @@ public class VideoShowFragment extends Fragment {
 	private MediaPlayer mPlayer;
 	private SurfaceView mSurfaceView;
 	private boolean playing;
+	
+	
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -42,6 +44,7 @@ public class VideoShowFragment extends Fragment {
 		RelativeLayout rl = new RelativeLayout(getActivity());
 		mSurfaceView = new SurfaceView(getActivity());
 		mSurfaceView.setZOrderMediaOverlay(true);
+		mSurfaceView.setZOrderOnTop(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -144,7 +147,19 @@ public class VideoShowFragment extends Fragment {
 		}
 		playing = false;
 	}
+	
+	
+	public void pause() {
+		if (playing) {
+			mPlayer.pause();
+		}
+	}
+	
+	public void resume() {
+		mPlayer.start();
+	}
 
+	static int index = 1;
 	private void drawFirstBlankFrame(Canvas c) {
 		if (playing) {
 			return;
@@ -154,7 +169,10 @@ public class VideoShowFragment extends Fragment {
 		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
 		Canvas tmp = new Canvas(bp);
 		tmp.drawColor(Color.BLACK);
-
+		Paint p = new Paint();
+		p.setColor(Color.RED);
+		p.setTextSize(20);
+		tmp.drawText(index+++"", width / 2 , height / 2,  p);
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
 	}

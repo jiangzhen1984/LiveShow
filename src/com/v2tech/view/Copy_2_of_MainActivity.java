@@ -7,26 +7,35 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewConfigurationCompat;
+import android.support.v4.view.ViewPager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.OverScroller;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
@@ -46,6 +55,7 @@ import com.baidu.mapapi.cloud.DetailSearchResult;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
+import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
@@ -68,12 +78,14 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
+import com.v2tech.widget.CrossLayout;
 import com.v2tech.widget.LiveVideoWidget;
 import com.v2tech.widget.LiveVideoWidget.MediaState;
+import com.v2tech.widget.MapViewFrameLayout;
 
-public class MainActivity extends FragmentActivity implements
-		LiveVideoWidget.DragListener, LiveVideoWidget.OnWidgetClickListener,
-		OnGetGeoCoderResultListener {
+public class Copy_2_of_MainActivity extends FragmentActivity implements
+		LiveVideoWidget.DragListener, OnClickListener,
+		LiveVideoWidget.OnWidgetClickListener, OnGetGeoCoderResultListener {
 
 	private static final int SEARCH = 1;
 	private static final int PLAY_FIRST_LIVE = 2;
@@ -86,30 +98,37 @@ public class MainActivity extends FragmentActivity implements
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
 
-	private View mBottomButtonLayout;
+	private static final int MIN_FLING_VELOCITY = 400; // dips
+
 	private FrameLayout mMainLayout;
-	private View mLocateButton;
 	private EditText mSearchEdit;
 
-	private MapVideoLayout mMapVideoLayout;
+	private MapViewFrameLayout mMapViewLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
-	private LocationClient mLocClient;
+	LocationClient mLocClient;
 	private GeoCoder mSearch;
+
 	public MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
 
+	private MediaPlayer mp = new MediaPlayer();
 	private CameraView cv;
 	private boolean isFirstPlayed;
 	private boolean isRecording = false;
 
 	private DisplayMetrics mDisplay;
+	private ViewPager mViewPager;
+	private VideoShowFragmentAdapter mViewPagerAdapter;
 	private VideoShowFragment mCurrentVideoShow;
+	private LinearLayout dragLayer;
 	private ImageView mapSnapshot;
+	private DragDirection mDragDir = DragDirection.NONE;
 
-	private LatLng selfLocation;
-	private LatLng currentVideoLocation;
+	private int mTouchSlop;
+	private int mMinimumVelocity;
+	private int mMaximumVelocity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,24 +137,47 @@ public class MainActivity extends FragmentActivity implements
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
 		mDisplay = getResources().getDisplayMetrics();
-		// final ViewConfiguration configuration = ViewConfiguration.get(this);
-		// mTouchSlop = ViewConfigurationCompat
-		// .getScaledPagingTouchSlop(configuration);
-		// final float density = getResources().getDisplayMetrics().density;
-		// mMinimumVelocity = (int) (MIN_FLING_VELOCITY * density);
-		// mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+		final ViewConfiguration configuration = ViewConfiguration.get(this);
+		mTouchSlop = ViewConfigurationCompat
+				.getScaledPagingTouchSlop(configuration);
+		final float density = getResources().getDisplayMetrics().density;
+		mMinimumVelocity = (int) (MIN_FLING_VELOCITY * density);
+		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
-		//
-		//
-		// mBaiduMap = mMapView.getMap();
-		// // mBaiduMap.setMyLocationEnabled(true);
-		//
+		Intent intent = getIntent();
+		if (intent.hasExtra("x") && intent.hasExtra("y")) {
+			// 当用intent参数时，设置中心点为指定点
+			Bundle b = intent.getExtras();
+			LatLng p = new LatLng(b.getDouble("y"), b.getDouble("x"));
+			mMapView = new MapView(this,
+					new BaiduMapOptions().mapStatus(new MapStatus.Builder()
+							.target(p).build()));
+		} else {
+			BaiduMapOptions mapOptions = new BaiduMapOptions();
+			mapOptions.scaleControlEnabled(false);
+			mapOptions.zoomControlsEnabled(false);
+			mMapView = new MapView(this, mapOptions);
+		}
+
+		mViewPager = new ViewPager(this);
+		mViewPager.setId(0x10000001);
+		mViewPagerAdapter = new VideoShowFragmentAdapter(
+				getSupportFragmentManager());
+		mViewPager.setAdapter(mViewPagerAdapter);
+		mViewPager.setCurrentItem(1);
+		mViewPager.setOnPageChangeListener(mViewPagerAdapter);
+		mCurrentVideoShow = (VideoShowFragment) mViewPagerAdapter
+				.getItem(mViewPager.getCurrentItem());
+
+		mBaiduMap = mMapView.getMap();
+		// mBaiduMap.setMyLocationEnabled(true);
+
+		init();
 		initMapviewLayout();
+		initVideoLayout();
 		initVideoShareLayout();
-		initBottomButtonLayout();
-		initLocation();
-		// initDragLayout();
-		//
+		initDragLayout();
+
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		ImRequest.getInstance().login(
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
@@ -146,7 +188,7 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	private void initLocation() {
+	private void init() {
 		// 定位初始化
 		mLocClient = new LocationClient(this);
 		mLocClient.registerLocationListener(myListener);
@@ -162,35 +204,73 @@ public class MainActivity extends FragmentActivity implements
 		mSearch = GeoCoder.newInstance();
 		mSearch.setOnGetGeoCodeResultListener(this);
 
+		// mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
 	}
 
 	private void initMapviewLayout() {
-		mMapVideoLayout = new MapVideoLayout(this);
-
-		mMapVideoLayout.setPosInterface(posChangedListener);
-		mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
-		mBaiduMap = mMapVideoLayout.getMap();
-		mMapView = mMapVideoLayout.getMapView();
-
+		int width = getPreWidth();
+		int height = getPreHeight(width);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.MATCH_PARENT,
-				FrameLayout.LayoutParams.MATCH_PARENT);
-		mMainLayout.addView(mMapVideoLayout, fl);
-
+				FrameLayout.LayoutParams.MATCH_PARENT, mDisplay.heightPixels
+						- height);
+		fl.topMargin = height;
+		mMainLayout.addView(mMapView, fl);
 		mBaiduMap.setOnMapStatusChangeListener(mMapStatusChangeListener);
-		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
-		mCurrentVideoShow = mMapVideoLayout.getCurrentVideoFragment();
+		//
+
+		ImageView locateIcon = new ImageView(this);
+		locateIcon.setImageResource(R.drawable.location);
+		locateIcon.setPadding(5, 5, 5, 5);
+		locateIcon.measure(View.MeasureSpec.UNSPECIFIED,
+				View.MeasureSpec.UNSPECIFIED);
+		FrameLayout.LayoutParams iconFl = new FrameLayout.LayoutParams(80, 80);
+		iconFl.leftMargin = 30;
+		iconFl.topMargin = mDisplay.heightPixels - 170
+				- locateIcon.getMeasuredHeight();
+		mMainLayout.addView(locateIcon, iconFl);
+		locateIcon.setOnClickListener(mLocateClickListener);
+
+		View bottomView = LayoutInflater.from(this).inflate(
+				R.layout.main_bottom_layout, null, false);
+
+		mSearchEdit = (EditText) bottomView.findViewById(R.id.message_text);
+		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		bottomView.measure(View.MeasureSpec.UNSPECIFIED,
+				View.MeasureSpec.UNSPECIFIED);
+
+		int[] location = { 0, 0 };
+		mMainLayout.getLocationOnScreen(location);
+
+		FrameLayout.LayoutParams flBottom = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT,
+				bottomView.getMeasuredHeight());
+		flBottom.topMargin = mDisplay.heightPixels - location[1]
+				- bottomView.getMeasuredHeight() - 70;
+		mMainLayout.addView(bottomView, flBottom);
 	}
 
-	private void initBottomButtonLayout() {
-		mBottomButtonLayout = findViewById(R.id.bottom_id);
-		mLocateButton = findViewById(R.id.location);
-		mLocateButton.setOnClickListener(mLocateClickListener);
+	CrossLayout cl;
 
-		mSearchEdit = (EditText) findViewById(R.id.message_text);
-		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+	private void initVideoLayout() {
+		int width = getPreWidth();
+		int height = getPreHeight(width);
 
-		mBottomButtonLayout.bringToFront();
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
+				height);
+		fl.leftMargin = (mDisplay.widthPixels - width) / 2;
+		mMainLayout.addView(mViewPager, fl);
+
+	}
+
+	private void initDragLayout() {
+		int width = getPreWidth();
+		int height = getPreHeight(width);
+		dragLayer = new LinearLayout(this);
+		FrameLayout.LayoutParams dragLayerLP = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT, height);
+		dragLayer.setOnTouchListener(dragListener);
+		dragLayer.bringToFront();
+		mMainLayout.addView(dragLayer, dragLayerLP);
 	}
 
 	private Button mShareVideoButton;
@@ -234,14 +314,18 @@ public class MainActivity extends FragmentActivity implements
 		});
 
 		mapSnapshot = new ImageView(this);
-		mapSnapshot.setAlpha(0.3f);
-		mapSnapshot.setColorFilter(Color.GRAY, PorterDuff.Mode.LIGHTEN);
+		mapSnapshot.setAlpha(0.5f);
 		mapSnapshot.setOnTouchListener(dragListener);
 		FrameLayout.LayoutParams flMapView = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT, mDisplay.heightPixels
 						- height);
 		flMapView.topMargin = height;
 		videoShareLayout.addView(mapSnapshot, flMapView);
+
+		LinearLayout ll = new LinearLayout(this);
+		ll.setAlpha(0.5F);
+		videoShareLayout.addView(ll, flMapView);
+		ll.bringToFront();
 
 		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -290,6 +374,9 @@ public class MainActivity extends FragmentActivity implements
 		isSuspended = true;
 		cv.stopPreView();
 
+		if (mp.isPlaying()) {
+			mp.stop();
+		}
 		Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
 		// lvw.stop();
 	}
@@ -297,6 +384,10 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (mp != null) {
+			mp.release();
+			mp = null;
+		}
 		// 退出时销毁定位
 		mLocClient.stop();
 		// 关闭定位图层
@@ -335,13 +426,17 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	private void stopCamera() {
-		cv.stopPreView();
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch (id) {
+		}
 	}
 
+	float initX;
 	float initY;
+	float lastX;
 	float lastY;
-	float offsetY;
 	int mActivePointerId;
 
 	private OnTouchListener dragListener = new OnTouchListener() {
@@ -351,22 +446,54 @@ public class MainActivity extends FragmentActivity implements
 			int action = event.getAction();
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
-				stopCamera();
+				// mMapView.setOnTouchListener(null);
+				mMapView.setOnFocusChangeListener(null);
+				mMapView.setFocusable(false);
 				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
+
 				initY = MotionEventCompat.getY(event, 0);
 				lastY = initY;
-				mMapVideoLayout.updateCoverState(true);
+				initX = (int) MotionEventCompat.getX(event, 0);
+				lastX = initX;
+				mViewPager.beginFakeDrag();
+				updateCurrentVideoState(false);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				final int pointerIndex = MotionEventCompat.findPointerIndex(
-						event, mActivePointerId);
+				final int pointerIndex = MotionEventCompat
+				.findPointerIndex(event, mActivePointerId);
 				final float y = MotionEventCompat.getY(event, pointerIndex);
+				final float x = MotionEventCompat.getY(event, pointerIndex);
 				final float dy = y - lastY;
-				mMapVideoLayout.updateOffset((int) dy);
-				lastY = y;
+				final float dx = x - lastX;
+				
+				if (mDragDir == DragDirection.NONE) {
+					if (Math.abs(dy) > 3) {
+						mDragDir = DragDirection.VERTICAL;
+					} else if (Math.abs(dx) > 3) {
+						mDragDir = DragDirection.HORIZONTAL;
+					} 
+				}
+
+				if (mDragDir == DragDirection.VERTICAL) {
+					performDragY(dy);
+					lastY = y;
+				} else if (mDragDir == DragDirection.HORIZONTAL) {
+					mViewPager.fakeDragBy(dx);
+					dragLayer.setOnTouchListener(null);
+					mViewPager.endFakeDrag();
+					lastX = x;
+					return false;
+				}
+
 				break;
 			case MotionEvent.ACTION_UP:
-				mMapVideoLayout.requestUpFlying();
+				if (mDragDir == DragDirection.VERTICAL) {
+					initVelocity = 90;
+					mMainLayout.post(Flying);
+				} else if (mDragDir == DragDirection.HORIZONTAL) {
+					mViewPager.endFakeDrag();
+					mDragDir = DragDirection.NONE;
+				}
 				break;
 			}
 			return true;
@@ -374,34 +501,89 @@ public class MainActivity extends FragmentActivity implements
 
 	};
 
-	private MapVideoLayout.LayoutPositionChangedListener posChangedListener = new MapVideoLayout.LayoutPositionChangedListener() {
+	private boolean performDragY(float y) {
+		boolean flag = true;
+		RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams) mMainLayout
+				.getLayoutParams();
+		fl.topMargin += (int) y;
+		if (fl.topMargin < 0) {
+			fl.topMargin = 0;
+			flag = false;
+		}
+		if (fl.topMargin > mDisplay.heightPixels) {
+			fl.topMargin = mDisplay.heightPixels;
+			flag = false;
+		}
+		mMainLayout.setLayoutParams(fl);
+
+		
+		// if (mMainLayout.getTop() + y < 0 ) {
+		// y += Math.abs(mMainLayout.getTop() + y);
+		// } else if ( mMainLayout.getTop() + y > mDisplay.heightPixels) {
+		// y -= (mMainLayout.getTop() + y - mDisplay.heightPixels);
+		// }
+		// mMainLayout.offsetTopAndBottom((int)y);
+		return flag;
+	}
+
+	int initVelocity = 120;
+	private Runnable Flying = new Runnable() {
 
 		@Override
-		public void onFlyingOut() {
-			if (!isRecording) {
-				cv.startPreView();
-			}
-			updateCurrentVideoState(false);
-			mBottomButtonLayout.setVisibility(View.GONE);
+		public void run() {
+			// RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams)
+			// mMainLayout
+			// .getLayoutParams();
+			// if (deltaY > 0 && fl.topMargin < mDisplay.heightPixels) {
+			// fl.topMargin += 55;
+			// if (fl.topMargin > mDisplay.heightPixels) {
+			// fl.topMargin = mDisplay.heightPixels;
+			// if (!isRecording) {
+			// cv.startPreView();
+			// }
+			// }
+			// } else if (deltaY < 0 && fl.topMargin > 0) {
+			// fl.topMargin += -55;
+			// if (fl.topMargin < 0) {
+			// fl.topMargin = 0;
+			// cv.stopPreView();
+			// }
+			// } else {
+			// // if (fl.topMargin == 0) {
+			// // dragLayer.setOnTouchListener(dragListener);
+			// // videoShareLayout.setOnTouchListener(null);
+			// // } else {
+			// // dragLayer.setOnTouchListener(null);
+			// // videoShareLayout.setOnTouchListener(dragListener);
+			// // }
+			// return;
+			// }
+			// mMainLayout.setLayoutParams(fl);
+			// mMainLayout.postDelayed(Flying, 6);
+
+			boolean ret = performDragY(lastY > initY ? initVelocity+=5 : -(initVelocity+=5));
+			if (ret == true) {
+				mMainLayout.postDelayed(Flying, 6);
+				return;
+			} 
+			
+			if (needStartCamera()) {
+				if (!isRecording) {
+					cv.startPreView();
+				}
+				updateCurrentVideoState(false);
+				mDragDir = DragDirection.NONE;
+			} else {
+				cv.stopPreView();
+				updateCurrentVideoState(true);
+				mDragDir = DragDirection.NONE;
+			} 
+
 		}
 
-		@Override
-		public void onFlyingIn() {
-			cv.stopPreView();
-			updateCurrentVideoState(true);
-			mBottomButtonLayout.setVisibility(View.VISIBLE);
-		}
 	};
-
-	private MapVideoLayout.OnVideoFragmentChangedListener videoFragmentChangedListener = new MapVideoLayout.OnVideoFragmentChangedListener() {
-
-		@Override
-		public void onChanged(VideoShowFragment videoFrag) {
-			mCurrentVideoShow = videoFrag;
-		}
-
-	};
-
+	
+	
 	private void updateCurrentVideoState(boolean play) {
 		if (mCurrentVideoShow != null) {
 			if (play) {
@@ -409,6 +591,17 @@ public class MainActivity extends FragmentActivity implements
 			} else {
 				mCurrentVideoShow.pause();
 			}
+		}
+	}
+	
+	
+	private boolean needStartCamera() {
+		RelativeLayout.LayoutParams fl = (RelativeLayout.LayoutParams) mMainLayout
+				.getLayoutParams();
+		if (fl.topMargin == 0) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 
@@ -421,7 +614,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
+			Toast.makeText(Copy_2_of_MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
@@ -437,6 +630,7 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
+	private LatLng selfLocation;
 	private double lat;
 	private double lan;
 
@@ -460,11 +654,11 @@ public class MainActivity extends FragmentActivity implements
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				float zoomLevel = 15.0F;
+				LatLng bounds = new LatLng(location.getLatitude(),
+						location.getLongitude());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-						selfLocation, zoomLevel);
+						bounds, zoomLevel);
 				mBaiduMap.animateMapStatus(u);
-				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
-						selfLocation));
 			}
 
 			if (mCacheLocation == null
@@ -562,8 +756,6 @@ public class MainActivity extends FragmentActivity implements
 				mBaiduMap.addOverlay(oo);
 			} else {
 				bundle.putString("url", l.getUrl());
-				bundle.putDouble("lat", l.getLat());
-				bundle.putDouble("lng", l.getLan());
 				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
 						.extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
@@ -576,20 +768,9 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onClick(View v) {
-			LocationItem li = (LocationItem) v.getTag();
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll, 15);
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
+					selfLocation, 15);
 			mBaiduMap.animateMapStatus(u);
-			if (li.type == LocationItemType.SELF) {
-				if (currentVideoLocation != null) {
-					li.type = LocationItemType.VIDEO;
-					li.ll = currentVideoLocation;
-				}
-			} else {
-				if (selfLocation != null) {
-					li.type = LocationItemType.SELF;
-					li.ll = selfLocation;
-				}
-			}
 		}
 
 	};
@@ -600,20 +781,9 @@ public class MainActivity extends FragmentActivity implements
 		public boolean onMarkerClick(Marker marker) {
 			if (marker.getExtraInfo() != null) {
 				String url = (String) marker.getExtraInfo().get("url");
-				double lat = marker.getExtraInfo().getDouble("lat");
-				double lng = marker.getExtraInfo().getDouble("lng");
 				if (url != null && !url.isEmpty()) {
 					Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
 							.sendToTarget();
-					// update map
-					float zoomLevel = 15.0F;
-					currentVideoLocation = new LatLng(lat, lng);
-					MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-							currentVideoLocation, zoomLevel);
-					mBaiduMap.animateMapStatus(u);
-
-					mLocateButton.setTag(new LocationItem(
-							LocationItemType.VIDEO, currentVideoLocation));
 				}
 			}
 			return true;
@@ -626,14 +796,14 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public void onPlayStateNotificaiton(MediaState state) {
 			if (state == MediaState.ERROR) {
-				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT)
+				Toast.makeText(Copy_2_of_MainActivity.this, "播放失败", Toast.LENGTH_SHORT)
 						.show();
 			} else if (state == MediaState.PREPARED
 					|| state == MediaState.PLAYING) {
-				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT)
+				Toast.makeText(Copy_2_of_MainActivity.this, "开始播放", Toast.LENGTH_SHORT)
 						.show();
 			} else if (state == MediaState.END) {
-				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT)
+				Toast.makeText(Copy_2_of_MainActivity.this, "播放结束", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
@@ -653,11 +823,8 @@ public class MainActivity extends FragmentActivity implements
 				@Override
 				public void onSnapshotReady(Bitmap bm) {
 					mapSnapshot.setImageBitmap(bm);
-//					mapSnapshot.setColorFilter(Color.GRAY,
-//							PorterDuff.Mode.LIGHTEN);
-					mapSnapshot.setColorFilter(Color.argb(150,200,200,200));
 					mapSnapshot.invalidate();
-					mMapVideoLayout.udpateCover(bm);
+					
 				}
 
 			});
@@ -691,9 +858,9 @@ public class MainActivity extends FragmentActivity implements
 					}
 				}
 
-				if (!isFirstPlayed && mCurrentVideoShow != null) {
+				if (!isFirstPlayed) {
 					try {
-						mCurrentVideoShow.play(MainActivity.this.getAssets()
+						mCurrentVideoShow.play(Copy_2_of_MainActivity.this.getAssets()
 								.openFd("a.mp4"));
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -774,20 +941,47 @@ public class MainActivity extends FragmentActivity implements
 
 	};
 
-	class LocationItem {
-		LocationItemType type;
-		LatLng ll;
+	class VideoShowFragmentAdapter extends FragmentPagerAdapter implements
+			ViewPager.OnPageChangeListener {
 
-		public LocationItem(LocationItemType type, LatLng ll) {
-			super();
-			this.type = type;
-			this.ll = ll;
+		private VideoShowFragment[] fragments;
+
+		public VideoShowFragmentAdapter(FragmentManager fm) {
+			super(fm);
+			fragments = new VideoShowFragment[3];
 		}
 
-	}
+		@Override
+		public Fragment getItem(int pos) {
+			if (fragments[pos] == null) {
+				fragments[pos] = new VideoShowFragment();
+			}
+			return fragments[pos];
+		}
 
-	enum LocationItemType {
-		VIDEO, SELF
+		@Override
+		public int getCount() {
+			return 3;
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int state) {
+			if (state != ViewPager.SCROLL_STATE_DRAGGING) {
+				dragLayer.setOnTouchListener(dragListener);
+			}
+		}
+
+		@Override
+		public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
+
+		}
+
+		@Override
+		public void onPageSelected(int page) {
+			mCurrentVideoShow = fragments[page];
+		}
+
 	}
 
 	enum LocalState {
