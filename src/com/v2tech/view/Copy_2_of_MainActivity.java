@@ -873,7 +873,7 @@ public class Copy_2_of_MainActivity extends FragmentActivity implements
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
-				VideoBCRequest.getInstance().getNeiborhood_region(
+				VideoBCRequest.getInstance().GetNeiborhood_Region(
 						"<gps lon=\"" + lan + "\" lat=\"" + lat
 								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {

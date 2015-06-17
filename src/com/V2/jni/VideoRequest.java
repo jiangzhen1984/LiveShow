@@ -53,6 +53,8 @@ public class VideoRequest {
 			}
 		}
 	}
+	
+	
 
 	public native boolean initialize(VideoRequest request);
 

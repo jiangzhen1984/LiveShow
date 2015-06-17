@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import android.widget.RelativeLayout;
 
 import com.v2tech.vo.Live;
 
-public class VideoShowFragment extends Fragment {
+public class VideoShowFragment extends Fragment implements OnPreparedListener{
 
 	private MediaPlayer mPlayer;
 	private SurfaceView mSurfaceView;
@@ -36,6 +37,7 @@ public class VideoShowFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mPlayer = new MediaPlayer();
+		mPlayer.setOnPreparedListener(this);
 	}
 
 	@Override
@@ -133,9 +135,7 @@ public class VideoShowFragment extends Fragment {
 
 		try {
 			mPlayer.setDataSource(live.getUrl());
-			mPlayer.prepare();
-			mPlayer.start();
-			playing = true;
+			mPlayer.prepareAsync();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,6 +175,14 @@ public class VideoShowFragment extends Fragment {
 		tmp.drawText(index+++"", width / 2 , height / 2,  p);
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
+	}
+	
+	
+
+	@Override
+	public void onPrepared(MediaPlayer mp) {
+		mPlayer.start();
+		playing = true;
 	}
 
 	private SurfaceHolder.Callback mHolderCallback = new SurfaceHolder.Callback() {

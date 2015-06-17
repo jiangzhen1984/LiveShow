@@ -683,30 +683,30 @@ public class MainActivity extends FragmentActivity implements
 				}
 				break;
 			case PLAY_FIRST_LIVE:
-				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
-					String url = VideoBCRequest.getInstance().lives.get(i)[0];
-					if (url != null && !url.isEmpty()) {
-						mCurrentVideoShow.play(url);
-						break;
-					}
-				}
-
-				if (!isFirstPlayed && mCurrentVideoShow != null) {
-					try {
-						mCurrentVideoShow.play(MainActivity.this.getAssets()
-								.openFd("a.mp4"));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				isFirstPlayed = true;
+//				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
+//					String url = VideoBCRequest.getInstance().lives.get(i)[0];
+//					if (url != null && !url.isEmpty()) {
+//						mCurrentVideoShow.play(url);
+//						break;
+//					}
+//				}
+//
+//				if (!isFirstPlayed && mCurrentVideoShow != null) {
+//					try {
+//						mCurrentVideoShow.play(MainActivity.this.getAssets()
+//								.openFd("a.mp4"));
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				isFirstPlayed = true;
 				break;
 			case PLAY_LIVE:
 				mCurrentVideoShow.play((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
-				VideoBCRequest.getInstance().getNeiborhood_region(
+				VideoBCRequest.getInstance().GetNeiborhood_Region(
 						"<gps lon=\"" + lan + "\" lat=\"" + lat
 								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
