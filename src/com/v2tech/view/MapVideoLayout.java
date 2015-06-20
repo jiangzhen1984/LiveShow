@@ -63,14 +63,18 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		//setOnTouchListener(this);
 		mVideoShowPager = new ViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
+		mVideoShowPager.setOnPageChangeListener(this);
 		mViewPagerAdapter = new VideoShowFragmentAdapter(
 				((FragmentActivity) getContext()).getSupportFragmentManager(),
 				6);
+		mVideoShowPager.setOffscreenPageLimit(6);
 		mVideoShowPager.setAdapter(mViewPagerAdapter);
 
+		
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.scaleControlEnabled(false);
 		mapOptions.zoomControlsEnabled(false);
+		mapOptions.rotateGesturesEnabled(false);
 		mMapView = new MapView(getContext(), mapOptions);
 
 		mBaiduMap = mMapView.getMap();

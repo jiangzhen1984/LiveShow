@@ -1,7 +1,5 @@
 package com.v2tech.view;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -16,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -26,14 +25,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
 import com.V2.jni.V2ClientType;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
-import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -141,8 +138,6 @@ public class MainActivity extends FragmentActivity implements
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
-
-		LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE, 2000);
 
 	}
 
@@ -291,7 +286,6 @@ public class MainActivity extends FragmentActivity implements
 		cv.stopPreView();
 
 		Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
-		// lvw.stop();
 	}
 
 	@Override
@@ -397,7 +391,9 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onChanged(VideoShowFragment videoFrag) {
+			updateCurrentVideoState(false);
 			mCurrentVideoShow = videoFrag;
+			updateCurrentVideoState(true);
 		}
 
 	};
@@ -429,7 +425,7 @@ public class MainActivity extends FragmentActivity implements
 				.getLocation()));
 
 		lat = result.getLocation().latitude;
-		lan = result.getLocation().longitude;
+		lng = result.getLocation().longitude;
 	}
 
 	@Override
@@ -438,7 +434,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private double lat;
-	private double lan;
+	private double lng;
 
 	public class MyLocationListenner implements BDLocationListener {
 
@@ -477,7 +473,7 @@ public class MainActivity extends FragmentActivity implements
 								+ location.getLatitude() + "\"></gps>");
 
 				lat = location.getLatitude();
-				lan = location.getLongitude();
+				lng = location.getLongitude();
 				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
 						1000);
 
@@ -552,24 +548,36 @@ public class MainActivity extends FragmentActivity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
-			LatLng ll = new LatLng(selfLocation.latitude,
-					selfLocation.longitude);
+			LatLng ll = new LatLng(l.getLat(),
+					l.getLng());
 			Bundle bundle = new Bundle();
-			V2Log.e(l.getLat() + "  " + l.getLan());
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {
 				OverlayOptions oo = new MarkerOptions().icon(online)
 						.position(ll).extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
 			} else {
-				bundle.putString("url", l.getUrl());
-				bundle.putDouble("lat", l.getLat());
-				bundle.putDouble("lng", l.getLan());
+				bundle.putSerializable("live", l);
 				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
 						.extraInfo(bundle);
 				mBaiduMap.addOverlay(oo);
 			}
 		}
 
+	}
+	
+	
+	private void playLive(Live l) {
+		mCurrentVideoShow.play(l);
+		
+		// update map
+		float zoomLevel = 15.0F;
+		currentVideoLocation = new LatLng(lat, lng);
+		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
+				currentVideoLocation, zoomLevel);
+		mBaiduMap.animateMapStatus(u);
+
+		mLocateButton.setTag(new LocationItem(
+				LocationItemType.VIDEO, currentVideoLocation));
 	}
 
 	private OnClickListener mLocateClickListener = new OnClickListener() {
@@ -599,21 +607,10 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public boolean onMarkerClick(Marker marker) {
 			if (marker.getExtraInfo() != null) {
-				String url = (String) marker.getExtraInfo().get("url");
-				double lat = marker.getExtraInfo().getDouble("lat");
-				double lng = marker.getExtraInfo().getDouble("lng");
-				if (url != null && !url.isEmpty()) {
-					Message.obtain(LocalHandler, PLAY_LIVE, new Live(null, url))
+				Live l = (Live)marker.getExtraInfo().getSerializable("live");
+				if (!TextUtils.isEmpty(l.getUrl())) {
+					Message.obtain(LocalHandler, PLAY_LIVE,  l)
 							.sendToTarget();
-					// update map
-					float zoomLevel = 15.0F;
-					currentVideoLocation = new LatLng(lat, lng);
-					MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-							currentVideoLocation, zoomLevel);
-					mBaiduMap.animateMapStatus(u);
-
-					mLocateButton.setTag(new LocationItem(
-							LocationItemType.VIDEO, currentVideoLocation));
 				}
 			}
 			return true;
@@ -683,31 +680,22 @@ public class MainActivity extends FragmentActivity implements
 				}
 				break;
 			case PLAY_FIRST_LIVE:
-//				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
-//					String url = VideoBCRequest.getInstance().lives.get(i)[0];
-//					if (url != null && !url.isEmpty()) {
-//						mCurrentVideoShow.play(url);
-//						break;
-//					}
-//				}
-//
-//				if (!isFirstPlayed && mCurrentVideoShow != null) {
-//					try {
-//						mCurrentVideoShow.play(MainActivity.this.getAssets()
-//								.openFd("a.mp4"));
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//				isFirstPlayed = true;
+				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
+					Live l = VideoBCRequest.getInstance().lives.get(i);
+					if (l != null && !TextUtils.isEmpty(l.getUrl())) {
+						playLive(l);
+						isFirstPlayed = true;
+						break;
+					}
+				}
 				break;
 			case PLAY_LIVE:
-				mCurrentVideoShow.play((Live) msg.obj);
+				playLive((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				// VideoBCRequest.getInstance().getNeiborhood(1000);
 				VideoBCRequest.getInstance().GetNeiborhood_Region(
-						"<gps lon=\"" + lan + "\" lat=\"" + lat
+						"<gps lon=\"" + lng + "\" lat=\"" + lat
 								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
 					LocalHandler.sendEmptyMessageDelayed(
@@ -725,15 +713,8 @@ public class MainActivity extends FragmentActivity implements
 				if (isSuspended) {
 					break;
 				}
-				List<String[]> liveList = VideoBCRequest.getInstance().lives;
-				List<Live> lList = new ArrayList<Live>();
-				for (String[] str : liveList) {
-					Live lv = new Live(null, str[0]);
-					lv.setLat(Double.parseDouble(str[1]));
-					lv.setLan(Double.parseDouble(str[2]));
-					lList.add(lv);
-				}
-				updateLiveMarkOnMap(lList);
+				List<Live> liveList = VideoBCRequest.getInstance().lives;
+				updateLiveMarkOnMap(liveList);
 				break;
 			case RECORDING:
 				isRecording = true;

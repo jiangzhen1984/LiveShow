@@ -1,8 +1,15 @@
 package com.v2tech.vo;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class Live {
+public class Live implements Serializable{
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5215649680130458839L;
 
 	
 	private User publisher;
@@ -13,10 +20,22 @@ public class Live {
 	
 	private double lat;
 	
-	private double lan;
+	private double lng;
 	
 	
 	
+	
+	
+	public Live(User publisher, String url, double lat, double lng) {
+		super();
+		this.publisher = publisher;
+		this.url = url;
+		this.lat = lat;
+		this.lng = lng;
+	}
+
+
+
 	public Live(User pu, String url) {
 		this.publisher = pu;
 		this.url = url;
@@ -60,14 +79,22 @@ public class Live {
 
 
 
-	public double getLan() {
-		return lan;
+	public double getLng() {
+		return lng;
 	}
 
 
 
-	public void setLan(double lan) {
-		this.lan = lan;
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "Live [publisher=" + publisher + ", url=" + url + ", lat=" + lat
+				+ ", lng=" + lng + "]";
 	}
 	
 	

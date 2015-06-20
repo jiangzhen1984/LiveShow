@@ -13,9 +13,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.v2tech.view.Constants;
+import com.v2tech.vo.Live;
 
 public class VideoBCRequest {
 
@@ -72,7 +72,7 @@ public class VideoBCRequest {
 	}
 
 
-	public List<String[]> lives = new ArrayList<String[]>();
+	public List<Live> lives = new ArrayList<Live>();
 
 	void OnGetNeiborhood(String szXml) {
 		V2Log.e(szXml);
@@ -103,15 +103,15 @@ public class VideoBCRequest {
 			String lat = userElement.getAttribute("lat");
 			String lan = userElement.getAttribute("lon");
 			String uid = userElement.getAttribute("userid");
-			lives.add(new String[] { uuid, lat, lan, uid });
+			lives.add(new Live(null,  uuid, Double.parseDouble(lat), Double.parseDouble(lan)));
 		}
 
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/03318FDB-8AD6-4FCE-83D3-33521D612477"+ ".m3u8", "40.072245","116.351065","12331"});
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", "40.072245","116.251065","12332"});
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", "40.072245","116.151065","12333"});
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/6E9B7B4C-38B7-4B4B-8136-6B4C2C105C7D"+ ".m3u8", "40.072245","116.551065","12334"});
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/C822C4BB-3EAE-4B3F-A134-93CC5E044EE7"+ ".m3u8", "40.072245","116.651065","12335"});
-		lives.add(new String[]{"http://" + Constants.SERVER + ":8090/hls/CA3FCB82-D07F-4E4E-AF87-A835C156F0D2"+ ".m3u8", "40.072245","116.751065","12336"});
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 40.072245D,116.351065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 40.072245D,116.361065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.371065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.381065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.391065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.341065D));
 	}
 
 	public static Document buildDocument(String xml) {

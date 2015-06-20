@@ -20,6 +20,7 @@ import android.support.v4.view.ViewConfigurationCompat;
 import android.support.v4.view.ViewPager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -749,7 +750,7 @@ public class Copy_2_of_MainActivity extends FragmentActivity implements
 			LatLng ll = new LatLng(selfLocation.latitude,
 					selfLocation.longitude);
 			Bundle bundle = new Bundle();
-			V2Log.e(l.getLat() + "  " + l.getLan());
+			V2Log.e(l.getLat() + "  " + l.getLng());
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {
 				OverlayOptions oo = new MarkerOptions().icon(online)
 						.position(ll).extraInfo(bundle);
@@ -851,22 +852,15 @@ public class Copy_2_of_MainActivity extends FragmentActivity implements
 				break;
 			case PLAY_FIRST_LIVE:
 				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
-					String url = VideoBCRequest.getInstance().lives.get(i)[0];
-					if (url != null && !url.isEmpty()) {
-						mCurrentVideoShow.play(url);
+					Live l = VideoBCRequest.getInstance().lives.get(i);
+					if (l != null && !TextUtils.isEmpty(l.getUrl())) {
+						mCurrentVideoShow.play(l);
+						isFirstPlayed = true;
 						break;
 					}
 				}
 
-				if (!isFirstPlayed) {
-					try {
-						mCurrentVideoShow.play(Copy_2_of_MainActivity.this.getAssets()
-								.openFd("a.mp4"));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				isFirstPlayed = true;
+				
 				break;
 			case PLAY_LIVE:
 				mCurrentVideoShow.play((Live) msg.obj);
@@ -892,15 +886,8 @@ public class Copy_2_of_MainActivity extends FragmentActivity implements
 				if (isSuspended) {
 					break;
 				}
-				List<String[]> liveList = VideoBCRequest.getInstance().lives;
-				List<Live> lList = new ArrayList<Live>();
-				for (String[] str : liveList) {
-					Live lv = new Live(null, str[0]);
-					lv.setLat(Double.parseDouble(str[1]));
-					lv.setLan(Double.parseDouble(str[2]));
-					lList.add(lv);
-				}
-				updateLiveMarkOnMap(lList);
+				List<Live> liveList = VideoBCRequest.getInstance().lives;
+				updateLiveMarkOnMap(liveList);
 				break;
 			case RECORDING:
 				isRecording = true;
