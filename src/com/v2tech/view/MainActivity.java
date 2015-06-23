@@ -1,6 +1,8 @@
 package com.v2tech.view;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -65,20 +67,17 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
-import com.v2tech.widget.LiveVideoWidget;
-import com.v2tech.widget.LiveVideoWidget.MediaState;
 
 public class MainActivity extends FragmentActivity implements
-		LiveVideoWidget.DragListener, LiveVideoWidget.OnWidgetClickListener,
-		OnGetGeoCoderResultListener {
+
+OnGetGeoCoderResultListener {
 
 	private static final int SEARCH = 1;
-	private static final int PLAY_FIRST_LIVE = 2;
+	private static final int AUTO_PLAY_LIVE = 2;
 	private static final int PLAY_LIVE = 3;
 	private static final int INTERVAL_GET_NEIBERHOOD = 4;
 	private static final int UPDATE_LIVE_MARK = 5;
 	private static final int RECORDING = 6;
-	private static final int STOP_RECORDING = 7;
 	private static final int START_PUBLISH = 8;
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
@@ -87,22 +86,26 @@ public class MainActivity extends FragmentActivity implements
 	private FrameLayout mMainLayout;
 	private View mLocateButton;
 	private EditText mSearchEdit;
-
+	private Button mShareVideoButton;
+	private FrameLayout videoShareLayout;
+	
+	
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	private LocationClient mLocClient;
 	private GeoCoder mSearch;
-	public MyLocationListenner myListener = new MyLocationListenner();
+	private MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
 
 	private CameraView cv;
-	private boolean isFirstPlayed;
 	private boolean isRecording = false;
 
 	private DisplayMetrics mDisplay;
-	private VideoShowFragment mCurrentVideoShow;
+
+	private Map<VideoOpt, VideoItem> videoMaps = new HashMap<VideoOpt, VideoItem>();
+	private VideoOpt mCurrentVideoFragment;
 	private ImageView mapSnapshot;
 
 	private LatLng selfLocation;
@@ -174,7 +177,12 @@ public class MainActivity extends FragmentActivity implements
 
 		mBaiduMap.setOnMapStatusChangeListener(mMapStatusChangeListener);
 		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
-		mCurrentVideoShow = mMapVideoLayout.getCurrentVideoFragment();
+		mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
+		VideoItem item = videoMaps.get(mCurrentVideoFragment);
+		if (item == null) {
+			videoMaps.put(mCurrentVideoFragment, new VideoItem(
+					mCurrentVideoFragment));
+		}
 	}
 
 	private void initBottomButtonLayout() {
@@ -188,8 +196,7 @@ public class MainActivity extends FragmentActivity implements
 		mBottomButtonLayout.bringToFront();
 	}
 
-	private Button mShareVideoButton;
-	private FrameLayout videoShareLayout;
+
 
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
@@ -284,8 +291,9 @@ public class MainActivity extends FragmentActivity implements
 		super.onStop();
 		isSuspended = true;
 		cv.stopPreView();
-
-		Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+		if (isRecording) {
+			Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+		}
 	}
 
 	@Override
@@ -310,23 +318,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	public void startDrag() {
-	}
-
-	@Override
-	public void stopDrag() {
-	}
-
-	FrameLayout.LayoutParams originFl;
-
-	@Override
-	public void onWidgetClick(View view) {
-		// Intent i = new Intent(this, VideoList.class);
-		// startActivity(i);
-
 	}
 
 	private void stopCamera() {
@@ -375,14 +366,14 @@ public class MainActivity extends FragmentActivity implements
 			if (!isRecording) {
 				cv.startPreView();
 			}
-			updateCurrentVideoState(false);
+			updateCurrentVideoState(mCurrentVideoFragment, false);
 			mBottomButtonLayout.setVisibility(View.GONE);
 		}
 
 		@Override
 		public void onFlyingIn() {
 			cv.stopPreView();
-			updateCurrentVideoState(true);
+			updateCurrentVideoState(mCurrentVideoFragment, true);
 			mBottomButtonLayout.setVisibility(View.VISIBLE);
 		}
 	};
@@ -391,20 +382,24 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onChanged(VideoShowFragment videoFrag) {
-			updateCurrentVideoState(false);
-			mCurrentVideoShow = videoFrag;
-			updateCurrentVideoState(true);
+			updateCurrentVideoState(mCurrentVideoFragment, false);
+			mCurrentVideoFragment = videoFrag;
+			updateCurrentVideoState(videoFrag, true);
+
+			VideoItem item = videoMaps.get(videoFrag);
+			if (item == null) {
+				videoMaps.put(videoFrag, new VideoItem(videoFrag));
+				autoPlayNecessary();
+			}
 		}
 
 	};
 
-	private void updateCurrentVideoState(boolean play) {
-		if (mCurrentVideoShow != null) {
-			if (play) {
-				mCurrentVideoShow.resume();
-			} else {
-				mCurrentVideoShow.pause();
-			}
+	private void updateCurrentVideoState(VideoOpt videoOpt, boolean play) {
+		if (play) {
+			videoOpt.resume();
+		} else {
+			videoOpt.pause();
 		}
 	}
 
@@ -548,8 +543,7 @@ public class MainActivity extends FragmentActivity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
-			LatLng ll = new LatLng(l.getLat(),
-					l.getLng());
+			LatLng ll = new LatLng(l.getLat(), l.getLng());
 			Bundle bundle = new Bundle();
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {
 				OverlayOptions oo = new MarkerOptions().icon(online)
@@ -564,11 +558,12 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
-	
-	
+
 	private void playLive(Live l) {
-		mCurrentVideoShow.play(l);
-		
+		mCurrentVideoFragment.play(l);
+
+		videoMaps.get(mCurrentVideoFragment).live = l;
+
 		// update map
 		float zoomLevel = 15.0F;
 		currentVideoLocation = new LatLng(lat, lng);
@@ -576,8 +571,32 @@ public class MainActivity extends FragmentActivity implements
 				currentVideoLocation, zoomLevel);
 		mBaiduMap.animateMapStatus(u);
 
-		mLocateButton.setTag(new LocationItem(
-				LocationItemType.VIDEO, currentVideoLocation));
+		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
+				currentVideoLocation));
+	}
+
+	private boolean autoPlayNecessary() {
+		if (mCurrentVideoFragment.isPlaying()) {
+			return false;
+		}
+		List<Live> list = VideoBCRequest.getInstance().lives;
+		for (int i = 0; i < list.size(); i++) {
+			boolean inUsed = false;
+			for (VideoItem item : videoMaps.values()) {
+				if (item.live.equals(list.get(i))) {
+					inUsed = true;
+					break;
+				}
+			}
+			if (inUsed) {
+				continue;
+			} else {
+				playLive(list.get(i));
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 	private OnClickListener mLocateClickListener = new OnClickListener() {
@@ -607,33 +626,14 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public boolean onMarkerClick(Marker marker) {
 			if (marker.getExtraInfo() != null) {
-				Live l = (Live)marker.getExtraInfo().getSerializable("live");
+				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (!TextUtils.isEmpty(l.getUrl())) {
-					Message.obtain(LocalHandler, PLAY_LIVE,  l)
-							.sendToTarget();
+					Message.obtain(LocalHandler, PLAY_LIVE, l).sendToTarget();
 				}
 			}
 			return true;
 		}
 
-	};
-
-	private LiveVideoWidget.MediaStateNotification mediaStateNotificaiton = new LiveVideoWidget.MediaStateNotification() {
-
-		@Override
-		public void onPlayStateNotificaiton(MediaState state) {
-			if (state == MediaState.ERROR) {
-				Toast.makeText(MainActivity.this, "播放失败", Toast.LENGTH_SHORT)
-						.show();
-			} else if (state == MediaState.PREPARED
-					|| state == MediaState.PLAYING) {
-				Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT)
-						.show();
-			} else if (state == MediaState.END) {
-				Toast.makeText(MainActivity.this, "播放结束", Toast.LENGTH_SHORT)
-						.show();
-			}
-		}
 	};
 
 	private OnMapStatusChangeListener mMapStatusChangeListener = new OnMapStatusChangeListener() {
@@ -650,9 +650,9 @@ public class MainActivity extends FragmentActivity implements
 				@Override
 				public void onSnapshotReady(Bitmap bm) {
 					mapSnapshot.setImageBitmap(bm);
-//					mapSnapshot.setColorFilter(Color.GRAY,
-//							PorterDuff.Mode.LIGHTEN);
-					mapSnapshot.setColorFilter(Color.argb(150,200,200,200));
+					// mapSnapshot.setColorFilter(Color.GRAY,
+					// PorterDuff.Mode.LIGHTEN);
+					mapSnapshot.setColorFilter(Color.argb(150, 200, 200, 200));
 					mapSnapshot.invalidate();
 					mMapVideoLayout.udpateCover(bm);
 				}
@@ -679,15 +679,8 @@ public class MainActivity extends FragmentActivity implements
 					doSearch((String) msg.obj);
 				}
 				break;
-			case PLAY_FIRST_LIVE:
-				for (int i = 0; i < VideoBCRequest.getInstance().lives.size(); i++) {
-					Live l = VideoBCRequest.getInstance().lives.get(i);
-					if (l != null && !TextUtils.isEmpty(l.getUrl())) {
-						playLive(l);
-						isFirstPlayed = true;
-						break;
-					}
-				}
+			case AUTO_PLAY_LIVE:
+				autoPlayNecessary();
 				break;
 			case PLAY_LIVE:
 				playLive((Live) msg.obj);
@@ -703,10 +696,7 @@ public class MainActivity extends FragmentActivity implements
 					LocalHandler
 							.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
 
-					if (!isFirstPlayed) {
-						LocalHandler.sendEmptyMessageDelayed(PLAY_FIRST_LIVE,
-								1000);
-					}
+					LocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
 				break;
 			case UPDATE_LIVE_MARK:
@@ -732,10 +722,6 @@ public class MainActivity extends FragmentActivity implements
 							+ uuid;
 					cv.startPublish();
 				}
-				break;
-			case STOP_RECORDING:
-				cv.stopPublish();
-				VideoBCRequest.getInstance().stopLive();
 				break;
 			case START_PUBLISH:
 				VideoBCRequest.getInstance().startLive();
@@ -763,6 +749,16 @@ public class MainActivity extends FragmentActivity implements
 			super();
 			this.type = type;
 			this.ll = ll;
+		}
+
+	}
+
+	class VideoItem {
+		VideoOpt videoOpt;
+		Live live;
+
+		public VideoItem(VideoOpt videoOpt) {
+			this.videoOpt = videoOpt;
 		}
 
 	}

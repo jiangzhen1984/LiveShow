@@ -45,7 +45,7 @@ import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.exoplayer.util.Util;
 import com.v2tech.vo.Live;
 
-public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener{
+public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, VideoOpt {
 
 	private PlayerControl playerControl;
 	private ExoPlayer player;
@@ -155,6 +155,32 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener{
 			this.playerControl.start();
 		}
 	}
+
+	
+	
+	@Override
+	public void stop() {
+		if (this.player != null) {
+			this.player.stop();
+			this.player.seekTo(0);
+		}
+	}
+	
+	
+
+
+
+	@Override
+	public boolean isPlaying() {
+		if (this.playerControl != null) {
+			return this.playerControl.isPlaying();
+		}
+		return false;
+	}
+
+
+
+
 
 	static int index = 1;
 
