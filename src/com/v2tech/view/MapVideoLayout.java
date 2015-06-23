@@ -2,8 +2,10 @@ package com.v2tech.view;
 
 import java.util.ArrayList;
 
+import android.R.color;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -16,17 +18,19 @@ import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 
-public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnPageChangeListener {
-	
+public class MapVideoLayout extends FrameLayout implements OnTouchListener,
+		OnPageChangeListener, VideoCommentsAPI {
+
 	private static final boolean DEBUG = true;
 
-	private View mDragView;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	private ViewPager mVideoShowPager;
@@ -38,8 +42,10 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 	private int mOffsetTop;
 	private DragDirection mDragDir = DragDirection.NONE;
 	private int mDefaultVelocity = 120;
-	
+
 	private OnVideoFragmentChangedListener mVideoChangedListener;
+
+	private LinearLayout mMsgLayout;
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
@@ -60,7 +66,8 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 	}
 
 	private void init() {
-		//setOnTouchListener(this);
+		this.setBackgroundColor(Color.TRANSPARENT);
+		// setOnTouchListener(this);
 		mVideoShowPager = new ViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
 		mVideoShowPager.setOnPageChangeListener(this);
@@ -70,7 +77,6 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		mVideoShowPager.setOffscreenPageLimit(6);
 		mVideoShowPager.setAdapter(mViewPagerAdapter);
 
-		
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.scaleControlEnabled(false);
 		mapOptions.zoomControlsEnabled(false);
@@ -78,17 +84,20 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		mMapView = new MapView(getContext(), mapOptions);
 
 		mBaiduMap = mMapView.getMap();
-		
-		mDragView = new ImageView(getContext());
-		mTestImage= new ImageView(getContext());
+
+		mTestImage = new ImageView(getContext());
+
+		mMsgLayout = new LinearLayout(getContext());
+		mMsgLayout.setOrientation(LinearLayout.VERTICAL);
+		mMsgLayout.setBackgroundColor(Color.TRANSPARENT);
 		
 		this.addView(mVideoShowPager);
 		this.addView(mTestImage);
 		this.addView(mMapView);
-		this.addView(mDragView);
-		this.bringChildToFront(mDragView);
-		
-		mDragView.setOnTouchListener(this);
+		this.addView(mMsgLayout);
+		this.bringChildToFront(mMsgLayout);
+
+		mMsgLayout.setOnTouchListener(this);
 
 	}
 
@@ -99,44 +108,58 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 	public MapView getMapView() {
 		return this.mMapView;
 	}
+
+	@Override
+	public void addNewMessage(String str) {
+		if (mMsgLayout.getChildCount() > 3) {
+			mMsgLayout.removeViewAt(0);
+		}
+		TextView tv = new TextView(getContext());
+		tv.setText(str);
+		tv.setTextColor(Color.BLUE);
+		mMsgLayout.addView(tv, new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+	}
 	
-	
-	
-	
-	
+	public void  removeOldestMsg() {
+		if (mMsgLayout.getChildCount() > 0) {
+			mMsgLayout.removeViewAt(0);
+		}
+	}
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		
+
 	}
 
 	@Override
 	public void onPageSelected(int position) {
 		if (mVideoChangedListener != null) {
-			mVideoChangedListener.onChanged((VideoShowFragment)mViewPagerAdapter.getItem(position));
+			mVideoChangedListener
+					.onChanged((VideoShowFragment) mViewPagerAdapter
+							.getItem(position));
 		}
 	}
 
 	@Override
 	public void onPageScrollStateChanged(int state) {
-		
+
 	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
 		this.mPosInterface = posInterface;
 	}
 
-	
-	
 	public void setVideoChangedListener(
 			OnVideoFragmentChangedListener videoChangedListener) {
 		this.mVideoChangedListener = videoChangedListener;
 	}
-	
-	
+
 	public VideoShowFragment getCurrentVideoFragment() {
-		return (VideoShowFragment)mViewPagerAdapter.getItem(this.mVideoShowPager.getCurrentItem());
+		return (VideoShowFragment) mViewPagerAdapter
+				.getItem(this.mVideoShowPager.getCurrentItem());
 	}
 
 	@Override
@@ -150,15 +173,14 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		super.onDetachedFromWindow();
 		mVelocityTracker.recycle();
 	}
-	
+
 	public interface OnVideoFragmentChangedListener {
 		public void onChanged(VideoShowFragment videoFrag);
 	}
-	
-	
+
 	public interface LayoutPositionChangedListener {
 		public void onFlyingIn();
-		
+
 		public void onFlyingOut();
 	}
 
@@ -167,13 +189,12 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 	private float mLastY;
 	private float mLastX;
 
-	
 	public void requestUpFlying() {
 		Flying fl = new Flying();
 		fl.startFlying(-mDefaultVelocity);
 		post(fl);
 	}
-	
+
 	public void updateOffset(int offset) {
 		if (mOffsetTop + offset < 0) {
 			mOffsetTop = 0;
@@ -181,29 +202,32 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 			mOffsetTop += offset;
 		}
 		requestLayout();
-		//offsetTopAndBottom(mOffsetTop);
+		// offsetTopAndBottom(mOffsetTop);
 	}
-	
+
 	public void udpateCover(Bitmap bm) {
 		mTestImage.setScaleType(ScaleType.CENTER_CROP);
 		mTestImage.setImageBitmap(bm);
 	}
-	
+
 	public void updateCoverState(boolean flag) {
 		if (flag) {
+			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
+					.getCurrentItem())).pause();
 			mMapView.onPause();
 			this.bringChildToFront(mTestImage);
-//			mMapView.setVisibility(View.GONE);
-			//removeView(mMapView);
+			// mMapView.setVisibility(View.GONE);
+			// removeView(mMapView);
 		} else {
-		//	addView(mMapView);
-//			mMapView.setVisibility(View.VISIBLE);
+			// addView(mMapView);
+			// mMapView.setVisibility(View.VISIBLE);
+			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
+					.getCurrentItem())).resume();
 			mMapView.onResume();
 			bringChildToFront(mMapView);
 		}
 	}
-	
-	
+
 	@Override
 	public boolean onTouch(View v, MotionEvent ev) {
 		int action = ev.getAction();
@@ -211,38 +235,38 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			mVideoShowPager.beginFakeDrag();
-			
+
 			mInitX = ev.getX();
 			mInitY = ev.getY();
 			mLastX = mInitX;
 			mLastY = mInitY;
-			
+
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mMapView.clearFocus();
 			float dy = ev.getY() - mLastY;
 			float dx = ev.getX() - mLastX;
 			if (DEBUG) {
-				V2Log.d(dx+"    "+ dy+"   "+ mDragDir);
+				V2Log.d(dx + "    " + dy + "   " + mDragDir);
 			}
 			if (mDragDir == DragDirection.NONE) {
-				if (Math.abs(dx)  > Math.abs(dy)) {
+				if (Math.abs(dx) > Math.abs(dy)) {
 					mDragDir = DragDirection.HORIZONTAL;
 				} else {
 					mDragDir = DragDirection.VERTICAL;
 					updateCoverState(true);
 				}
-			} 
-			
+			}
+
 			if (mDragDir == DragDirection.VERTICAL) {
-				updateOffset((int)dy);
+				updateOffset((int) dy);
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.fakeDragBy(dx);
 			}
-			
+
 			mLastX = ev.getX();
 			mLastY = ev.getY();
-			
+
 			break;
 		case MotionEvent.ACTION_UP:
 			if (mDragDir == DragDirection.VERTICAL) {
@@ -258,21 +282,20 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 
 		return true;
 	}
-	
-	
-	
-	class Flying implements  Runnable {
-		
+
+	class Flying implements Runnable {
+
 		int initVelocity;
-		
+
 		public void startFlying(int initVelocity) {
 			this.initVelocity = initVelocity;
 		}
-		
+
 		@Override
 		public void run() {
 			if (DEBUG) {
-				V2Log.d("[FLYING] : " + mOffsetTop+"   " + initVelocity+"   "+mOrigBottom);
+				V2Log.d("[FLYING] : " + mOffsetTop + "   " + initVelocity
+						+ "   " + mOrigBottom);
 			}
 			mMapView.clearFocus();
 			if (mOffsetTop <= 0) {
@@ -284,7 +307,7 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 				updateCoverState(false);
 				return;
 			}
-			
+
 			if (mOffsetTop > mOrigBottom) {
 				if (mPosInterface != null) {
 					mPosInterface.onFlyingOut();
@@ -293,16 +316,17 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 				return;
 			}
 			if (initVelocity > 0) {
-				initVelocity += 15;
+				initVelocity += 8;
 			} else {
-				initVelocity -= 15;
+				initVelocity -= 8;
 			}
 			updateOffset(initVelocity);
+
 			post(this);
 		}
-		
+
 	};
-	
+
 	private int mOrigBottom;
 
 	@Override
@@ -311,11 +335,14 @@ public class MapVideoLayout extends FrameLayout  implements OnTouchListener, OnP
 		mOrigBottom = bottom;
 		mVideoShowPager.layout(left, top + mOffsetTop, right, (bottom
 				+ mOffsetTop - top) / 2);
-		mDragView.layout(left, top + mOffsetTop, right, (bottom
-				+ mOffsetTop - top) / 2);
+
+		mMsgLayout.layout(left, top + mOffsetTop, right,
+				(bottom + mOffsetTop - top) / 2);
+//		mDragView.layout(left, top + mOffsetTop, right,
+//				(bottom + mOffsetTop - top) / 2);
 		mMapView.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
 		mTestImage.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
-		
+
 	}
 
 	@Override

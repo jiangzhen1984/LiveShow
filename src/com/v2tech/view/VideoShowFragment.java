@@ -46,6 +46,8 @@ import com.google.android.exoplayer.util.Util;
 import com.v2tech.vo.Live;
 
 public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, VideoOpt {
+	
+	
 
 	private PlayerControl playerControl;
 	private ExoPlayer player;
@@ -54,8 +56,8 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	private boolean surfacePushed;
 	private HandlerThread handlerThread;
 	private Handler localHandler;
-	
 	private Live live;
+	private VideoState videoState = VideoState.UNINIT;
 	
 
 	@Override
@@ -66,9 +68,9 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		player = ExoPlayer.Factory.newInstance(2, 1000, 5000);
 		playerControl = new PlayerControl(player);
+		playerControl.pause();
 		player.addListener(this);
 		handlerThread = new HandlerThread("");
 		handlerThread.start();
@@ -80,6 +82,8 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			}
 		}
 		localHandler = new Handler(handlerThread.getLooper());
+		
+		videoState = VideoState.IDLE;
 	}
 
 	@Override
@@ -88,7 +92,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		RelativeLayout rl = new RelativeLayout(getActivity());
 		mSurfaceView = new SurfaceView(getActivity());
 		mSurfaceView.setZOrderMediaOverlay(true);
-		mSurfaceView.setZOrderOnTop(true);
+//		mSurfaceView.setZOrderOnTop(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -105,6 +109,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		player.release();
 		player = null;
 		handlerThread.quit();
+		videoState = VideoState.RELEASE;
 	}
 
 	@Override
@@ -141,19 +146,43 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 				live.getUrl(), new AudioCapabilities(
 						new int[] { AudioFormat.ENCODING_PCM_16BIT },
 						AudioFormat.CHANNEL_IN_MONO)).buildRenderers();
+		videoState = VideoState.PREPARED;
 	}
 
 
 	public void pause() {
-		if (playerControl.isPlaying()) {
+		if (VideoState.PLAYING == videoState) {
 			playerControl.pause();
 		}
+		videoState = VideoState.PAUSE;
 	}
 
 	public void resume() {
-		if (!this.playerControl.isPlaying())  {
-			this.playerControl.start();
+		if (live == null) {
+			return;
 		}
+		switch (videoState) {
+		case BUFFERING:
+		case IDLE:
+			break;
+		case PAUSE:
+			this.playerControl.start();
+			break;
+		case PLAYING:
+			break;
+		case PREPARED:
+			break;
+		case RELEASE:
+			break;
+		case STOP:
+			break;
+		case UNINIT:
+			break;
+		default:
+			break;
+			
+		}
+		videoState = VideoState.PLAYING;
 	}
 
 	
@@ -164,6 +193,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			this.player.stop();
 			this.player.seekTo(0);
 		}
+		videoState = VideoState.STOP;
 	}
 	
 	
@@ -172,10 +202,16 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 
 	@Override
 	public boolean isPlaying() {
-		if (this.playerControl != null) {
-			return this.playerControl.isPlaying();
-		}
-		return false;
+		return VideoState.PLAYING == videoState;
+	}
+
+
+
+
+
+	@Override
+	public boolean isPause() {
+		return  VideoState.PAUSE  == videoState;
 	}
 
 
@@ -267,7 +303,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 
 	@Override
 	public void onPlayerError(ExoPlaybackException error) {
-		
+		videoState = VideoState.STOP;
 	}
 
 	@Override
@@ -279,6 +315,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			player.stop();
 			player.seekTo(0);
 			live = null;
+			videoState = VideoState.STOP;
 		}
 	}
 
@@ -365,6 +402,8 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			player.setRendererEnabled(1, true);
 			player.prepare(renderers);
 			player.setPlayWhenReady(true);
+			//FIXE should move this state to callback function
+			videoState = VideoState.PLAYING;
 		}
 
 	}

@@ -24,6 +24,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -69,7 +72,6 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 
 public class MainActivity extends FragmentActivity implements
-
 OnGetGeoCoderResultListener {
 
 	private static final int SEARCH = 1;
@@ -81,6 +83,7 @@ OnGetGeoCoderResultListener {
 	private static final int START_PUBLISH = 8;
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
+	private static final int VIDEO_COMMENTS_TIME_OUT = 11;
 
 	private View mBottomButtonLayout;
 	private FrameLayout mMainLayout;
@@ -98,6 +101,10 @@ OnGetGeoCoderResultListener {
 	private MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
+	
+	private Button mButton;
+	private CheckBox mMsgCk;
+	private boolean isSendMsg = false;
 
 	private CameraView cv;
 	private boolean isRecording = false;
@@ -141,6 +148,9 @@ OnGetGeoCoderResultListener {
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+		
+		Message timeoutMessage = Message.obtain(LocalHandler, VIDEO_COMMENTS_TIME_OUT);
+		LocalHandler.sendMessageDelayed(timeoutMessage, 1000);
 
 	}
 
@@ -191,8 +201,41 @@ OnGetGeoCoderResultListener {
 		mLocateButton.setOnClickListener(mLocateClickListener);
 
 		mSearchEdit = (EditText) findViewById(R.id.message_text);
-		mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+		//mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
 
+		
+		mButton = (Button)findViewById(R.id.msg_button);
+		mButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (isSendMsg) {
+					mMapVideoLayout.addNewMessage(mSearchEdit.getText().toString());
+				} else {
+					LocalHandler.removeMessages(SEARCH);
+					Message msg = Message.obtain(LocalHandler, SEARCH, mSearchEdit.getText().toString());
+					LocalHandler.sendMessage(msg);
+				}
+			}
+			
+		});
+		mMsgCk = (CheckBox)findViewById(R.id.msg_check);
+		mMsgCk.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				isSendMsg = isChecked;
+				mButton.setText(isSendMsg?R.string.msg_send_button_text: R.string.pos_search_button_text);
+				if (isSendMsg) {
+			
+					//mSearchEdit.removeTextChangedListener(mSearchedTextWatcher);
+				} else {
+					//mSearchEdit.addTextChangedListener(mSearchedTextWatcher);
+				}
+			}
+			
+		});
 		mBottomButtonLayout.bringToFront();
 	}
 
@@ -577,12 +620,17 @@ OnGetGeoCoderResultListener {
 
 	private boolean autoPlayNecessary() {
 		if (mCurrentVideoFragment.isPlaying()) {
-			return false;
+			if (mCurrentVideoFragment.isPause()) {
+				return false;
+			}
 		}
 		List<Live> list = VideoBCRequest.getInstance().lives;
 		for (int i = 0; i < list.size(); i++) {
 			boolean inUsed = false;
 			for (VideoItem item : videoMaps.values()) {
+				if (item.live == null) {
+					continue;
+				}
 				if (item.live.equals(list.get(i))) {
 					inUsed = true;
 					break;
@@ -735,6 +783,11 @@ OnGetGeoCoderResultListener {
 				break;
 			case GET_MAP_SNAPSHOT:
 
+				break;
+			case VIDEO_COMMENTS_TIME_OUT:
+				mMapVideoLayout.removeOldestMsg();
+				Message timeoutMessage = Message.obtain(LocalHandler, VIDEO_COMMENTS_TIME_OUT);
+				LocalHandler.sendMessageDelayed(timeoutMessage, 1000);
 				break;
 			}
 		}

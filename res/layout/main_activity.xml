@@ -21,8 +21,7 @@
         android:id="@+id/bottom_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-         >
+        android:layout_alignParentBottom="true" >
 
         <ImageView
             android:id="@+id/location"
@@ -31,22 +30,51 @@
             android:layout_margin="10dp"
             android:src="@drawable/location" />
 
-        <EditText
-            android:id="@+id/message_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/location"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/input_bg"
-            android:ems="10"
-            android:inputType="text|textCapCharacters|textCapSentences|textMultiLine"
-            android:maxLength="4500"
-            android:maxLines="3"
-            android:minHeight="40dp"
-            android:minLines="1" >
-        </EditText>
+            android:background="#ffffff"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/msg_check"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight=".2"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="视频消息"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/message_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight=".6"
+                android:background="@drawable/input_bg"
+                android:ems="10"
+                android:inputType="text|textCapCharacters|textCapSentences|textMultiLine"
+                android:maxLength="4500"
+                android:maxLines="3"
+                android:minHeight="40dp"
+                android:minLines="1" >
+            </EditText>
+
+            <Button
+                android:id="@+id/msg_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight=".2"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="@string/pos_search_button_text" />
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

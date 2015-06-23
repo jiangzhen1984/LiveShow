@@ -13,5 +13,7 @@ public interface VideoOpt {
 	public void stop();
 	
 	public boolean isPlaying();
+	
+	public boolean isPause();
 
 }
