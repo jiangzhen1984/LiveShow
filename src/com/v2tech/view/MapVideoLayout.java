@@ -2,14 +2,11 @@ package com.v2tech.view;
 
 import java.util.ArrayList;
 
-import android.R.color;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -25,15 +22,16 @@ import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.widget.LoopViewPager;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
-		OnPageChangeListener, VideoCommentsAPI {
+LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
-	private ViewPager mVideoShowPager;
+	private LoopViewPager mVideoShowPager;
 	private VideoShowFragmentAdapter mViewPagerAdapter;
 	private ImageView mTestImage;
 
@@ -68,7 +66,7 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 	private void init() {
 		this.setBackgroundColor(Color.TRANSPARENT);
 		// setOnTouchListener(this);
-		mVideoShowPager = new ViewPager(getContext());
+		mVideoShowPager = new LoopViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
 		mVideoShowPager.setOnPageChangeListener(this);
 		mViewPagerAdapter = new VideoShowFragmentAdapter(
