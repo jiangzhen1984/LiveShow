@@ -7,8 +7,10 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +22,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -29,13 +33,13 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
 import com.V2.jni.V2ClientType;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
+import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -113,7 +117,7 @@ OnGetGeoCoderResultListener {
 
 	private Map<VideoOpt, VideoItem> videoMaps = new HashMap<VideoOpt, VideoItem>();
 	private VideoOpt mCurrentVideoFragment;
-	private ImageView mapSnapshot;
+	private SurfaceView mapSnapshot;
 
 	private LatLng selfLocation;
 	private LatLng currentVideoLocation;
@@ -243,7 +247,6 @@ OnGetGeoCoderResultListener {
 
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
-
 		int width = getPreWidth();
 		int height = getPreHeight(width);
 		cv = new CameraView(this);
@@ -278,9 +281,35 @@ OnGetGeoCoderResultListener {
 
 		});
 
-		mapSnapshot = new ImageView(this);
-		mapSnapshot.setAlpha(0.3f);
-		mapSnapshot.setColorFilter(Color.GRAY, PorterDuff.Mode.LIGHTEN);
+		mapSnapshot = new SurfaceView(this);
+		mapSnapshot.setZOrderOnTop(false);
+		mapSnapshot.setZOrderMediaOverlay(false);
+		mapSnapshot.getHolder().addCallback(new SurfaceHolder.Callback() {
+			
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				
+			}
+			
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+				holder.setFormat(PixelFormat.TRANSLUCENT);
+				Canvas c = holder.lockCanvas();
+				if (cache == null) {
+					cache = Bitmap.createBitmap(mapSnapshot.getWidth(), mapSnapshot.getHeight(), Bitmap.Config.ARGB_8888);
+				}
+				c.drawColor(Color.GRAY);
+				c.drawBitmap(cache, 0,  0, new Paint());
+				holder.unlockCanvasAndPost(c);
+			}
+			
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width,
+					int height) {
+				
+			}
+		});
 		mapSnapshot.setOnTouchListener(dragListener);
 		FrameLayout.LayoutParams flMapView = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT, mDisplay.heightPixels
@@ -394,6 +423,8 @@ OnGetGeoCoderResultListener {
 				lastY = y;
 				break;
 			case MotionEvent.ACTION_UP:
+				V2Log.d("Start translate");
+				mCurrentVideoFragment.pause();
 				mMapVideoLayout.requestUpFlying();
 				break;
 			}
@@ -684,6 +715,8 @@ OnGetGeoCoderResultListener {
 
 	};
 
+	
+	private Bitmap cache;
 	private OnMapStatusChangeListener mMapStatusChangeListener = new OnMapStatusChangeListener() {
 
 		@Override
@@ -697,10 +730,10 @@ OnGetGeoCoderResultListener {
 
 				@Override
 				public void onSnapshotReady(Bitmap bm) {
-					mapSnapshot.setImageBitmap(bm);
-					// mapSnapshot.setColorFilter(Color.GRAY,
-					// PorterDuff.Mode.LIGHTEN);
-					mapSnapshot.setColorFilter(Color.argb(150, 200, 200, 200));
+					if (cache != null) {
+						cache.recycle();
+					}
+					cache = bm;
 					mapSnapshot.invalidate();
 					mMapVideoLayout.udpateCover(bm);
 				}

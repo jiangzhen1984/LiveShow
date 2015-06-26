@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.media.AudioFormat;
 import android.media.MediaCodec;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 
 import com.V2.jni.util.V2Log;
@@ -59,6 +61,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	private Live live;
 	private VideoState videoState = VideoState.UNINIT;
 	
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -97,6 +100,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT));
+		rl.setBackgroundColor(Color.WHITE);
 		return rl;
 	}
 
@@ -247,6 +251,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
+			holder.setFormat(PixelFormat.TRANSLUCENT);
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
@@ -320,7 +325,9 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	}
 
 
-
+   public void startAnimation(Animation a) {
+	   mSurfaceView.startAnimation(a);
+   }
 
 
 

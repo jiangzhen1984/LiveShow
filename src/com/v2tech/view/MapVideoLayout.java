@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -33,13 +35,12 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	private BaiduMap mBaiduMap;
 	private LoopViewPager mVideoShowPager;
 	private VideoShowFragmentAdapter mViewPagerAdapter;
-	private ImageView mTestImage;
 
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
 	private int mOffsetTop;
 	private DragDirection mDragDir = DragDirection.NONE;
-	private int mDefaultVelocity = 120;
+	private int mDefaultVelocity = 40;
 
 	private OnVideoFragmentChangedListener mVideoChangedListener;
 
@@ -64,7 +65,6 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	}
 
 	private void init() {
-		this.setBackgroundColor(Color.TRANSPARENT);
 		// setOnTouchListener(this);
 		mVideoShowPager = new LoopViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
@@ -83,14 +83,11 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 
 		mBaiduMap = mMapView.getMap();
 
-		mTestImage = new ImageView(getContext());
-
 		mMsgLayout = new LinearLayout(getContext());
 		mMsgLayout.setOrientation(LinearLayout.VERTICAL);
 		mMsgLayout.setBackgroundColor(Color.TRANSPARENT);
 		
 		this.addView(mVideoShowPager);
-		this.addView(mTestImage);
 		this.addView(mMapView);
 		this.addView(mMsgLayout);
 		this.bringChildToFront(mMsgLayout);
@@ -190,7 +187,8 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	public void requestUpFlying() {
 		Flying fl = new Flying();
 		fl.startFlying(-mDefaultVelocity);
-		post(fl);
+		//this.post(fl);
+		this.postOnAnimation(fl);
 	}
 
 	public void updateOffset(int offset) {
@@ -204,8 +202,6 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	}
 
 	public void udpateCover(Bitmap bm) {
-		mTestImage.setScaleType(ScaleType.CENTER_CROP);
-		mTestImage.setImageBitmap(bm);
 	}
 
 	public void updateCoverState(boolean flag) {
@@ -213,7 +209,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
 					.getCurrentItem())).pause();
 			mMapView.onPause();
-			this.bringChildToFront(mTestImage);
+			//this.bringChildToFront(mTestImage);
 			// mMapView.setVisibility(View.GONE);
 			// removeView(mMapView);
 		} else {
@@ -270,7 +266,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			if (mDragDir == DragDirection.VERTICAL) {
 				Flying fl = new Flying();
 				fl.startFlying(mDefaultVelocity);
-				post(fl);
+				postOnAnimation(fl);
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.endFakeDrag();
 			}
@@ -314,13 +310,13 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				return;
 			}
 			if (initVelocity > 0) {
-				initVelocity += 8;
+				initVelocity += 35;
 			} else {
-				initVelocity -= 8;
+				initVelocity -= 35;
 			}
 			updateOffset(initVelocity);
 
-			post(this);
+			postOnAnimation(this);
 		}
 
 	};
@@ -339,7 +335,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 //		mDragView.layout(left, top + mOffsetTop, right,
 //				(bottom + mOffsetTop - top) / 2);
 		mMapView.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
-		mTestImage.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
+		//mTestImage.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
 
 	}
 
