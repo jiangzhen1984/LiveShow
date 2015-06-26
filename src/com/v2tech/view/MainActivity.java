@@ -7,22 +7,17 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -77,6 +72,8 @@ import com.v2tech.vo.Live;
 
 public class MainActivity extends FragmentActivity implements
 OnGetGeoCoderResultListener {
+	
+	
 
 	private static final int SEARCH = 1;
 	private static final int AUTO_PLAY_LIVE = 2;
@@ -88,6 +85,8 @@ OnGetGeoCoderResultListener {
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int VIDEO_COMMENTS_TIME_OUT = 11;
+	
+	private static  int mCurrentZoomLevel = 15;
 
 	private View mBottomButtonLayout;
 	private FrameLayout mMainLayout;
@@ -121,6 +120,9 @@ OnGetGeoCoderResultListener {
 
 	private LatLng selfLocation;
 	private LatLng currentVideoLocation;
+	
+	private LocalHandler mLocalHandler;
+	private HandlerThread mHandlerThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,14 +149,26 @@ OnGetGeoCoderResultListener {
 		initLocation();
 		// initDragLayout();
 		//
+		
+		mHandlerThread = new HandlerThread("back-end");
+		mHandlerThread.start();
+		while(!mHandlerThread.isAlive()) {
+			try {
+				wait(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		mLocalHandler = new LocalHandler(mHandlerThread.getLooper());
+		
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		ImRequest.getInstance().login(
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
 		
-		Message timeoutMessage = Message.obtain(LocalHandler, VIDEO_COMMENTS_TIME_OUT);
-		LocalHandler.sendMessageDelayed(timeoutMessage, 1000);
+		Message timeoutMessage = Message.obtain(mLocalHandler, VIDEO_COMMENTS_TIME_OUT);
+		mLocalHandler.sendMessageDelayed(timeoutMessage, 1000);
 
 	}
 
@@ -216,9 +230,9 @@ OnGetGeoCoderResultListener {
 				if (isSendMsg) {
 					mMapVideoLayout.addNewMessage(mSearchEdit.getText().toString());
 				} else {
-					LocalHandler.removeMessages(SEARCH);
-					Message msg = Message.obtain(LocalHandler, SEARCH, mSearchEdit.getText().toString());
-					LocalHandler.sendMessage(msg);
+					mLocalHandler.removeMessages(SEARCH);
+					Message msg = Message.obtain(mLocalHandler, SEARCH, mSearchEdit.getText().toString());
+					mLocalHandler.sendMessage(msg);
 				}
 			}
 			
@@ -271,45 +285,17 @@ OnGetGeoCoderResultListener {
 				if ("none".equals(mShareVideoButton.getTag())) {
 					mShareVideoButton.setTag("recording");
 					mShareVideoButton.setText("取消分享");
-					Message.obtain(LocalHandler, START_PUBLISH).sendToTarget();
+					Message.obtain(mLocalHandler, START_PUBLISH).sendToTarget();
 				} else {
 					mShareVideoButton.setTag("none");
 					mShareVideoButton.setText("分享视频");
-					Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+					Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
 				}
 			}
 
 		});
 
 		mapSnapshot = new SurfaceView(this);
-		mapSnapshot.setZOrderOnTop(false);
-		mapSnapshot.setZOrderMediaOverlay(false);
-		mapSnapshot.getHolder().addCallback(new SurfaceHolder.Callback() {
-			
-			@Override
-			public void surfaceDestroyed(SurfaceHolder holder) {
-				
-			}
-			
-			@Override
-			public void surfaceCreated(SurfaceHolder holder) {
-				holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-				holder.setFormat(PixelFormat.TRANSLUCENT);
-				Canvas c = holder.lockCanvas();
-				if (cache == null) {
-					cache = Bitmap.createBitmap(mapSnapshot.getWidth(), mapSnapshot.getHeight(), Bitmap.Config.ARGB_8888);
-				}
-				c.drawColor(Color.GRAY);
-				c.drawBitmap(cache, 0,  0, new Paint());
-				holder.unlockCanvasAndPost(c);
-			}
-			
-			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format, int width,
-					int height) {
-				
-			}
-		});
 		mapSnapshot.setOnTouchListener(dragListener);
 		FrameLayout.LayoutParams flMapView = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT, mDisplay.heightPixels
@@ -364,7 +350,7 @@ OnGetGeoCoderResultListener {
 		isSuspended = true;
 		cv.stopPreView();
 		if (isRecording) {
-			Message.obtain(LocalHandler, STOP_PUBLISH).sendToTarget();
+			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
 		}
 	}
 
@@ -380,6 +366,10 @@ OnGetGeoCoderResultListener {
 
 		CloudManager.getInstance().destroy();
 		mSearch.destroy();
+		
+		mHandlerThread.quit();
+		
+		mLocalHandler = null;
 	}
 
 	@Override
@@ -464,7 +454,13 @@ OnGetGeoCoderResultListener {
 			if (item == null) {
 				videoMaps.put(videoFrag, new VideoItem(videoFrag));
 				autoPlayNecessary();
+			} else {
+				Live cl = videoFrag.getCurrentLive();
+				if (cl != null) {
+					updateMapLocation(cl);
+				}
 			}
+			
 		}
 
 	};
@@ -543,7 +539,7 @@ OnGetGeoCoderResultListener {
 
 				lat = location.getLatitude();
 				lng = location.getLongitude();
-				LocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
+				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
 						1000);
 
 			}
@@ -555,28 +551,6 @@ OnGetGeoCoderResultListener {
 
 	private LocalState mSearchState = LocalState.DONE;
 
-	private TextWatcher mSearchedTextWatcher = new TextWatcher() {
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			LocalHandler.removeMessages(SEARCH);
-			Message msg = Message.obtain(LocalHandler, SEARCH, s.toString());
-			LocalHandler.sendMessageDelayed(msg, 1000);
-		}
-
-	};
 
 	private CloudListener mLocalCloudListener = new CloudListener() {
 
@@ -638,11 +612,14 @@ OnGetGeoCoderResultListener {
 
 		videoMaps.get(mCurrentVideoFragment).live = l;
 
-		// update map
-		float zoomLevel = 15.0F;
-		currentVideoLocation = new LatLng(lat, lng);
+		updateMapLocation(l);
+	}
+	
+	
+	private void updateMapLocation(Live l) {
+		currentVideoLocation = new LatLng(l.getLat(), l.getLng());
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-				currentVideoLocation, zoomLevel);
+				currentVideoLocation, mCurrentZoomLevel);
 		mBaiduMap.animateMapStatus(u);
 
 		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
@@ -707,7 +684,7 @@ OnGetGeoCoderResultListener {
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (!TextUtils.isEmpty(l.getUrl())) {
-					Message.obtain(LocalHandler, PLAY_LIVE, l).sendToTarget();
+					Message.obtain(mLocalHandler, PLAY_LIVE, l).sendToTarget();
 				}
 			}
 			return true;
@@ -749,7 +726,12 @@ OnGetGeoCoderResultListener {
 
 	};
 
-	private Handler LocalHandler = new Handler() {
+	class  LocalHandler extends Handler {
+		
+		public LocalHandler(Looper looper) {
+			super(looper);
+			// TODO Auto-generated constructor stub
+		}
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -772,12 +754,12 @@ OnGetGeoCoderResultListener {
 						"<gps lon=\"" + lng + "\" lat=\"" + lat
 								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
-					LocalHandler.sendEmptyMessageDelayed(
+					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 10000);
-					LocalHandler
+					mLocalHandler
 							.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
 
-					LocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
+					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
 				break;
 			case UPDATE_LIVE_MARK:
@@ -819,8 +801,8 @@ OnGetGeoCoderResultListener {
 				break;
 			case VIDEO_COMMENTS_TIME_OUT:
 				mMapVideoLayout.removeOldestMsg();
-				Message timeoutMessage = Message.obtain(LocalHandler, VIDEO_COMMENTS_TIME_OUT);
-				LocalHandler.sendMessageDelayed(timeoutMessage, 1000);
+				Message timeoutMessage = Message.obtain(mLocalHandler, VIDEO_COMMENTS_TIME_OUT);
+				mLocalHandler.sendMessageDelayed(timeoutMessage, 1000);
 				break;
 			}
 		}

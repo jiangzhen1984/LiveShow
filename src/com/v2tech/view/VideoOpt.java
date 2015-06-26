@@ -15,5 +15,8 @@ public interface VideoOpt {
 	public boolean isPlaying();
 	
 	public boolean isPause();
+	
+	
+	public Live getCurrentLive();
 
 }

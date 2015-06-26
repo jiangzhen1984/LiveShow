@@ -222,6 +222,15 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 
 
 
+	@Override
+	public Live getCurrentLive() {
+		return live;
+	}
+
+
+
+
+
 	static int index = 1;
 
 	private void drawFirstBlankFrame(Canvas c) {

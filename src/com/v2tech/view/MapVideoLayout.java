@@ -7,16 +7,14 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +27,11 @@ import com.v2tech.widget.LoopViewPager;
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
+	
+	private int mMinimumFlingVelocity;
+	private int mMaximumFlingVelocity;
+	
 
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
@@ -42,6 +44,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	private DragDirection mDragDir = DragDirection.NONE;
 	private int mDefaultVelocity = 40;
 
+	
 	private OnVideoFragmentChangedListener mVideoChangedListener;
 
 	private LinearLayout mMsgLayout;
@@ -93,6 +96,10 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		this.bringChildToFront(mMsgLayout);
 
 		mMsgLayout.setOnTouchListener(this);
+		
+		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
+		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
 
 	}
 
@@ -160,13 +167,11 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	@Override
 	protected void onAttachedToWindow() {
 		super.onAttachedToWindow();
-		mVelocityTracker = VelocityTracker.obtain();
 	}
 
 	@Override
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();
-		mVelocityTracker.recycle();
 	}
 
 	public interface OnVideoFragmentChangedListener {
@@ -222,26 +227,39 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		}
 	}
 
+	
+	int mActivePointerId = -1;
+	int mCurrentPage = -1;
 	@Override
 	public boolean onTouch(View v, MotionEvent ev) {
+		final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+		
 		int action = ev.getAction();
-		mVelocityTracker.addMovement(ev);
+		if (mVelocityTracker != null) {
+			mVelocityTracker.addMovement(ev);
+		}
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+			mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
 			mVideoShowPager.beginFakeDrag();
+			mCurrentPage = mVideoShowPager.getCurrentItem();
 
 			mInitX = ev.getX();
-			mInitY = ev.getY();
+			mInitY = ev.getRawY();
 			mLastX = mInitX;
 			mLastY = mInitY;
+			
+			mVelocityTracker = VelocityTracker.obtain();
+			mVelocityTracker.addMovement(ev);
 
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mMapView.clearFocus();
-			float dy = ev.getY() - mLastY;
-			float dx = ev.getX() - mLastX;
+			
+			float dy =  ev.getRawY() - mLastY;
+			float dx =  MotionEventCompat.getX(ev, pointerIndex) - mLastX;
 			if (DEBUG) {
-				V2Log.d(dx + "    " + dy + "   " + mDragDir);
+				V2Log.d(" y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir);
 			}
 			if (mDragDir == DragDirection.NONE) {
 				if (Math.abs(dx) > Math.abs(dy)) {
@@ -259,18 +277,48 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			}
 
 			mLastX = ev.getX();
-			mLastY = ev.getY();
+			mLastY = ev.getRawY();
 
 			break;
 		case MotionEvent.ACTION_UP:
+			float dxUp =  MotionEventCompat.getX(ev, pointerIndex) - mLastX;
+            // A fling must travel the minimum tap distance
+            final VelocityTracker velocityTracker = mVelocityTracker;
+            final int pointerId = ev.getPointerId(0);
+            velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
+            final float velocityY = velocityTracker.getYVelocity(pointerId);
+            final float velocityX = velocityTracker.getXVelocity(pointerId);
+
+          
 			if (mDragDir == DragDirection.VERTICAL) {
 				Flying fl = new Flying();
 				fl.startFlying(mDefaultVelocity);
 				postOnAnimation(fl);
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.endFakeDrag();
+				int cpage = mVideoShowPager.getCurrentItem();
+				if (Math.abs(velocityX) > mMinimumFlingVelocity) {
+					//TODO 
+					if (DEBUG) {
+						V2Log.d(" do X fling :"+ velocityX+"  cpage:" + cpage+"   downPage:"+mCurrentPage);
+					}
+					if (mCurrentPage == cpage) {
+						if (velocityX > 0) {
+							mVideoShowPager.setCurrentItem(cpage - 1, true);
+						} else {
+							mVideoShowPager.setCurrentItem(cpage + 1, true);
+						}
+					}
+				}
+				
+				
+			
+				
 			}
 			mDragDir = DragDirection.NONE;
+			
+			mVelocityTracker.recycle();
+			mVelocityTracker = null;
 			break;
 		}
 
