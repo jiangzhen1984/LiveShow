@@ -7,6 +7,6 @@
      <string name="live_video_start_record">开始共享</string>
      <string name="live_video_stop_recording">停止共享</string>
      
-     <string name="msg_send_button_text">消息发送</string>
-     <string name="pos_search_button_text">位置搜索</string>
+     <string name="msg_send_button_text">W</string>
+     <string name="pos_search_button_text">M</string>
 </resources>

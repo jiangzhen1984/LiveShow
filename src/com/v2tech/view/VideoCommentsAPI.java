@@ -4,5 +4,4 @@ public interface VideoCommentsAPI {
 
 	public void  addNewMessage(String str);
 	
-	public void  removeOldestMsg();
 }

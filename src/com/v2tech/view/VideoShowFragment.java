@@ -275,6 +275,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		@Override
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
+			holder.setFormat(PixelFormat.TRANSLUCENT);
 			surface = holder.getSurface();
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
