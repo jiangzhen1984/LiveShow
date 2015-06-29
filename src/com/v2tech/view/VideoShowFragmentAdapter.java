@@ -3,6 +3,8 @@ package com.v2tech.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.v2tech.widget.VideoShowFragment;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

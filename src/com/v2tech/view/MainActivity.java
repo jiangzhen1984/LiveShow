@@ -20,7 +20,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
@@ -72,6 +71,7 @@ import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.BottomButtonLayout;
+import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
 OnGetGeoCoderResultListener {
@@ -89,7 +89,7 @@ OnGetGeoCoderResultListener {
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int VIDEO_COMMENTS_TIME_OUT = 11;
 	
-	private static  int mCurrentZoomLevel = 15;
+	private static  float mCurrentZoomLevel = 14F;
 
 	private View mBottomLayout;
 	private BottomButtonLayout mBottomButtonLayout;
@@ -110,6 +110,7 @@ OnGetGeoCoderResultListener {
 	
 	private CameraView cv;
 	private boolean isRecording = false;
+	private boolean isInCameraView = false;
 
 	private DisplayMetrics mDisplay;
 
@@ -130,24 +131,11 @@ OnGetGeoCoderResultListener {
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
 		mDisplay = getResources().getDisplayMetrics();
-		// final ViewConfiguration configuration = ViewConfiguration.get(this);
-		// mTouchSlop = ViewConfigurationCompat
-		// .getScaledPagingTouchSlop(configuration);
-		// final float density = getResources().getDisplayMetrics().density;
-		// mMinimumVelocity = (int) (MIN_FLING_VELOCITY * density);
-		// mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
-		//
-		//
-		// mBaiduMap = mMapView.getMap();
-		// // mBaiduMap.setMyLocationEnabled(true);
-		//
 		initMapviewLayout();
 		initVideoShareLayout();
 		initBottomButtonLayout();
 		initLocation();
-		// initDragLayout();
-		//
 		
 		mHandlerThread = new HandlerThread("back-end");
 		mHandlerThread.start();
@@ -214,13 +202,6 @@ OnGetGeoCoderResultListener {
 
 	private void initBottomButtonLayout() {
 		mBottomLayout = (RelativeLayout)findViewById(R.id.bottom_layout);
-//		mBottomButtonLayout = new BottomButtonLayout(this);
-//		WindowManager.LayoutParams wl = new WindowManager.LayoutParams();
-//		wl.width = 1024;
-//		wl.height = 100;
-//		wl.x = 0;
-//		wl.y = 1000;
-//		getWindowManager().addView(mBottomButtonLayout, wl);
 		mBottomButtonLayout = (BottomButtonLayout)findViewById(R.id.bottom_button_ly);
 		mBottomButtonLayout.setButtonListener(mButtonClickedListener);
 		
@@ -248,6 +229,7 @@ OnGetGeoCoderResultListener {
 		mShareVideoButton = new Button(this);
 		mShareVideoButton.setText("分享视频");
 		mShareVideoButton.setPadding(12, 12, 12, 12);
+		mShareVideoButton.setTextColor(Color.GREEN);
 		mShareVideoButton
 				.setBackgroundResource(R.drawable.video_share_button_bg);
 		mShareVideoButton.setTextSize(18);
@@ -264,6 +246,7 @@ OnGetGeoCoderResultListener {
 					mShareVideoButton.setTag("none");
 					mShareVideoButton.setText("分享视频");
 					Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
+					mMapVideoLayout.requestUpFlying();
 				}
 			}
 
@@ -379,7 +362,7 @@ OnGetGeoCoderResultListener {
 				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
 				initY = MotionEventCompat.getY(event, 0);
 				lastY = initY;
-				mMapVideoLayout.updateCoverState(true);
+				mMapVideoLayout.pauseDrawState(true);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				final int pointerIndex = MotionEventCompat.findPointerIndex(
@@ -391,7 +374,6 @@ OnGetGeoCoderResultListener {
 				break;
 			case MotionEvent.ACTION_UP:
 				V2Log.d("Start translate");
-				mCurrentVideoFragment.pause();
 				mMapVideoLayout.requestUpFlying();
 				break;
 			}
@@ -407,6 +389,7 @@ OnGetGeoCoderResultListener {
 			if (!isRecording) {
 				cv.startPreView();
 			}
+			isInCameraView = true;
 			updateCurrentVideoState(mCurrentVideoFragment, false);
 			mBottomLayout.setVisibility(View.GONE);
 		}
@@ -414,6 +397,7 @@ OnGetGeoCoderResultListener {
 		@Override
 		public void onFlyingIn() {
 			cv.stopPreView();
+			isInCameraView = false;
 			updateCurrentVideoState(mCurrentVideoFragment, true);
 			mBottomLayout.setVisibility(View.VISIBLE);
 		}
@@ -497,9 +481,8 @@ OnGetGeoCoderResultListener {
 			mBaiduMap.setMyLocationData(locData);
 			if (isFirstLoc) {
 				isFirstLoc = false;
-				float zoomLevel = 15.0F;
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-						selfLocation, zoomLevel);
+						selfLocation, mCurrentZoomLevel);
 				mBaiduMap.animateMapStatus(u);
 				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
 						selfLocation));
@@ -638,7 +621,7 @@ OnGetGeoCoderResultListener {
 
 			@Override
 			public void onSnapshotReady(Bitmap bm) {
-				mapSnapshot.setImageBitmap(bm);
+				//mapSnapshot.setImageBitmap(bm);
 				mMapVideoLayout.udpateCover(bm);
 			}
 
@@ -651,7 +634,7 @@ OnGetGeoCoderResultListener {
 		@Override
 		public void onClick(View v) {
 			LocationItem li = (LocationItem) v.getTag();
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll, 15);
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll, mCurrentZoomLevel);
 			mBaiduMap.animateMapStatus(u);
 			if (li.type == LocationItemType.SELF) {
 				if (currentVideoLocation != null) {
@@ -740,13 +723,14 @@ OnGetGeoCoderResultListener {
 				}
 				break;
 			case AUTO_PLAY_LIVE:
-				//autoPlayNecessary();
+				if (!isInCameraView) {
+					autoPlayNecessary();
+				}
 				break;
 			case PLAY_LIVE:
 				playLive((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
-				// VideoBCRequest.getInstance().getNeiborhood(1000);
 				VideoBCRequest.getInstance().GetNeiborhood_Region(
 						"<gps lon=\"" + lng + "\" lat=\"" + lat
 								+ "\" distance=\"1000\" ></gps>");

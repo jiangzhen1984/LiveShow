@@ -1,4 +1,4 @@
-package com.v2tech.view;
+package com.v2tech.widget;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -32,6 +33,7 @@ import com.google.android.exoplayer.MediaCodecUtil.DecoderQueryException;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
+import com.google.android.exoplayer.chunk.Format;
 import com.google.android.exoplayer.chunk.VideoFormatSelectorUtil;
 import com.google.android.exoplayer.hls.HlsChunkSource;
 import com.google.android.exoplayer.hls.HlsMasterPlaylist;
@@ -45,11 +47,15 @@ import com.google.android.exoplayer.util.ManifestFetcher;
 import com.google.android.exoplayer.util.ManifestFetcher.ManifestCallback;
 import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.exoplayer.util.Util;
+import com.v2tech.view.VideoOpt;
+import com.v2tech.view.VideoState;
 import com.v2tech.vo.Live;
 
-public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, VideoOpt {
-	
-	
+public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
+		HlsSampleSource.EventListener, VideoOpt {
+
+	private static final boolean DEBUG = false;
+	private static final String TAG = "VideoShowFragment";
 
 	private PlayerControl playerControl;
 	private ExoPlayer player;
@@ -60,8 +66,6 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	private Handler localHandler;
 	private Live live;
 	private VideoState videoState = VideoState.UNINIT;
-	
-	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -71,13 +75,10 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		player = ExoPlayer.Factory.newInstance(2, 1000, 5000);
-		playerControl = new PlayerControl(player);
-		playerControl.pause();
-		player.addListener(this);
+		
 		handlerThread = new HandlerThread("");
 		handlerThread.start();
-		while(!handlerThread.isAlive()) {
+		while (!handlerThread.isAlive()) {
 			try {
 				wait(100);
 			} catch (InterruptedException e) {
@@ -86,6 +87,11 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		}
 		localHandler = new Handler(handlerThread.getLooper());
 		
+		player = ExoPlayer.Factory.newInstance(2, 1000, 5000);
+		player.addListener(this);
+		playerControl = new PlayerControl(player);
+		
+
 		videoState = VideoState.IDLE;
 	}
 
@@ -95,7 +101,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		RelativeLayout rl = new RelativeLayout(getActivity());
 		mSurfaceView = new SurfaceView(getActivity());
 		mSurfaceView.setZOrderMediaOverlay(true);
-//		mSurfaceView.setZOrderOnTop(true);
+		// mSurfaceView.setZOrderOnTop(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -137,28 +143,34 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		}
 	}
 
-
 	public void play(Live live) {
 		this.live = live;
+		if (DEBUG) {
+			V2Log.i(TAG, this+" "+ live+"  start to play");
+		}
+		
 		if (playerControl.isPlaying()) {
 			player.setRendererEnabled(0, false);
 			player.setRendererEnabled(1, false);
 			player.stop();
 			player.seekTo(0);
 		}
-		new HlsRendererBuilder(getActivity(), Util.getUserAgent(getActivity(), ""),
-				live.getUrl(), new AudioCapabilities(
-						new int[] { AudioFormat.ENCODING_PCM_16BIT },
-						AudioFormat.CHANNEL_IN_MONO)).buildRenderers();
+		new HlsRendererBuilder(getActivity(), Util.getUserAgent(getActivity(),
+				""), live.getUrl(), new AudioCapabilities(
+				new int[] { AudioFormat.ENCODING_PCM_16BIT },
+				AudioFormat.CHANNEL_IN_MONO)).buildRenderers();
 		videoState = VideoState.PREPARED;
+		
 	}
-
 
 	public void pause() {
 		if (VideoState.PLAYING == videoState) {
 			playerControl.pause();
 		}
 		videoState = VideoState.PAUSE;
+		if (DEBUG) {
+			V2Log.i(TAG, this+" "+ live+"  paused");
+		}
 	}
 
 	public void resume() {
@@ -184,13 +196,14 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			break;
 		default:
 			break;
-			
+
 		}
 		videoState = VideoState.PLAYING;
+		if (DEBUG) {
+			V2Log.i(TAG, this+" "+ live+"  playing");
+		}
 	}
 
-	
-	
 	@Override
 	public void stop() {
 		if (this.player != null) {
@@ -199,37 +212,21 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		}
 		videoState = VideoState.STOP;
 	}
-	
-	
-
-
 
 	@Override
 	public boolean isPlaying() {
 		return VideoState.PLAYING == videoState;
 	}
 
-
-
-
-
 	@Override
 	public boolean isPause() {
-		return  VideoState.PAUSE  == videoState;
+		return VideoState.PAUSE == videoState;
 	}
-
-
-
-
 
 	@Override
 	public Live getCurrentLive() {
 		return live;
 	}
-
-
-
-
 
 	static int index = 1;
 
@@ -250,7 +247,6 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		bp.recycle();
 	}
 
-	
 	private Surface surface;
 	private SurfaceHolder.Callback mHolderCallback = new SurfaceHolder.Callback() {
 
@@ -263,8 +259,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			holder.setFormat(PixelFormat.TRANSLUCENT);
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
-						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
-						surface);
+						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 				surfacePushed = true;
 				if (live != null) {
 					play(live);
@@ -279,8 +274,7 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			surface = holder.getSurface();
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
-						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
-						surface);
+						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 				surfacePushed = true;
 			}
 		}
@@ -295,25 +289,21 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 					player.stop();
 					player.seekTo(0);
 				}
-				player.blockingSendMessage(videoRender,
-						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
-						null);
+				
+				if (videoRender != null) {
+					player.blockingSendMessage(videoRender,
+							MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, null);
+				}
 			}
 			surface = null;
 			surfacePushed = false;
 		}
 
 	};
-	
-	
-	
-	
-	
-	
 
 	@Override
 	public void onPlayWhenReadyCommitted() {
-		
+
 	}
 
 	@Override
@@ -334,13 +324,38 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 		}
 	}
 
+	public void onLoadStarted(int sourceId, long length, int type, int trigger,
+			Format format, int mediaStartTimeMs, int mediaEndTimeMs) {
+		Log.w(TAG, "onLoadStarted : "+ this +" source : " + sourceId);
+	};
 
-   public void startAnimation(Animation a) {
-	   mSurfaceView.startAnimation(a);
-   }
+	public void onLoadCompleted(int sourceId, long bytesLoaded, int type,
+			int trigger, Format format, int mediaStartTimeMs,
+			int mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs) {
+		Log.w(TAG, "onLoadCompleted: "+ this +" source : " + sourceId);
+	}
 
+	public void onLoadCanceled(int sourceId, long bytesLoaded) {
+		Log.w(TAG, "onLoadCanceled: "+ this +" source : " + sourceId);
+	}
 
+	public void onLoadError(int sourceId, IOException e) {
+		Log.w(TAG, "onLoadError: "+ this +" source : " + sourceId);
+	}
 
+	public void onUpstreamDiscarded(int sourceId, int mediaStartTimeMs,
+			int mediaEndTimeMs) {
+		Log.w(TAG, "onUpstreamDiscarded: "+ this +" source : " + sourceId);
+	}
+
+	public void onDownstreamFormatChanged(int sourceId, Format format,
+			int trigger, int mediaTimeMs) {
+		Log.w(TAG, "onDownstreamFormatChanged: "+ this +" source : " + sourceId);
+	}
+
+	public void startAnimation(Animation a) {
+		mSurfaceView.startAnimation(a);
+	}
 
 	public class HlsRendererBuilder implements ManifestCallback<HlsPlaylist> {
 
@@ -396,7 +411,8 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 					HlsChunkSource.ADAPTIVE_MODE_SPLICE, audioCapabilities);
 			HlsSampleSource sampleSource = new HlsSampleSource(chunkSource,
 					true, 3, REQUESTED_BUFFER_SIZE,
-					REQUESTED_BUFFER_DURATION_MS, localHandler, null, 0);
+					REQUESTED_BUFFER_DURATION_MS, localHandler,
+					VideoShowFragment.this, 1);
 			MediaCodecVideoTrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(
 					sampleSource, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT,
 					5000, localHandler, null, 50);
@@ -406,20 +422,19 @@ public class VideoShowFragment extends Fragment  implements ExoPlayer.Listener, 
 			TrackRenderer[] renderers = new TrackRenderer[2];
 			renderers[0] = videoRenderer;
 			renderers[1] = audioRenderer;
-			
+
 			videoRender = renderers[0];
-			
+
 			if (!surfacePushed) {
 				player.blockingSendMessage(videoRender,
-						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
-						surface);
+						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 			}
-			
+
 			player.setRendererEnabled(0, true);
 			player.setRendererEnabled(1, true);
 			player.prepare(renderers);
 			player.setPlayWhenReady(true);
-			//FIXE should move this state to callback function
+			// FIXE should move this state to callback function
 			videoState = VideoState.PLAYING;
 		}
 

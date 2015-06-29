@@ -16,7 +16,8 @@ import com.v2tech.v2liveshow.R;
 
 public class BottomButtonLayout extends FrameLayout {
 	
-	private final boolean DEBUG = true;
+	private final boolean DEBUG = false;
+	private static final String TAG = "BottomButtonLayout";
 	
 	public static final int MAP_BUTTON = 1;
 	public static final int WORD_BUTTON = 2;
@@ -90,11 +91,9 @@ public class BottomButtonLayout extends FrameLayout {
 		FrameLayout.LayoutParams rl = (FrameLayout.LayoutParams)mTextView.getLayoutParams();
 		int leftMargin = -1;
 		if (currentOptView == mWordButton) {
-			V2Log.d("currentOptView  :"+ mWordButton);
 			mWordButton.bringToFront();
 			leftMargin = mWordButton.getLeft() - width - MARGIN;
 		} else if (currentOptView == mMapButton) {
-			V2Log.d("currentOptView  :"+ mMapButton);
 			mMapButton.bringToFront();
 			leftMargin = mMapButton.getRight() + MARGIN;
 		} else {
@@ -140,6 +139,16 @@ public class BottomButtonLayout extends FrameLayout {
 	
 	
 	
+	
+	
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if (mVelocityTracker != null) {
+			mVelocityTracker.recycle();
+		}
+	}
+
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		if (mMapButton.getMeasuredWidth() <= 0 || mMapButton.getMeasuredHeight() <= 0) {
@@ -160,7 +169,7 @@ public class BottomButtonLayout extends FrameLayout {
 			firstInitLayout = true;
 		}
 		
-		super.onLayout(changed, l, t, r, b - MARGIN_BOTTOM);
+		super.onLayout(changed, l, t, r, b - MARGIN_BOTTOM *5);
 	}
 
 
@@ -195,7 +204,9 @@ public class BottomButtonLayout extends FrameLayout {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				float dx = event.getRawX() - mLastX;
-				V2Log.d("distance:"+ (event.getRawX() - mInitX) +"   mTouchSlop:"+mTouchSlop);
+				if (DEBUG) {
+					V2Log.d(TAG, "distance:"+ (event.getRawX() - mInitX) +"   mTouchSlop:"+mTouchSlop);
+				}
 				if (Math.abs(event.getRawX() - mInitX) > mTouchSlop) {
 					mButtonState = ButtonState.DRAGING;
 				}
@@ -217,7 +228,6 @@ public class BottomButtonLayout extends FrameLayout {
 					}
 					mFling.startFling(velocityX > 0 ? DEFAULT_VELOCITY : -DEFAULT_VELOCITY);
 				} else if (mButtonState == ButtonState.PREPARED){
-					V2Log.e(mButtonListener +"  "+ BottomButtonLayout.this);
 					if (mButtonListener != null) {
 						mButtonListener.onButtonClicked(v, mTextView, currentOptView ==  mMapButton? MAP_BUTTON : WORD_BUTTON);
 					}
@@ -256,10 +266,6 @@ public class BottomButtonLayout extends FrameLayout {
 		
 		@Override
 		public void run() {
-			V2Log.d("currentOptView:" + currentOptView + "    initVelocity:"
-					+ initVelocity + "  mWordButton:" + mWordButton.getRight()
-					+ "  mRoot:" + mRoot.getWidth() + "  mMapButton:"
-					+ mMapButton.getLeft());
 			if (initVelocity > 0) {
 				int r  = currentOptView.getRight();
 				if (r < mRoot.getWidth() - MARGIN) {
@@ -312,7 +318,6 @@ public class BottomButtonLayout extends FrameLayout {
 	
 	public void setButtonListener(ButtonClickedListener buttonListener) {
 		this.mButtonListener = buttonListener;
-		V2Log.e(buttonListener+"   "+mButtonListener +"  "+ this);
 	}
 
 	public interface ButtonClickedListener {

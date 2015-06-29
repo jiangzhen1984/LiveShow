@@ -4,31 +4,31 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp" >
 
-        <Button
-            android:id="@+id/msg_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/orange_btn_bg"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="40sp"
-            android:layout_marginLeft="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/msg_send_button_text" />
-        
-        
+    <Button
+        android:id="@+id/msg_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/orange_btn_bg"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:text="@string/msg_send_button_text"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/map_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/orange_btn_bg"
-             android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="40sp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/pos_search_button_text" />
+    <Button
+        android:id="@+id/map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/orange_btn_bg"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:text="@string/pos_search_button_text"
+        android:layout_marginBottom="8dp"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
 </FrameLayout>

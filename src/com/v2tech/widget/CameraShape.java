@@ -1,7 +1,5 @@
 package com.v2tech.widget;
 
-import com.V2.jni.util.V2Log;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +13,12 @@ import android.view.View;
 public class CameraShape extends View {
 
 	private static int MARGIN = 50;
+	
+	private static final float STAGE_1 = 35.0F;
+	
+	private static final float STAGE_2 = 35.0F;
+	
+	private static final float STAGE_3 = 30.0F;
 
 	private float cent;
 	private Paint p;
@@ -24,6 +28,9 @@ public class CameraShape extends View {
 	private RectF arcRightTop;
 	private RectF arcLeftBottom;
 	private RectF arcRightBottom;
+	private Path line1;
+	private Path line2;
+	private Path line3;
 
 	public CameraShape(Context context) {
 		super(context);
@@ -42,6 +49,7 @@ public class CameraShape extends View {
 
 	private void init() {
 		p = new Paint();
+		p.setStrokeWidth(10.0F);
 		p.setStyle(Style.STROKE);
 		pathLeft = new Path();
 		pathRight = new Path();
@@ -50,6 +58,10 @@ public class CameraShape extends View {
 		arcRightTop = new RectF();
 		arcLeftBottom = new RectF();
 		arcRightBottom = new RectF();
+		
+		line1 = new Path();
+		line2 = new Path();
+		line3 = new Path();
 	}
 
 	public void updatePrecent(float cent) {
@@ -79,7 +91,7 @@ public class CameraShape extends View {
 
 		pathLeft.moveTo(topLineStartX, topLineStartY);
 		if (cent > 0F) {
-			if (cent >= 35.0F) {
+			if (cent >= STAGE_1) {
 				pathLeft.lineTo(topLineEndX, topLineEndY);
 
 				// add connect line
@@ -93,7 +105,7 @@ public class CameraShape extends View {
 				pathLeft.addArc(arcLeftTop, 180.0F, 90.0F);
 
 			} else {
-				pathLeft.lineTo(topLineStartX - (topLineStartX - topLineEndX) * (cent / 35.0F), topLineEndY);
+				pathLeft.lineTo(topLineStartX - (topLineStartX - topLineEndX) * (cent / STAGE_1), topLineEndY);
 			}
 		}
 
@@ -102,16 +114,17 @@ public class CameraShape extends View {
 				/ 2;
 
 		int leftVerticalLineEndX = leftArcLeft;
-		int leftVerticalLineEndY = bottom - (topLineEndX - leftArcLeft);
+		int leftVerticalLineEndY = bottom - (leftArcBottom - leftArcLeft) / 2;
 
-		int leftBottomArcTop = leftVerticalLineEndY;
+		int leftBottomArcTop = bottom - (topLineEndX - leftArcLeft);
 		int leftBottomArcLeft = leftArcLeft;
 		int leftBottomArcRight = topLineEndX;
 		int leftBottomArcBottom = bottom;
-
-		if (cent > 35.0F) {
+		
+		
+		if (cent > STAGE_1) {
 			pathLeft.moveTo(leftVerticalLineStartX, leftVerticalLineStartY);
-			if (cent >= 70.0F) {
+			if (cent >= (STAGE_1 + STAGE_2)) {
 				pathLeft.lineTo(leftVerticalLineEndX, leftVerticalLineEndY);
 
 				pathLeft.lineTo(leftVerticalLineEndX, leftBottomArcTop
@@ -129,7 +142,7 @@ public class CameraShape extends View {
 				pathLeft.lineTo(
 						leftVerticalLineEndX,
 						leftVerticalLineStartY
-								+ (leftVerticalLineEndY - leftVerticalLineStartY) * ((cent - 35.0F) / 35.0F));
+								+ (leftVerticalLineEndY - leftVerticalLineStartY) * ((cent - STAGE_1) / STAGE_2));
 			}
 		}
 
@@ -139,12 +152,12 @@ public class CameraShape extends View {
 		int bottomLineEndX = midX;
 		int bottomLineEndY = bottom;
 
-		if (cent > 70.0F) {
+		if (cent > (STAGE_1 + STAGE_2)) {
 			pathLeft.moveTo(bottomLineStartX, bottomLineStartY);
-			if (cent >= 100.0F) {
+			if (cent >= (STAGE_1 + STAGE_2 + STAGE_3)) {
 				pathLeft.lineTo(bottomLineEndX, bottomLineEndY);
 			} else {
-				pathLeft.lineTo(bottomLineStartX + (bottomLineEndX - bottomLineStartX) * ((cent - 70.0F) / 30.0F),
+				pathLeft.lineTo(bottomLineStartX + (bottomLineEndX - bottomLineStartX) * ((cent - (STAGE_1 + STAGE_2)) / STAGE_3),
 						bottomLineEndY);
 			}
 		}
@@ -168,7 +181,7 @@ public class CameraShape extends View {
 
 		pathRight.moveTo(topLineStartX, topLineStartY);
 		if (cent > 0F) {
-			if (cent >= 35.0F) {
+			if (cent >= STAGE_1) {
 				pathRight.lineTo(topLineEndX, topLineEndY);
 
 				pathRight.lineTo(rightArcLeft + (rightArcRight - rightArcLeft)
@@ -181,31 +194,29 @@ public class CameraShape extends View {
 				pathRight.addArc(arcRightTop, 270.0F, 90.0F);
 
 			} else {
-				pathRight.lineTo(topLineStartX + (topLineEndX - topLineStartX) * (cent / 35.0F), topLineEndY);
+				pathRight.lineTo(topLineStartX + (topLineEndX - topLineStartX) * (cent / STAGE_1), topLineEndY);
 			}
 		}
 
-		int leftVerticalLineStartX = right;
-		int leftVerticalLineStartY = rightArcTop
+		int rightVerticalLineStartX = right;
+		int rightVerticalLineStartY = rightArcTop
 				+ (rightArcBottom - rightArcTop) / 2;
 
-		int leftVerticalLineEndX = right;
-		int leftVerticalLineEndY = bottom - (rightArcRight - rightArcLeft) /2;
+		int rightVerticalLineEndX = right;
+		int rightVerticalLineEndY = bottom - (rightArcRight - rightArcLeft) /2;
 
 		int rightBottomArcTop = bottom - (rightArcRight - rightArcLeft);
 		int rightBottomArcLeft = right - (rightArcRight - rightArcLeft);
 		int rightBottomArcRight = right;
 		int rightBottomArcBottom = bottom;
 
-		if (cent > 35.0F) {
-			pathRight.moveTo(leftVerticalLineStartX, leftVerticalLineStartY);
+		if (cent > STAGE_1) {
+			pathRight.moveTo(rightVerticalLineStartX, rightVerticalLineStartY);
 			
-			V2Log.e("leftVerticalLineEndY:"+leftVerticalLineEndY+"   leftVerticalLineStartY:"+leftVerticalLineStartY+"  cent:"+cent+"   offsetY:"+(leftVerticalLineStartY
-					+ ((leftVerticalLineEndY - leftVerticalLineStartY) * (cent / 70.0F))));
-			if (cent >= 70.0F) {
-				pathRight.lineTo(leftVerticalLineEndX, leftVerticalLineEndY);
+			if (cent >= (STAGE_1 + STAGE_2)) {
+				pathRight.lineTo(rightVerticalLineEndX, rightVerticalLineEndY);
 
-				pathRight.lineTo(leftVerticalLineEndX, rightBottomArcTop
+				pathRight.lineTo(rightVerticalLineEndX, rightBottomArcTop
 						+ (rightBottomArcBottom - rightBottomArcTop) / 2);
 
 				// add connect line
@@ -219,9 +230,9 @@ public class CameraShape extends View {
 
 			} else {
 				pathRight
-						.lineTo(leftVerticalLineEndX,
-								leftVerticalLineStartY
-										+ ((leftVerticalLineEndY - leftVerticalLineStartY) * ((cent - 35.0F) / 35.0F)));
+						.lineTo(rightVerticalLineEndX,
+								rightVerticalLineStartY
+										+ ((rightVerticalLineEndY - rightVerticalLineStartY) * ((cent - STAGE_1) / STAGE_2)));
 			}
 		}
 
@@ -231,34 +242,116 @@ public class CameraShape extends View {
 		int bottomLineEndX = midX;
 		int bottomLineEndY = bottom;
 
-		if (cent > 70.0F) {
+		if (cent > (STAGE_1 + STAGE_2)) {
 			pathRight.moveTo(bottomLineStartX, bottomLineStartY);
-			if (cent >= 100.0F) {
+			if (cent >= (STAGE_1 + STAGE_2 + STAGE_3)) {
 				pathRight.lineTo(bottomLineEndX, bottomLineEndY);
 			} else {
-				pathRight.lineTo(bottomLineStartX + (bottomLineEndX - bottomLineStartX) * ((cent - 70.0F) / 30.0F),
+				pathRight.lineTo(bottomLineStartX + (bottomLineEndX - bottomLineStartX) * ((cent - (STAGE_1 + STAGE_2)) / STAGE_3),
 						bottomLineEndY);
 			}
 		}
 
 	}
+	
+	
+	private void preparedLine1(int left, int top, int right, int bottom,
+			int midX, int midY) {
+		
+		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startY = top + (bottom - top) / 8 ;
+		
+		int endX = right;
+		int endY = top + (bottom - top) / 8 * 2;
+		
+		line1.reset();
+		
+		if (cent > STAGE_1) {
+			line1.moveTo(startX, startY);
+			if (cent >= (STAGE_1 + STAGE_2)) {
+				line1.lineTo(endX, endY);
+			} else {
+				line1.lineTo(endX, startY + (endY - startY) * ((cent- (STAGE_1 + STAGE_2)) / STAGE_3));
+			}
+		}
+		
+	}
+	
+	private void preparedLine2(int left, int top, int right, int bottom,
+			int midX, int midY) {
+		
+		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startY = top + (bottom - top) / 8 ;
+		
+		int endX = startX;
+		int endY = top + (bottom - top) / 8 * 6;
+		
+		line2.reset();
+		
+		line2.moveTo(startX, startY);
+		if (cent >= STAGE_1) {
+			line2.lineTo(endX, endY);
+		} else {
+			line2.lineTo(endX, startY + (endY - startY) * (cent / STAGE_2));
+		}
+	}
+	
+	private void preparedLine3(int left, int top, int right, int bottom,
+			int midX, int midY) {
+		
+		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startY = top + (bottom - top) / 8 * 6 ;
+		
+		int endX = right;
+		int endY = top + (bottom - top) / 8 * 4;
+		
+		line3.reset();
+		
+		if (cent > STAGE_1) {
+			line3.moveTo(startX, startY);
+			
+			if (cent >= (STAGE_1 + STAGE_2)) {
+				line3.lineTo(endX, endY);
+			} else {
+				line3.lineTo(endX, startY + (endY - startY) * ((cent- (STAGE_1 + STAGE_2)) / STAGE_3));
+			}
+		}
+		
+		
+	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		int midX = (getRight() - getLeft()) / 2;
-		int midY = (getRight() - getLeft()) / 2;
+		
 		int left = MARGIN;
 		int top = MARGIN;
-		int bottom = getBottom() - MARGIN;
-		int right = getRight() - MARGIN;
+		int bottom = getBottom()  - MARGIN;
+		int right = (left + getRight() / 3 * 2)   - MARGIN;
+		
+		int midX = (right - left) / 2;
+		int midY = (bottom - top) / 2;
+		
+		
 		prepareLeftPart(left, top, right, bottom, midX, midY);
 
 		prepareRightPart(left, top, right, bottom, midX, midY);
+		
+		preparedLine1(left, top, right, bottom, midX, midY);
+		
+		preparedLine2(left, top, right, bottom, midX, midY);
+		
+		preparedLine3(left, top, right, bottom, midX, midY);
 
 		canvas.drawPath(pathLeft, p);
 
 		canvas.drawPath(pathRight, p);
+		
+		canvas.drawPath(line1, p);
+		
+		canvas.drawPath(line2, p);
+		
+		canvas.drawPath(line3, p);
 
 	}
 

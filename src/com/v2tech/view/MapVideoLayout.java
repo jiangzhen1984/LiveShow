@@ -27,11 +27,13 @@ import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.LoopViewPager;
+import com.v2tech.widget.VideoShowFragment;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
+	private static final String TAG = "MapVideoLayout";
 	
 	private int mMinimumFlingVelocity;
 	private int mMaximumFlingVelocity;
@@ -49,6 +51,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	private VelocityTracker mVelocityTracker;
 	private int mOffsetTop;
 	private DragDirection mDragDir = DragDirection.NONE;
+	private boolean fireFlyingdown = false;
 	
 
 	
@@ -138,7 +141,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				-1.0F, TranslateAnimation.ABSOLUTE, 1.0F,
 				TranslateAnimation.ABSOLUTE, 1.0F);
 		 ani.setFillAfter(true);
-		 ani.setDuration(3000);
+		 ani.setDuration(13000);
 		 ani.setAnimationListener(new AnimationListener () {
 
 			@Override
@@ -237,17 +240,27 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		} else {
 			mOffsetTop += offset;
 		}
-//		if (DEBUG) {
-//			V2Log.e("mOffsetTop:" + mOffsetTop+"  mTouchSlop:"+mTouchSlop+"  cent:"+ (Math.abs((mOffsetTop - mTouchSlop)) / mTouchSlop)+"  ");
-//		}
-		mNotificaionShare.updatePrecent(Math.abs(mOffsetTop - mTouchSlop) / 4);
+
+		
+		if (mOffsetTop > mTouchSlop) {
+			float cent = Math.abs(mOffsetTop - mTouchSlop) / 4;
+			mNotificaionShare.updatePrecent(cent);
+			if (cent > 100.0F) {
+				fireFlyingdown = true;
+			} else {
+				fireFlyingdown = false;
+			}
+		} else {
+			mNotificaionShare.updatePrecent(0.0F);
+			fireFlyingdown = false;
+		}
 		requestLayout();
 	}
 
 	public void udpateCover(Bitmap bm) {
 	}
 
-	public void updateCoverState(boolean flag) {
+	public void pauseDrawState(boolean flag) {
 		if (flag) {
 			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
 					.getCurrentItem())).pause();
@@ -265,8 +278,6 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	int mCurrentPage = -1;
 	@Override
 	public boolean onTouch(View v, MotionEvent ev) {
-		final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-		
 		int action = ev.getAction();
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
@@ -278,7 +289,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			mVideoShowPager.beginFakeDrag();
 			mCurrentPage = mVideoShowPager.getCurrentItem();
 
-			mInitX = ev.getX();
+			mInitX = ev.getRawX();
 			mInitY = ev.getRawY();
 			mLastX = mInitX;
 			mLastY = mInitY;
@@ -288,18 +299,19 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mMapView.clearFocus();
+			float offsetX = ev.getRawX() - mInitX;
 			float offsetY = ev.getRawY() - mInitY;
 			float dy =  ev.getRawY() - mLastY;
-			float dx =  MotionEventCompat.getX(ev, pointerIndex) - mLastX;
+			float dx =  ev.getRawX() - mLastX;
 			if (DEBUG) {
-				V2Log.d(" y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir);
+				V2Log.d(TAG, " y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir);
 			}
 			if (mDragDir == DragDirection.NONE) {
-				if (Math.abs(dx) > Math.abs(dy)) {
+				if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
 					mDragDir = DragDirection.HORIZONTAL;
 				} else if (Math.abs(offsetY) > mTouchSlop){
 					mDragDir = DragDirection.VERTICAL;
-					updateCoverState(true);
+					pauseDrawState(true);
 					mNotificaionShare.setVisibility(View.VISIBLE);
 					mNotificaionShare.bringToFront();
 				}
@@ -311,31 +323,32 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				mVideoShowPager.fakeDragBy(dx);
 			}
 
-			mLastX = ev.getX();
+			mLastX = ev.getRawX();
 			mLastY = ev.getRawY();
 
 			break;
 		case MotionEvent.ACTION_UP:
-			float dxUp =  MotionEventCompat.getX(ev, pointerIndex) - mLastX;
             // A fling must travel the minimum tap distance
             final VelocityTracker velocityTracker = mVelocityTracker;
             final int pointerId = ev.getPointerId(0);
             velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-            final float velocityY = velocityTracker.getYVelocity(pointerId);
             final float velocityX = velocityTracker.getXVelocity(pointerId);
 
           
 			if (mDragDir == DragDirection.VERTICAL) {
 				Flying fl = new Flying();
-				fl.startFlying(mDefaultVelocity);
+				if (fireFlyingdown) {
+					fl.startFlying(mDefaultVelocity);
+				} else {
+					fl.startFlying(-mDefaultVelocity);
+				}
 				postOnAnimation(fl);
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.endFakeDrag();
 				int cpage = mVideoShowPager.getCurrentItem();
 				if (Math.abs(velocityX) > mMinimumFlingVelocity) {
-					//TODO 
 					if (DEBUG) {
-						V2Log.d(" do X fling :"+ velocityX+"  cpage:" + cpage+"   downPage:"+mCurrentPage);
+						V2Log.d(TAG, " do X fling :"+ velocityX+"  cpage:" + cpage+"   downPage:"+mCurrentPage);
 					}
 					if (mCurrentPage == cpage) {
 						if (velocityX > 0) {
@@ -368,27 +381,27 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		@Override
 		public void run() {
 			if (DEBUG) {
-				V2Log.d("[FLYING] : " + mOffsetTop + "   " + initVelocity
+				V2Log.d(TAG, "[FLYING] : " + mOffsetTop + "   " + initVelocity
 						+ "   " + getBottom());
 			}
-			mMapView.clearFocus();
-			if (mOffsetTop <= 0) {
+			if (mOffsetTop <= 0 && initVelocity < 0) {
 				mOffsetTop = 0;
 				updateOffset(mOffsetTop);
 				if (mPosInterface != null) {
 					mPosInterface.onFlyingIn();
 				}
-				updateCoverState(false);
-				((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).resume();
+				
+				mNotificaionShare.setVisibility(View.GONE);
+				fireFlyingdown = false;
 				return;
 			}
 
-			if (mOffsetTop > getBottom()) {
+			if (mOffsetTop > getBottom() && initVelocity > 0) {
 				if (mPosInterface != null) {
 					mPosInterface.onFlyingOut();
 				}
-				updateCoverState(false);
-				((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).resume();
+				fireFlyingdown = false;
+				mNotificaionShare.setVisibility(View.GONE);
 				return;
 			}
 			if (initVelocity > 0) {
