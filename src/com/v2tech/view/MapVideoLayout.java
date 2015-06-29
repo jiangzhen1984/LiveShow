@@ -25,6 +25,7 @@ import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.LoopViewPager;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
@@ -34,19 +35,21 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	
 	private int mMinimumFlingVelocity;
 	private int mMaximumFlingVelocity;
+	private int mDefaultVelocity = 40;
+	private int mTouchSlop;
 	
 
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	private LoopViewPager mVideoShowPager;
 	private VideoShowFragmentAdapter mViewPagerAdapter;
+	private CameraShape mNotificaionShare;
 
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
 	private int mOffsetTop;
 	private DragDirection mDragDir = DragDirection.NONE;
-	private int mDefaultVelocity = 40;
-	private int mTouchSlop;
+	
 
 	
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -94,9 +97,15 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mMsgLayout.setOrientation(LinearLayout.VERTICAL);
 		mMsgLayout.setBackgroundColor(Color.TRANSPARENT);
 		
+		
+		mNotificaionShare = new CameraShape(getContext());
+		mNotificaionShare.updatePrecent(0.0F);
+		mNotificaionShare.setVisibility(View.GONE);
+		
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(mMsgLayout);
+		this.addView(mNotificaionShare);
 		this.bringChildToFront(mMsgLayout);
 
 		mMsgLayout.setOnTouchListener(this);
@@ -195,6 +204,10 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	@Override
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();
+		if (mVelocityTracker != null) {
+			mVelocityTracker.recycle();
+			mVelocityTracker = null;
+		}
 	}
 
 	public interface OnVideoFragmentChangedListener {
@@ -215,8 +228,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	public void requestUpFlying() {
 		Flying fl = new Flying();
 		fl.startFlying(-mDefaultVelocity);
-		//this.post(fl);
-		this.postOnAnimation(fl);
+		postOnAnimation(fl);
 	}
 
 	public void updateOffset(int offset) {
@@ -225,8 +237,11 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		} else {
 			mOffsetTop += offset;
 		}
+//		if (DEBUG) {
+//			V2Log.e("mOffsetTop:" + mOffsetTop+"  mTouchSlop:"+mTouchSlop+"  cent:"+ (Math.abs((mOffsetTop - mTouchSlop)) / mTouchSlop)+"  ");
+//		}
+		mNotificaionShare.updatePrecent(Math.abs(mOffsetTop - mTouchSlop) / 4);
 		requestLayout();
-		// offsetTopAndBottom(mOffsetTop);
 	}
 
 	public void udpateCover(Bitmap bm) {
@@ -237,12 +252,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
 					.getCurrentItem())).pause();
 			mMapView.onPause();
-			//this.bringChildToFront(mTestImage);
-			// mMapView.setVisibility(View.GONE);
-			// removeView(mMapView);
 		} else {
-			// addView(mMapView);
-			// mMapView.setVisibility(View.VISIBLE);
 			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
 					.getCurrentItem())).resume();
 			mMapView.onResume();
@@ -258,9 +268,10 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 		
 		int action = ev.getAction();
-		if (mVelocityTracker != null) {
-			mVelocityTracker.addMovement(ev);
+		if (mVelocityTracker == null) {
+			mVelocityTracker = VelocityTracker.obtain();
 		}
+		mVelocityTracker.addMovement(ev);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
@@ -271,9 +282,6 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			mInitY = ev.getRawY();
 			mLastX = mInitX;
 			mLastY = mInitY;
-			
-			mVelocityTracker = VelocityTracker.obtain();
-			mVelocityTracker.addMovement(ev);
 			
 			//Pause
 			((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).pause();
@@ -292,6 +300,8 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				} else if (Math.abs(offsetY) > mTouchSlop){
 					mDragDir = DragDirection.VERTICAL;
 					updateCoverState(true);
+					mNotificaionShare.setVisibility(View.VISIBLE);
+					mNotificaionShare.bringToFront();
 				}
 			}
 
@@ -336,14 +346,11 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 					}
 				}
 				
-				
-			
-				
 			}
+			
 			mDragDir = DragDirection.NONE;
 			
-			mVelocityTracker.recycle();
-			mVelocityTracker = null;
+			mVelocityTracker.clear();
 			break;
 		}
 
@@ -391,7 +398,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			}
 			updateOffset(initVelocity);
 
-			postOnAnimation(this);
+			postOnAnimationDelayed(this, 35);
 		}
 
 	};
@@ -399,16 +406,16 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
-		
 		mVideoShowPager.layout(left, top + mOffsetTop, right, (bottom
 				+ mOffsetTop - top) / 2);
+		
+		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
+			mNotificaionShare.layout(left, mTouchSlop, right, 400);
+		}
 
 		mMsgLayout.layout(left, top + mOffsetTop, right,
 				(bottom + mOffsetTop - top) / 2);
-//		mDragView.layout(left, top + mOffsetTop, right,
-//				(bottom + mOffsetTop - top) / 2);
 		mMapView.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
-		//mTestImage.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
 	}
 
 	@Override

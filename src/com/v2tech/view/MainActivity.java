@@ -740,7 +740,7 @@ OnGetGeoCoderResultListener {
 				}
 				break;
 			case AUTO_PLAY_LIVE:
-				autoPlayNecessary();
+				//autoPlayNecessary();
 				break;
 			case PLAY_LIVE:
 				playLive((Live) msg.obj);
