@@ -26,6 +26,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.widget.CameraShape;
+import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LoopViewPager;
 import com.v2tech.widget.VideoShowFragment;
 
@@ -419,6 +420,9 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
+		if (DEBUG) {
+			V2Log.d("bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getHeight());
+		}
 		mVideoShowPager.layout(left, top + mOffsetTop, right, (bottom
 				+ mOffsetTop - top) / 2);
 		

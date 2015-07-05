@@ -78,6 +78,7 @@ public class BottomButtonLayout extends FrameLayout {
 		
 		
 		mTextView = new EditText(getContext());
+		mTextView.setLines(1);
 		mTextView.setBackgroundResource(R.drawable.input_bg);
 		
 		this.addView(mRoot, new LinearLayout.LayoutParams(

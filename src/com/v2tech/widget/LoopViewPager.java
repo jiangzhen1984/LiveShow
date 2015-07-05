@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.V2.jni.util.V2Log;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -95,7 +97,7 @@ import android.widget.Scroller;
  */
 public class LoopViewPager extends ViewGroup {
     private static final String TAG = "ViewPager";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final boolean USE_CACHE = false;
 
@@ -289,9 +291,9 @@ public class LoopViewPager extends ViewGroup {
          * or when it is fully stopped/idle.
          *
          * @param state The new scroll state.
-         * @see LoopViewPager#SCROLL_STATE_IDLE
-         * @see LoopViewPager#SCROLL_STATE_DRAGGING
-         * @see LoopViewPager#SCROLL_STATE_SETTLING
+         * @see CopyOfLoopViewPager#SCROLL_STATE_IDLE
+         * @see CopyOfLoopViewPager#SCROLL_STATE_DRAGGING
+         * @see CopyOfLoopViewPager#SCROLL_STATE_SETTLING
          */
         public void onPageScrollStateChanged(int state);
     }
@@ -1301,6 +1303,7 @@ public class LoopViewPager extends ViewGroup {
 
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
+    	V2Log.d(TAG, "   ============="+ child +"  "+index);
         if (!checkLayoutParams(params)) {
             params = generateLayoutParams(params);
         }
@@ -1373,6 +1376,7 @@ public class LoopViewPager extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    	
         // For simple implementation, our internal size is always 0.
         // We depend on the container to specify the layout size of
         // our view.  We can't really know what it is since we will be
@@ -1394,6 +1398,8 @@ public class LoopViewPager extends ViewGroup {
          * Right now we cheat and make this less complicated by assuming decor
          * views won't intersect. We will pin to edges based on gravity.
          */
+        
+        V2Log.d(TAG, "childWidthSize:" +childWidthSize+"  childHeightSize:"+childHeightSize);
         int size = getChildCount();
         for (int i = 0; i < size; ++i) {
             final View child = getChildAt(i);
@@ -1507,6 +1513,7 @@ public class LoopViewPager extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    	V2Log.d(TAG, "bottom:" +b+"   count:"+getChildCount());
         final int count = getChildCount();
         int width = r - l;
         int height = b - t;
