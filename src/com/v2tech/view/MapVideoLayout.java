@@ -134,9 +134,15 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		final TextView tv = new TextView(getContext());
 		tv.setText(str);
 		tv.setTextColor(Color.WHITE);
-		mMsgLayout.addView(tv, new LinearLayout.LayoutParams(
+		LinearLayout.LayoutParams ll = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		if (mMsgLayout.getChildCount() <= 1) {
+			ll.topMargin = 35;
+		} else {
+			ll.topMargin = 15;
+		}
+		mMsgLayout.addView(tv, ll);
 		TranslateAnimation ani = new TranslateAnimation(
 				TranslateAnimation.RELATIVE_TO_PARENT, 1.0F, TranslateAnimation.RELATIVE_TO_PARENT,
 				-1.0F, TranslateAnimation.ABSOLUTE, 1.0F,

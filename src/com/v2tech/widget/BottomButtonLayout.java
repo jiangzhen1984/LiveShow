@@ -16,7 +16,7 @@ import com.v2tech.v2liveshow.R;
 
 public class BottomButtonLayout extends FrameLayout {
 	
-	private final boolean DEBUG = false;
+	private final boolean DEBUG = true;
 	private static final String TAG = "BottomButtonLayout";
 	
 	public static final int MAP_BUTTON = 1;
@@ -71,10 +71,10 @@ public class BottomButtonLayout extends FrameLayout {
 		mMapButton.setOnTouchListener(mButtonTouchListener);
 		
 		ViewConfiguration configuration = ViewConfiguration.get(getContext());
-		mTouchSlop = configuration.getScaledTouchSlop();
+		mTouchSlop = 25; //configuration.getScaledTouchSlop();
 		mTapTimeout = ViewConfiguration.getTapTimeout();
 		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
-		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+		mMinimumFlingVelocity = (int)(configuration.getScaledMinimumFlingVelocity() * 0.5);
 		
 		
 		mTextView = new EditText(getContext());
@@ -118,7 +118,6 @@ public class BottomButtonLayout extends FrameLayout {
 
 	
 	private void requestScroll(int disX) {
-
 		if (currentOptView == mWordButton) {
 			FrameLayout.LayoutParams rlWord = (FrameLayout.LayoutParams)mWordButton.getLayoutParams();
 			rlWord.leftMargin += disX;
@@ -220,6 +219,9 @@ public class BottomButtonLayout extends FrameLayout {
 			case MotionEvent.ACTION_UP :
 				mVelocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
 				int velocityX = (int)mVelocityTracker.getXVelocity();
+				if (DEBUG) {
+					V2Log.d("dis:" + Math.abs(event.getRawX() - mInitX)+"   "+ mTouchSlop+"   mMinimumFlingVelocity:"+ mMinimumFlingVelocity+"  velocityX:"+velocityX+"  mButtonState:"+mButtonState);
+				}
 				if ((mMinimumFlingVelocity <= velocityX) || mButtonState == ButtonState.DRAGING) {
 					 if (Math.abs(event.getRawX() - mInitX) < mTouchSlop) {
 						 velocityX = -velocityX;
