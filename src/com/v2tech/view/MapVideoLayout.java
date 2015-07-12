@@ -109,7 +109,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(mMsgLayout);
-		this.addView(mNotificaionShare);
+		//this.addView(mNotificaionShare);
 		this.bringChildToFront(mMsgLayout);
 
 		mMsgLayout.setOnTouchListener(this);
