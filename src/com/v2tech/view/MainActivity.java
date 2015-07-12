@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -25,6 +26,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -82,11 +85,10 @@ import com.v2tech.widget.FloatEditText.OnBackkeyClickedListener;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
-OnGetGeoCoderResultListener {
-	
+		OnGetGeoCoderResultListener {
+
 	private static final String BUTTON_TAG_MAP = "map";
 	private static final String BUTTON_TAG_WORD = "word";
-	
 
 	private static final int SEARCH = 1;
 	private static final int AUTO_PLAY_LIVE = 2;
@@ -98,15 +100,15 @@ OnGetGeoCoderResultListener {
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int MARKER_ANIMATION = 12;
-	
-	
+
+	private int keyboardHeight = 0;
 	private WindowManager mWindowManager;
 	private InputMethodManager mIMM;
-	
-	private static  float mCurrentZoomLevel = 14F;
+
+	private static float mCurrentZoomLevel = 14F;
 
 	private RelativeLayout mBottomLayout;
-	//private BottomButtonLayout mBottomButtonLayout;
+	// private BottomButtonLayout mBottomButtonLayout;
 	private View mBottomButtonLayout;
 	private ViewGroup.LayoutParams mBottomButtonLayoutParmeters;
 	private EditText mEditText;
@@ -114,8 +116,7 @@ OnGetGeoCoderResultListener {
 	private View mLocateButton;
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
-	
-	
+
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
@@ -124,7 +125,7 @@ OnGetGeoCoderResultListener {
 	private MyLocationListenner myListener = new MyLocationListenner();
 	boolean isFirstLoc = true;// 是否首次定位
 	private boolean isSuspended;
-	
+
 	private CameraView cv;
 	private boolean isRecording = false;
 	private boolean isInCameraView = false;
@@ -139,16 +140,17 @@ OnGetGeoCoderResultListener {
 
 	private LatLng selfLocation;
 	private LatLng currentVideoLocation;
-	
+
 	private LocalHandler mLocalHandler;
 	private HandlerThread mHandlerThread;
+	private Handler uiThreadHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mWindowManager = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-		mIMM = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		 
+		mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+		mIMM = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
@@ -158,10 +160,10 @@ OnGetGeoCoderResultListener {
 		initVideoShareLayout();
 		initBottomButtonLayout();
 		initLocation();
-		
+
 		mHandlerThread = new HandlerThread("back-end");
 		mHandlerThread.start();
-		while(!mHandlerThread.isAlive()) {
+		while (!mHandlerThread.isAlive()) {
 			try {
 				wait(100);
 			} catch (InterruptedException e) {
@@ -169,13 +171,32 @@ OnGetGeoCoderResultListener {
 			}
 		}
 		mLocalHandler = new LocalHandler(mHandlerThread.getLooper());
-		
+
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		ImRequest.getInstance().login(
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
-		
+
+		final Window mRootWindow = getWindow();
+		View mRootView = mRootWindow.getDecorView().findViewById(
+				android.R.id.content);
+		mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+				new ViewTreeObserver.OnGlobalLayoutListener() {
+					public void onGlobalLayout() {
+						if (keyboardHeight <= 0) {
+							Rect r = new Rect();
+							View view = mRootWindow.getDecorView();
+							view.getWindowVisibleDisplayFrame(r);
+							int kh = mDisplay.heightPixels
+									- (r.bottom - r.top);
+							if (kh > 100) {
+								keyboardHeight = kh;
+							}
+						}
+					}
+				});
+
 	}
 
 	private void initLocation() {
@@ -220,20 +241,21 @@ OnGetGeoCoderResultListener {
 	}
 
 	private void initBottomButtonLayout() {
-		mBottomLayout = (RelativeLayout)findViewById(R.id.bottom_layout);
-//		mBottomButtonLayout = (BottomButtonLayout)findViewById(R.id.bottom_button_ly);
-//		mBottomButtonLayout.setButtonListener(mButtonClickedListener);
-		
+		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
+		// mBottomButtonLayout =
+		// (BottomButtonLayout)findViewById(R.id.bottom_button_ly);
+		// mBottomButtonLayout.setButtonListener(mButtonClickedListener);
+
 		mBottomButtonLayout = findViewById(R.id.bottom_button_ly);
 		View button = mBottomButtonLayout.findViewById(R.id.map_button);
 		button.setTag(BUTTON_TAG_MAP);
 		button.setOnClickListener(mBottomButtonClickedListener);
-		
+
 		button = mBottomButtonLayout.findViewById(R.id.msg_button);
 		button.setTag(BUTTON_TAG_WORD);
 		button.setOnClickListener(mBottomButtonClickedListener);
-		
-		mEditText = (EditText)findViewById(R.id.edit_text);
+
+		mEditText = (EditText) findViewById(R.id.edit_text);
 		mEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -243,26 +265,24 @@ OnGetGeoCoderResultListener {
 				}
 
 			}
-			
-		});
-		
-		((FloatEditText)mEditText).setOnBackKeyClickedListener(new OnBackkeyClickedListener(){
 
-			@Override
-			public void OnBackkeyClicked(View v) {
-				updateBottomLayoutToWindowManager(false);
-			}
-			
 		});
 
-		
+		((FloatEditText) mEditText)
+				.setOnBackKeyClickedListener(new OnBackkeyClickedListener() {
+
+					@Override
+					public void OnBackkeyClicked(View v) {
+						updateBottomLayoutToWindowManager(false);
+					}
+
+				});
+
 		mLocateButton = findViewById(R.id.location);
 		mLocateButton.setOnClickListener(mLocateClickListener);
 		mBottomLayout.bringToFront();
-		
+
 	}
-
-
 
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
@@ -342,7 +362,7 @@ OnGetGeoCoderResultListener {
 		super.onStart();
 		isSuspended = false;
 		if (isRecording) {
-			
+
 		} else {
 			if (mCurrentVideoFragment != null) {
 				mCurrentVideoFragment.resume();
@@ -389,9 +409,9 @@ OnGetGeoCoderResultListener {
 
 		CloudManager.getInstance().destroy();
 		mSearch.destroy();
-		
+
 		mHandlerThread.quit();
-		
+
 		mLocalHandler = null;
 	}
 
@@ -407,49 +427,64 @@ OnGetGeoCoderResultListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
+		super.onConfigurationChanged(newConfig);
 	}
 
 	private void stopCamera() {
 		cv.stopPreView();
 	}
-	
+
 	PopupWindow pw;
+
 	private void updateBottomLayoutToWindowManager(boolean flag) {
 		if (flag) {
-			mBottomButtonLayoutParmeters = (RelativeLayout.LayoutParams)mBottomButtonLayout.getLayoutParams();
-			((ViewGroup)mBottomButtonLayout.getParent()).removeView(mBottomButtonLayout);
-			
-			pw = new PopupWindow(mBottomButtonLayout,
-					mBottomButtonLayout.getWidth(), mBottomButtonLayout
-							.getHeight());
-			pw.setFocusable(true);
-			pw.setOutsideTouchable(false);
-			pw.showAtLocation(mMapVideoLayout, Gravity.CENTER_HORIZONTAL, 0, 0);
-	        keyboardShow= true;
-	        
-		} else {
-			if (pw != null) {
-				Handler h = new Handler();
-				mIMM.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-				h.postDelayed(new Runnable() {
+			uiThreadHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					mBottomButtonLayoutParmeters = (RelativeLayout.LayoutParams) mBottomButtonLayout
+							.getLayoutParams();
+					((ViewGroup) mBottomButtonLayout.getParent())
+							.removeView(mBottomButtonLayout);
+
+					pw = new PopupWindow(mBottomButtonLayout,
+							mBottomButtonLayout.getWidth(), mBottomButtonLayout
+									.getHeight());
+					pw.setFocusable(true);
+					pw.setOutsideTouchable(false);
+					int[] location = new int[2];
+					mMapView.getLocationInWindow(location);
+
+					int offset =location[1] - keyboardHeight - mBottomButtonLayout.getHeight();
+					pw.showAsDropDown(mMapView, 0, 0);
+					keyboardShow = true;
+
+				}
+
+			});
+
+		} else {
+
+			mIMM.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+			uiThreadHandler.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					if (pw != null) {
 						pw.dismiss();
-						mBottomLayout.addView(mBottomButtonLayout, mBottomButtonLayoutParmeters);
+						mBottomLayout.addView(mBottomButtonLayout,
+								mBottomButtonLayoutParmeters);
 						pw = null;
 						keyboardShow = false;
 					}
-					
-				}, 300);
-//				
-			}
-			
+				}
+
+			}, 300);
+			//
+
 		}
 	}
 
@@ -529,7 +564,7 @@ OnGetGeoCoderResultListener {
 					updateMapLocation(cl);
 				}
 			}
-			
+
 		}
 
 	};
@@ -619,7 +654,6 @@ OnGetGeoCoderResultListener {
 
 	private LocalState mSearchState = LocalState.DONE;
 
-
 	private CloudListener mLocalCloudListener = new CloudListener() {
 
 		@Override
@@ -666,8 +700,8 @@ OnGetGeoCoderResultListener {
 				OverlayOptions oo = new MarkerOptions().icon(online)
 						.position(ll).extraInfo(bundle);
 				Overlay ol = mBaiduMap.addOverlay(oo);
-				//cache overlay
-				currentOverlay.put(l,  ol);
+				// cache overlay
+				currentOverlay.put(l, ol);
 			} else {
 				bundle.putSerializable("live", l);
 				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
@@ -677,21 +711,20 @@ OnGetGeoCoderResultListener {
 		}
 
 	}
-	
-	
+
 	private void animationMaker(Live l, boolean show) {
 		Overlay old = currentOverlay.get(l);
 		if (old != null) {
 			old.remove();
-		} 
-		
+		}
+
 		BitmapDescriptor online = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		BitmapDescriptor onlineRed = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live_show);
-		
+
 		LatLng ll = new LatLng(l.getLat(), l.getLng());
-		OverlayOptions oo = new MarkerOptions().icon(show?onlineRed: online)
+		OverlayOptions oo = new MarkerOptions().icon(show ? onlineRed : online)
 				.position(ll);
 		Overlay ol = mBaiduMap.addOverlay(oo);
 		currentOverlay.put(l, ol);
@@ -709,15 +742,15 @@ OnGetGeoCoderResultListener {
 		videoMaps.get(mCurrentVideoFragment).live = l;
 
 		updateMapLocation(l);
-		//Start new live marker animation
+		// Start new live marker animation
 		animationMaker(l, true);
 		//
 		mLocalHandler.removeMessages(MARKER_ANIMATION);
-		Message delayMessage = Message.obtain(mLocalHandler, MARKER_ANIMATION, 0, 0);
+		Message delayMessage = Message.obtain(mLocalHandler, MARKER_ANIMATION,
+				0, 0);
 		mLocalHandler.sendMessageDelayed(delayMessage, 200);
 	}
-	
-	
+
 	private void updateMapLocation(Live l) {
 		currentVideoLocation = new LatLng(l.getLat(), l.getLng());
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
@@ -756,14 +789,13 @@ OnGetGeoCoderResultListener {
 		return false;
 
 	}
-	
-	
+
 	private void getMapSnapshot() {
 		mBaiduMap.snapshot(new SnapshotReadyCallback() {
 
 			@Override
 			public void onSnapshotReady(Bitmap bm) {
-				//mapSnapshot.setImageBitmap(bm);
+				// mapSnapshot.setImageBitmap(bm);
 				mMapVideoLayout.udpateCover(bm);
 			}
 
@@ -776,7 +808,11 @@ OnGetGeoCoderResultListener {
 		@Override
 		public void onClick(View v) {
 			LocationItem li = (LocationItem) v.getTag();
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll, mCurrentZoomLevel);
+			if (li == null) {
+				return;
+			}
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll,
+					mCurrentZoomLevel);
 			mBaiduMap.animateMapStatus(u);
 			if (li.type == LocationItemType.SELF) {
 				if (currentVideoLocation != null) {
@@ -808,7 +844,6 @@ OnGetGeoCoderResultListener {
 
 	};
 
-	
 	private OnMapStatusChangeListener mMapStatusChangeListener = new OnMapStatusChangeListener() {
 
 		@Override
@@ -827,37 +862,37 @@ OnGetGeoCoderResultListener {
 		}
 
 	};
-	
-	
+
 	private OnClickListener mBottomButtonClickedListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
 			if (BUTTON_TAG_MAP.equals(v.getTag())) {
 				mLocalHandler.removeMessages(SEARCH);
-				Message msg = Message.obtain(mLocalHandler, SEARCH, mEditText.getText().toString());
+				Message msg = Message.obtain(mLocalHandler, SEARCH, mEditText
+						.getText().toString());
 				mLocalHandler.sendMessage(msg);
 			} else if (BUTTON_TAG_WORD.equals(v.getTag())) {
 				mMapVideoLayout.addNewMessage(mEditText.getText().toString());
 			}
-			
+
 			mEditText.setText("");
-			
+
 			updateBottomLayoutToWindowManager(false);
 		}
-		
+
 	};
-	
-	
+
 	private BottomButtonLayout.ButtonClickedListener mButtonClickedListener = new BottomButtonLayout.ButtonClickedListener() {
-		
+
 		@Override
 		public void onButtonClicked(View v, EditText et, int flag) {
 			if (flag == BottomButtonLayout.WORD_BUTTON) {
 				mMapVideoLayout.addNewMessage(et.getText().toString());
-			} else if (flag ==  BottomButtonLayout.MAP_BUTTON) {
+			} else if (flag == BottomButtonLayout.MAP_BUTTON) {
 				mLocalHandler.removeMessages(SEARCH);
-				Message msg = Message.obtain(mLocalHandler, SEARCH, et.getText().toString());
+				Message msg = Message.obtain(mLocalHandler, SEARCH, et
+						.getText().toString());
 				mLocalHandler.sendMessage(msg);
 			}
 			et.setText("");
@@ -866,8 +901,8 @@ OnGetGeoCoderResultListener {
 		}
 	};
 
-	class  LocalHandler extends Handler {
-		
+	class LocalHandler extends Handler {
+
 		public LocalHandler(Looper looper) {
 			super(looper);
 			// TODO Auto-generated constructor stub
@@ -897,8 +932,8 @@ OnGetGeoCoderResultListener {
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 10000);
-					mLocalHandler
-							.sendEmptyMessageDelayed(UPDATE_LIVE_MARK, 1000);
+					mLocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK,
+							1000);
 
 					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
@@ -941,9 +976,13 @@ OnGetGeoCoderResultListener {
 				getMapSnapshot();
 				break;
 			case MARKER_ANIMATION:
-				animationMaker(mCurrentVideoFragment.getCurrentLive(), msg.arg1 == 0? false: true);
-				Message delayMessage = Message.obtain(mLocalHandler, MARKER_ANIMATION, msg.arg1 == 0 ? 1: 0, 0);
-				mLocalHandler.sendMessageDelayed(delayMessage, 200);
+				if (mCurrentVideoFragment.getCurrentLive() != null) {
+					animationMaker(mCurrentVideoFragment.getCurrentLive(),
+							msg.arg1 == 0 ? false : true);
+					Message delayMessage = Message.obtain(mLocalHandler,
+							MARKER_ANIMATION, msg.arg1 == 0 ? 1 : 0, 0);
+					mLocalHandler.sendMessageDelayed(delayMessage, 200);
+				}
 				break;
 			}
 		}
