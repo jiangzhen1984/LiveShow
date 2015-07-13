@@ -441,7 +441,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private void updateBottomLayoutToWindowManager(boolean flag) {
 		if (flag) {
-			uiThreadHandler.post(new Runnable() {
+			uiThreadHandler.postDelayed(new Runnable() {
 
 				@Override
 				public void run() {
@@ -453,18 +453,36 @@ public class MainActivity extends FragmentActivity implements
 					pw = new PopupWindow(mBottomButtonLayout,
 							mBottomButtonLayout.getWidth(), mBottomButtonLayout
 									.getHeight());
+					
 					pw.setFocusable(true);
 					pw.setOutsideTouchable(false);
-					int[] location = new int[2];
-					mMapView.getLocationInWindow(location);
+					
+					if (keyboardHeight > 0) {
+						int[] location = new int[2];
+						mMapVideoLayout.getLocationInWindow(location);
+						int offset = location[1] + ((mMapVideoLayout.getHeight() - location[1])- keyboardHeight);
+						pw.showAtLocation(mMapVideoLayout, Gravity.TOP, 0, offset);
+						
+						keyboardShow = true;
+					} else {
+						uiThreadHandler.postDelayed(new Runnable() {
 
-					int offset =location[1] - keyboardHeight - mBottomButtonLayout.getHeight();
-					pw.showAsDropDown(mMapView, 0, 0);
-					keyboardShow = true;
+							@Override
+							public void run() {
+								int[] location = new int[2];
+								mMapVideoLayout.getLocationInWindow(location);
+								int offset = location[1] + ((mMapVideoLayout.getHeight() - location[1])- keyboardHeight);
+								pw.showAtLocation(mMapVideoLayout, Gravity.TOP, 0, offset);
+								
+								keyboardShow = true;
+							}
+							
+						}, 50);
+					}
 
 				}
 
-			});
+			}, 30);
 
 		} else {
 
