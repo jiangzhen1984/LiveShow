@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -18,15 +18,14 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.telephony.TelephonyManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -80,8 +79,6 @@ import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.BottomButtonLayout;
-import com.v2tech.widget.FloatEditText;
-import com.v2tech.widget.FloatEditText.OnBackkeyClickedListener;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
@@ -102,8 +99,6 @@ public class MainActivity extends FragmentActivity implements
 	private static final int MARKER_ANIMATION = 12;
 
 	private int keyboardHeight = 0;
-	private WindowManager mWindowManager;
-	private InputMethodManager mIMM;
 
 	private static float mCurrentZoomLevel = 14F;
 
@@ -129,7 +124,6 @@ public class MainActivity extends FragmentActivity implements
 	private CameraView cv;
 	private boolean isRecording = false;
 	private boolean isInCameraView = false;
-	private boolean keyboardShow = false;
 
 	private DisplayMetrics mDisplay;
 
@@ -148,8 +142,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-		mIMM = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
@@ -177,25 +169,6 @@ public class MainActivity extends FragmentActivity implements
 				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
 						: tl.getLine1Number(), "111111",
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
-
-		final Window mRootWindow = getWindow();
-		View mRootView = mRootWindow.getDecorView().findViewById(
-				android.R.id.content);
-		mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new ViewTreeObserver.OnGlobalLayoutListener() {
-					public void onGlobalLayout() {
-						if (keyboardHeight <= 0) {
-							Rect r = new Rect();
-							View view = mRootWindow.getDecorView();
-							view.getWindowVisibleDisplayFrame(r);
-							int kh = mDisplay.heightPixels
-									- (r.bottom - r.top);
-							if (kh > 100) {
-								keyboardHeight = kh;
-							}
-						}
-					}
-				});
 
 	}
 
@@ -256,27 +229,20 @@ public class MainActivity extends FragmentActivity implements
 		button.setOnClickListener(mBottomButtonClickedListener);
 
 		mEditText = (EditText) findViewById(R.id.edit_text);
+		mEditText.setInputType(InputType.TYPE_NULL);
+		mEditText.setFocusable(true);
 		mEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				if (!keyboardShow) {
-					updateBottomLayoutToWindowManager(true);
-				}
-
+				Intent i = new Intent();
+				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
+				startActivityForResult(i, 100);
+				
 			}
-
+			
 		});
 
-		((FloatEditText) mEditText)
-				.setOnBackKeyClickedListener(new OnBackkeyClickedListener() {
-
-					@Override
-					public void OnBackkeyClicked(View v) {
-						updateBottomLayoutToWindowManager(false);
-					}
-
-				});
 
 		mLocateButton = findViewById(R.id.location);
 		mLocateButton.setOnClickListener(mLocateClickListener);
@@ -418,14 +384,33 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		if (keyboardShow) {
-			updateBottomLayoutToWindowManager(false);
-		}
 	}
+	
+	
+	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+		if (data == null || data.getExtras() == null || resultCode == Activity.RESULT_CANCELED) {
+			return;
+		}
+		int action = data.getExtras().getInt("action");
+		String text = data.getExtras().getString("text");
+		if (TextUtils.isEmpty(text)) {
+			return;
+		}
+		if (resultCode == Activity.RESULT_OK) {
+			//click map button
+			if (action == 1) {
+				mLocalHandler.removeMessages(SEARCH);
+				Message msg = Message.obtain(mLocalHandler, SEARCH, text);
+				mLocalHandler.sendMessage(msg);
+				//click word button
+			} else if (action == 2) {
+				mMapVideoLayout.addNewMessage(text);
+			}
+				
+		}
 	}
 
 	@Override
@@ -439,72 +424,6 @@ public class MainActivity extends FragmentActivity implements
 
 	PopupWindow pw;
 
-	private void updateBottomLayoutToWindowManager(boolean flag) {
-		if (flag) {
-			uiThreadHandler.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					mBottomButtonLayoutParmeters = (RelativeLayout.LayoutParams) mBottomButtonLayout
-							.getLayoutParams();
-					((ViewGroup) mBottomButtonLayout.getParent())
-							.removeView(mBottomButtonLayout);
-
-					pw = new PopupWindow(mBottomButtonLayout,
-							mBottomButtonLayout.getWidth(), mBottomButtonLayout
-									.getHeight());
-					
-					pw.setFocusable(true);
-					pw.setOutsideTouchable(false);
-					
-					if (keyboardHeight > 0) {
-						int[] location = new int[2];
-						mMapVideoLayout.getLocationInWindow(location);
-						int offset = location[1] + ((mMapVideoLayout.getHeight() - location[1])- keyboardHeight);
-						pw.showAtLocation(mMapVideoLayout, Gravity.TOP, 0, offset);
-						
-						keyboardShow = true;
-					} else {
-						uiThreadHandler.postDelayed(new Runnable() {
-
-							@Override
-							public void run() {
-								int[] location = new int[2];
-								mMapVideoLayout.getLocationInWindow(location);
-								int offset = location[1] + ((mMapVideoLayout.getHeight() - location[1])- keyboardHeight);
-								pw.showAtLocation(mMapVideoLayout, Gravity.TOP, 0, offset);
-								
-								keyboardShow = true;
-							}
-							
-						}, 50);
-					}
-
-				}
-
-			}, 30);
-
-		} else {
-
-			mIMM.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-			uiThreadHandler.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					if (pw != null) {
-						pw.dismiss();
-						mBottomLayout.addView(mBottomButtonLayout,
-								mBottomButtonLayoutParmeters);
-						pw = null;
-						keyboardShow = false;
-					}
-				}
-
-			}, 300);
-			//
-
-		}
-	}
 
 	float initY;
 	float lastY;
@@ -896,28 +815,10 @@ public class MainActivity extends FragmentActivity implements
 
 			mEditText.setText("");
 
-			updateBottomLayoutToWindowManager(false);
 		}
 
 	};
 
-	private BottomButtonLayout.ButtonClickedListener mButtonClickedListener = new BottomButtonLayout.ButtonClickedListener() {
-
-		@Override
-		public void onButtonClicked(View v, EditText et, int flag) {
-			if (flag == BottomButtonLayout.WORD_BUTTON) {
-				mMapVideoLayout.addNewMessage(et.getText().toString());
-			} else if (flag == BottomButtonLayout.MAP_BUTTON) {
-				mLocalHandler.removeMessages(SEARCH);
-				Message msg = Message.obtain(mLocalHandler, SEARCH, et
-						.getText().toString());
-				mLocalHandler.sendMessage(msg);
-			}
-			et.setText("");
-			et.clearFocus();
-			mIMM.hideSoftInputFromWindow(et.getWindowToken(), 0);
-		}
-	};
 
 	class LocalHandler extends Handler {
 

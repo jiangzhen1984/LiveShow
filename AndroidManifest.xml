@@ -87,13 +87,24 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustNothing"
               > 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        
+          <activity
+            android:name="com.v2tech.view.BottomButtonLayoutActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan|stateVisible"
+              > 
         </activity>
 
 
