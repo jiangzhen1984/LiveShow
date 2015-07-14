@@ -26,9 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -78,7 +75,6 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
-import com.v2tech.widget.BottomButtonLayout;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
@@ -205,6 +201,9 @@ public class MainActivity extends FragmentActivity implements
 
 		mBaiduMap.setOnMapStatusChangeListener(mMapStatusChangeListener);
 		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
+		
+		mBaiduMap.setMyLocationEnabled(true);
+		
 		mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
 		VideoItem item = videoMaps.get(mCurrentVideoFragment);
 		if (item == null) {
@@ -220,11 +219,11 @@ public class MainActivity extends FragmentActivity implements
 		// mBottomButtonLayout.setButtonListener(mButtonClickedListener);
 
 		mBottomButtonLayout = findViewById(R.id.bottom_button_ly);
-		View button = mBottomButtonLayout.findViewById(R.id.map_button);
+		View button = findViewById(R.id.map_button);
 		button.setTag(BUTTON_TAG_MAP);
 		button.setOnClickListener(mBottomButtonClickedListener);
 
-		button = mBottomButtonLayout.findViewById(R.id.msg_button);
+		button = findViewById(R.id.msg_button);
 		button.setTag(BUTTON_TAG_WORD);
 		button.setOnClickListener(mBottomButtonClickedListener);
 
@@ -566,6 +565,7 @@ public class MainActivity extends FragmentActivity implements
 				mBaiduMap.animateMapStatus(u);
 				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
 						selfLocation));
+				
 			}
 
 			if (mCacheLocation == null
@@ -699,10 +699,8 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private boolean autoPlayNecessary() {
-		if (mCurrentVideoFragment.isPlaying()) {
-			if (mCurrentVideoFragment.isPause()) {
+		if (mCurrentVideoFragment.isPlaying() || mCurrentVideoFragment.isPause()) {
 				return false;
-			}
 		}
 		List<Live> list = VideoBCRequest.getInstance().lives;
 		for (int i = 0; i < list.size(); i++) {

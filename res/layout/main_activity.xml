@@ -41,11 +41,10 @@
             android:id="@+id/bottom_button_ly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-             android:layout_below="@+id/location"
-             >
+            android:layout_below="@+id/location"
+            android:background="@color/bottom_bg"
+            android:padding="5dp" >
 
-           
             <Button
                 android:id="@+id/map_button"
                 android:layout_width="wrap_content"
@@ -59,9 +58,8 @@
                 android:textColor="#ffffff"
                 android:textSize="25sp"
                 android:textStyle="bold" />
-            
-            
-             <Button
+
+            <Button
                 android:id="@+id/msg_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,21 +73,19 @@
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
-             <com.v2tech.widget.FloatEditText
-                 android:id="@+id/edit_text"
-                 android:layout_toRightOf="@+id/map_button"
-                 android:layout_toLeftOf="@+id/msg_button"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginLeft="10dp"
-                 android:layout_marginRight="10dp"
-                 android:background="@drawable/input_bg"
-                 android:focusableInTouchMode="true"
-                 android:focusable="true"
-                 android:ems="10" >
-
-             </com.v2tech.widget.FloatEditText>
-            
+            <com.v2tech.widget.FloatEditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/msg_button"
+                android:layout_toRightOf="@+id/map_button"
+                android:background="@drawable/input_bg"
+                android:ems="10"
+                android:focusable="true"
+                android:focusableInTouchMode="true" >
+            </com.v2tech.widget.FloatEditText>
         </RelativeLayout>
     </RelativeLayout>
 

@@ -28,7 +28,7 @@ public class BottomButtonLayoutActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bottom_button_layout_activity);
-		this.overridePendingTransition(R.animator.bottom_to_up_in, 0);
+		//this.overridePendingTransition(R.animator.bottom_to_up_in, 0);
 		mEditText = (FloatEditText) findViewById(R.id.edit_text);
 		((FloatEditText) mEditText)
 		.setOnBackKeyClickedListener(new OnBackkeyClickedListener() {

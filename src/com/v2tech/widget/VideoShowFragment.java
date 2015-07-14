@@ -215,6 +215,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	@Override
 	public boolean isPlaying() {
+		V2Log.e("current state:"+videoState);
 		return VideoState.PLAYING == videoState;
 	}
 

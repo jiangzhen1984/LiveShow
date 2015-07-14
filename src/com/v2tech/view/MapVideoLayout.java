@@ -91,9 +91,10 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mVideoShowPager.setAdapter(mViewPagerAdapter);
 
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
-		mapOptions.scaleControlEnabled(false);
-		mapOptions.zoomControlsEnabled(false);
-		mapOptions.rotateGesturesEnabled(false);
+		mapOptions.compassEnabled(true);
+		mapOptions.scaleControlEnabled(true);
+		mapOptions.zoomControlsEnabled(true);
+		mapOptions.rotateGesturesEnabled(true);
 		mMapView = new MapView(getContext(), mapOptions);
 
 		mBaiduMap = mMapView.getMap();

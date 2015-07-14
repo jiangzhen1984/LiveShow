@@ -106,12 +106,12 @@ public class VideoBCRequest {
 			lives.add(new Live(null,  uuid, Double.parseDouble(lat), Double.parseDouble(lan)));
 		}
 
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 40.072245D,116.351065D));
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 40.072245D,116.361065D));
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.371065D));
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.381065D));
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.391065D));
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 40.072245D,116.341065D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 39.978437D,116.294172D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3FA199B9-EC22-464B-BBA7-449EECCD4124"+ ".m3u8", 39.984186D,116.449975D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 39.873527D,116.308545D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 39.871312D,116.466072D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 39.926224D,116.361438D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/5634D096-B45F-48E9-AEA7-FEDCB2FA37FE"+ ".m3u8", 39.917813D,116.444225D));
 	}
 
 	public static Document buildDocument(String xml) {
