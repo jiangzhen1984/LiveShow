@@ -1,5 +1,7 @@
 package com.v2tech.widget;
 
+import com.V2.jni.util.V2Log;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,13 +14,13 @@ import android.view.View;
 
 public class CameraShape extends View {
 
-	private static int MARGIN = 50;
+	private static int MARGIN = 90;
 	
-	private static final float STAGE_1 = 35.0F;
+	private static final float STAGE_1 = 20.0F;
 	
 	private static final float STAGE_2 = 35.0F;
 	
-	private static final float STAGE_3 = 30.0F;
+	private static final float STAGE_3 = 45.0F;
 
 	private float cent;
 	private Paint p;
@@ -319,29 +321,36 @@ public class CameraShape extends View {
 		
 		
 	}
+	
+	
+	private int mBottom;
+	private int mRight;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		
 		int left = MARGIN;
 		int top = MARGIN;
-		int bottom = getBottom()  - MARGIN;
-		int right = (left + getRight() / 3 * 2)   - MARGIN;
+		if (mBottom <= 0) {
+			mBottom = getBottom()  - MARGIN;
+		}
+		if (mRight <= 0) {
+			mRight =(left + getRight() / 3 * 2)   - MARGIN;;
+		}
 		
-		int midX = (right - left) / 2;
-		int midY = (bottom - top) / 2;
+		int midX = (mRight - left) / 2;
+		int midY = (mBottom - top) / 2;
 		
 		
-		prepareLeftPart(left, top, right, bottom, midX, midY);
+		prepareLeftPart(left, top, mRight, mBottom, midX, midY);
 
-		prepareRightPart(left, top, right, bottom, midX, midY);
+		prepareRightPart(left, top, mRight, mBottom, midX, midY);
 		
-		preparedLine1(left, top, right, bottom, midX, midY);
+		preparedLine1(left, top, mRight, mBottom, midX, midY);
 		
-		preparedLine2(left, top, right, bottom, midX, midY);
+		preparedLine2(left, top, mRight, mBottom, midX, midY);
 		
-		preparedLine3(left, top, right, bottom, midX, midY);
+		preparedLine3(left, top, mRight, mBottom, midX, midY);
 
 		canvas.drawPath(pathLeft, p);
 

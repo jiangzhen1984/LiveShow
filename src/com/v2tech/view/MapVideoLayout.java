@@ -33,13 +33,14 @@ import com.v2tech.widget.VideoShowFragment;
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMinimumFlingVelocity;
 	private int mMaximumFlingVelocity;
 	private int mDefaultVelocity = 40;
 	private int mTouchSlop;
+	private int mCameraShapeSLop;
 	
 
 	private MapView mMapView;
@@ -109,7 +110,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(mMsgLayout);
-		//this.addView(mNotificaionShare);
+		this.addView(mNotificaionShare);
 		this.bringChildToFront(mMsgLayout);
 
 		mMsgLayout.setOnTouchListener(this);
@@ -118,6 +119,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
 		mTouchSlop = configuration.getScaledTouchSlop();
+		mCameraShapeSLop = mTouchSlop * 3;
 
 	}
 
@@ -249,8 +251,8 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		}
 
 		
-		if (mOffsetTop > mTouchSlop) {
-			float cent = Math.abs(mOffsetTop - mTouchSlop) / 4;
+		if (mOffsetTop > mNotificaionShare.getHeight() / 2) {
+			float cent = Math.abs(mOffsetTop - (mNotificaionShare.getHeight() / 2)) / 4;
 			mNotificaionShare.updatePrecent(cent);
 			if (cent > 100.0F) {
 				fireFlyingdown = true;
@@ -311,7 +313,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			float dy =  ev.getRawY() - mLastY;
 			float dx =  ev.getRawX() - mLastX;
 			if (DEBUG) {
-				V2Log.d(TAG, " y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir);
+				V2Log.d(TAG, " y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir +"  "+offsetY +"  ====" +mCameraShapeSLop);
 			}
 			if (mDragDir == DragDirection.NONE) {
 				if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
@@ -319,13 +321,16 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				} else if (Math.abs(offsetY) > mTouchSlop){
 					mDragDir = DragDirection.VERTICAL;
 					pauseDrawState(true);
-					mNotificaionShare.setVisibility(View.VISIBLE);
-					mNotificaionShare.bringToFront();
 				}
 			}
 
 			if (mDragDir == DragDirection.VERTICAL) {
 				updateOffset((int) dy);
+				if (mNotificaionShare.getVisibility() == View.GONE 
+						&& Math.abs(offsetY) > mNotificaionShare.getHeight() / 2) {
+					mNotificaionShare.setVisibility(View.VISIBLE);
+					mNotificaionShare.bringToFront();
+				}
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.fakeDragBy(dx);
 			}
@@ -427,13 +432,14 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		if (DEBUG) {
-			V2Log.d("bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getHeight());
+			V2Log.d("bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getHeight()+"  top:" + top);
 		}
 		mVideoShowPager.layout(left, top + mOffsetTop, right, (bottom
 				+ mOffsetTop - top) / 2);
 		
 		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
-			mNotificaionShare.layout(left, mTouchSlop, right, 400);
+			int dis = (mOffsetTop > 400?((mOffsetTop - 400) / 5):0);
+			mNotificaionShare.layout(left, mTouchSlop + dis, right, 400 + dis);
 		}
 
 		mMsgLayout.layout(left, top + mOffsetTop, right,
