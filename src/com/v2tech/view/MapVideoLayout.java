@@ -26,9 +26,9 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.widget.CameraShape;
-import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LoopViewPager;
 import com.v2tech.widget.VideoShowFragment;
+import com.v2tech.widget.VideoShowFragmentAdapter;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 LoopViewPager.OnPageChangeListener, VideoCommentsAPI {

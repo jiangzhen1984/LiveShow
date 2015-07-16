@@ -1,9 +1,7 @@
-package com.v2tech.view;
+package com.v2tech.widget;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.v2tech.widget.VideoShowFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,7 +31,7 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return 6;
+		return fragmentCounts;
 	}
 
 	

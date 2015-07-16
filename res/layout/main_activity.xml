@@ -81,7 +81,6 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/msg_button"
                 android:layout_toRightOf="@+id/map_button"
-                android:background="@drawable/input_bg"
                 android:ems="10"
                 android:focusable="true"
                 android:focusableInTouchMode="true" >

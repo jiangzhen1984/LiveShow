@@ -9,8 +9,8 @@
             android:id="@+id/bottom_button_ly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/b"
             android:background="@color/bottom_bg"
+            android:layout_alignParentBottom="true"
             android:padding="5dp" >
 
             <Button
@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/orange_btn_bg"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/orange_btn_bg"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
@@ -52,20 +52,12 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/msg_button"
                 android:layout_toRightOf="@+id/map_button"
-                android:background="@drawable/input_bg"
                 android:ems="10"
                 android:focusable="true"
                 android:focusableInTouchMode="true" >
             </com.v2tech.widget.FloatEditText>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/b"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:text=" "
-            android:layout_alignParentBottom="true"
-            android:background="@color/bottom_bg" >
-        </TextView>
+     
 
 </RelativeLayout>
