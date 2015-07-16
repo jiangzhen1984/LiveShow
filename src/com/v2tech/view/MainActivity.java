@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private int keyboardHeight = 0;
 
-	private static float mCurrentZoomLevel = 14F;
+	private static float mCurrentZoomLevel = 12F;
 
 	private RelativeLayout mBottomLayout;
 	// private BottomButtonLayout mBottomButtonLayout;
@@ -268,7 +268,7 @@ public class MainActivity extends FragmentActivity implements
 		mShareVideoButton.setTextColor(Color.GREEN);
 		mShareVideoButton
 				.setBackgroundResource(R.drawable.video_share_button_bg);
-		mShareVideoButton.setTextSize(18);
+		mShareVideoButton.setTextSize(13);
 		mShareVideoButton.setTag("none");
 		mShareVideoButton.setOnClickListener(new OnClickListener() {
 
@@ -631,6 +631,7 @@ public class MainActivity extends FragmentActivity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
+			V2Log.e(l.getUrl());
 			LatLng ll = new LatLng(l.getLat(), l.getLng());
 			Bundle bundle = new Bundle();
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {

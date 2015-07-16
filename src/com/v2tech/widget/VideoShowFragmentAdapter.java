@@ -22,11 +22,11 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		int realPos = position % fragmentCounts;
-		if (fragments[realPos] == null) {
-			fragments[realPos] = new VideoShowFragment();
+		if (fragments[position] == null) {
+			fragments[position] = new VideoShowFragment();
+			fragments[position].setIndex(position + 1);
 		}
-		return fragments[realPos];
+		return fragments[position];
 	}
 
 	@Override

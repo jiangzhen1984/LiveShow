@@ -42,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/location"
+            android:layout_centerVertical="true"
             android:background="@color/bottom_bg"
             android:padding="5dp" >
 
@@ -50,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginBottom="8dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/orange_btn_bg"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
@@ -64,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="8dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/orange_btn_bg"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
@@ -77,11 +78,12 @@
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/msg_button"
+                android:layout_alignBottom="@+id/msg_button"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/msg_button"
                 android:layout_toRightOf="@+id/map_button"
-                android:ems="10"
                 android:focusable="true"
                 android:focusableInTouchMode="true" >
             </com.v2tech.widget.FloatEditText>

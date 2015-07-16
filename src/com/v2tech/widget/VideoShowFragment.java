@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.media.AudioFormat;
 import android.media.MediaCodec;
 import android.os.Bundle;
@@ -57,6 +56,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	private static final boolean DEBUG = false;
 	private static final String TAG = "VideoShowFragment";
 
+	private int mIndex;
 	private PlayerControl playerControl;
 	private ExoPlayer player;
 	private SurfaceView mSurfaceView;
@@ -228,10 +228,15 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	public Live getCurrentLive() {
 		return live;
 	}
+	
+	
+	public void setIndex(int index) {
+		this.mIndex = index;
+	}
 
-	static int index = 1;
 
 	private void drawFirstBlankFrame(Canvas c) {
+		//int[]  carray = new int[]{Color.MAGENTA, Color.BLUE, Color.CYAN, Color.GREEN, Color.RED, Color.WHITE};
 		if (player != null && playerControl.isPlaying()) {
 			return;
 		}
@@ -241,9 +246,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		Canvas tmp = new Canvas(bp);
 		tmp.drawColor(Color.BLACK);
 		Paint p = new Paint();
-		p.setColor(Color.RED);
-		p.setTextSize(20);
-		tmp.drawText(index++ + "", width / 2, height / 2, p);
+		p.setColor(Color.WHITE);
+		p.setTextSize(60);
+		tmp.drawText(mIndex + "", width / 2, height / 2, p);
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
 	}
@@ -257,7 +262,6 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
-			holder.setFormat(PixelFormat.TRANSLUCENT);
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
@@ -271,7 +275,6 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		@Override
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
-			holder.setFormat(PixelFormat.TRANSLUCENT);
 			surface = holder.getSurface();
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,

@@ -1,73 +1,121 @@
 package com.v2tech.widget;
 
-import com.V2.jni.util.V2Log;
-
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.VelocityTrackerCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
+
+import com.V2.jni.util.V2Log;
 
 public class CircleViewPager extends ViewGroup {
 
 	private static final boolean DEBUG = true;
 	private static final String TAG = "CircleViewPager";
 
+	
+	private static final int mDefaultVelocity = 40;
+	
+	private static final int MIN_FLING_VELOCITY = 200; // dips
+	
+	private int mMinimumVelocity;
+	
+	private int mMaximumVelocity;
+	
+	private int mInimumFlingVelocity;
+	
+	private VelocityTracker mVelocityTracker;
+
 	private static final int DEFAULT_OFFSCREEN_PAGES = 1;
 
 	private int mCurrItem;
 
-	private int mOffscreenPageLimit;
+	private int mMoveOffset;
 
-	private boolean mIsBeingDragged;
+	private int mLastMotionX;
 
-	private boolean mFakeDragging;
+	private long mFakeDragBeginTime;
 
 	private OnPageChangeListener mOnPageChangeListener;
+	
+	private PagerAdapter mPageAdapter;
+	
+	
+	private Flying flying;
 
 	public CircleViewPager(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		init(context);
 	}
 
 	public CircleViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
+		init(context);
 	}
 
 	public CircleViewPager(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		init(context);
+	}
+
+	private void init(Context context) {
+		final ViewConfiguration configuration = ViewConfiguration.get(context);
+		final float density = context.getResources().getDisplayMetrics().density;
+
+		mMinimumVelocity = (int) (MIN_FLING_VELOCITY * density);
+		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+		mInimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
 	}
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		int width = r - l;
-        int height = b - t;
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-	    int offsetLeft = paddingLeft;
-	    
+		int height = b - t;
+		int paddingLeft = getPaddingLeft();
+		int paddingTop = getPaddingTop();
+		int paddingRight = getPaddingRight();
+		int paddingBottom = getPaddingBottom();
+		int offsetLeft = paddingLeft;
+
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
-			if (DEBUG) {
-				V2Log.d(TAG, "  MeasuredHeight:" +child.getMeasuredHeight()+"  MeasuredWidth:" + child.getMeasuredWidth());
+			// TODO add layout margin left
+			offsetLeft = child.getPaddingLeft() + (i - mCurrItem) * child.getMeasuredWidth()
+					+ mMoveOffset;
+		
+			if (count > 3) {
+				if (mCurrItem == 0) {
+					if (i == count -1) {
+						offsetLeft = child.getPaddingLeft() + -child.getMeasuredWidth()
+								+ mMoveOffset;
+					} 
+				} else if (mCurrItem == count -1) {
+					if (i == 0) {
+						offsetLeft = child.getPaddingLeft() + (i + 1) * child.getMeasuredWidth()
+								+ mMoveOffset;
+					}
+				}
 			}
-			//TODO add layout margin left
-			offsetLeft += child.getPaddingLeft() + i * child.getMeasuredWidth();
+			
 			if (DEBUG) {
-				V2Log.d(TAG, "layout index: " + i + "  l:" + offsetLeft
-						+ "  t:" + (t + paddingTop) + "   r:"
-						+ (offsetLeft + child.getMeasuredWidth()) + " b:"
-						+ (t + paddingTop + child.getMeasuredHeight()));
+				V2Log.e("mCurrItem:"+mCurrItem+"   i:" + i + "  offsetLeft:" + offsetLeft
+						+ "   mMoveOffset:" + mMoveOffset + "  width"
+						+ child.getMeasuredWidth() + "  padding:left:"
+						+ child.getPaddingLeft());
 			}
-			child.layout(offsetLeft, t + paddingTop, offsetLeft + child.getMeasuredWidth(), t + paddingTop + child.getMeasuredHeight());
+			
+				// TODO fix offsetLeft;
+				child.layout(offsetLeft, t + paddingTop,
+						offsetLeft + child.getMeasuredWidth(), t + paddingTop
+								+ child.getMeasuredHeight());
+			
 		}
 
 	}
@@ -98,7 +146,6 @@ public class CircleViewPager extends ViewGroup {
 				- getPaddingRight();
 		int childHeightSize = getMeasuredHeight() - getPaddingTop()
 				- getPaddingBottom();
-
 
 		V2Log.d(TAG, "childWidthSize:" + childWidthSize + "  childHeightSize:"
 				+ childHeightSize);
@@ -160,6 +207,7 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void setAdapter(PagerAdapter adapter) {
+		//TODO destroy prior data
 		adapter.startUpdate(this);
 		int count = adapter.getCount();
 		for (int i = 0; i < count; i++) {
@@ -167,17 +215,12 @@ public class CircleViewPager extends ViewGroup {
 		}
 		adapter.setPrimaryItem(this, 0, null);
 		adapter.finishUpdate(this);
+		
+		mPageAdapter = adapter;
 	}
 
 	public void setOffscreenPageLimit(int limit) {
-		if (limit < DEFAULT_OFFSCREEN_PAGES) {
-			Log.w(TAG, "Requested offscreen page limit " + limit
-					+ " too small; defaulting to " + DEFAULT_OFFSCREEN_PAGES);
-			limit = DEFAULT_OFFSCREEN_PAGES;
-		}
-		if (limit != mOffscreenPageLimit) {
-			mOffscreenPageLimit = limit;
-		}
+
 	}
 
 	public int getCurrentItem() {
@@ -185,32 +228,173 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void setCurrentItem(int item, boolean smoothScroll) {
-		// TODO Auto-generated constructor stub
+		this.mCurrItem = item;
 	}
 
 	public boolean beginFakeDrag() {
-		if (mIsBeingDragged) {
-			return false;
+		mMoveOffset = 0;
+		final long time = SystemClock.uptimeMillis();
+
+		if (mVelocityTracker == null) {
+			mVelocityTracker = VelocityTracker.obtain();
+		} else {
+			mVelocityTracker.clear();
 		}
-		mFakeDragging = true;
-		// TODO Auto-generated constructor stub
+
+		final MotionEvent ev = MotionEvent.obtain(time, time,
+				MotionEvent.ACTION_DOWN, 0, 0, 0);
+		mVelocityTracker.addMovement(ev);
+		ev.recycle();
+
+		mFakeDragBeginTime = time;
+
 		return true;
 	}
 
 	public void fakeDragBy(float xOffset) {
-		if (!mFakeDragging) {
-			throw new IllegalStateException(
-					"No fake drag in progress. Call beginFakeDrag first.");
-		}
+		mLastMotionX += xOffset;
+		// Synthesize an event for the VelocityTracker.
+		final long time = SystemClock.uptimeMillis();
+		final MotionEvent ev = MotionEvent.obtain(mFakeDragBeginTime, time,
+				MotionEvent.ACTION_MOVE, mLastMotionX, 0, 0);
+		mVelocityTracker.addMovement(ev);
+		ev.recycle();
+
+		mMoveOffset += xOffset;
+		//requestLayout();
+		doDrag((int)xOffset);
 	}
 
 	public void endFakeDrag() {
-		if (!mFakeDragging) {
-			throw new IllegalStateException(
-					"No fake drag in progress. Call beginFakeDrag first.");
+		int childCount = getChildCount();
+		int nextPage =this.mCurrItem;
+		int dis = 0;
+		final VelocityTracker velocityTracker = mVelocityTracker;
+		velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+		int initialVelocity = (int) VelocityTrackerCompat.getXVelocity(
+				velocityTracker, 0);
+		float pageOffsetPercent = (float)Math.abs(mMoveOffset) / (float)getWidth();
+		
+		V2Log.e(pageOffsetPercent+"   "+ getWidth()+"    "+mMoveOffset);
+		if (pageOffsetPercent > 0.15 || initialVelocity > mInimumFlingVelocity) {
+			if (mMoveOffset < 0) {
+				nextPage += 1;
+				dis = getWidth() - Math.abs(mMoveOffset);
+			} else if (mMoveOffset > 0) {
+				nextPage -= 1;
+				dis = getWidth() - Math.abs(mMoveOffset);
+			}
+		}
+		if (nextPage < 0) {
+			nextPage = childCount -1;
+		} else if (nextPage >= childCount) {
+			nextPage = 0;
+		}
+		
+		//If nextPage still same with current
+		// means we need to rollback page
+		if (nextPage == this.mCurrItem) {
+			dis = -mMoveOffset;
+		}
+		
+		scrollToPage(nextPage, mMoveOffset > 0 ? -dis : dis, initialVelocity);
+
+		
+		endDrag();
+	}
+	
+	
+	private void scrollToPage(int page, int restDis, int velocity) {
+		//TODO should scrolling
+		V2Log.e("scrolling to :"+page +"  restDis:"+restDis+"  velocity:"+velocity);
+		if (flying == null) {
+			flying = new Flying();
+		}
+		flying.startFlying(restDis > 0 ? -mDefaultVelocity:mDefaultVelocity, restDis);
+		this.postOnAnimation(flying);
+		this.mCurrItem = page;
+		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
+	}
+	
+	
+	private void doDrag(int xOffset) {
+		int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			View child = getChildAt(i);
+			child.offsetLeftAndRight(xOffset);
+		}
+	}
+
+	private void endDrag() {
+		mMoveOffset = 0;
+		mLastMotionX = 0;
+		if (mVelocityTracker != null) {
+			mVelocityTracker.recycle();
+			mVelocityTracker = null;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	class Flying implements Runnable {
+
+		int initVelocity;
+		int dis;
+
+		public void startFlying(int initVelocity, int dis) {
+			this.initVelocity = initVelocity;
+			this.dis = dis;
 		}
 
-	}
+		@Override
+		public void run() {
+			if (DEBUG) {
+				V2Log.d(TAG, "[FLYING] : " + initVelocity + "   " + dis);
+			}
+			
+			if (dis == 0) {
+				requestLayout();
+			} else {
+				if (Math.abs(initVelocity) > Math.abs(dis)) {
+					if (initVelocity > 0) {
+						initVelocity = initVelocity - Math.abs(initVelocity + dis);
+					} else {
+						initVelocity = initVelocity + Math.abs(initVelocity + dis);
+					}
+				}
+				
+				int count = getChildCount();
+				for (int i = 0; i < count; i++) {
+					View child = getChildAt(i);
+					child.offsetLeftAndRight(initVelocity);
+				}
+				
+				dis += initVelocity;
+				
+				if (initVelocity > 0) {
+					initVelocity += 35;
+				} else {
+					initVelocity -= 35;
+				}
+	
+				postOnAnimationDelayed(this, 50);
+			}
+		}
+
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public interface OnPageChangeListener {
 
