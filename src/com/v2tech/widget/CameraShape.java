@@ -14,13 +14,17 @@ import android.view.View;
 
 public class CameraShape extends View {
 
-	private static int MARGIN = 90;
-	
 	private static final float STAGE_1 = 20.0F;
 	
 	private static final float STAGE_2 = 35.0F;
 	
 	private static final float STAGE_3 = 45.0F;
+	
+	private static final int SHAPE_WIDTH = 300;
+	
+	private static final int SHAPE_HEIGHT = 150;
+	
+	private static final int ARC_RECT_WIDTH = 60;
 
 	private float cent;
 	private Paint p;
@@ -51,7 +55,7 @@ public class CameraShape extends View {
 
 	private void init() {
 		p = new Paint();
-		p.setStrokeWidth(10.0F);
+		p.setStrokeWidth(2.0F);
 		p.setStyle(Style.STROKE);
 		pathLeft = new Path();
 		pathRight = new Path();
@@ -80,16 +84,20 @@ public class CameraShape extends View {
 			int midX, int midY) {
 
 		int topLineStartX = midX;
-		int topLineStartY = MARGIN;
-		int topLineEndX = topLineStartX - (midX - left) / 3 * 2;
-		int topLineEndY = MARGIN;
+		int topLineStartY = top;
+		int topLineEndX = topLineStartX - (midX - left - ARC_RECT_WIDTH);
+		int topLineEndY = top;
+		
+		V2Log.e(topLineStartX+"  "+ topLineStartY+"  "+ topLineEndX+"  " +topLineEndY+" cent:"+cent);
 
 		pathLeft.reset();
 
 		int leftArcTop = top;
 		int leftArcLeft = left;
-		int leftArcRight = topLineEndX;
-		int leftArcBottom = topLineEndX;
+		int leftArcRight = left + ARC_RECT_WIDTH;
+		int leftArcBottom = top + ARC_RECT_WIDTH;
+		int leftArcHalfWidth = ARC_RECT_WIDTH / 2;
+		int leftArcHalfHeigh = ARC_RECT_WIDTH / 2;
 
 		pathLeft.moveTo(topLineStartX, topLineStartY);
 		if (cent > 0F) {
@@ -112,15 +120,14 @@ public class CameraShape extends View {
 		}
 
 		int leftVerticalLineStartX = leftArcLeft;
-		int leftVerticalLineStartY = leftArcTop + (leftArcBottom - leftArcTop)
-				/ 2;
+		int leftVerticalLineStartY = leftArcTop + leftArcHalfWidth;
 
 		int leftVerticalLineEndX = leftArcLeft;
-		int leftVerticalLineEndY = bottom - (leftArcBottom - leftArcLeft) / 2;
+		int leftVerticalLineEndY = bottom - leftArcHalfHeigh;
 
-		int leftBottomArcTop = bottom - (topLineEndX - leftArcLeft);
 		int leftBottomArcLeft = leftArcLeft;
-		int leftBottomArcRight = topLineEndX;
+		int leftBottomArcTop = bottom - (topLineEndX - leftArcLeft);
+		int leftBottomArcRight = leftArcLeft + ARC_RECT_WIDTH;
 		int leftBottomArcBottom = bottom;
 		
 		
@@ -170,24 +177,26 @@ public class CameraShape extends View {
 			int midX, int midY) {
 
 		int topLineStartX = midX;
-		int topLineStartY = MARGIN;
-		int topLineEndX = midX + (right - midX) / 3 * 2;
-		int topLineEndY = MARGIN;
+		int topLineStartY = top;
+		int topLineEndX = topLineStartX + (right - midX - ARC_RECT_WIDTH);
+		int topLineEndY = top;
 
 		pathRight.reset();
 
 		int rightArcTop = top;
 		int rightArcLeft = topLineEndX;
 		int rightArcRight = right;
-		int rightArcBottom = rightArcTop + (rightArcRight - rightArcLeft);
+		int rightArcBottom = rightArcTop + ARC_RECT_WIDTH;
+		int rightArcHalfWidth = ARC_RECT_WIDTH / 2;
+		int rightArcHalfHeigh = ARC_RECT_WIDTH / 2;
+		
 
 		pathRight.moveTo(topLineStartX, topLineStartY);
 		if (cent > 0F) {
 			if (cent >= STAGE_1) {
 				pathRight.lineTo(topLineEndX, topLineEndY);
 
-				pathRight.lineTo(rightArcLeft + (rightArcRight - rightArcLeft)
-						/ 2, rightArcTop);
+				pathRight.lineTo(rightArcLeft + rightArcHalfWidth, rightArcTop);
 
 				arcRightTop.top = rightArcTop;
 				arcRightTop.left = rightArcLeft;
@@ -202,10 +211,10 @@ public class CameraShape extends View {
 
 		int rightVerticalLineStartX = right;
 		int rightVerticalLineStartY = rightArcTop
-				+ (rightArcBottom - rightArcTop) / 2;
+				+ rightArcHalfHeigh;
 
 		int rightVerticalLineEndX = right;
-		int rightVerticalLineEndY = bottom - (rightArcRight - rightArcLeft) /2;
+		int rightVerticalLineEndY = bottom - rightArcHalfWidth;
 
 		int rightBottomArcTop = bottom - (rightArcRight - rightArcLeft);
 		int rightBottomArcLeft = right - (rightArcRight - rightArcLeft);
@@ -260,7 +269,7 @@ public class CameraShape extends View {
 	private void preparedLine1(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startX = right + (getRight() - right ) / 3 * 2;
 		int startY = top + (bottom - top) / 8 ;
 		
 		int endX = right;
@@ -282,7 +291,7 @@ public class CameraShape extends View {
 	private void preparedLine2(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startX = right + (getRight() - right ) / 3 * 2;
 		int startY = top + (bottom - top) / 8 ;
 		
 		int endX = startX;
@@ -301,7 +310,7 @@ public class CameraShape extends View {
 	private void preparedLine3(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right - MARGIN) / 3 * 2;
+		int startX = right + (getRight() - right) / 3 * 2;
 		int startY = top + (bottom - top) / 8 * 6 ;
 		
 		int endX = right;
@@ -329,31 +338,31 @@ public class CameraShape extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		int left = MARGIN;
-		int top = MARGIN;
+		int left = (getRight() - SHAPE_WIDTH) / 2;
+		int top = (getBottom() - SHAPE_HEIGHT) / 2;
 		if (mBottom <= 0) {
-			mBottom = getBottom()  - MARGIN;
+			mBottom = top + SHAPE_HEIGHT;
 		}
 		if (mRight <= 0) {
-			mRight =(left + getRight() / 3 * 2)   - MARGIN;;
+			mRight =left + SHAPE_WIDTH;
 		}
 		
-		int midX = (mRight - left) / 2;
-		int midY = (mBottom - top) / 2;
+		int midX = left + (mRight - left) / 2;
+		int midY = top + (mBottom - top) / 2;
 		
 		
+		V2Log.e(left+"  "+ top+"  "+ mRight+"  " +mBottom+"   "+midX+"  "+midY);
 		prepareLeftPart(left, top, mRight, mBottom, midX, midY);
-
 		prepareRightPart(left, top, mRight, mBottom, midX, midY);
-		
-		preparedLine1(left, top, mRight, mBottom, midX, midY);
-		
-		preparedLine2(left, top, mRight, mBottom, midX, midY);
-		
-		preparedLine3(left, top, mRight, mBottom, midX, midY);
-
+//		
+//		preparedLine1(left, top, mRight, mBottom, midX, midY);
+//		
+//		preparedLine2(left, top, mRight, mBottom, midX, midY);
+//		
+//		preparedLine3(left, top, mRight, mBottom, midX, midY);
+//
 		canvas.drawPath(pathLeft, p);
-
+//
 		canvas.drawPath(pathRight, p);
 		
 		canvas.drawPath(line1, p);

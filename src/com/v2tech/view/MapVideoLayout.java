@@ -42,6 +42,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 	private int mDefaultVelocity = 40;
 	private int mTouchSlop;
 	private int mCameraShapeSLop;
+	private static final int CAMEA_SHAPE_HEIGHT = 300;
 	
 
 	private MapView mMapView;
@@ -254,8 +255,8 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 		}
 
 		
-		if (mOffsetTop > mNotificaionShare.getHeight() / 2) {
-			float cent = Math.abs(mOffsetTop - (mNotificaionShare.getHeight() / 2)) / 4;
+		if (mOffsetTop > mCameraShapeSLop) {
+			float cent = Math.abs(mOffsetTop - mCameraShapeSLop) / 4;
 			mNotificaionShare.updatePrecent(cent);
 			if (cent > 100.0F) {
 				fireFlyingdown = true;
@@ -330,7 +331,7 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 			if (mDragDir == DragDirection.VERTICAL) {
 				updateOffset((int) dy);
 				if (mNotificaionShare.getVisibility() == View.GONE 
-						&& Math.abs(offsetY) > mNotificaionShare.getHeight() / 2) {
+						&& Math.abs(offsetY) > mCameraShapeSLop) {
 					mNotificaionShare.setVisibility(View.VISIBLE);
 					mNotificaionShare.bringToFront();
 				}
@@ -442,8 +443,8 @@ LoopViewPager.OnPageChangeListener, VideoCommentsAPI {
 				+ mOffsetTop - top) / 2);
 		
 		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
-			int dis = (mOffsetTop > 400?((mOffsetTop - 400) / 5):0);
-			mNotificaionShare.layout(left, mTouchSlop + dis, right, 400 + dis);
+			int dis = (mOffsetTop > CAMEA_SHAPE_HEIGHT?((mOffsetTop - CAMEA_SHAPE_HEIGHT) / 5):0);
+			mNotificaionShare.layout(left, mTouchSlop + dis, right, CAMEA_SHAPE_HEIGHT + dis);
 		}
 
 		mMsgLayout.layout(left, top + mOffsetTop, right,
