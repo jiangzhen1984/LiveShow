@@ -171,6 +171,8 @@ public class CameraShape extends View {
 			}
 		}
 
+		
+		V2Log.e(bottomLineStartX+"  "+ bottomLineStartY+"  "+ bottomLineEndX+"  " +bottomLineEndY+" cent:"+cent);
 	}
 
 	private void prepareRightPart(int left, int top, int right, int bottom,
@@ -269,11 +271,11 @@ public class CameraShape extends View {
 	private void preparedLine1(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right ) / 3 * 2;
-		int startY = top + (bottom - top) / 8 ;
+		int startX = right + (SHAPE_WIDTH) / 4;
+		int startY = top + (bottom - top) / 8 * 2 ;
 		
 		int endX = right;
-		int endY = top + (bottom - top) / 8 * 2;
+		int endY = top + (bottom - top) / 5 * 2;
 		
 		line1.reset();
 		
@@ -291,8 +293,8 @@ public class CameraShape extends View {
 	private void preparedLine2(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right ) / 3 * 2;
-		int startY = top + (bottom - top) / 8 ;
+		int startX = right + (SHAPE_WIDTH) / 4;
+		int startY = top + (bottom - top) / 4 ;
 		
 		int endX = startX;
 		int endY = top + (bottom - top) / 8 * 6;
@@ -310,11 +312,11 @@ public class CameraShape extends View {
 	private void preparedLine3(int left, int top, int right, int bottom,
 			int midX, int midY) {
 		
-		int startX = right + (getRight() - right) / 3 * 2;
+		int startX = right + (SHAPE_WIDTH) / 4;
 		int startY = top + (bottom - top) / 8 * 6 ;
 		
 		int endX = right;
-		int endY = top + (bottom - top) / 8 * 4;
+		int endY = top + (bottom - top) / 5 * 3;
 		
 		line3.reset();
 		
@@ -331,35 +333,39 @@ public class CameraShape extends View {
 		
 	}
 	
-	
+	private int mLeft;
+	private int mTop;
 	private int mBottom;
 	private int mRight;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		int left = (getRight() - SHAPE_WIDTH) / 2;
-		int top = (getBottom() - SHAPE_HEIGHT) / 2;
+		if (mLeft <= 0) {
+			mLeft = (getRight() - SHAPE_WIDTH) / 2;
+		}
+		if (mTop <= 0) {
+			mTop = (getBottom() - SHAPE_HEIGHT) / 2;
+		}
 		if (mBottom <= 0) {
-			mBottom = top + SHAPE_HEIGHT;
+			mBottom = mTop + SHAPE_HEIGHT;
 		}
 		if (mRight <= 0) {
-			mRight =left + SHAPE_WIDTH;
+			mRight =mLeft + SHAPE_WIDTH;
 		}
 		
-		int midX = left + (mRight - left) / 2;
-		int midY = top + (mBottom - top) / 2;
+		int midX = mLeft + (mRight - mLeft) / 2;
+		int midY = mTop + (mBottom - mTop) / 2;
 		
 		
-		V2Log.e(left+"  "+ top+"  "+ mRight+"  " +mBottom+"   "+midX+"  "+midY);
-		prepareLeftPart(left, top, mRight, mBottom, midX, midY);
-		prepareRightPart(left, top, mRight, mBottom, midX, midY);
+		prepareLeftPart(mLeft, mTop, mRight , mBottom, midX, midY);
+		prepareRightPart(mLeft, mTop, mRight , mBottom, midX, midY);
 //		
-//		preparedLine1(left, top, mRight, mBottom, midX, midY);
+		preparedLine1(mLeft, mTop, mRight, mBottom, midX, midY);
 //		
-//		preparedLine2(left, top, mRight, mBottom, midX, midY);
-//		
-//		preparedLine3(left, top, mRight, mBottom, midX, midY);
+		preparedLine2(mLeft, mTop, mRight, mBottom, midX, midY);
+		
+		preparedLine3(mLeft, mTop, mRight, mBottom, midX, midY);
 //
 		canvas.drawPath(pathLeft, p);
 //

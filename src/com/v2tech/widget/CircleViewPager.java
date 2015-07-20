@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -147,8 +146,10 @@ public class CircleViewPager extends ViewGroup {
 		int childHeightSize = getMeasuredHeight() - getPaddingTop()
 				- getPaddingBottom();
 
-		V2Log.d(TAG, "childWidthSize:" + childWidthSize + "  childHeightSize:"
-				+ childHeightSize);
+		if (DEBUG) {
+			V2Log.d(TAG, "childWidthSize:" + childWidthSize + "  childHeightSize:"
+					+ childHeightSize);
+		}
 		int size = getChildCount();
 		for (int i = 0; i < size; ++i) {
 			final View child = getChildAt(i);
@@ -305,8 +306,9 @@ public class CircleViewPager extends ViewGroup {
 	
 	
 	private void scrollToPage(int page, int restDis, int velocity) {
-		//TODO should scrolling
-		V2Log.e("scrolling to :"+page +"  restDis:"+restDis+"  velocity:"+velocity);
+		if (DEBUG) {
+			V2Log.e("scrolling to :"+page +"  restDis:"+restDis+"  velocity:"+velocity);
+		}
 		if (flying == null) {
 			flying = new Flying();
 		}
@@ -314,6 +316,9 @@ public class CircleViewPager extends ViewGroup {
 		this.postOnAnimation(flying);
 		this.mCurrItem = page;
 		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
+		if (mOnPageChangeListener != null) {
+			mOnPageChangeListener.onPageSelected(this.mCurrItem);
+		}
 	}
 	
 	
