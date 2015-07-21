@@ -94,8 +94,6 @@ public class MainActivity extends FragmentActivity implements
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int MARKER_ANIMATION = 12;
 
-	private int keyboardHeight = 0;
-
 	private static float mCurrentZoomLevel = 12F;
 
 	private RelativeLayout mBottomLayout;
@@ -114,7 +112,7 @@ public class MainActivity extends FragmentActivity implements
 	private LocationClient mLocClient;
 	private GeoCoder mSearch;
 	private MyLocationListenner myListener = new MyLocationListenner();
-	boolean isFirstLoc = true;// 是否首次定位
+	private boolean showCurrentLocation = true;// 是否首次定位
 	private boolean isSuspended;
 
 	private CameraView cv;
@@ -558,8 +556,7 @@ public class MainActivity extends FragmentActivity implements
 					.direction(100).latitude(ll.latitude)
 					.longitude(ll.longitude).build();
 			mBaiduMap.setMyLocationData(locData);
-			if (isFirstLoc) {
-				isFirstLoc = false;
+			if (showCurrentLocation) {
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
 						selfLocation, mCurrentZoomLevel);
 				mBaiduMap.animateMapStatus(u);
@@ -644,7 +641,8 @@ public class MainActivity extends FragmentActivity implements
 				bundle.putSerializable("live", l);
 				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
 						.extraInfo(bundle);
-				mBaiduMap.addOverlay(oo);
+				Overlay ol = mBaiduMap.addOverlay(oo);
+				currentOverlay.put(l, ol);
 			}
 		}
 
@@ -675,6 +673,9 @@ public class MainActivity extends FragmentActivity implements
 				animationMaker(old, false);
 			}
 		}
+		
+		showCurrentLocation = false;
+		
 		mCurrentVideoFragment.play(l);
 
 		videoMaps.get(mCurrentVideoFragment).live = l;
@@ -839,6 +840,7 @@ public class MainActivity extends FragmentActivity implements
 				if (!isInCameraView) {
 					autoPlayNecessary();
 				}
+				
 				break;
 			case PLAY_LIVE:
 				playLive((Live) msg.obj);

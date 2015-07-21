@@ -22,6 +22,8 @@ public class Live implements Serializable{
 	
 	private double lng;
 	
+	private boolean canRemove;
+	
 	
 	
 	
@@ -32,8 +34,18 @@ public class Live implements Serializable{
 		this.url = url;
 		this.lat = lat;
 		this.lng = lng;
+		this.canRemove = false;
 	}
 
+	
+	public Live(User publisher, String url, double lat, double lng, boolean canRemove) {
+		super();
+		this.publisher = publisher;
+		this.url = url;
+		this.lat = lat;
+		this.lng = lng;
+		this.canRemove = canRemove;
+	}
 
 
 	public Live(User pu, String url) {
@@ -87,6 +99,20 @@ public class Live implements Serializable{
 
 	public void setLng(double lng) {
 		this.lng = lng;
+	}
+	
+	
+
+
+
+	public boolean isCanRemove() {
+		return canRemove;
+	}
+
+
+
+	public void setCanRemove(boolean canRemove) {
+		this.canRemove = canRemove;
 	}
 
 
