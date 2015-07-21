@@ -106,13 +106,14 @@ public class VideoBCRequest {
 			lives.add(new Live(null,  uuid, Double.parseDouble(lat), Double.parseDouble(lan)));
 		}
 
-		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/E4BC31FE-F788-41A8-9763-AF5646EE30E3"+ ".m3u8", 39.978437D,116.294172D));
-		//lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/A265A93F-696F-41F9-A083-0F916FB667A2"+ ".m3u8", 39.978437D,116.294172D));
-//		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/7C2D6E68-295E-4F06-A567-B2DA558DC950"+ ".m3u8", 39.984186D,116.449975D));
-//		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/A4D8A057-8BE4-4DFF-9568-88B4AA12BD8B"+ ".m3u8", 39.873527D,116.308545D));
-//		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/3C9036E0-9D1B-4999-AF5E-A2739F08C5FA"+ ".m3u8", 39.871312D,116.466072D));
-//		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/103D7D14-49A6-414D-940C-67A1FD23C60A"+ ".m3u8", 39.926224D,116.361438D));
-//		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/A43194CD-25A7-49B6-AF77-67AC8629B821"+ ".m3u8", 39.917813D,116.444225D));
+	//	lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/E4BC31FE-F788-41A8-9763-AF5646EE30E3"+ ".m3u8", 39.978437D,116.294172D));
+		//lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/0516d634-5b56-4328-b5d3-e8ff149b2478"+ ".m3u8", 39.978437D,116.294172D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/test001"+ ".m3u8", 39.978437D,116.294172D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/103D7D14-49A6-414D-940C-67A1FD23C60A"+ ".m3u8", 39.984186D,116.449975D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/test003"+ ".m3u8", 39.873527D,116.308545D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/95585331-dfe1-46f7-a694-f932294789d1"+ ".m3u8", 39.871312D,116.466072D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/8270814d-6a4c-4e24-82a4-4a689e044619"+ ".m3u8", 39.926224D,116.361438D));
+		lives.add(new Live(null,  "http://" + Constants.SERVER + ":8090/hls/A4D8A057-8BE4-4DFF-9568-88B4AA12BD8B"+ ".m3u8", 39.917813D,116.444225D));
 	}
 
 	public static Document buildDocument(String xml) {
