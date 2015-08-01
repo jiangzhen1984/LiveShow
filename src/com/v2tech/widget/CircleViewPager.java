@@ -18,17 +18,16 @@ public class CircleViewPager extends ViewGroup {
 	private static final boolean DEBUG = false;
 	private static final String TAG = "CircleViewPager";
 
-	
 	private static final int mDefaultVelocity = 40;
-	
+
 	private static final int MIN_FLING_VELOCITY = 200; // dips
-	
+
 	private int mMinimumVelocity;
-	
+
 	private int mMaximumVelocity;
-	
+
 	private int mInimumFlingVelocity;
-	
+
 	private VelocityTracker mVelocityTracker;
 
 	private static final int DEFAULT_OFFSCREEN_PAGES = 1;
@@ -40,12 +39,16 @@ public class CircleViewPager extends ViewGroup {
 	private int mLastMotionX;
 
 	private long mFakeDragBeginTime;
-
+	
+	
+	private int mUpOffset;
+	
+	private int mLastMotionY;
+	
 	private OnPageChangeListener mOnPageChangeListener;
-	
+
 	private PagerAdapter mPageAdapter;
-	
-	
+
 	private Flying flying;
 
 	public CircleViewPager(Context context) {
@@ -86,35 +89,35 @@ public class CircleViewPager extends ViewGroup {
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
 			// TODO add layout margin left
-			offsetLeft = child.getPaddingLeft() + (i - mCurrItem) * child.getMeasuredWidth()
-					+ mMoveOffset;
-		
+			offsetLeft = child.getPaddingLeft() + (i - mCurrItem)
+					* child.getMeasuredWidth() + mMoveOffset;
+
 			if (count > 3) {
 				if (mCurrItem == 0) {
-					if (i == count -1) {
-						offsetLeft = child.getPaddingLeft() + -child.getMeasuredWidth()
-								+ mMoveOffset;
-					} 
-				} else if (mCurrItem == count -1) {
+					if (i == count - 1) {
+						offsetLeft = child.getPaddingLeft()
+								+ -child.getMeasuredWidth() + mMoveOffset;
+					}
+				} else if (mCurrItem == count - 1) {
 					if (i == 0) {
-						offsetLeft = child.getPaddingLeft() + (i + 1) * child.getMeasuredWidth()
-								+ mMoveOffset;
+						offsetLeft = child.getPaddingLeft() + (i + 1)
+								* child.getMeasuredWidth() + mMoveOffset;
 					}
 				}
 			}
-			
+
 			if (DEBUG) {
-				V2Log.e("mCurrItem:"+mCurrItem+"   i:" + i + "  offsetLeft:" + offsetLeft
-						+ "   mMoveOffset:" + mMoveOffset + "  width"
-						+ child.getMeasuredWidth() + "  padding:left:"
-						+ child.getPaddingLeft());
+				V2Log.e("mCurrItem:" + mCurrItem + "   i:" + i
+						+ "  offsetLeft:" + offsetLeft + "   mMoveOffset:"
+						+ mMoveOffset + "  width" + child.getMeasuredWidth()
+						+ "  padding:left:" + child.getPaddingLeft());
 			}
-			
-				// TODO fix offsetLeft;
-				child.layout(offsetLeft, t + paddingTop,
-						offsetLeft + child.getMeasuredWidth(), t + paddingTop
-								+ child.getMeasuredHeight());
-			
+
+			// TODO fix offsetLeft;
+			child.layout(offsetLeft, t + paddingTop,
+					offsetLeft + child.getMeasuredWidth(), t + paddingTop
+							+ child.getMeasuredHeight());
+
 		}
 
 	}
@@ -147,8 +150,8 @@ public class CircleViewPager extends ViewGroup {
 				- getPaddingBottom();
 
 		if (DEBUG) {
-			V2Log.d(TAG, "childWidthSize:" + childWidthSize + "  childHeightSize:"
-					+ childHeightSize);
+			V2Log.d(TAG, "childWidthSize:" + childWidthSize
+					+ "  childHeightSize:" + childHeightSize);
 		}
 		int size = getChildCount();
 		for (int i = 0; i < size; ++i) {
@@ -208,7 +211,7 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void setAdapter(PagerAdapter adapter) {
-		//TODO destroy prior data
+		// TODO destroy prior data
 		adapter.startUpdate(this);
 		int count = adapter.getCount();
 		for (int i = 0; i < count; i++) {
@@ -216,7 +219,7 @@ public class CircleViewPager extends ViewGroup {
 		}
 		adapter.setPrimaryItem(this, 0, null);
 		adapter.finishUpdate(this);
-		
+
 		mPageAdapter = adapter;
 	}
 
@@ -232,8 +235,40 @@ public class CircleViewPager extends ViewGroup {
 		this.mCurrItem = item;
 	}
 
+	
+	
+	public void fakeDragUpBy(int offsetY) {
+		mLastMotionY += offsetY;
+		// Synthesize an event for the VelocityTracker.
+		final long time = SystemClock.uptimeMillis();
+		final MotionEvent ev = MotionEvent.obtain(mFakeDragBeginTime, time,
+				MotionEvent.ACTION_MOVE, 0, mLastMotionY, 0);
+		mVelocityTracker.addMovement(ev);
+		ev.recycle();
+		
+		mUpOffset += offsetY;
+		//Update 
+		int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			View child = getChildAt(i);
+			if (i == mCurrItem) {
+				child.offsetTopAndBottom(-offsetY);
+			} else {
+				child.offsetLeftAndRight(-offsetY);
+			}
+		}
+
+	}
+
+	public void endFakeDragUp() {
+		
+		
+		endDrag();
+	}
+
 	public boolean beginFakeDrag() {
 		mMoveOffset = 0;
+		mUpOffset = 0;
 		final long time = SystemClock.uptimeMillis();
 
 		if (mVelocityTracker == null) {
@@ -262,21 +297,22 @@ public class CircleViewPager extends ViewGroup {
 		ev.recycle();
 
 		mMoveOffset += xOffset;
-		//requestLayout();
-		doDrag((int)xOffset);
+		// requestLayout();
+		doDrag((int) xOffset);
 	}
 
 	public void endFakeDrag() {
 		int childCount = getChildCount();
-		int nextPage =this.mCurrItem;
+		int nextPage = this.mCurrItem;
 		int dis = 0;
 		final VelocityTracker velocityTracker = mVelocityTracker;
 		velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 		int initialVelocity = (int) VelocityTrackerCompat.getXVelocity(
 				velocityTracker, 0);
-		float pageOffsetPercent = (float)Math.abs(mMoveOffset) / (float)getWidth();
-		
-		V2Log.e(pageOffsetPercent+"   "+ getWidth()+"    "+mMoveOffset);
+		float pageOffsetPercent = (float) Math.abs(mMoveOffset)
+				/ (float) getWidth();
+
+		V2Log.e(pageOffsetPercent + "   " + getWidth() + "    " + mMoveOffset);
 		if (pageOffsetPercent > 0.15 || initialVelocity > mInimumFlingVelocity) {
 			if (mMoveOffset < 0) {
 				nextPage += 1;
@@ -287,32 +323,32 @@ public class CircleViewPager extends ViewGroup {
 			}
 		}
 		if (nextPage < 0) {
-			nextPage = childCount -1;
+			nextPage = childCount - 1;
 		} else if (nextPage >= childCount) {
 			nextPage = 0;
 		}
-		
-		//If nextPage still same with current
+
+		// If nextPage still same with current
 		// means we need to rollback page
 		if (nextPage == this.mCurrItem) {
 			dis = -mMoveOffset;
 		}
-		
+
 		scrollToPage(nextPage, mMoveOffset > 0 ? -dis : dis, initialVelocity);
 
-		
 		endDrag();
 	}
-	
-	
+
 	private void scrollToPage(int page, int restDis, int velocity) {
 		if (DEBUG) {
-			V2Log.e("scrolling to :"+page +"  restDis:"+restDis+"  velocity:"+velocity);
+			V2Log.e("scrolling to :" + page + "  restDis:" + restDis
+					+ "  velocity:" + velocity);
 		}
 		if (flying == null) {
 			flying = new Flying();
 		}
-		flying.startFlying(restDis > 0 ? -mDefaultVelocity:mDefaultVelocity, restDis);
+		flying.startFlying(restDis > 0 ? -mDefaultVelocity : mDefaultVelocity,
+				restDis);
 		this.postOnAnimation(flying);
 		this.mCurrItem = page;
 		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
@@ -320,8 +356,7 @@ public class CircleViewPager extends ViewGroup {
 			mOnPageChangeListener.onPageSelected(this.mCurrItem);
 		}
 	}
-	
-	
+
 	private void doDrag(int xOffset) {
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
@@ -333,17 +368,13 @@ public class CircleViewPager extends ViewGroup {
 	private void endDrag() {
 		mMoveOffset = 0;
 		mLastMotionX = 0;
+		mUpOffset = 0;
 		if (mVelocityTracker != null) {
 			mVelocityTracker.recycle();
 			mVelocityTracker = null;
 		}
 	}
-	
-	
-	
-	
-	
-	
+
 	class Flying implements Runnable {
 
 		int initVelocity;
@@ -359,47 +390,39 @@ public class CircleViewPager extends ViewGroup {
 			if (DEBUG) {
 				V2Log.d(TAG, "[FLYING] : " + initVelocity + "   " + dis);
 			}
-			
+
 			if (dis == 0) {
 				requestLayout();
 			} else {
 				if (Math.abs(initVelocity) > Math.abs(dis)) {
 					if (initVelocity > 0) {
-						initVelocity = initVelocity - Math.abs(initVelocity + dis);
+						initVelocity = initVelocity
+								- Math.abs(initVelocity + dis);
 					} else {
-						initVelocity = initVelocity + Math.abs(initVelocity + dis);
+						initVelocity = initVelocity
+								+ Math.abs(initVelocity + dis);
 					}
 				}
-				
+
 				int count = getChildCount();
 				for (int i = 0; i < count; i++) {
 					View child = getChildAt(i);
 					child.offsetLeftAndRight(initVelocity);
 				}
-				
+
 				dis += initVelocity;
-				
+
 				if (initVelocity > 0) {
 					initVelocity += 35;
 				} else {
 					initVelocity -= 35;
 				}
-	
+
 				postOnAnimationDelayed(this, 50);
 			}
 		}
 
 	};
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public interface OnPageChangeListener {
 
@@ -442,6 +465,10 @@ public class CircleViewPager extends ViewGroup {
 		 * @see CopyOfLoopViewPager#SCROLL_STATE_SETTLING
 		 */
 		public void onPageScrollStateChanged(int state);
+		
+		
+		
+		public void onPagePreapredRemove(int item);
 	}
 
 }

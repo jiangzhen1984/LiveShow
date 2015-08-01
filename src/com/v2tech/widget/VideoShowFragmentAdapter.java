@@ -25,6 +25,7 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 		if (fragments[position] == null) {
 			fragments[position] = new VideoShowFragment();
 			fragments[position].setIndex(position + 1);
+			fragmentsList.add(position, fragments[position]);
 		}
 		return fragments[position];
 	}
@@ -35,5 +36,7 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 	}
 
 	
-	
+	public void removeItem(int item) {
+		fragmentsList.remove(item);
+	}
 }

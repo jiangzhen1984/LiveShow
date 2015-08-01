@@ -156,6 +156,11 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 	public void onPageScrollStateChanged(int state) {
 
 	}
+	
+	public void onPagePreapredRemove(int item) {
+		mViewPagerAdapter.removeItem(item);
+		mViewPagerAdapter.notifyDataSetChanged();
+	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
 		this.mPosInterface = posInterface;
@@ -224,7 +229,7 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 			}
 		} else {
 			mNotificaionShare.updatePrecent(0.0F);
-			fireFlyingdown = false;
+			fireFlyingdown = false; 
 		}
 		requestLayout();
 	}
