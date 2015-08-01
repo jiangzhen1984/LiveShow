@@ -106,6 +106,7 @@ public class MainActivity extends FragmentActivity implements
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
 
+	private VideoControllerAPI mVideoController;
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
@@ -208,6 +209,8 @@ public class MainActivity extends FragmentActivity implements
 			videoMaps.put(mCurrentVideoFragment, new VideoItem(
 					mCurrentVideoFragment));
 		}
+		
+		mVideoController = mMapVideoLayout;
 	}
 
 	private void initBottomButtonLayout() {
@@ -404,7 +407,7 @@ public class MainActivity extends FragmentActivity implements
 				mLocalHandler.sendMessage(msg);
 				//click word button
 			} else if (action == 2) {
-				mMapVideoLayout.addNewMessage(text);
+				mVideoController.addNewMessage(text);
 			}
 				
 		}
@@ -484,6 +487,7 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onChanged(VideoShowFragment videoFrag) {
+			V2Log.i(videoFrag+"  is current ");
 			updateCurrentVideoState(mCurrentVideoFragment, false);
 			mCurrentVideoFragment = videoFrag;
 			updateCurrentVideoState(videoFrag, true);
@@ -773,7 +777,13 @@ public class MainActivity extends FragmentActivity implements
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (!TextUtils.isEmpty(l.getUrl())) {
-					Message.obtain(mLocalHandler, PLAY_LIVE, l).sendToTarget();
+					if (mMapVideoLayout.getVideoWindowNums() < 6) {
+						//Use new window to show 
+						mVideoController.addNewVideoWindow(l);
+					} else {
+						//Replace current
+						Message.obtain(mLocalHandler, PLAY_LIVE, l).sendToTarget();
+					}
 				}
 			}
 			return true;
@@ -810,7 +820,7 @@ public class MainActivity extends FragmentActivity implements
 						.getText().toString());
 				mLocalHandler.sendMessage(msg);
 			} else if (BUTTON_TAG_WORD.equals(v.getTag())) {
-				mMapVideoLayout.addNewMessage(mEditText.getText().toString());
+				mVideoController.addNewMessage(mEditText.getText().toString());
 			}
 
 			mEditText.setText("");

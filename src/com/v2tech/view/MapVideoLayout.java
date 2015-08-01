@@ -15,12 +15,16 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Live;
 import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
@@ -28,7 +32,7 @@ import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoShowFragmentAdapter;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
-CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
+CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 	private static final boolean DEBUG = false;
 	private static final String TAG = "MapVideoLayout";
@@ -46,7 +50,10 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 	private CircleViewPager mVideoShowPager;
 	private VideoShowFragmentAdapter mViewPagerAdapter;
 	private CameraShape mNotificaionShare;
-
+	private MessageMarqueeLinearLayout mMsgLayout;
+	private RelativeLayout mDragLayout;
+	
+	
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
 	private int mOffsetTop;
@@ -57,7 +64,6 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 	
 	private OnVideoFragmentChangedListener mVideoChangedListener;
 
-	private MessageMarqueeLinearLayout mMsgLayout;
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
@@ -107,13 +113,17 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mNotificaionShare.updatePrecent(0.0F);
 		mNotificaionShare.setVisibility(View.GONE);
 		
+		
+		mDragLayout = new RelativeLayout(getContext());
+		
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(mMsgLayout);
 		this.addView(mNotificaionShare);
-		this.bringChildToFront(mMsgLayout);
+		this.addView(mDragLayout);
+		this.bringChildToFront(mDragLayout);
 
-		mMsgLayout.setOnTouchListener(this);
+		mDragLayout.setOnTouchListener(this);
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -121,6 +131,57 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mCameraShapeSLop = mTouchSlop * 3;
 
+
+		initIcons();
+	}
+	
+	
+	
+	private void initIcons() {
+		ImageView closeButton = new ImageView(this.getContext());
+		closeButton.setPadding(10, 10, 10, 10);
+		closeButton.setImageResource(R.drawable.video_close_button);
+		RelativeLayout.LayoutParams closeButtonLayout = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		closeButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		closeButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		
+		mDragLayout.addView(closeButton, closeButtonLayout);
+		
+		
+		closeButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				//TODO check if current live can not remove should pop up Message
+				
+				//FIXME close all video and release all resources
+				mViewPagerAdapter.removeItem(mVideoShowPager.getCurrentItem());
+				mViewPagerAdapter.notifyDataSetChanged();
+				//Notify parent to update item
+				if (mVideoChangedListener != null) {
+					mVideoChangedListener
+							.onChanged((VideoShowFragment) mViewPagerAdapter
+									.getItem(mVideoShowPager.getCurrentItem()));
+				}
+			}
+			
+		});
+		
+		
+		ImageView favButton = new ImageView(this.getContext());
+		favButton.setPadding(10, 10, 10, 10);
+		favButton.setImageResource(R.drawable.fav_button_selector);
+		RelativeLayout.LayoutParams favButtonLayout = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		favButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		favButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		
+		mDragLayout.addView(favButton, favButtonLayout);
+		
+		
 	}
 
 	public BaiduMap getMap() {
@@ -136,6 +197,31 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 		mMsgLayout.addMessageString(str);
 	}
 	
+	
+	
+	public VideoOpt addNewVideoWindow(final Live l) {
+		final VideoShowFragment videoFragment = (VideoShowFragment)mViewPagerAdapter.createFragment();
+		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
+		mViewPagerAdapter.notifyDataSetChanged();
+		//Use delay because fragment won't attach immitely
+		this.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				videoFragment.play(l);
+				
+			}
+			
+		}, 500);
+		
+		return videoFragment;
+	}
+	
+	
+	public int getVideoWindowNums() {
+		return mViewPagerAdapter.getCount();
+	}
+	
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
@@ -145,6 +231,9 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 
 	@Override
 	public void onPageSelected(int position) {
+		if (DEBUG) {
+			V2Log.i(TAG, " change new position:" + position);
+		}
 		if (mVideoChangedListener != null) {
 			mVideoChangedListener
 					.onChanged((VideoShowFragment) mViewPagerAdapter
@@ -235,6 +324,7 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 	}
 
 	public void udpateCover(Bitmap bm) {
+		//TODO add cover
 	}
 
 	public void pauseDrawState(boolean flag) {
@@ -388,17 +478,19 @@ CircleViewPager.OnPageChangeListener, VideoCommentsAPI {
 		if (DEBUG) {
 			V2Log.d("changed:"+changed+"  bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getHeight()+"  top:" + top);
 		}
-		mVideoShowPager.layout(left, top + mOffsetTop, right, (bottom
-				+ mOffsetTop - top) / 2);
+		int realTop = top + mOffsetTop;
+		int realBottom = (bottom
+				+ mOffsetTop - top) / 2;
+		mVideoShowPager.layout(left, realTop, right, realBottom);
 		
 		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
 			int dis = (mOffsetTop > CAMEA_SHAPE_HEIGHT?((mOffsetTop - CAMEA_SHAPE_HEIGHT) / 5):0);
 			mNotificaionShare.layout(left, mTouchSlop + dis, right, CAMEA_SHAPE_HEIGHT + dis);
 		}
 
-		mMsgLayout.layout(left, top + mOffsetTop, right,
-				(bottom + mOffsetTop - top) / 2);
+		mMsgLayout.layout(left, realTop, right, realBottom);
 		mMapView.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
+		mDragLayout.layout(left, realTop, right, realBottom);
 	}
 
 	@Override

@@ -19,7 +19,7 @@ import com.V2.jni.util.V2Log;
 
 public class CircleViewPager extends ViewGroup {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	private static final String TAG = "CircleViewPager";
 
@@ -134,6 +134,12 @@ public class CircleViewPager extends ViewGroup {
 			V2Log.e(TAG, child + "  " + index + "   params");
 		}
 		super.addView(child, index, params);
+	}
+
+	@Override
+	public void removeView(View view) {
+		V2Log.e(TAG, "-----------------------" + view);
+		super.removeView(view);
 	}
 
 	@Override
@@ -253,6 +259,7 @@ public class CircleViewPager extends ViewGroup {
 
 	public void setCurrentItem(int item, boolean smoothScroll) {
 		this.mCurrItem = item;
+		requestLayout();
 	}
 
 	public void fakeDragUpBy(int offsetY) {
@@ -393,7 +400,7 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	private void datasetChanged() {
-		
+
 		boolean isUpdating = false;
 		for (int i = 0; i < mItems.size(); i++) {
 			final ItemInfo ii = mItems.get(i);
@@ -405,18 +412,32 @@ public class CircleViewPager extends ViewGroup {
 
 			if (newPos == PagerAdapter.POSITION_NONE) {
 				mItems.remove(i);
+				if (mCurrItem == i && mCurrItem > 0) {
+					mCurrItem --;
+				}
 				i--;
 			}
 			if (!isUpdating) {
+				isUpdating = true;
 				mPageAdapter.startUpdate(this);
 			}
 			mPageAdapter.destroyItem(this, ii.position, ii.obj);
 		}
-		
+
 		if (isUpdating) {
 			mPageAdapter.finishUpdate(this);
-        }
-
+		}
+		
+		int adapterCount = mPageAdapter.getCount();
+		V2Log.i(getChildCount()+"==============================" + adapterCount);
+		for (int i = 0; i < adapterCount; i++) {
+			mPageAdapter.instantiateItem(this, i);
+		}
+		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
+		
+		V2Log.i(getChildCount()+"=====11111=========================");
+		
+		//TODO smooth to scroll to next
 		requestLayout();
 	}
 

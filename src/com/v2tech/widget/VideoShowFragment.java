@@ -53,7 +53,7 @@ import com.v2tech.vo.Live;
 public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		HlsSampleSource.EventListener, VideoOpt {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "VideoShowFragment";
 
 	private int mIndex;
@@ -93,6 +93,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		
 
 		videoState = VideoState.IDLE;
+		if (DEBUG) {
+			V2Log.i(TAG, this+"  created");
+		}
 	}
 
 	@Override
@@ -144,6 +147,10 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void play(Live live) {
+		if (this.isDetached()) {
+			V2Log.e("This fragment is detached!  " + this);
+			return;
+		}
 		this.live = live;
 		if (DEBUG) {
 			V2Log.i(TAG, this+" "+ live+"  start to play");
@@ -164,6 +171,10 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void pause() {
+		if (this.isDetached()) {
+			V2Log.e("This fragment is detached!  " + this);
+			return;
+		}
 		if (VideoState.PLAYING == videoState) {
 			playerControl.pause();
 		}
@@ -174,6 +185,10 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void resume() {
+		if (this.isDetached()) {
+			V2Log.e("This fragment is detached!  " + this);
+			return;
+		}
 		if (live == null) {
 			return;
 		}
