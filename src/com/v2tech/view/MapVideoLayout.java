@@ -203,17 +203,21 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		final VideoShowFragment videoFragment = (VideoShowFragment)mViewPagerAdapter.createFragment();
 		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
 		mViewPagerAdapter.notifyDataSetChanged();
-		//Use delay because fragment won't attach immitely
+//		//Use delay because fragment won't attach immitely
 		this.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				videoFragment.play(l);
+				if (videoFragment.isAdded()) {
+					videoFragment.play(l);
+				} else {
+					
+				}
 				
 			}
 			
 		}, 500);
-		
+//		
 		return videoFragment;
 	}
 	

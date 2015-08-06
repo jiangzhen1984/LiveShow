@@ -14,6 +14,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 import com.V2.jni.util.V2Log;
 
@@ -113,7 +114,7 @@ public class CircleViewPager extends ViewGroup {
 			}
 
 			if (DEBUG) {
-				V2Log.e("mCurrItem:" + mCurrItem + "   i:" + i
+				V2Log.d(TAG, "mCurrItem:" + mCurrItem + "   i:" + i
 						+ "  offsetLeft:" + offsetLeft + "   mMoveOffset:"
 						+ mMoveOffset + "  width" + child.getMeasuredWidth()
 						+ "  padding:left:" + child.getPaddingLeft());
@@ -125,21 +126,26 @@ public class CircleViewPager extends ViewGroup {
 							+ child.getMeasuredHeight());
 
 		}
-
+ 
 	}
 
 	@Override
 	public void addView(View child, int index, LayoutParams params) {
 		if (DEBUG) {
-			V2Log.e(TAG, child + "  " + index + "   params");
+			V2Log.w(TAG, child + "  " + index + "   params");
 		}
 		super.addView(child, index, params);
 	}
+	
+	
+
 
 	@Override
 	public void removeView(View view) {
-		V2Log.e(TAG, "-----------------------" + view);
 		super.removeView(view);
+		if (DEBUG) {
+			V2Log.e(TAG, "Remove view:" + view + "-----------------------new count:" + getChildCount());
+		}
 	}
 
 	@Override
@@ -228,7 +234,7 @@ public class CircleViewPager extends ViewGroup {
 			mPageAdapter.unregisterDataSetObserver(observer);
 			for (int i = 0; i < mItems.size(); i++) {
 				final ItemInfo ii = mItems.get(i);
-				mPageAdapter.destroyItem(this, ii.position, ii.obj);
+				mPageAdapter.destroyItem(this, i, ii.obj);
 			}
 			mPageAdapter.finishUpdate(this);
 			mItems.clear();
@@ -239,10 +245,9 @@ public class CircleViewPager extends ViewGroup {
 		for (int i = 0; i < count; i++) {
 			ItemInfo ii = new ItemInfo();
 			ii.obj = adapter.instantiateItem(this, i);
-			ii.position = i;
 			mItems.add(ii);
 		}
-		adapter.setPrimaryItem(this, 0, null);
+		adapter.setPrimaryItem(this, mCurrItem, null);
 		adapter.finishUpdate(this);
 
 		mPageAdapter = adapter;
@@ -411,31 +416,53 @@ public class CircleViewPager extends ViewGroup {
 			}
 
 			if (newPos == PagerAdapter.POSITION_NONE) {
+				if (DEBUG) {
+					V2Log.i(TAG, "REMOVING ..... "+ii.obj);
+				}
 				mItems.remove(i);
 				if (mCurrItem == i && mCurrItem > 0) {
 					mCurrItem --;
 				}
 				i--;
+				
+				if (!isUpdating) {
+					isUpdating = true;
+					mPageAdapter.startUpdate(this);
+				}
+				mPageAdapter.destroyItem(this, i, ii.obj);
+				continue;
 			}
-			if (!isUpdating) {
-				isUpdating = true;
-				mPageAdapter.startUpdate(this);
+			
+			
+		}
+		
+		if (DEBUG) {
+			for (int i = 0; i < mItems.size(); i++) {
+				final ItemInfo ii = mItems.get(i);
+				V2Log.i(TAG, "NEW POS .....    index : " + i+"  view:"+ii.obj);
 			}
-			mPageAdapter.destroyItem(this, ii.position, ii.obj);
 		}
 
 		if (isUpdating) {
 			mPageAdapter.finishUpdate(this);
 		}
 		
+		
+		mPageAdapter.startUpdate(this);
 		int adapterCount = mPageAdapter.getCount();
-		V2Log.i(getChildCount()+"==============================" + adapterCount);
-		for (int i = 0; i < adapterCount; i++) {
-			mPageAdapter.instantiateItem(this, i);
+		for (int i = mItems.size(); i < adapterCount; i++) {
+				
+			ItemInfo ii = new ItemInfo();
+			ii.obj = mPageAdapter.instantiateItem(this, i);
+			mItems.add(ii);
+			if (DEBUG) {
+				V2Log.d(TAG, "Inital new view:" + ii.obj);
+			}
+				
 		}
 		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
+		mPageAdapter.finishUpdate(this);
 		
-		V2Log.i(getChildCount()+"=====11111=========================");
 		
 		//TODO smooth to scroll to next
 		requestLayout();
@@ -443,7 +470,6 @@ public class CircleViewPager extends ViewGroup {
 
 	static class ItemInfo {
 		Object obj;
-		int position;
 
 	}
 

@@ -4,14 +4,18 @@ package com.v2tech.widget;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.view.ViewGroup;
 
 public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 
 	private int fragmentCounts;
 	private VideoShowFragment[] fragments;
+	private FragmentManager fm;
 
 	public VideoShowFragmentAdapter(FragmentManager fm, int fragmentCounts) {
 		super(fm);
+		this.fm = fm;
 		this.fragmentCounts = fragmentCounts;
 		fragments = new VideoShowFragment[fragmentCounts];
 	}
@@ -50,6 +54,9 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 			newFrgArr[i - 1] = fragments[i];
 			newFrgArr[i - 1].setIndex(i);
 		}
+		FragmentTransaction mCurTransaction = fm.beginTransaction();
+		mCurTransaction.remove(fragments[position]);
+		mCurTransaction.commit();
 		fragments = newFrgArr;
 
 	}
@@ -68,5 +75,13 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 		
 		return fragment;
 	}
+
+	@Override
+	public Object instantiateItem(ViewGroup container, int position) {
+		return super.instantiateItem(container, position);
+	}
+	
+	
+	
 
 }

@@ -778,8 +778,10 @@ public class MainActivity extends FragmentActivity implements
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (!TextUtils.isEmpty(l.getUrl())) {
 					if (mMapVideoLayout.getVideoWindowNums() < 6) {
-						//Use new window to show 
-						mVideoController.addNewVideoWindow(l);
+						if (mCurrentVideoFragment != null) {
+							updateCurrentVideoState(mCurrentVideoFragment, false);
+						}
+						mCurrentVideoFragment = mVideoController.addNewVideoWindow(l);
 					} else {
 						//Replace current
 						Message.obtain(mLocalHandler, PLAY_LIVE, l).sendToTarget();
