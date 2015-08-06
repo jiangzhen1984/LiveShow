@@ -1,6 +1,10 @@
 package com.v2tech.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.VelocityTrackerCompat;
@@ -16,6 +20,7 @@ import com.V2.jni.util.V2Log;
 public class CircleViewPager extends ViewGroup {
 
 	private static final boolean DEBUG = false;
+
 	private static final String TAG = "CircleViewPager";
 
 	private static final int mDefaultVelocity = 40;
@@ -39,17 +44,18 @@ public class CircleViewPager extends ViewGroup {
 	private int mLastMotionX;
 
 	private long mFakeDragBeginTime;
-	
-	
+
 	private int mUpOffset;
-	
+
 	private int mLastMotionY;
-	
+
 	private OnPageChangeListener mOnPageChangeListener;
 
 	private PagerAdapter mPageAdapter;
 
 	private Flying flying;
+
+	private List<ItemInfo> mItems = new ArrayList<ItemInfo>();
 
 	public CircleViewPager(Context context) {
 		super(context);
@@ -211,16 +217,30 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void setAdapter(PagerAdapter adapter) {
-		// TODO destroy prior data
+		if (mPageAdapter != null) {
+			mPageAdapter.startUpdate(this);
+			mPageAdapter.unregisterDataSetObserver(observer);
+			for (int i = 0; i < mItems.size(); i++) {
+				final ItemInfo ii = mItems.get(i);
+				mPageAdapter.destroyItem(this, ii.position, ii.obj);
+			}
+			mPageAdapter.finishUpdate(this);
+			mItems.clear();
+		}
+
 		adapter.startUpdate(this);
 		int count = adapter.getCount();
 		for (int i = 0; i < count; i++) {
-			adapter.instantiateItem(this, i);
+			ItemInfo ii = new ItemInfo();
+			ii.obj = adapter.instantiateItem(this, i);
+			ii.position = i;
+			mItems.add(ii);
 		}
 		adapter.setPrimaryItem(this, 0, null);
 		adapter.finishUpdate(this);
 
 		mPageAdapter = adapter;
+		mPageAdapter.registerDataSetObserver(observer);
 	}
 
 	public void setOffscreenPageLimit(int limit) {
@@ -235,8 +255,6 @@ public class CircleViewPager extends ViewGroup {
 		this.mCurrItem = item;
 	}
 
-	
-	
 	public void fakeDragUpBy(int offsetY) {
 		mLastMotionY += offsetY;
 		// Synthesize an event for the VelocityTracker.
@@ -245,9 +263,9 @@ public class CircleViewPager extends ViewGroup {
 				MotionEvent.ACTION_MOVE, 0, mLastMotionY, 0);
 		mVelocityTracker.addMovement(ev);
 		ev.recycle();
-		
+
 		mUpOffset += offsetY;
-		//Update 
+		// Update
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
@@ -261,8 +279,7 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void endFakeDragUp() {
-		
-		
+
 		endDrag();
 	}
 
@@ -375,6 +392,40 @@ public class CircleViewPager extends ViewGroup {
 		}
 	}
 
+	private void datasetChanged() {
+		
+		boolean isUpdating = false;
+		for (int i = 0; i < mItems.size(); i++) {
+			final ItemInfo ii = mItems.get(i);
+			final int newPos = this.mPageAdapter.getItemPosition(ii.obj);
+
+			if (newPos == PagerAdapter.POSITION_UNCHANGED) {
+				continue;
+			}
+
+			if (newPos == PagerAdapter.POSITION_NONE) {
+				mItems.remove(i);
+				i--;
+			}
+			if (!isUpdating) {
+				mPageAdapter.startUpdate(this);
+			}
+			mPageAdapter.destroyItem(this, ii.position, ii.obj);
+		}
+		
+		if (isUpdating) {
+			mPageAdapter.finishUpdate(this);
+        }
+
+		requestLayout();
+	}
+
+	static class ItemInfo {
+		Object obj;
+		int position;
+
+	}
+
 	class Flying implements Runnable {
 
 		int initVelocity;
@@ -424,6 +475,20 @@ public class CircleViewPager extends ViewGroup {
 
 	};
 
+	private DataSetObserver observer = new DataSetObserver() {
+
+		@Override
+		public void onChanged() {
+			datasetChanged();
+		}
+
+		@Override
+		public void onInvalidated() {
+			datasetChanged();
+		}
+
+	};
+
 	public interface OnPageChangeListener {
 
 		/**
@@ -465,9 +530,7 @@ public class CircleViewPager extends ViewGroup {
 		 * @see CopyOfLoopViewPager#SCROLL_STATE_SETTLING
 		 */
 		public void onPageScrollStateChanged(int state);
-		
-		
-		
+
 		public void onPagePreapredRemove(int item);
 	}
 
