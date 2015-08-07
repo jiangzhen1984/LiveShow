@@ -155,10 +155,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			@Override
 			public void onClick(View v) {
 				//TODO check if current live can not remove should pop up Message
-				
 				//FIXME close all video and release all resources
 				mViewPagerAdapter.removeItem(mVideoShowPager.getCurrentItem());
 				mViewPagerAdapter.notifyDataSetChanged();
+				if (mViewPagerAdapter.getCount() <= 0) {
+					return;
+				}
 				//Notify parent to update item
 				if (mVideoChangedListener != null) {
 					mVideoChangedListener
@@ -201,23 +203,23 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	
 	public VideoOpt addNewVideoWindow(final Live l) {
 		final VideoShowFragment videoFragment = (VideoShowFragment)mViewPagerAdapter.createFragment();
-		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
-		mViewPagerAdapter.notifyDataSetChanged();
-//		//Use delay because fragment won't attach immitely
-		this.postDelayed(new Runnable() {
+		videoFragment.setStateListener(new VideoShowFragment.VideoFragmentStateListener() {
 
 			@Override
-			public void run() {
-				if (videoFragment.isAdded()) {
-					videoFragment.play(l);
-				} else {
-					
-				}
+			public void onInited() {
+				videoFragment.play(l);
+				
+			}
+
+			@Override
+			public void onUnInited() {
 				
 			}
 			
-		}, 500);
-//		
+		});
+		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
+		mViewPagerAdapter.notifyDataSetChanged();
+
 		return videoFragment;
 	}
 	

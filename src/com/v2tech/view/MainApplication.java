@@ -195,14 +195,14 @@ public class MainApplication extends Application {
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
-		V2Log.e("=================== low memeory :");
+		V2Log.i("=================== low memeory :");
 	}
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public void onTrimMemory(int level) {
 		super.onTrimMemory(level);
-		V2Log.e("=================== trim memeory :" + level);
+		V2Log.i("=================== trim memeory :" + level);
 	}
 
 	private void initGlobalConfiguration() {

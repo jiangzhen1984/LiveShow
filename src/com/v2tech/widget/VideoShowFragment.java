@@ -53,7 +53,7 @@ import com.v2tech.vo.Live;
 public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		HlsSampleSource.EventListener, VideoOpt {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final String TAG = "VideoShowFragment";
 
 	private int mIndex;
@@ -66,6 +66,13 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	private Handler localHandler;
 	private Live live;
 	private VideoState videoState = VideoState.UNINIT;
+	private VideoFragmentStateListener mStateListener;
+	
+	
+	public interface VideoFragmentStateListener {
+		public void onInited();
+		public void onUnInited();
+	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -147,14 +154,20 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void play(Live live) {
-		if (this.isDetached()) {
-			V2Log.e("This fragment is detached!  " + this);
+		if (this.isDetached() || !this.isAdded()) {
+			V2Log.w(TAG, "This fragment is detached!  " + this);
 			return;
 		}
 		this.live = live;
 		if (DEBUG) {
 			V2Log.i(TAG, this+" "+ live+"  start to play");
 		}
+		
+//		if (!surfacePushed) {
+//			V2Log.w(TAG, msg);
+//			return;
+//		}
+//		
 		
 		if (playerControl.isPlaying()) {
 			player.setRendererEnabled(0, false);
@@ -230,7 +243,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	@Override
 	public boolean isPlaying() {
-		V2Log.e("current state:"+videoState);
+		if (DEBUG) {
+			V2Log.i(TAG, "current state:"+videoState);
+		}
 		return VideoState.PLAYING == videoState;
 	}
 
@@ -248,7 +263,14 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	public void setIndex(int index) {
 		this.mIndex = index;
 	}
+	
+	
+	
 
+
+	public void setStateListener(VideoFragmentStateListener stateListener) {
+		this.mStateListener = stateListener;
+	}
 
 	private void drawFirstBlankFrame(Canvas c) {
 		//int[]  carray = new int[]{Color.MAGENTA, Color.BLUE, Color.CYAN, Color.GREEN, Color.RED, Color.WHITE};
@@ -284,6 +306,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 				if (live != null) {
 					play(live);
 				}
+			}
+			if (mStateListener != null) {
+				mStateListener.onInited();
 			}
 		}
 

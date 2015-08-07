@@ -632,7 +632,6 @@ public class MainActivity extends FragmentActivity implements
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
-			V2Log.e(l.getUrl());
 			LatLng ll = new LatLng(l.getLat(), l.getLng());
 			Bundle bundle = new Bundle();
 			if (l.getUrl() == null || l.getUrl().isEmpty()) {

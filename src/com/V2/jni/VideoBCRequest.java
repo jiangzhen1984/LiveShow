@@ -19,6 +19,7 @@ import com.v2tech.vo.Live;
 
 public class VideoBCRequest {
 
+	private static final boolean DEBUG = false;
 	private static VideoBCRequest instance;
 
 	private VideoBCRequest() {
@@ -75,7 +76,9 @@ public class VideoBCRequest {
 	public List<Live> lives = new ArrayList<Live>();
 
 	void OnGetNeiborhood(String szXml) {
-		V2Log.e(szXml);
+		if (DEBUG) {
+			V2Log.d(szXml);
+		}
 		lives.clear();
 		Document doc = buildDocument(szXml);
 		NodeList userNodeList = doc.getElementsByTagName("user");

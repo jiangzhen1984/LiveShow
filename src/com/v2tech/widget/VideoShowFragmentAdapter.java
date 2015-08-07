@@ -45,6 +45,9 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 	}
 
 	public void removeItem(int position) {
+		if (fragmentCounts == 0) {
+			return;
+		}
 		VideoShowFragment[] newFrgArr = new VideoShowFragment[--fragmentCounts];
 		for (int i = 0; i < position; i++) {
 			newFrgArr[i] = fragments[i];
@@ -70,7 +73,7 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 		System.arraycopy(fragments, 0, newFrgArr, 0, fragments.length);
 		
 		newFrgArr[fragments.length] = fragment;
-		
+		fragment.setIndex(fragments.length);
 		fragments = newFrgArr;
 		
 		return fragment;

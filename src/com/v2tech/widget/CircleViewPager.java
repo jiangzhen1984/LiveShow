@@ -14,7 +14,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 
 import com.V2.jni.util.V2Log;
 
@@ -91,7 +90,7 @@ public class CircleViewPager extends ViewGroup {
 		int paddingRight = getPaddingRight();
 		int paddingBottom = getPaddingBottom();
 		int offsetLeft = paddingLeft;
-
+ 
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
@@ -99,7 +98,7 @@ public class CircleViewPager extends ViewGroup {
 			offsetLeft = child.getPaddingLeft() + (i - mCurrItem)
 					* child.getMeasuredWidth() + mMoveOffset;
 
-			if (count > 3) {
+			if (count > 2) {
 				if (mCurrItem == 0) {
 					if (i == count - 1) {
 						offsetLeft = child.getPaddingLeft()
