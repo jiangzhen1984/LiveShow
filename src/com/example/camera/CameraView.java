@@ -181,10 +181,11 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		Canvas c = holder.lockCanvas();
 		int width = c.getWidth();
 		int height = c.getHeight();
+		V2Log.e(width+"===>+"+height);
 		Bitmap bp = Bitmap.createBitmap(width, height,
 				Bitmap.Config.ARGB_4444);
 		Canvas tmp = new Canvas(bp);
-		tmp.drawColor(Color.BLACK);
+		tmp.drawColor(Color.RED);
 
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
@@ -345,7 +346,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 				PreviewWidth = cur.width;
 				PreviewHeight = cur.height;
 				if (PreviewHeight == 480
-						&& PreviewHeight * 4 / 3 == PreviewWidth) 
+						&& PreviewHeight * 16 / 9 == PreviewWidth) 
 				{
 					break;
 				}
@@ -360,7 +361,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 					findSize = true;
 					PreviewWidth = cur.width;
 					PreviewHeight = cur.height;
-					if (PreviewHeight * 4 / 3 == PreviewWidth) 
+					if (PreviewHeight * 16 / 9 == PreviewWidth) 
 					{
 						break;
 					}
@@ -373,6 +374,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 			PreviewWidth = sizeList.get(0).width;
 			PreviewHeight = sizeList.get(0).height;
 		}
+		
+		V2Log.e("----"+PreviewWidth+"   "+PreviewHeight);
 		parameters.setPreviewSize(PreviewWidth, PreviewHeight);
 		// =================根据手机分辨率设置4:3的预览========================
 

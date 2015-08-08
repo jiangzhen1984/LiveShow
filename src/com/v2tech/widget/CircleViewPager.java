@@ -19,7 +19,7 @@ import com.V2.jni.util.V2Log;
 
 public class CircleViewPager extends ViewGroup {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	private static final String TAG = "CircleViewPager";
 

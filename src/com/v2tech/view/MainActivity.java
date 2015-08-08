@@ -146,6 +146,7 @@ public class MainActivity extends FragmentActivity implements
 		initMapviewLayout();
 		initVideoShareLayout();
 		initBottomButtonLayout();
+		initTitleBarButtonLayout();
 		initLocation();
 
 		mHandlerThread = new HandlerThread("back-end");
@@ -212,6 +213,11 @@ public class MainActivity extends FragmentActivity implements
 		
 		mVideoController = mMapVideoLayout;
 	}
+	
+	
+	private void initTitleBarButtonLayout() {
+		 findViewById(R.id.title_bar).bringToFront();
+	}
 
 	private void initBottomButtonLayout() {
 		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
@@ -252,7 +258,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
-		videoShareLayout.setBackgroundColor(Color.BLACK);
 		int width = getPreWidth();
 		int height = getPreHeight(width);
 		cv = new CameraView(this);
@@ -320,7 +325,8 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private int getPreHeight(int width) {
-		return width / 4 * 3;
+		int height = width / 4 * 3;
+		return height - height % 16;
 	}
 
 	@Override

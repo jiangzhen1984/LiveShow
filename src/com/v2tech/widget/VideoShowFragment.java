@@ -296,6 +296,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
 			Canvas c = holder.lockCanvas();
+			V2Log.e("======w:" + c.getWidth()+"   h:"+ c.getHeight());
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();

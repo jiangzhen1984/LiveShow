@@ -2,9 +2,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/titlebar_bg" >
+
+        <ImageView
+            android:id="@+id/personal_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/user_icon" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+    
+    
 
     <FrameLayout
         android:id="@+id/video_share_ly"
+        android:layout_below="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg" >
@@ -12,6 +42,7 @@
 
     <FrameLayout
         android:id="@+id/main"
+        android:layout_below="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>
@@ -78,8 +109,8 @@
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/msg_button"
                 android:layout_alignBottom="@+id/msg_button"
+                android:layout_alignTop="@+id/msg_button"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/msg_button"
@@ -89,5 +120,7 @@
             </com.v2tech.widget.FloatEditText>
         </RelativeLayout>
     </RelativeLayout>
+
+
 
 </RelativeLayout>

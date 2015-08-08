@@ -34,7 +34,7 @@ import com.v2tech.widget.VideoShowFragmentAdapter;
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMinimumFlingVelocity;
@@ -482,7 +482,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		if (DEBUG) {
-			V2Log.d("changed:"+changed+"  bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getHeight()+"  top:" + top);
+			V2Log.d("changed:"+changed+"  bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getMeasuredWidth()+"  top:" + top);
 		}
 		int realTop = top + mOffsetTop;
 		int realBottom = (bottom
@@ -495,7 +495,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		}
 
 		mMsgLayout.layout(left, realTop, right, realBottom);
-		mMapView.layout(left, (bottom + mOffsetTop - top) / 2, right, bottom);
+		mMapView.layout(left, mVideoShowPager.getMeasuredHeight(), right, bottom);
 		mDragLayout.layout(left, realTop, right, realBottom);
 	}
 

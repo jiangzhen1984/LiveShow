@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class CameraShape extends View {
+	
+	private static final boolean DEBUG = false;
 
 	private static final float STAGE_1 = 20.0F;
 	
@@ -87,8 +89,13 @@ public class CameraShape extends View {
 		int topLineStartY = top;
 		int topLineEndX = topLineStartX - (midX - left - ARC_RECT_WIDTH);
 		int topLineEndY = top;
-		
-		V2Log.e(topLineStartX+"  "+ topLineStartY+"  "+ topLineEndX+"  " +topLineEndY+" cent:"+cent);
+		if (DEBUG) {
+			V2Log.d(this.getClass().getName()
+					+ " prepareLeftPart: topLineStartX:" + topLineStartX
+					+ "  topLineStartY:" + topLineStartY + "  topLineEndX:"
+					+ topLineEndX + "  topLineEndY:" + topLineEndY + " cent:"
+					+ cent);
+		}
 
 		pathLeft.reset();
 
@@ -171,8 +178,12 @@ public class CameraShape extends View {
 			}
 		}
 
-		
-		V2Log.e(bottomLineStartX+"  "+ bottomLineStartY+"  "+ bottomLineEndX+"  " +bottomLineEndY+" cent:"+cent);
+		if (DEBUG) {
+			V2Log.d(this.getClass().getName(), "bottomLineStartX:"
+					+ bottomLineStartX + "  bottomLineStartY:"
+					+ bottomLineStartY + "  bottomLineEndX:" + bottomLineEndX
+					+ "  bottomLineEndY:" + bottomLineEndY + " cent:" + cent);
+		}
 	}
 
 	private void prepareRightPart(int left, int top, int right, int bottom,
