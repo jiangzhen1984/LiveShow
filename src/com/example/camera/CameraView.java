@@ -178,19 +178,30 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceCreated(SurfaceHolder holder)
 	{
-		Canvas c = holder.lockCanvas();
-		int width = c.getWidth();
-		int height = c.getHeight();
-		V2Log.e(width+"===>+"+height);
-		Bitmap bp = Bitmap.createBitmap(width, height,
-				Bitmap.Config.ARGB_4444);
-		Canvas tmp = new Canvas(bp);
-		tmp.drawColor(Color.RED);
-
-		c.drawBitmap(bp, 0, 0, new Paint());
-		bp.recycle();
-		holder.unlockCanvasAndPost(c);
-		tryOpenCamera();
+//		Canvas c = holder.lockCanvas();
+//		int width = c.getWidth();
+//		int height = c.getHeight();
+//		Bitmap bp = Bitmap.createBitmap(width, height,
+//				Bitmap.Config.ARGB_4444);
+//		Canvas tmp = new Canvas(bp);
+//		tmp.drawColor(Color.BLACK);
+//
+//		c.drawBitmap(bp, 0, 0, new Paint());
+//		bp.recycle();
+//		holder.unlockCanvasAndPost(c);
+		
+		
+		if (isPreViewing && mCamera == null) {
+			tryOpenCamera();
+			initCamera();
+		}
+		
+		if (isPreViewing) {
+			mCamera.setPreviewCallback(this);
+			mCamera.startPreview();
+			this.setKeepScreenOn(true);
+		}
+		
 	}
 
 	@Override
@@ -280,10 +291,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 
 	private void initCamera() 
 	{
-		if (bIfPreview) 
-		{
-			mCamera.stopPreview();
-		}
 		if (null != mCamera) 
 		{
 			deal();
@@ -303,14 +310,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	private boolean isPreViewing;
 	
 	public void startPreView() {
-		if (!isPreViewing) {
-			if (mCamera == null) {
-				tryOpenCamera();
-				initCamera();
-			}
-			mCamera.setPreviewCallback(this);
-			mCamera.startPreview();
+		if (mCamera == null) {
 			isPreViewing = true;
+			return;
+		}
+		if (!isPreViewing) {
+			isPreViewing = true;
+			mCamera.startPreview();
 			this.setKeepScreenOn(true);
 		}
 		

@@ -34,7 +34,7 @@ import com.v2tech.widget.VideoShowFragmentAdapter;
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMinimumFlingVelocity;
@@ -182,7 +182,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		favButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		
 		mDragLayout.addView(favButton, favButtonLayout);
-		
 		
 	}
 
@@ -377,7 +376,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			float dy =  ev.getRawY() - mLastY;
 			float dx =  ev.getRawX() - mLastX;
 			if (DEBUG) {
-				V2Log.d(TAG, " y:"+ ev.getRawY()+"  "+"  " + dx + "    " + dy + "   " + mDragDir +"  "+offsetY +"  ====" +mCameraShapeSLop);
+				V2Log.d(TAG, " y:"+ ev.getRawY()+"  "+"  dx:" + dx + "    dy:" + dy + "   mDragDir:" + mDragDir +"  offsetY:"+offsetY +"  mCameraShapeSLop:" +mCameraShapeSLop);
 			}
 			if (mDragDir == DragDirection.NONE) {
 				if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
@@ -482,11 +481,13 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		if (DEBUG) {
-			V2Log.d("changed:"+changed+"  bottom:" + bottom+"  "+ mVideoShowPager.getMeasuredHeight()+"  "+ mVideoShowPager.getMeasuredWidth()+"  top:" + top);
+			V2Log.d(TAG, "changed:" + changed + "  bottom:" + bottom + "  "
+					+ mVideoShowPager.getMeasuredHeight() + "  "
+					+ mVideoShowPager.getMeasuredWidth() + "  top:" + top
+					+ "   mOffsetTop:" + mOffsetTop);
 		}
 		int realTop = top + mOffsetTop;
-		int realBottom = (bottom
-				+ mOffsetTop - top) / 2;
+		int realBottom = realTop + mVideoShowPager.getMeasuredHeight();
 		mVideoShowPager.layout(left, realTop, right, realBottom);
 		
 		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
@@ -495,7 +496,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		}
 
 		mMsgLayout.layout(left, realTop, right, realBottom);
-		mMapView.layout(left, mVideoShowPager.getMeasuredHeight(), right, bottom);
+		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		mDragLayout.layout(left, realTop, right, realBottom);
 	}
 

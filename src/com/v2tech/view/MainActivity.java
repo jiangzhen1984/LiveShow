@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements
 		mDisplay = getResources().getDisplayMetrics();
 
 		initMapviewLayout();
-		initVideoShareLayout();
+		//initVideoShareLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
 		initLocation();
@@ -256,6 +256,8 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
+	
+	private boolean initVideoShareLayoutFlag = false;
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
 		int width = getPreWidth();
@@ -264,9 +266,10 @@ public class MainActivity extends FragmentActivity implements
 		cv.setZOrderOnTop(false);
 		cv.setZOrderMediaOverlay(false);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
-				height);
+				((VideoShowFragment)mCurrentVideoFragment).getView().getHeight());
 		fl.leftMargin = (mDisplay.widthPixels - width) / 2;
 		videoShareLayout.addView(cv, fl);
+		
 
 		mShareVideoButton = new Button(this);
 		mShareVideoButton.setText("分享视频");
@@ -358,7 +361,9 @@ public class MainActivity extends FragmentActivity implements
 	protected void onStop() {
 		super.onStop();
 		isSuspended = true;
-		cv.stopPreView();
+		if (cv != null) {
+			cv.stopPreView();
+		}
 		if (isRecording) {
 			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
 		} else {
@@ -471,6 +476,10 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onFlyingOut() {
+			if (!initVideoShareLayoutFlag) {
+				initVideoShareLayout();
+				initVideoShareLayoutFlag = true;
+			}
 			if (!isRecording) {
 				cv.startPreView();
 			}
@@ -481,10 +490,14 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onFlyingIn() {
-			cv.stopPreView();
+			if (initVideoShareLayoutFlag) {
+				cv.stopPreView();
+			}
+			
 			isInCameraView = false;
 			updateCurrentVideoState(mCurrentVideoFragment, true);
 			mBottomLayout.setVisibility(View.VISIBLE);
+			mBottomLayout.bringToFront();
 			mMapVideoLayout.pauseDrawState(false);
 		}
 	};

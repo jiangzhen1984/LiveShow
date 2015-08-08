@@ -56,6 +56,8 @@ public class CircleViewPager extends ViewGroup {
 	private Flying flying;
 
 	private List<ItemInfo> mItems = new ArrayList<ItemInfo>();
+	
+	private boolean mDraging;
 
 	public CircleViewPager(Context context) {
 		super(context);
@@ -83,6 +85,9 @@ public class CircleViewPager extends ViewGroup {
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		if (mDraging) {
+			return;
+		}
 		int width = r - l;
 		int height = b - t;
 		int paddingLeft = getPaddingLeft();
@@ -90,6 +95,7 @@ public class CircleViewPager extends ViewGroup {
 		int paddingRight = getPaddingRight();
 		int paddingBottom = getPaddingBottom();
 		int offsetLeft = paddingLeft;
+		t = 0;
  
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
@@ -312,6 +318,8 @@ public class CircleViewPager extends ViewGroup {
 
 		mFakeDragBeginTime = time;
 
+		//FIXME update draging
+		mDraging = true;
 		return true;
 	}
 
@@ -489,6 +497,7 @@ public class CircleViewPager extends ViewGroup {
 			}
 
 			if (dis == 0) {
+				mDraging = false;
 				requestLayout();
 			} else {
 				if (Math.abs(initVelocity) > Math.abs(dis)) {
