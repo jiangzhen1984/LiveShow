@@ -154,6 +154,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 			@Override
 			public void onClick(View v) {
+				if (mViewPagerAdapter.getCount() <= 1) {
+					//TODO show notification
+					return;
+				}
 				//TODO check if current live can not remove should pop up Message
 				//FIXME close all video and release all resources
 				mViewPagerAdapter.removeItem(mVideoShowPager.getCurrentItem());
@@ -334,12 +338,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 	public void pauseDrawState(boolean flag) {
 		if (flag) {
-			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
-					.getCurrentItem())).pause();
+			if (mViewPagerAdapter.getCount() > mCurrentPage) {
+				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).pause();
+			}
 			mMapView.onPause();
 		} else {
-			((VideoOpt) mViewPagerAdapter.getItem(mVideoShowPager
-					.getCurrentItem())).resume();
+			if (mViewPagerAdapter.getCount() > mCurrentPage) {
+				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).resume();
+			}
 			mMapView.onResume();
 			bringChildToFront(mMapView);
 		}
@@ -367,7 +373,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			mLastY = mInitY;
 			
 			//Pause
-			((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).pause();
+			if (mViewPagerAdapter.getCount() > mCurrentPage) {
+				((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).pause();
+			}
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mMapView.clearFocus();

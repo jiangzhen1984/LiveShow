@@ -287,7 +287,7 @@ public class CircleViewPager extends ViewGroup {
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
 			if (i == mCurrItem) {
-				child.offsetTopAndBottom(-offsetY);
+				child.offsetTopAndBottom(offsetY);
 			} else {
 				child.offsetLeftAndRight(-offsetY);
 			}
@@ -301,6 +301,9 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public boolean beginFakeDrag() {
+		if (mPageAdapter.getCount() <= 0) {
+			return false;
+		}
 		mMoveOffset = 0;
 		mUpOffset = 0;
 		final long time = SystemClock.uptimeMillis();
@@ -318,12 +321,14 @@ public class CircleViewPager extends ViewGroup {
 
 		mFakeDragBeginTime = time;
 
-		//FIXME update draging
 		mDraging = true;
 		return true;
 	}
 
-	public void fakeDragBy(float xOffset) {
+	public void fakeDragBy(float xOffset)  {
+		if (!mDraging) {
+			throw new RuntimeException(" call beginFakeDrag first");
+		}
 		mLastMotionX += xOffset;
 		// Synthesize an event for the VelocityTracker.
 		final long time = SystemClock.uptimeMillis();
@@ -338,6 +343,9 @@ public class CircleViewPager extends ViewGroup {
 	}
 
 	public void endFakeDrag() {
+		if (!mDraging) {
+			throw new RuntimeException(" call beginFakeDrag first");
+		}
 		int childCount = getChildCount();
 		int nextPage = this.mCurrItem;
 		int dis = 0;

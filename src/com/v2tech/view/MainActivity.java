@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements
 		mDisplay = getResources().getDisplayMetrics();
 
 		initMapviewLayout();
-		//initVideoShareLayout();
+		initVideoShareLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
 		initLocation();
@@ -257,7 +257,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	
-	private boolean initVideoShareLayoutFlag = false;
+	private boolean initVideoShareLayoutFlag = true;
 	private void initVideoShareLayout() {
 		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
 		int width = getPreWidth();
@@ -265,8 +265,7 @@ public class MainActivity extends FragmentActivity implements
 		cv = new CameraView(this);
 		cv.setZOrderOnTop(false);
 		cv.setZOrderMediaOverlay(false);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width,
-				((VideoShowFragment)mCurrentVideoFragment).getView().getHeight());
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width, height - 80);
 		fl.leftMargin = (mDisplay.widthPixels - width) / 2;
 		videoShareLayout.addView(cv, fl);
 		
@@ -521,6 +520,8 @@ public class MainActivity extends FragmentActivity implements
 					updateMapLocation(cl);
 				}
 			}
+			//bring to front, To make sure surface to show 
+			mMapVideoLayout.bringToFront();
 
 		}
 

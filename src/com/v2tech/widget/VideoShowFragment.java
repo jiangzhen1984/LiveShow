@@ -53,7 +53,7 @@ import com.v2tech.vo.Live;
 public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		HlsSampleSource.EventListener, VideoOpt {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "VideoShowFragment";
 
 	private int mIndex;
@@ -111,7 +111,6 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		RelativeLayout rl = new RelativeLayout(getActivity());
 		mSurfaceView = new SurfaceView(getActivity());
 		mSurfaceView.setZOrderMediaOverlay(true);
-		// mSurfaceView.setZOrderOnTop(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -296,7 +295,6 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
 			Canvas c = holder.lockCanvas();
-			V2Log.e("======w:" + c.getWidth()+"   h:"+ c.getHeight());
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
