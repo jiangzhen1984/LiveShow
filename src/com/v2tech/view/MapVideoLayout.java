@@ -34,7 +34,7 @@ import com.v2tech.widget.VideoShowFragmentAdapter;
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMinimumFlingVelocity;
@@ -58,6 +58,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	private VelocityTracker mVelocityTracker;
 	private int mOffsetTop;
 	private DragDirection mDragDir = DragDirection.NONE;
+	private DragType mDragType = DragType.NONE;
+	private Operation mOper = Operation.NONE;
 	private boolean fireFlyingdown = false;
 	
 
@@ -256,8 +258,23 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	}
 	
 	public void onPagePreapredRemove(int item) {
+		//Can not remove last one
+		if (mViewPagerAdapter.getCount() <= 1) {
+			mVideoShowPager.requestLayout();
+			return;
+		}
+		//reset mOffsetTop for layout. because baidu map always request layout
+		mOffsetTop = 0;
 		mViewPagerAdapter.removeItem(item);
 		mViewPagerAdapter.notifyDataSetChanged();
+		pauseDrawState(false);
+		
+		//Notify parent to update item
+		if (mVideoChangedListener != null) {
+			mVideoChangedListener
+					.onChanged((VideoShowFragment) mViewPagerAdapter
+							.getItem(mVideoShowPager.getCurrentItem()));
+		}
 	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
@@ -304,18 +321,36 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	private float mLastX;
 
 	public void requestUpFlying() {
+		mDragType = DragType.SHARE;
 		Flying fl = new Flying();
 		fl.startFlying(-mDefaultVelocity);
 		postOnAnimation(fl);
 	}
+	
+	
 
 	public void updateOffset(int offset) {
 		if (mOffsetTop + offset < 0) {
-			mOffsetTop = 0;
-		} else {
+			if (mDragType != DragType.SHARE) {
+				mOffsetTop += offset;
+				mDragType = DragType.REMOVE;
+				mVideoShowPager.fakeDragUpBy(offset);
+				return;
+			} else if (mDragType == DragType.SHARE) {
+				mOffsetTop = 0;
+			}
+		} else if (mOffsetTop + offset > 0){
+			//Fix offset, because last touch event maybe cross boundary.
+			if (mDragType == DragType.REMOVE) {
+				mVideoShowPager.fakeDragUpBy(offset);
+			}
+			mDragType = DragType.SHARE;
 			mOffsetTop += offset;
 		}
 
+		if (mDragType == DragType.NONE) {
+			return;
+		}
 		
 		if (mOffsetTop > mCameraShapeSLop) {
 			float cent = Math.abs(mOffsetTop - mCameraShapeSLop) / 2;
@@ -376,9 +411,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			if (mViewPagerAdapter.getCount() > mCurrentPage) {
 				((VideoShowFragment)mViewPagerAdapter.getItem(mCurrentPage)).pause();
 			}
+			mOper = Operation.PRESS;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mMapView.clearFocus();
+			mOper = Operation.DRAGING;
 			float offsetX = ev.getRawX() - mInitX;
 			float offsetY = ev.getRawY() - mInitY;
 			float dy =  ev.getRawY() - mLastY;
@@ -411,6 +448,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 			break;
 		case MotionEvent.ACTION_UP:
+			mOper = Operation.NONE;
             // A fling must travel the minimum tap distance
             final VelocityTracker velocityTracker = mVelocityTracker;
             final int pointerId = ev.getPointerId(0);
@@ -419,13 +457,17 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
           
 			if (mDragDir == DragDirection.VERTICAL) {
-				Flying fl = new Flying();
-				if (fireFlyingdown) {
-					fl.startFlying(mDefaultVelocity);
-				} else {
-					fl.startFlying(-mDefaultVelocity);
+				if (mDragType == DragType.SHARE) {
+					Flying fl = new Flying();
+					if (fireFlyingdown) {
+						fl.startFlying(mDefaultVelocity);
+					} else {
+						fl.startFlying(-mDefaultVelocity);
+					}
+					postOnAnimation(fl);
+				} else if (mDragType == DragType.REMOVE) {
+					mVideoShowPager.endFakeDrag();
 				}
-				postOnAnimation(fl);
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.endFakeDrag();
 			}
@@ -462,6 +504,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				
 				mNotificaionShare.setVisibility(View.GONE);
 				fireFlyingdown = false;
+				mDragType = DragType.NONE;
 				return;
 			}
 
@@ -471,6 +514,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				}
 				fireFlyingdown = false;
 				mNotificaionShare.setVisibility(View.GONE);
+				mDragType = DragType.NONE;
 				return;
 			}
 			if (initVelocity > 0) {
@@ -488,6 +532,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
+		if (mOper != Operation.NONE && mDragType != DragType.SHARE) {
+			return;
+		}
 		if (DEBUG) {
 			V2Log.d(TAG, "changed:" + changed + "  bottom:" + bottom + "  "
 					+ mVideoShowPager.getMeasuredHeight() + "  "
@@ -594,8 +641,17 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 	}
 
+	
+	enum Operation {
+		NONE, PRESS, DRAGING
+	}
 	enum DragDirection {
 		NONE, VERTICAL, HORIZONTAL;
+	}
+	
+	
+	enum DragType {
+		NONE, SHARE, REMOVE
 	}
 
 }

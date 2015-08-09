@@ -54,6 +54,7 @@ public class CircleViewPager extends ViewGroup {
 	private PagerAdapter mPageAdapter;
 
 	private Flying flying;
+	private FlyingUp fu;
 
 	private List<ItemInfo> mItems = new ArrayList<ItemInfo>();
 	
@@ -172,10 +173,7 @@ public class CircleViewPager extends ViewGroup {
 		int childHeightSize = getMeasuredHeight() - getPaddingTop()
 				- getPaddingBottom();
 
-		if (DEBUG) {
-			V2Log.d(TAG, "childWidthSize:" + childWidthSize
-					+ "  childHeightSize:" + childHeightSize);
-		}
+	
 		int size = getChildCount();
 		for (int i = 0; i < size; ++i) {
 			final View child = getChildAt(i);
@@ -272,33 +270,6 @@ public class CircleViewPager extends ViewGroup {
 		requestLayout();
 	}
 
-	public void fakeDragUpBy(int offsetY) {
-		mLastMotionY += offsetY;
-		// Synthesize an event for the VelocityTracker.
-		final long time = SystemClock.uptimeMillis();
-		final MotionEvent ev = MotionEvent.obtain(mFakeDragBeginTime, time,
-				MotionEvent.ACTION_MOVE, 0, mLastMotionY, 0);
-		mVelocityTracker.addMovement(ev);
-		ev.recycle();
-
-		mUpOffset += offsetY;
-		// Update
-		int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			View child = getChildAt(i);
-			if (i == mCurrItem) {
-				child.offsetTopAndBottom(offsetY);
-			} else {
-				child.offsetLeftAndRight(-offsetY);
-			}
-		}
-
-	}
-
-	public void endFakeDragUp() {
-
-		endDrag();
-	}
 
 	public boolean beginFakeDrag() {
 		if (mPageAdapter.getCount() <= 0) {
@@ -324,6 +295,31 @@ public class CircleViewPager extends ViewGroup {
 		mDraging = true;
 		return true;
 	}
+	
+	
+	public void fakeDragUpBy(int offsetY) {
+		mLastMotionY += offsetY;
+		// Synthesize an event for the VelocityTracker.
+		final long time = SystemClock.uptimeMillis();
+		final MotionEvent ev = MotionEvent.obtain(mFakeDragBeginTime, time,
+				MotionEvent.ACTION_MOVE, 0, mLastMotionY, 0);
+		mVelocityTracker.addMovement(ev);
+		ev.recycle();
+
+		mUpOffset += offsetY;
+		// Update
+		int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			View child = getChildAt(i);
+			if (i == mCurrItem) {
+				child.offsetTopAndBottom(offsetY);
+			} else {
+				child.offsetLeftAndRight(-offsetY);
+			}
+		}
+
+	}
+
 
 	public void fakeDragBy(float xOffset)  {
 		if (!mDraging) {
@@ -346,6 +342,61 @@ public class CircleViewPager extends ViewGroup {
 		if (!mDraging) {
 			throw new RuntimeException(" call beginFakeDrag first");
 		}
+		//TODO check vertical move or horizontal move
+		View currentView = getChildAt(this.mCurrItem);
+		
+		
+		
+
+		int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			View child = getChildAt(i);
+
+			if (DEBUG) {
+				V2Log.d(TAG, "endFakeDrag===mCurrItem:" + mCurrItem + "   i:" + i
+						+ "  top:" + child.getTop());
+			}
+		}
+		
+		
+		if (currentView.getTop() < 0) {
+			moveVertical();
+		} else {
+			moveHorizontal();
+		}
+		endDrag();
+	}
+	
+	
+	private void moveVertical() {
+		int dis = 0;
+		final VelocityTracker velocityTracker = mVelocityTracker;
+		velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+		int initialVelocity = (int) VelocityTrackerCompat.getYVelocity(
+				velocityTracker, 0);
+		View currentView = getChildAt(this.mCurrItem);
+		
+		float topPos = currentView.getTop();
+		float cent= Math.abs(topPos) / (float)getHeight();
+		boolean opposite = false;
+		if (cent > 0.15F) {
+			dis =  getHeight() - (int) Math.abs(topPos);
+			opposite =true;
+		} else {
+			dis = (int)Math.abs(topPos);
+			opposite = false;
+		}
+		
+		V2Log.d(opposite+"  initialVelocity:"+ mDefaultVelocity+"  dis:"+dis+"   topPos:"+ topPos);
+		if (fu == null) {
+			fu = new FlyingUp();
+		}
+		fu.startFlying(opposite? -mDefaultVelocity : mDefaultVelocity, dis);
+		this.postOnAnimation(fu);
+	}
+	
+	
+	private void moveHorizontal() {
 		int childCount = getChildCount();
 		int nextPage = this.mCurrItem;
 		int dis = 0;
@@ -356,7 +407,6 @@ public class CircleViewPager extends ViewGroup {
 		float pageOffsetPercent = (float) Math.abs(mMoveOffset)
 				/ (float) getWidth();
 
-		V2Log.e(pageOffsetPercent + "   " + getWidth() + "    " + mMoveOffset);
 		if (pageOffsetPercent > 0.15 || initialVelocity > mInimumFlingVelocity) {
 			if (mMoveOffset < 0) {
 				nextPage += 1;
@@ -379,8 +429,6 @@ public class CircleViewPager extends ViewGroup {
 		}
 
 		scrollToPage(nextPage, mMoveOffset > 0 ? -dis : dis, initialVelocity);
-
-		endDrag();
 	}
 
 	private void scrollToPage(int page, int restDis, int velocity) {
@@ -487,6 +535,63 @@ public class CircleViewPager extends ViewGroup {
 		Object obj;
 
 	}
+	
+	
+	class FlyingUp implements Runnable {
+
+		int initVelocity;
+		int dis;
+
+		public void startFlying(int initVelocity, int dis) {
+			this.initVelocity = initVelocity;
+			this.dis = dis;
+		}
+
+		@Override
+		public void run() {
+			//if (DEBUG) {
+				V2Log.d(TAG, "[FLYING] : " + initVelocity + "   " + dis);
+			//}
+
+			if (dis == 0) {
+				mDraging = false;
+				if (mOnPageChangeListener != null) {
+					mOnPageChangeListener.onPagePreapredRemove(mCurrItem);
+				}
+			} else {
+				if (Math.abs(initVelocity) > Math.abs(dis)) {
+					if (initVelocity > 0) {
+						initVelocity = initVelocity
+								- Math.abs(initVelocity + dis);
+					} else {
+						initVelocity = initVelocity
+								+ Math.abs(initVelocity + dis);
+					}
+				}
+
+				int count = getChildCount();
+				for (int i = 0; i < count; i++) {
+					View child = getChildAt(i);
+					if (i == mCurrItem) {
+						child.offsetTopAndBottom(initVelocity);
+					} else {
+						child.offsetLeftAndRight(-initVelocity);
+					}
+				}
+
+				dis += initVelocity;
+
+				if (initVelocity > 0) {
+					initVelocity += 35;
+				} else {
+					initVelocity -= 35;
+				}
+
+				postOnAnimationDelayed(this, 50);
+			}
+		}
+
+	};
 
 	class Flying implements Runnable {
 
