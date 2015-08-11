@@ -45,8 +45,6 @@ public class CircleViewPager extends ViewGroup {
 
 	private long mFakeDragBeginTime;
 
-	private int mUpOffset;
-
 	private int mLastMotionY;
 
 	private OnPageChangeListener mOnPageChangeListener;
@@ -293,7 +291,6 @@ public class CircleViewPager extends ViewGroup {
 			return false;
 		}
 		mMoveOffset = 0;
-		mUpOffset = 0;
 		final long time = SystemClock.uptimeMillis();
 
 		if (mVelocityTracker == null) {
@@ -322,7 +319,6 @@ public class CircleViewPager extends ViewGroup {
 		mVelocityTracker.addMovement(ev);
 		ev.recycle();
 
-		mUpOffset += offsetY;
 		// Update
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
@@ -400,8 +396,10 @@ public class CircleViewPager extends ViewGroup {
 			restore = true;
 		}
 
-		V2Log.d(opposite + "  initialVelocity:" + mDefaultVelocity + "  dis:"
+		if (DEBUG) {
+			V2Log.d("opposite:" + opposite + "  initialVelocity:" + mDefaultVelocity + "  dis:"
 				+ dis + "   topPos:" + topPos);
+		}
 		if (fu == null) {
 			fu = new FlyingUp();
 		}
@@ -467,7 +465,6 @@ public class CircleViewPager extends ViewGroup {
 	private void endDrag() {
 		mMoveOffset = 0;
 		mLastMotionX = 0;
-		mUpOffset = 0;
 		if (mVelocityTracker != null) {
 			mVelocityTracker.recycle();
 			mVelocityTracker = null;
@@ -532,6 +529,11 @@ public class CircleViewPager extends ViewGroup {
 		mPageAdapter.setPrimaryItem(this, this.mCurrItem, null);
 		mPageAdapter.finishUpdate(this);
 
+		
+		if (mOnPageChangeListener != null) {
+			mOnPageChangeListener.onPageSelected(mCurrItem);
+		}
+		
 		// TODO smooth to scroll to next
 		requestLayout();
 	}
@@ -556,16 +558,16 @@ public class CircleViewPager extends ViewGroup {
 
 		@Override
 		public void run() {
-			// if (DEBUG) {
-			V2Log.d(TAG, "[FLYING] : " + initVelocity + "   " + dis);
-			// }
+			if (DEBUG) {
+				V2Log.d(TAG, "[FLYING] : " + initVelocity + "   " + dis);
+			}
 
 			if (dis == 0) {
 				mDraging = false;
+				mOnPageChangeListener.onPageScrollStateChanged(SCROLL_STATE_IDLE);
 				if (mOnPageChangeListener != null && !restore) {
 					mOnPageChangeListener.onPagePreapredRemove(mCurrItem);
 				}
-				mOnPageChangeListener.onPageScrollStateChanged(SCROLL_STATE_IDLE);
 			} else {
 				if (Math.abs(initVelocity) > Math.abs(dis)) {
 					if (initVelocity > 0) {

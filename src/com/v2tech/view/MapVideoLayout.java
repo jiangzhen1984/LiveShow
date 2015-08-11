@@ -94,6 +94,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		// setOnTouchListener(this);
 		mVideoShowPager = new CircleViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
+		mVideoShowPager.setBackgroundColor(Color.BLACK);
 		mVideoShowPager.setOnPageChangeListener(this);
 		mViewPagerAdapter = new VideoShowFragmentAdapter(
 				((FragmentActivity) getContext()).getSupportFragmentManager(),
@@ -274,14 +275,13 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		mOffsetTop = 0;
 		mViewPagerAdapter.removeItem(item);
 		mViewPagerAdapter.notifyDataSetChanged();
-		pauseDrawState(false);
 		
-		//Notify parent to update item
-		if (mVideoChangedListener != null) {
-			mVideoChangedListener
-					.onChanged((VideoShowFragment) mViewPagerAdapter
-							.getItem(mVideoShowPager.getCurrentItem()));
-		}
+//		//Notify parent to update item
+//		if (mVideoChangedListener != null) {
+//			mVideoChangedListener
+//					.onChanged((VideoShowFragment) mViewPagerAdapter
+//							.getItem(mVideoShowPager.getCurrentItem()));
+//		}
 	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
@@ -317,8 +317,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	}
 
 	public interface LayoutPositionChangedListener {
+		public void onPreparedFlyingIn();
+		
 		public void onFlyingIn();
 
+		public void onPreparedFlyingOut();
+		
 		public void onFlyingOut();
 	}
 
@@ -386,11 +390,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	}
 
 	public void pauseDrawState(boolean flag) {
+		pasuseCurrentVideo(flag);
 		if (flag) {
-			pasuseCurrentVideo(true);
 			mMapView.onPause();
 		} else {
-			pasuseCurrentVideo(false);
 			mMapView.onResume();
 			bringChildToFront(mMapView);
 		}
@@ -520,6 +523,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				if (mDragType == DragType.SHARE) {
 					Flying fl = new Flying();
 					if (fireFlyingdown) {
+						if (mPosInterface != null) {
+							mPosInterface.onPreparedFlyingOut();
+						}
 						fl.startFlying(mDefaultVelocity);
 					} else {
 						fl.startFlying(-mDefaultVelocity);
@@ -554,7 +560,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 		@Override
 		public void run() {
-			if (DEBUG) {
+			if (true) {
 				V2Log.d(TAG, "[FLYING] : " + mOffsetTop + "   " + initVelocity
 						+ "   " + getBottom());
 			}

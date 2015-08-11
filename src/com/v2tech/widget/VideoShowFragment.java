@@ -142,6 +142,10 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		if (player == null) {
 			return;
 		}
+	
+		if (DEBUG) {
+			V2Log.i(TAG, "setUserVisibleHint====> isVisibleToUser:"+isVisibleToUser+"   " + this+" "+ live+"");
+		}
 		if (!isVisibleToUser) {
 			if (playerControl.isPlaying()) {
 				playerControl.pause();
@@ -153,20 +157,15 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void play(Live live) {
+		if (DEBUG) {
+			V2Log.i(TAG, "Play====>" + this+" "+ live+"");
+		}
 		if (this.isDetached() || !this.isAdded()) {
 			V2Log.w(TAG, "This fragment is detached!  " + this);
 			return;
 		}
 		this.live = live;
-		if (DEBUG) {
-			V2Log.i(TAG, this+" "+ live+"  start to play");
-		}
 		
-//		if (!surfacePushed) {
-//			V2Log.w(TAG, msg);
-//			return;
-//		}
-//		
 		
 		if (playerControl.isPlaying()) {
 			player.setRendererEnabled(0, false);
@@ -183,20 +182,25 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	}
 
 	public void pause() {
-		if (this.isDetached()) {
-			V2Log.e("This fragment is detached!  " + this);
-			return;
+		if (DEBUG) {
+			V2Log.i(TAG, "Pause====>" + this+" "+ live+"");
 		}
 		if (VideoState.PLAYING == videoState) {
 			playerControl.pause();
 		}
 		videoState = VideoState.PAUSE;
-		if (DEBUG) {
-			V2Log.i(TAG, this+" "+ live+"  paused");
+		if (this.isDetached()) {
+			V2Log.e("This fragment is detached!  " + this);
+			stop();
+			return;
 		}
+		
 	}
 
 	public void resume() {
+		if (DEBUG) {
+			V2Log.i(TAG, "Resume====>" + this+" "+ live+"");
+		}
 		if (this.isDetached()) {
 			V2Log.e("This fragment is detached!  " + this);
 			return;
@@ -233,6 +237,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	@Override
 	public void stop() {
+		if (DEBUG) {
+			V2Log.i(TAG, "Stop====>" + this+" "+ live+"");
+		}
 		if (this.player != null) {
 			this.player.stop();
 			this.player.seekTo(0);

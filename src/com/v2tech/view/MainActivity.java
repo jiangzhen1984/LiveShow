@@ -499,13 +499,26 @@ public class MainActivity extends FragmentActivity implements
 			mBottomLayout.bringToFront();
 			mMapVideoLayout.pauseDrawState(false);
 		}
+		
+		@Override
+		public void onPreparedFlyingIn() {
+			
+		}
+		
+		
+		@Override
+		public void onPreparedFlyingOut() {
+			onFlyingOut();
+		}
 	};
 
 	private MapVideoLayout.OnVideoFragmentChangedListener videoFragmentChangedListener = new MapVideoLayout.OnVideoFragmentChangedListener() {
 
 		@Override
 		public void onChanged(VideoShowFragment videoFrag) {
-			V2Log.i(videoFrag+"  is current ");
+			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive()!= null) {
+				animationMaker(mCurrentVideoFragment.getCurrentLive(), false);
+			}
 			updateCurrentVideoState(mCurrentVideoFragment, false);
 			mCurrentVideoFragment = videoFrag;
 			updateCurrentVideoState(videoFrag, true);
