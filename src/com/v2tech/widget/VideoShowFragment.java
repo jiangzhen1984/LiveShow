@@ -160,12 +160,12 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		if (DEBUG) {
 			V2Log.i(TAG, "Play====>" + this+" "+ live+"");
 		}
+		V2Log.e("=====surfacePushed:"+surfacePushed+"   surface:"+surface);
 		if (this.isDetached() || !this.isAdded()) {
-			V2Log.w(TAG, "This fragment is detached!  " + this);
+			V2Log.e(TAG, "This fragment is detached!  " + this);
 			return;
 		}
 		this.live = live;
-		
 		
 		if (playerControl.isPlaying()) {
 			player.setRendererEnabled(0, false);
@@ -309,9 +309,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 				surfacePushed = true;
-				if (live != null) {
-					play(live);
-				}
+//				if (live != null) {
+//					play(live);
+//				}
 			}
 			if (mStateListener != null) {
 				mStateListener.onInited();
@@ -376,30 +376,36 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	public void onLoadStarted(int sourceId, long length, int type, int trigger,
 			Format format, int mediaStartTimeMs, int mediaEndTimeMs) {
+		if (DEBUG)
 		Log.w(TAG, "onLoadStarted : "+ this +" source : " + sourceId);
 	};
 
 	public void onLoadCompleted(int sourceId, long bytesLoaded, int type,
 			int trigger, Format format, int mediaStartTimeMs,
 			int mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs) {
+		if (DEBUG)
 		Log.w(TAG, "onLoadCompleted: "+ this +" source : " + sourceId);
 	}
 
 	public void onLoadCanceled(int sourceId, long bytesLoaded) {
+		if (DEBUG)
 		Log.w(TAG, "onLoadCanceled: "+ this +" source : " + sourceId);
 	}
 
 	public void onLoadError(int sourceId, IOException e) {
+		if (DEBUG)
 		Log.w(TAG, "onLoadError: "+ this +" source : " + sourceId);
 	}
 
 	public void onUpstreamDiscarded(int sourceId, int mediaStartTimeMs,
 			int mediaEndTimeMs) {
+		if (DEBUG)
 		Log.w(TAG, "onUpstreamDiscarded: "+ this +" source : " + sourceId);
 	}
 
 	public void onDownstreamFormatChanged(int sourceId, Format format,
 			int trigger, int mediaTimeMs) {
+		
 		Log.w(TAG, "onDownstreamFormatChanged: "+ this +" source : " + sourceId);
 	}
 

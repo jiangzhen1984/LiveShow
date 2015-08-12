@@ -522,7 +522,7 @@ public class CircleViewPager extends ViewGroup {
 			ii.obj = mPageAdapter.instantiateItem(this, i);
 			mItems.add(ii);
 			if (DEBUG) {
-				V2Log.d(TAG, "Inital new view:" + ii.obj);
+				V2Log.e(TAG, "adapterCount:"+adapterCount+"  Inital new view:" + ii.obj);
 			}
 
 		}
@@ -530,9 +530,6 @@ public class CircleViewPager extends ViewGroup {
 		mPageAdapter.finishUpdate(this);
 
 		
-		if (mOnPageChangeListener != null) {
-			mOnPageChangeListener.onPageSelected(mCurrItem);
-		}
 		
 		// TODO smooth to scroll to next
 		requestLayout();

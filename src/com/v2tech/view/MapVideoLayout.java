@@ -190,8 +190,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			}
 			
 		});
-		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
+		
 		mViewPagerAdapter.notifyDataSetChanged();
+		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
 
 		return videoFragment;
 	}
@@ -239,11 +240,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		mViewPagerAdapter.notifyDataSetChanged();
 		
 //		//Notify parent to update item
-//		if (mVideoChangedListener != null) {
-//			mVideoChangedListener
-//					.onChanged((VideoShowFragment) mViewPagerAdapter
-//							.getItem(mVideoShowPager.getCurrentItem()));
-//		}
+		if (mVideoChangedListener != null) {
+			mVideoChangedListener
+					.onChanged((VideoShowFragment) mViewPagerAdapter
+							.getItem(mVideoShowPager.getCurrentItem()));
+		}
 	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
@@ -522,7 +523,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 		@Override
 		public void run() {
-			if (true) {
+			if (DEBUG) {
 				V2Log.d(TAG, "[FLYING] : " + mOffsetTop + "   " + initVelocity
 						+ "   " + getBottom());
 			}

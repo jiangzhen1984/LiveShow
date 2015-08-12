@@ -809,10 +809,11 @@ public class MainActivity extends FragmentActivity implements
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (!TextUtils.isEmpty(l.getUrl())) {
+					if (mCurrentVideoFragment != null) {
+						updateCurrentVideoState(mCurrentVideoFragment, false);
+					}
+					
 					if (mMapVideoLayout.getVideoWindowNums() < 6) {
-						if (mCurrentVideoFragment != null) {
-							updateCurrentVideoState(mCurrentVideoFragment, false);
-						}
 						mCurrentVideoFragment = mVideoController.addNewVideoWindow(l);
 					} else {
 						//Replace current
@@ -943,10 +944,11 @@ public class MainActivity extends FragmentActivity implements
 				if (mCurrentVideoFragment.getCurrentLive() != null) {
 					animationMaker(mCurrentVideoFragment.getCurrentLive(),
 							msg.arg1 == 0 ? false : true);
-					Message delayMessage = Message.obtain(mLocalHandler,
-							MARKER_ANIMATION, msg.arg1 == 0 ? 1 : 0, 0);
-					mLocalHandler.sendMessageDelayed(delayMessage, 200);
+				} else {
 				}
+				Message delayMessage = Message.obtain(mLocalHandler,
+						MARKER_ANIMATION, msg.arg1 == 0 ? 1 : 0, 0);
+				mLocalHandler.sendMessageDelayed(delayMessage, 200);
 				break;
 			}
 		}

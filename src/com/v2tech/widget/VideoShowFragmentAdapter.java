@@ -1,6 +1,5 @@
 package com.v2tech.widget;
 
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +11,9 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 	private int fragmentCounts;
 	private VideoShowFragment[] fragments;
 	private FragmentManager fm;
+
+	private FragmentTransaction mCurTransaction = null;
+	private Fragment mCurrentPrimaryItem = null;
 
 	public VideoShowFragmentAdapter(FragmentManager fm, int fragmentCounts) {
 		super(fm);
@@ -44,6 +46,19 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 		return POSITION_NONE;
 	}
 
+	@Override
+	public void startUpdate(ViewGroup container) {
+	}
+
+	@Override
+	public void destroyItem(ViewGroup container, int position, Object object) {
+		if (mCurTransaction == null) {
+			mCurTransaction = fm.beginTransaction();
+		}
+		//mCurTransaction.detach((Fragment) object);
+		mCurTransaction.remove((Fragment) object);
+	}
+
 	public void removeItem(int position) {
 		if (fragmentCounts == 0) {
 			return;
@@ -57,34 +72,57 @@ public class VideoShowFragmentAdapter extends FragmentPagerAdapter {
 			newFrgArr[i - 1] = fragments[i];
 			newFrgArr[i - 1].setIndex(i);
 		}
-		FragmentTransaction mCurTransaction = fm.beginTransaction();
-		mCurTransaction.remove(fragments[position]);
-		mCurTransaction.commit();
+		FragmentTransaction ct = fm.beginTransaction();
+		//ct.detach(fragments[position].getTargetFragment());
+		ct.remove(fragments[position]);
+		ct.commit();
 		fragments = newFrgArr;
 
 	}
-	
-	
-	
+
 	public Fragment createFragment() {
-		fragmentCounts ++;
+		fragmentCounts++;
 		VideoShowFragment fragment = new VideoShowFragment();
 		VideoShowFragment[] newFrgArr = new VideoShowFragment[fragmentCounts];
 		System.arraycopy(fragments, 0, newFrgArr, 0, fragments.length);
-		
+
 		newFrgArr[fragments.length] = fragment;
 		fragment.setIndex(fragments.length);
 		fragments = newFrgArr;
-		
+
 		return fragment;
 	}
 
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
-		return super.instantiateItem(container, position);
+		if (mCurTransaction == null) {
+			mCurTransaction = fm.beginTransaction();
+		}
+
+		final long itemId = getItemId(position);
+	
+		Fragment fragment = getItem(position);
+			mCurTransaction.add(container.getId(), fragment,
+					makeFragmentName(container.getId(), itemId));
+		if (fragment != mCurrentPrimaryItem) {
+			fragment.setMenuVisibility(false);
+			fragment.setUserVisibleHint(false);
+		}
+
+		return fragment;
 	}
-	
-	
-	
+
+	@Override
+	public void finishUpdate(ViewGroup container) {
+		if (mCurTransaction != null) {
+			mCurTransaction.commitAllowingStateLoss();
+			mCurTransaction = null;
+			fm.executePendingTransactions();
+		}
+	}
+
+	private static String makeFragmentName(int viewId, long id) {
+		return "android:switcher:" + viewId + ":" + id;
+	}
 
 }
