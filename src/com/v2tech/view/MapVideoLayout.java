@@ -146,44 +146,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	
 	
 	private void initIcons() {
-		ImageView closeButton = new ImageView(this.getContext());
-		closeButton.setPadding(10, 10, 10, 10);
-		closeButton.setImageResource(R.drawable.video_close_button);
-		RelativeLayout.LayoutParams closeButtonLayout = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		closeButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		closeButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		
-		mDragLayout.addView(closeButton, closeButtonLayout);
-		
-		
-		closeButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (mViewPagerAdapter.getCount() <= 1) {
-					//TODO show notification
-					return;
-				}
-				//TODO check if current live can not remove should pop up Message
-				//FIXME close all video and release all resources
-				mViewPagerAdapter.removeItem(mVideoShowPager.getCurrentItem());
-				mViewPagerAdapter.notifyDataSetChanged();
-				if (mViewPagerAdapter.getCount() <= 0) {
-					return;
-				}
-				//Notify parent to update item
-				if (mVideoChangedListener != null) {
-					mVideoChangedListener
-							.onChanged((VideoShowFragment) mViewPagerAdapter
-									.getItem(mVideoShowPager.getCurrentItem()));
-				}
-			}
-			
-		});
-		
-		
 		ImageView favButton = new ImageView(this.getContext());
 		favButton.setPadding(10, 10, 10, 10);
 		favButton.setImageResource(R.drawable.fav_button_selector);
