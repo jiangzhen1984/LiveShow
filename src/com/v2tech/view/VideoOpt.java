@@ -5,6 +5,8 @@ import com.v2tech.vo.Live;
 public interface VideoOpt {
 
 	public void play(Live live);
+	
+	public void restart();
 
 	public void pause();
 

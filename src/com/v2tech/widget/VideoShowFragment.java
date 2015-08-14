@@ -160,7 +160,6 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		if (DEBUG) {
 			V2Log.i(TAG, "Play====>" + this+" "+ live+"");
 		}
-		V2Log.e("=====surfacePushed:"+surfacePushed+"   surface:"+surface);
 		if (this.isDetached() || !this.isAdded()) {
 			V2Log.e(TAG, "This fragment is detached!  " + this);
 			return;
@@ -179,6 +178,16 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 				AudioFormat.CHANNEL_IN_MONO)).buildRenderers();
 		videoState = VideoState.PREPARED;
 		
+	}
+	
+	
+
+	@Override
+	public void restart() {
+		//make sure push surface to render 
+		surfacePushed = false;
+		stop();
+		play(live);
 	}
 
 	public void pause() {
@@ -199,7 +208,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	public void resume() {
 		if (DEBUG) {
-			V2Log.i(TAG, "Resume====>" + this+" "+ live+"");
+			V2Log.i(TAG, "Resume====>surfacePushed:"+surfacePushed+ this+" "+ live+"");
 		}
 		if (this.isDetached()) {
 			V2Log.e("This fragment is detached!  " + this);
@@ -222,6 +231,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		case RELEASE:
 			break;
 		case STOP:
+			if (!surfacePushed) {
+				//TODO send pending list
+			}
 			break;
 		case UNINIT:
 			break;
@@ -241,9 +253,13 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 			V2Log.i(TAG, "Stop====>" + this+" "+ live+"");
 		}
 		if (this.player != null) {
+			player.setRendererEnabled(0, false);
+			player.setRendererEnabled(1, false);
 			this.player.stop();
 			this.player.seekTo(0);
 		}
+		
+		videoRender = null;
 		videoState = VideoState.STOP;
 	}
 
@@ -305,6 +321,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
+			V2Log.e(mIndex+"--->"+videoRender+"   +"+surface);
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
@@ -322,6 +339,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
 			surface = holder.getSurface();
+			V2Log.e(mIndex+"--->"+"changed:"+videoRender+"   +"+surface);
 			if (player != null && videoRender != null) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
@@ -363,6 +381,9 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 
 	@Override
 	public void onPlayerStateChanged(boolean changed, int state) {
+		if (DEBUG) {
+			V2Log.d("player state changed:"+changed + " state:"+state);
+		}
 		if (state == ExoPlayer.STATE_ENDED) {
 			V2Log.d("play ended)" + live);
 			player.setRendererEnabled(0, false);
@@ -480,8 +501,8 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 			renderers[1] = audioRenderer;
 
 			videoRender = renderers[0];
-
 			if (!surfacePushed) {
+				V2Log.e(mIndex+"--->"+"new render:"+videoRender+"   +"+surface);
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 			}

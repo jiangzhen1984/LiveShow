@@ -25,13 +25,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -93,13 +91,12 @@ public class MainActivity extends FragmentActivity implements
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int MARKER_ANIMATION = 12;
+	private static final int DELAY_RESUME = 13;
 
 	private static float mCurrentZoomLevel = 12F;
 
 	private RelativeLayout mBottomLayout;
 	// private BottomButtonLayout mBottomButtonLayout;
-	private View mBottomButtonLayout;
-	private ViewGroup.LayoutParams mBottomButtonLayoutParmeters;
 	private EditText mEditText;
 	private FrameLayout mMainLayout;
 	private View mLocateButton;
@@ -132,7 +129,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private LocalHandler mLocalHandler;
 	private HandlerThread mHandlerThread;
-	private Handler uiThreadHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +221,6 @@ public class MainActivity extends FragmentActivity implements
 		// (BottomButtonLayout)findViewById(R.id.bottom_button_ly);
 		// mBottomButtonLayout.setButtonListener(mButtonClickedListener);
 
-		mBottomButtonLayout = findViewById(R.id.bottom_button_ly);
 		View button = findViewById(R.id.map_button);
 		button.setTag(BUTTON_TAG_MAP);
 		button.setOnClickListener(mBottomButtonClickedListener);
@@ -338,8 +333,13 @@ public class MainActivity extends FragmentActivity implements
 		if (isRecording) {
 
 		} else {
-			if (mCurrentVideoFragment != null) {
-				mCurrentVideoFragment.resume();
+			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive() != null)  {
+//				//FIXME send delay message since after surface view is created
+//				Message m = Message.obtain(mLocalHandler, DELAY_RESUME);
+//				mLocalHandler.sendMessageDelayed(m, 1000);
+				
+				((VideoShowFragment)mCurrentVideoFragment).setStateListener(mCurrentVideoFragmentListener);
+				
 			}
 		}
 	}
@@ -358,7 +358,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onStop() {
-		super.onStop();
 		isSuspended = true;
 		if (cv != null) {
 			cv.stopPreView();
@@ -367,9 +366,10 @@ public class MainActivity extends FragmentActivity implements
 			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
 		} else {
 			if (mCurrentVideoFragment != null) {
-				mCurrentVideoFragment.pause();
+				mCurrentVideoFragment.stop();
 			}
 		}
+		super.onStop();
 	}
 
 	@Override
@@ -431,8 +431,6 @@ public class MainActivity extends FragmentActivity implements
 	private void stopCamera() {
 		cv.stopPreView();
 	}
-
-	PopupWindow pw;
 
 
 	float initY;
@@ -863,6 +861,23 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	};
+	
+	
+	private VideoShowFragment.VideoFragmentStateListener mCurrentVideoFragmentListener = new VideoShowFragment.VideoFragmentStateListener() {
+
+		@Override
+		public void onInited() {
+			mCurrentVideoFragment.restart();
+			((VideoShowFragment)mCurrentVideoFragment).setStateListener(null);
+		}
+
+		@Override
+		public void onUnInited() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
 
 
 	class LocalHandler extends Handler {
@@ -949,6 +964,11 @@ public class MainActivity extends FragmentActivity implements
 				Message delayMessage = Message.obtain(mLocalHandler,
 						MARKER_ANIMATION, msg.arg1 == 0 ? 1 : 0, 0);
 				mLocalHandler.sendMessageDelayed(delayMessage, 200);
+				break;
+			case DELAY_RESUME:
+				if (!isSuspended) {
+					mCurrentVideoFragment.restart();
+				}
 				break;
 			}
 		}
