@@ -49,8 +49,8 @@ public class LoginActivity extends Activity {
 				JNIResponse resp = (JNIResponse)msg.obj;
 				if (resp.getResult() == Result.SUCCESS) {
 					//TODO 
-					ConfRequest.getInstance().concern(110001, 110002);
-					ConfRequest.getInstance().concernCancel(110001, 110002);
+					ConfRequest.getInstance().concern(110001);
+					ConfRequest.getInstance().concernCancel(110001);
 				}
 				break;
 			}

@@ -88,18 +88,22 @@ public class ConfRequest {
 
 	}
 	
-	public native void concern(long uid, long uid2);
+	public native void concern(long uid);
 	
-	public native void concernCancel(long uid, long uid2);
+	public native void concernCancel(long uid);
 	
 	
-
+	
 	public void OnConfConcern(long uid, long uid1)  {
-		V2Log.e("OnConfConcern:" +uid+"   =========="+ uid1);
+		V2Log.e("OnConfConcern:" +uid+"   ==>"+ uid1);
+	}
+
+	public void OnConfConcern(long uid)  {
+		V2Log.e("OnConfConcern:" +uid);
 	}
 	
 	public void OnConfConcernCancel(long uid, long uid1)  {
-		V2Log.e("OnConfConcernCancel:" +uid+"   =========="+ uid1);
+		V2Log.e("OnConfConcernCancel:" +uid+"   ==>"+ uid1);
 	}
 
 	// 鍒犻櫎浼氳
