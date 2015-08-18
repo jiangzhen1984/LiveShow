@@ -222,6 +222,11 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 		case IDLE:
 			break;
 		case PAUSE:
+			if (!surfacePushed) {
+				player.blockingSendMessage(videoRender,
+						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
+				surfacePushed = true;
+			}
 			this.playerControl.start();
 			break;
 		case PLAYING:
@@ -322,7 +327,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
 			V2Log.e(mIndex+"--->"+videoRender+"   +"+surface);
-			if (player != null && videoRender != null) {
+			if (player != null && videoRender != null && getUserVisibleHint()) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 				surfacePushed = true;
@@ -340,7 +345,7 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 				int height) {
 			surface = holder.getSurface();
 			V2Log.e(mIndex+"--->"+"changed:"+videoRender+"   +"+surface);
-			if (player != null && videoRender != null) {
+			if (player != null && videoRender != null && getUserVisibleHint()) {
 				player.blockingSendMessage(videoRender,
 						MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 				surfacePushed = true;
