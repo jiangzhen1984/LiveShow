@@ -9,4 +9,27 @@
      
      <string name="msg_send_button_text">W</string>
      <string name="pos_search_button_text">M</string>
+     
+     
+     <string name="cellphone_numer_hint">手机号</string>
+     <string name="verification_code_hint">验证码</string>
+     <string name="verification_code_text">验证</string>
+     <string name="log_on_btn_text">登录</string>
+     <string name="reg_btn_text">注册</string>
+     <string name="login_reg_btn_text">注册/登录</string>
+     <string name="notification_get_verification_code">验证码已发送!</string>
+     
+     
+     <string name="personal_my_follow">我的关注</string>
+     <string name="personal_my_fans">我的粉丝</string>
+     <string name="personal_my_setting">设置</string>
+     
+     <string name="fans_list_title">我的粉丝</string>
+     <string name="following_list_title">我的关注</string>
+     
+     <string name="error_cellphone_required">请输入手机号</string>
+     <string name="error_verification_code_required">请输入验证码</string>
+     <string name="error_get_verification_code">获取验证码失败!</string>
+     <string name="error_login_in">登录失败!</string>
 </resources>
+

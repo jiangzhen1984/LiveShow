@@ -1,5 +1,15 @@
 package com.v2tech.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -14,10 +24,8 @@ import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.service.jni.RequestUserUpdateResponse;
 import com.v2tech.util.GlobalConfig;
+import com.v2tech.view.Constants;
 import com.v2tech.vo.User;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class UserService extends AbstractHandler {
 
@@ -83,6 +91,52 @@ public class UserService extends AbstractHandler {
 		}
 	}
 
+	public void register(String phoneNumber, MessageListener caller) {
+		JNIResponse resp = null;
+		
+		SoapObject request = new SoapObject(Constants.NAME_SPACE,
+				"AddUserByPhoneNum");
+
+		PropertyInfo propInfo = new PropertyInfo();
+		propInfo.name = "phonenumber";
+		propInfo.type = PropertyInfo.STRING_CLASS;
+		propInfo.setValue(phoneNumber);
+
+		request.addProperty(propInfo);
+
+		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+				SoapEnvelope.VER11);
+
+		envelope.setOutputSoapObject(request);
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
+
+		try {
+			androidHttpTransport.call("urn:AddUserByPhoneNum", envelope);
+
+			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
+					.getResponse();
+			String retVale = resultsRequestSOAP.getValue().toString();
+			
+			
+			if ("0".equals(retVale)) {
+				resp = new JNIResponse(JNIResponse.Result.FAILED);
+			} else {
+				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			resp = new JNIResponse(JNIResponse.Result.FAILED);
+		}
+
+		
+		
+		Message msg = Message.obtain();
+		msg.what = caller.what;
+		msg.obj = resp;
+		caller.refH.get().sendMessage(msg);
+	}
+
 	@Override
 	public void clearCalledBack() {
 		ImRequest.getInstance().removeCallback(imCB);
@@ -102,8 +156,10 @@ public class UserService extends AbstractHandler {
 			// 获取系统时间
 			GlobalConfig.LOCAL_TIME = System.currentTimeMillis();
 			GlobalConfig.SERVER_TIME = serverTime;
-            SimpleDateFormat fromat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String date = fromat.format(new Date(GlobalConfig.SERVER_TIME * 1000));
+			SimpleDateFormat fromat = new SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String date = fromat.format(new Date(
+					GlobalConfig.SERVER_TIME * 1000));
 			V2Log.d("get server time ：" + date);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);

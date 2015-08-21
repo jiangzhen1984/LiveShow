@@ -71,6 +71,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.VideoShowFragment;
@@ -78,6 +79,10 @@ import com.v2tech.widget.VideoShowFragment;
 public class MainActivity extends FragmentActivity implements
 		OnGetGeoCoderResultListener {
 
+	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
+	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
+	private static final int REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE = 102;
+	
 	private static final String BUTTON_TAG_MAP = "map";
 	private static final String BUTTON_TAG_WORD = "word";
 
@@ -129,6 +134,8 @@ public class MainActivity extends FragmentActivity implements
 
 	private LocalHandler mLocalHandler;
 	private HandlerThread mHandlerThread;
+	private View mPersonalButton;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +220,26 @@ public class MainActivity extends FragmentActivity implements
 	
 	private void initTitleBarButtonLayout() {
 		 findViewById(R.id.title_bar).bringToFront();
+		 this.mPersonalButton = findViewById(R.id.personal_button);
+		 mPersonalButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (GlobalHolder.getInstance().getCurrentUser() != null) {
+					Intent i = new Intent();
+					i.setClass(getApplicationContext(), PersonalActivity.class);
+					startActivity(i);
+				} else {
+					Intent i = new Intent();
+					i.setClass(getApplicationContext(), LoginActivity.class);
+					Intent pending = new Intent();
+					pending.setClass(getApplicationContext(), PersonalActivity.class);
+				    i.putExtra("pendingintent", pending);
+					startActivity(i);
+				}
+			}
+			 
+		 });
 	}
 
 	private void initBottomButtonLayout() {
@@ -238,7 +265,7 @@ public class MainActivity extends FragmentActivity implements
 			public void onClick(View v) {
 				Intent i = new Intent();
 				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
-				startActivityForResult(i, 100);
+				startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
 				
 			}
 			
@@ -277,6 +304,12 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onClick(View v) {
+				if (GlobalHolder.getInstance().getCurrentUser() == null) {
+					Intent i = new Intent();
+					i.setClass(getApplicationContext(), LoginActivity.class);
+					startActivityForResult(i, REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE);
+					return;
+				}
 				if ("none".equals(mShareVideoButton.getTag())) {
 					mShareVideoButton.setTag("recording");
 					mShareVideoButton.setText("取消分享");
@@ -401,25 +434,34 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (data == null || data.getExtras() == null || resultCode == Activity.RESULT_CANCELED) {
+		if (resultCode == Activity.RESULT_CANCELED) {
 			return;
 		}
-		int action = data.getExtras().getInt("action");
-		String text = data.getExtras().getString("text");
-		if (TextUtils.isEmpty(text)) {
+		
+		if (requestCode == 	REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE) {
+			mShareVideoButton.performClick();
 			return;
-		}
-		if (resultCode == Activity.RESULT_OK) {
-			//click map button
-			if (action == 1) {
-				mLocalHandler.removeMessages(SEARCH);
-				Message msg = Message.obtain(mLocalHandler, SEARCH, text);
-				mLocalHandler.sendMessage(msg);
-				//click word button
-			} else if (action == 2) {
-				mVideoController.addNewMessage(text);
+		} else if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
+			if (data == null || data.getExtras() == null) {
+				return;
 			}
-				
+			int action = data.getExtras().getInt("action");
+			String text = data.getExtras().getString("text");
+			if (TextUtils.isEmpty(text)) {
+				return;
+			}
+			if (resultCode == Activity.RESULT_OK) {
+				//click map button
+				if (action == 1) {
+					mLocalHandler.removeMessages(SEARCH);
+					Message msg = Message.obtain(mLocalHandler, SEARCH, text);
+					mLocalHandler.sendMessage(msg);
+					//click word button
+				} else if (action == 2) {
+					mVideoController.addNewMessage(text);
+				}
+					
+			}
 		}
 	}
 
