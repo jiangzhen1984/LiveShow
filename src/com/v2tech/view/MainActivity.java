@@ -304,12 +304,12 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onClick(View v) {
-				if (GlobalHolder.getInstance().getCurrentUser() == null) {
-					Intent i = new Intent();
-					i.setClass(getApplicationContext(), LoginActivity.class);
-					startActivityForResult(i, REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE);
-					return;
-				}
+//				if (GlobalHolder.getInstance().getCurrentUser() == null) {
+//					Intent i = new Intent();
+//					i.setClass(getApplicationContext(), LoginActivity.class);
+//					startActivityForResult(i, REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE);
+//					return;
+//				}
 				if ("none".equals(mShareVideoButton.getTag())) {
 					mShareVideoButton.setTag("recording");
 					mShareVideoButton.setText("取消分享");

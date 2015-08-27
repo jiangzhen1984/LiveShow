@@ -23,6 +23,7 @@ import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
+import com.v2tech.util.Md5Util;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.User;
@@ -277,13 +278,13 @@ public class LoginActivity extends Activity implements OnClickListener {
 				us.register(number, new MessageListener(localHandler,
 						REG_CALLBACK, new String[]{number, code}));
 			} else {
-				us.login(number, code, new MessageListener(localHandler,
+				us.login(number, Md5Util.MD5(code), new MessageListener(localHandler,
 						LOG_IN_CALLBACK, null));
-				Message m = Message.obtain(localHandler, LOG_IN_CALLBACK);
-				User u = new User(123, number);
-				u.setMobile(number);
-				m.obj = new RequestLogInResponse(u, JNIResponse.Result.SUCCESS);
-				localHandler.sendMessage(m);
+//				Message m = Message.obtain(localHandler, LOG_IN_CALLBACK);
+//				User u = new User(123, number);
+//				u.setMobile(number);
+//				m.obj = new RequestLogInResponse(u, JNIResponse.Result.SUCCESS);
+//				localHandler.sendMessage(m);
 			}
 
 		}

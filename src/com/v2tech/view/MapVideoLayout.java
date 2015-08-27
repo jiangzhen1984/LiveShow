@@ -157,6 +157,36 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		
 		mDragLayout.addView(favButton, favButtonLayout);
 		
+		
+		ImageView publisherButton = new ImageView(this.getContext());
+		publisherButton.setPadding(10, 10, 10, 10);
+		publisherButton.setImageResource(R.drawable.publisher);
+		RelativeLayout.LayoutParams publisherButtonLayout = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		publisherButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		publisherButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		
+		mDragLayout.addView(publisherButton, publisherButtonLayout);
+		
+		favButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				v.setSelected(!v.isSelected());
+			}
+			
+		});
+		
+		publisherButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+			}
+			
+		});
+		
 	}
 
 	public BaiduMap getMap() {
