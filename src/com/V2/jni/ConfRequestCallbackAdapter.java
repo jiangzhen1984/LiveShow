@@ -1,7 +1,10 @@
 package com.V2.jni;
 
+import java.util.List;
+
 import com.V2.jni.ind.V2Conference;
 import com.V2.jni.ind.V2User;
+import com.v2tech.vo.User;
 
 public abstract class ConfRequestCallbackAdapter implements ConfRequestCallback {
 
@@ -34,6 +37,11 @@ public abstract class ConfRequestCallbackAdapter implements ConfRequestCallback 
 	@Override
 	public void OnConfNotify(V2Conference v2conf,  V2User user) {
 
+	}
+	
+	
+	public void onUserListNotify(int type, List<V2User> list) {
+		
 	}
 
 }

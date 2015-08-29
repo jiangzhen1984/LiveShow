@@ -19,7 +19,7 @@ import com.v2tech.vo.Live;
 
 public class VideoBCRequest {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static VideoBCRequest instance;
 
 	private VideoBCRequest() {

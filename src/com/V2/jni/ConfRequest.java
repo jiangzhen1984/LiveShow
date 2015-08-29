@@ -14,6 +14,7 @@ import com.V2.jni.ind.V2Conference;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.V2.jni.util.XmlAttributeExtractor;
+import com.v2tech.vo.User;
 
 public class ConfRequest {
 
@@ -91,6 +92,39 @@ public class ConfRequest {
 	public native void concern(long uid);
 	
 	public native void concernCancel(long uid);
+	
+	
+	public native void getMyConcerns();
+	public native void getMyFans();
+	public native void getFansCount(String sr);
+
+	public  void OnMyConcerns(String xml) {
+		V2Log.e(" OnMyConcerns  "+xml);
+		List<V2User> list = XmlAttributeExtractor.parseUserList(xml, "user");
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
+			Object obj = we.get();
+			if (obj != null) {
+				ConfRequestCallback cb = (ConfRequestCallback) obj;
+				cb.onUserListNotify(2, list);
+			}
+		}
+	}
+	public  void OnMyFans(String xml) {
+		V2Log.e(" OnMyFans  "+xml);
+		List<V2User> list = XmlAttributeExtractor.parseUserList(xml, "user");
+		for (int i = 0; i < this.mCallbacks.size(); i++) {
+			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
+			Object obj = we.get();
+			if (obj != null) {
+				ConfRequestCallback cb = (ConfRequestCallback) obj;
+				cb.onUserListNotify(1, list);
+			}
+		}
+	}
+	public  void OnFansCount(String xml) {
+		V2Log.e(" OnFansCount  "+xml);
+	}
 	
 	
 	

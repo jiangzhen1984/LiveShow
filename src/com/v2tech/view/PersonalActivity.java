@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
@@ -33,6 +34,7 @@ public class PersonalActivity extends Activity implements OnClickListener {
 	private View mMyFollowingBtn;
 	private View mMyFansBtn;
 	private View mSettingBtn;
+	private ConferenceService confService;
 	
 	
 
@@ -41,6 +43,7 @@ public class PersonalActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personal_activity);
 		us = new UserService();
+		confService = new ConferenceService();
 		ht = new HandlerThread("PersonalActivity");
 		ht.start();
 
@@ -75,12 +78,18 @@ public class PersonalActivity extends Activity implements OnClickListener {
 		int id = v.getId();
 		switch (id) {
 		case R.id.personal_follow_btn:
-			i.setClass(getApplicationContext(), FansFollowingListActivity.class);
+			i.addCategory("com.v2tech");
+			i.setAction("com.v2tech.action.FOLLOWING_FANS_ACTIVITY");
+			//i.setClass(getApplicationContext(), FansFollowingListActivity.class);
 			i.putExtra("type", "following");
+			confService.queryList(2, null);
 			break;
 		case R.id.personal_fans_btn:
-			i.setClass(getApplicationContext(), FansFollowingListActivity.class);
+			i.addCategory("com.v2tech");
+			i.setAction("com.v2tech.action.FOLLOWING_FANS_ACTIVITY");
+			//i.setClass(getApplicationContext(), FansFollowingListActivity.class);
 			i.putExtra("type", "fans");
+			confService.queryList(1, null);
 			break;
 		case R.id.personal_setting_btn:
 			break;
@@ -108,11 +117,34 @@ public class PersonalActivity extends Activity implements OnClickListener {
 	
 	
 	
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		us.clearCalledBack();
 		ht.quit();
+		confService.clearCalledBack();
 	}
 
 

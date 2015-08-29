@@ -86,6 +86,9 @@ public class ImRequest {
 	 */
 	public native void login(String szName, String szPassword, int status,
 			int type, boolean isAnonymous);
+	
+	
+	public native void logout();
 
 	/**
 	 * <ul>

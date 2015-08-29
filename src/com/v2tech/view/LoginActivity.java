@@ -278,13 +278,14 @@ public class LoginActivity extends Activity implements OnClickListener {
 				us.register(number, new MessageListener(localHandler,
 						REG_CALLBACK, new String[]{number, code}));
 			} else {
+				//us.logout(null);
 				us.login(number, Md5Util.MD5(code), new MessageListener(localHandler,
 						LOG_IN_CALLBACK, null));
-//				Message m = Message.obtain(localHandler, LOG_IN_CALLBACK);
-//				User u = new User(123, number);
-//				u.setMobile(number);
-//				m.obj = new RequestLogInResponse(u, JNIResponse.Result.SUCCESS);
-//				localHandler.sendMessage(m);
+				Message m = Message.obtain(localHandler, LOG_IN_CALLBACK);
+				User u = new User(123, number);
+				u.setMobile(number);
+				m.obj = new RequestLogInResponse(u, JNIResponse.Result.SUCCESS);
+				localHandler.sendMessage(m);
 			}
 
 		}

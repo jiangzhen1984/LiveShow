@@ -59,6 +59,13 @@ public class UserService extends AbstractHandler {
 		ImRequest.getInstance().login(mail, passwd,
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, false);
 	}
+	
+	
+	
+	public void logout( MessageListener caller) {
+		ImRequest.getInstance().logout();
+	}
+	
 
 	/**
 	 * Update user information. If updated user is logged user, can update all

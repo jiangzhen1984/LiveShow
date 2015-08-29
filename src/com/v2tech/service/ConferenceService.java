@@ -1,5 +1,6 @@
 package com.v2tech.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Handler;
@@ -301,6 +302,15 @@ public class ConferenceService extends DeviceService {
 		Message res = Message.obtain(this, JNI_REQUEST_RELEASE_SPEAK, jniRes);
 		this.sendMessageDelayed(res, 300);
 	}
+	
+	
+	public void queryList(int type, MessageListener caller) {
+		if (type == 1) {
+			ConfRequest.getInstance().getMyFans();
+		} else if (type == 2) {
+			ConfRequest.getInstance().getMyConcerns();
+		}
+	}
 
 	/**
 	 * Pause or resume audio.
@@ -488,6 +498,19 @@ public class ConferenceService extends DeviceService {
 			notifyListenerWithPending(KEY_PERMISSION_CHANGED_LISTNER, 0, 0,
 					jniInd);
 		}
+
+		@Override
+		public void onUserListNotify(int type, List<V2User> list) {
+			List<User> userList = new ArrayList<User>(list.size());
+			for (V2User vu : list) {
+				User u = new User(vu.mUserId, vu.name);
+				userList.add(u);
+			}
+			GlobalHolder.getInstance().updateUserList(type, userList);
+		}
+		
+		
+		
 
 	}
 

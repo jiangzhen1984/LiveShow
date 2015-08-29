@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.User;
@@ -72,12 +73,14 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 		if ("fans".equalsIgnoreCase(type)) {
 			mTitle.setText(R.string.fans_list_title);
 			mType = TYPE_FANS;
+			mList = GlobalHolder.getInstance().getFansList();
 		} else {
 			mTitle.setText(R.string.following_list_title);
 			mType = TYPE_FOLLOWING;
+			mList = GlobalHolder.getInstance().getFollowerList();
 		}
-		//Init List
-		
+	
+		mAdapter = new LocalAdapter(mList);
 	}
 
 	@Override
@@ -147,17 +150,17 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 
 		@Override
 		public int getCount() {
-			return 0;
+			return list == null? 0 : list.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return null;
+			return list.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			return 0;
+			return list.get(position).getmUserId();
 		}
 
 		@Override

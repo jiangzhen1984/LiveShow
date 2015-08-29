@@ -62,6 +62,11 @@ public class GlobalHolder {
 	 * May some people would add you become friend when user logined successfully , and need to give user hint. 
 	 */
 	private SparseArray<Long> addFriendToShow = new SparseArray<Long>(); 
+	
+	
+	public List<User> mMyFans;
+	
+	public List<User> mMyFollowers;
 
 	public static synchronized GlobalHolder getInstance() {
 		if (holder == null) {
@@ -360,6 +365,25 @@ public class GlobalHolder {
 			throw new RuntimeException("Unkonw type");
 		}
 
+	}
+	
+	
+	public List<User> getFansList() {
+		return mMyFans;
+	}
+	
+	
+	public List<User> getFollowerList() {
+		return mMyFollowers;
+	}
+	
+	
+	public void updateUserList(int type, List<User> list) {
+		if (type == 1) {
+			this.mMyFans = list;
+		} else if (type ==2 ) {
+			this.mMyFollowers = list;
+		}
 	}
 
 	/**
