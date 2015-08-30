@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.V2.jni.ConfRequest;
+import com.V2.jni.VideoBCRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
@@ -174,6 +176,17 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			@Override
 			public void onClick(View v) {
 				v.setSelected(!v.isSelected());
+				
+				VideoShowFragment frag = (VideoShowFragment)mViewPagerAdapter.getItem(mVideoShowPager.getCurrentItem());
+				if (frag.getCurrentLive() == null) {
+					return;
+				}
+				long uid = frag.getCurrentLive().getPublisher().getmUserId();
+				if (v.isSelected()) {
+					ConfRequest.getInstance().concern(uid);
+				} else {
+					ConfRequest.getInstance().concernCancel(uid);
+				}
 			}
 			
 		});
@@ -182,7 +195,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 			@Override
 			public void onClick(View v) {
-				
+				//TODO show publisher information
 			}
 			
 		});
