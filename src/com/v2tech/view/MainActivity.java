@@ -72,6 +72,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.widget.VideoShowFragment;
@@ -164,10 +165,18 @@ public class MainActivity extends FragmentActivity implements
 		mLocalHandler = new LocalHandler(mHandlerThread.getLooper());
 
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		ImRequest.getInstance().login(
-				tl.getLine1Number() == null ? System.currentTimeMillis() + ""
-						: tl.getLine1Number(), "111111",
-				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+		
+		String phone = SPUtil.getConfigStrValue(getApplicationContext(), "cellphone");
+		String code = SPUtil.getConfigStrValue(getApplicationContext(), "code");
+		if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(code)) {
+			ImRequest.getInstance().login(phone, code,
+					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, false);
+		} else {
+			ImRequest.getInstance().login(
+					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+							: tl.getLine1Number(), "111111",
+					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+		}
 
 	}
 
@@ -422,6 +431,7 @@ public class MainActivity extends FragmentActivity implements
 		mHandlerThread.quit();
 
 		mLocalHandler = null;
+		ImRequest.getInstance().logout();
 	}
 
 	@Override
