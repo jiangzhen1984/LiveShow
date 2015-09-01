@@ -24,7 +24,7 @@ public class Live implements Serializable{
 	
 	private boolean canRemove;
 	
-	
+	private boolean isFollow;
 	
 	
 	
@@ -114,7 +114,19 @@ public class Live implements Serializable{
 	public void setCanRemove(boolean canRemove) {
 		this.canRemove = canRemove;
 	}
+	
+	
 
+
+
+	public boolean isFollow() {
+		return isFollow;
+	}
+
+
+	public void setFollow(boolean isFollow) {
+		this.isFollow = isFollow;
+	}
 
 
 	@Override

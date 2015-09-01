@@ -72,6 +72,10 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.MessageListener;
+import com.v2tech.service.UserService;
+import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
@@ -98,6 +102,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int GET_MAP_SNAPSHOT = 10;
 	private static final int MARKER_ANIMATION = 12;
 	private static final int DELAY_RESUME = 13;
+	private static final int AUTO_LOGIN_CALL_BACK = 14;
 
 	private static float mCurrentZoomLevel = 12F;
 
@@ -136,6 +141,8 @@ public class MainActivity extends FragmentActivity implements
 	private LocalHandler mLocalHandler;
 	private HandlerThread mHandlerThread;
 	private View mPersonalButton;
+	private UserService us;
+	private String phone;
 	
 
 	@Override
@@ -146,6 +153,7 @@ public class MainActivity extends FragmentActivity implements
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
 		mDisplay = getResources().getDisplayMetrics();
+		us = new UserService();
 
 		initMapviewLayout();
 		initVideoShareLayout();
@@ -166,11 +174,10 @@ public class MainActivity extends FragmentActivity implements
 
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		
-		String phone = SPUtil.getConfigStrValue(getApplicationContext(), "cellphone");
+		phone = SPUtil.getConfigStrValue(getApplicationContext(), "cellphone");
 		String code = SPUtil.getConfigStrValue(getApplicationContext(), "code");
 		if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(code)) {
-			ImRequest.getInstance().login(phone, code,
-					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, false);
+			us.login(phone, code, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, null));
 		} else {
 			ImRequest.getInstance().login(
 					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
@@ -1022,6 +1029,15 @@ public class MainActivity extends FragmentActivity implements
 					mCurrentVideoFragment.restart();
 				}
 				break;
+			case AUTO_LOGIN_CALL_BACK:{
+				JNIResponse resp = (JNIResponse)msg.obj;
+				if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+					RequestLogInResponse lir = (RequestLogInResponse)resp;
+					lir.getUser().setName(phone);
+					GlobalHolder.getInstance().setCurrentUser(lir.getUser());
+				}
+				break;
+			}
 			}
 		}
 

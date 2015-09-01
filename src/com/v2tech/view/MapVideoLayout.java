@@ -68,7 +68,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	private DragType mDragType = DragType.NONE;
 	private Operation mOper = Operation.NONE;
 	private boolean fireFlyingdown = false;
-	
+	private ImageView favButton;
 
 	
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -148,7 +148,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	
 	
 	private void initIcons() {
-		ImageView favButton = new ImageView(this.getContext());
+		favButton = new ImageView(this.getContext());
 		favButton.setPadding(10, 10, 10, 10);
 		favButton.setImageResource(R.drawable.fav_button_selector);
 		RelativeLayout.LayoutParams favButtonLayout = new RelativeLayout.LayoutParams(
@@ -181,12 +181,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				if (frag.getCurrentLive() == null) {
 					return;
 				}
+				Live l = frag.getCurrentLive();
 				long uid = frag.getCurrentLive().getPublisher().getmUserId();
 				if (v.isSelected()) {
 					ConfRequest.getInstance().concern(uid);
 				} else {
 					ConfRequest.getInstance().concernCancel(uid);
 				}
+				l.setFollow(!l.isFollow());
 			}
 			
 		});
@@ -262,6 +264,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 					.onChanged((VideoShowFragment) mViewPagerAdapter
 							.getItem(position));
 		}
+		
+		
+		VideoShowFragment frag = (VideoShowFragment)mViewPagerAdapter.getItem(mVideoShowPager.getCurrentItem());
+		if (frag.getCurrentLive() == null) {
+			return;
+		}
+		favButton.setSelected(frag.getCurrentLive().isFollow());
+		
 	}
 
 	@Override
