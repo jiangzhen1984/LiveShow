@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
+
     <RelativeLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@color/titlebar_bg" >
+        android:alpha="0.25"
+        android:background="#e0000000" >
 
         <ImageView
-            android:id="@+id/personal_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -20,21 +20,22 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:src="@drawable/user_icon" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="@string/app_name" />
     </RelativeLayout>
     
+      <ImageView
+            android:id="@+id/personal_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/user_icon" />
     
 
     <FrameLayout
         android:id="@+id/video_share_ly"
-        android:layout_below="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg" >
@@ -42,7 +43,6 @@
 
     <FrameLayout
         android:id="@+id/main"
-        android:layout_below="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>
@@ -74,53 +74,76 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/location"
             android:layout_centerVertical="true"
-            android:background="@color/bottom_bg"
-            android:padding="5dp" >
+             >
 
-            <Button
-                android:id="@+id/map_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/orange_btn_bg"
-                android:paddingLeft="6dp"
-                android:paddingRight="6dp"
-                android:text="@string/pos_search_button_text"
-                android:textColor="#ffffff"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/msg_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/orange_btn_bg"
-                android:paddingLeft="6dp"
-                android:paddingRight="6dp"
-                android:text="@string/msg_send_button_text"
-                android:textColor="#ffffff"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-
-            <com.v2tech.widget.FloatEditText
-                android:id="@+id/edit_text"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/msg_button"
-                android:layout_alignTop="@+id/msg_button"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/msg_button"
-                android:layout_toRightOf="@+id/map_button"
-                android:focusable="true"
-                android:focusableInTouchMode="true" >
-            </com.v2tech.widget.FloatEditText>
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:alpha="0.25"
+                android:background="#000000" >
+                
+                  <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:text="@string/pos_search_button_text"
+                    android:textColor="#ffffff"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:padding="5dp" >
+
+                <TextView
+                    android:id="@+id/map_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:text="@string/pos_search_button_text"
+                    android:textColor="@color/bottom_button_text_color"
+                    android:textSize="@dimen/bottom_button_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/msg_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:text="@string/msg_send_button_text"
+                    android:textColor="@color/bottom_button_text_color"
+                    android:textSize="@dimen/bottom_button_text_size"
+                    android:textStyle="bold" />
+
+                <com.v2tech.widget.FloatEditText
+                    android:id="@+id/edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/msg_button"
+                    android:layout_alignTop="@+id/msg_button"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/msg_button"
+                    android:layout_toRightOf="@+id/map_button"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" >
+                </com.v2tech.widget.FloatEditText>
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-
-
 
 </RelativeLayout>

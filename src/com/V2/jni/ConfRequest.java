@@ -99,8 +99,9 @@ public class ConfRequest {
 	public native void getFansCount(String sr);
 
 	public  void OnMyConcerns(String xml) {
-		V2Log.e(" OnMyConcerns  "+xml);
+		V2Log.i(" OnMyConcerns  "+xml);
 		List<V2User> list = XmlAttributeExtractor.parseUserList(xml, "user");
+		V2Log.i(list.size()+"   ===");
 		for (int i = 0; i < this.mCallbacks.size(); i++) {
 			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);
 			Object obj = we.get();
@@ -111,7 +112,7 @@ public class ConfRequest {
 		}
 	}
 	public  void OnMyFans(String xml) {
-		V2Log.e(" OnMyFans  "+xml);
+		V2Log.i(" OnMyFans  "+xml);
 		List<V2User> list = XmlAttributeExtractor.parseUserList(xml, "user");
 		for (int i = 0; i < this.mCallbacks.size(); i++) {
 			WeakReference<ConfRequestCallback> we = this.mCallbacks.get(i);

@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -81,6 +83,7 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 		}
 	
 		mAdapter = new LocalAdapter(mList);
+		mListView.setAdapter(mAdapter);
 	}
 
 	@Override
@@ -165,7 +168,20 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			return null;
+			TextView name = null;
+			ImageView iv = null;
+			if (convertView == null) {
+				convertView = LayoutInflater.from(FansFollowingListActivity.this).inflate(
+						R.layout.fans_following_item, null, false);
+			//list
+			} 
+			name = (TextView)convertView.findViewById(R.id.personal_name);
+			iv = (ImageView) convertView.findViewById(R.id.avatar);
+			
+			User user = (User)getItem(position);
+			name.setText(user.getName());
+			iv.setImageResource(R.drawable.avatar);
+			return convertView;
 		}
 		
 	}

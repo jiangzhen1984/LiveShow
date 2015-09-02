@@ -235,7 +235,10 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	private void initTitleBarButtonLayout() {
-		 findViewById(R.id.title_bar).bringToFront();
+		 View titleBar = findViewById(R.id.title_bar);
+		 titleBar.bringToFront();
+//		 titleBar.setBackgroundColor(Color.TRANSPARENT);
+//		 titleBar.setAlpha(0.3F);
 		 this.mPersonalButton = findViewById(R.id.personal_button);
 		 mPersonalButton.setOnClickListener(new OnClickListener() {
 
@@ -256,6 +259,7 @@ public class MainActivity extends FragmentActivity implements
 			}
 			 
 		 });
+		 mPersonalButton.bringToFront();
 	}
 
 	private void initBottomButtonLayout() {

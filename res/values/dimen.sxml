@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    
-    <dimen name="title_bar_item_hori_padding">15dp</dimen>
-    <dimen name="title_bar_item_veri_padding">5dp</dimen>
-    
-    <dimen name="btn_size">80dp</dimen>
-</resources>

@@ -11,6 +11,7 @@ import com.V2.jni.ConfRequest;
 import com.V2.jni.ConfRequestCallbackAdapter;
 import com.V2.jni.GroupRequest;
 import com.V2.jni.GroupRequestCallbackAdapter;
+import com.V2.jni.ImRequest;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoMixerRequest;
 import com.V2.jni.VideoMixerRequestCallback;
@@ -503,6 +504,7 @@ public class ConferenceService extends DeviceService {
 		public void onUserListNotify(int type, List<V2User> list) {
 			List<User> userList = new ArrayList<User>(list.size());
 			for (V2User vu : list) {
+				ImRequest.getInstance().getUserBaseInfo(vu.mUserId);
 				User u = new User(vu.mUserId, vu.name);
 				userList.add(u);
 			}
