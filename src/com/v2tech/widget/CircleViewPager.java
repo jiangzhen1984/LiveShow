@@ -372,6 +372,7 @@ public class CircleViewPager extends ViewGroup {
 			moveHorizontal();
 		}
 		endDrag();
+		mDraging = false;
 	}
 
 	private void moveVertical() {
@@ -560,7 +561,6 @@ public class CircleViewPager extends ViewGroup {
 			}
 
 			if (dis == 0) {
-				mDraging = false;
 				mOnPageChangeListener.onPageScrollStateChanged(SCROLL_STATE_IDLE);
 				if (mOnPageChangeListener != null && !restore) {
 					mOnPageChangeListener.onPagePreapredRemove(mCurrItem);
@@ -622,7 +622,6 @@ public class CircleViewPager extends ViewGroup {
 			}
 
 			if (dis == 0) {
-				mDraging = false;
 				requestLayout();
 				if (mOnPageChangeListener != null) {
 					mOnPageChangeListener.onPageScrollStateChanged(SCROLL_STATE_IDLE);
