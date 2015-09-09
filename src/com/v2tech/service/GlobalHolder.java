@@ -89,6 +89,8 @@ public class GlobalHolder {
 			return mCurrentUser.getmUserId();
 		}
 	}
+	
+	public long nyUserId = 0;
 
 	public void setCurrentUser(User u) {
 		this.mCurrentUser = u;

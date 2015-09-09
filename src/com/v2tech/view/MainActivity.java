@@ -1,5 +1,6 @@
 package com.v2tech.view;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
-import com.V2.jni.V2ClientType;
-import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoBCRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
@@ -72,13 +71,18 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.LiveService;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
+import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.LiveNotification;
 import com.v2tech.service.jni.RequestLogInResponse;
+import com.v2tech.service.jni.RequestPublishResponse;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
+import com.v2tech.vo.User;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
@@ -103,6 +107,10 @@ public class MainActivity extends FragmentActivity implements
 	private static final int MARKER_ANIMATION = 12;
 	private static final int DELAY_RESUME = 13;
 	private static final int AUTO_LOGIN_CALL_BACK = 14;
+	private static final int SCAN_CALL_BACK = 15;
+	private static final int REQUEST_PUBLISH_CALLBACK = 16;
+	private static final int REQUEST_FINISH_PUBLISH_CALLBACK = 17;
+	private static final int NOTIFICATION_LIVE = 18;
 
 	private static float mCurrentZoomLevel = 12F;
 
@@ -143,12 +151,16 @@ public class MainActivity extends FragmentActivity implements
 	private View mPersonalButton;
 	private UserService us;
 	private String phone;
+	private LiveService liveService;
+	private List<Live> neiborhoodList;
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		liveService = new LiveService();
+		neiborhoodList = new ArrayList<Live>();
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
@@ -172,17 +184,22 @@ public class MainActivity extends FragmentActivity implements
 		}
 		mLocalHandler = new LocalHandler(mHandlerThread.getLooper());
 
+		liveService.registerLiveNotification(new MessageListener(mLocalHandler, NOTIFICATION_LIVE, null));
+		
+		
 		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		
 		phone = SPUtil.getConfigStrValue(getApplicationContext(), "cellphone");
 		String code = SPUtil.getConfigStrValue(getApplicationContext(), "code");
 		if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(code)) {
-			us.login(phone, code, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, null));
+			us.login(phone, code, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, false));
 		} else {
-			ImRequest.getInstance().login(
-					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
-							: tl.getLine1Number(), "111111",
-					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+			us.login(tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+					: tl.getLine1Number(), "111111", true, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, true));
+//			ImRequest.getInstance().login(
+//					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+//							: tl.getLine1Number(), "111111",
+//					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
 		}
 
 	}
@@ -210,6 +227,7 @@ public class MainActivity extends FragmentActivity implements
 
 		mMapVideoLayout.setPosInterface(posChangedListener);
 		mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
+		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
 
@@ -443,6 +461,8 @@ public class MainActivity extends FragmentActivity implements
 
 		mLocalHandler = null;
 		ImRequest.getInstance().logout();
+		liveService.clearCalledBack();
+		neiborhoodList.clear();
 	}
 
 	@Override
@@ -657,6 +677,9 @@ public class MainActivity extends FragmentActivity implements
 			if (showCurrentLocation) {
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
 						selfLocation, mCurrentZoomLevel);
+				if (u == null) {
+					return;
+				}
 				mBaiduMap.animateMapStatus(u);
 				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
 						selfLocation));
@@ -776,7 +799,9 @@ public class MainActivity extends FragmentActivity implements
 		mCurrentVideoFragment.play(l);
 
 		videoMaps.get(mCurrentVideoFragment).live = l;
-
+		if (l.getLat() <= 0 || l.getLng() <=0) {
+			return;
+		}
 		updateMapLocation(l);
 		// Start new live marker animation
 		animationMaker(l, true);
@@ -801,14 +826,14 @@ public class MainActivity extends FragmentActivity implements
 		if (mCurrentVideoFragment.isPlaying() || mCurrentVideoFragment.isPause()) {
 				return false;
 		}
-		List<Live> list = VideoBCRequest.getInstance().lives;
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < neiborhoodList.size(); i++) {
+			Live live = neiborhoodList.get(i);
 			boolean inUsed = false;
 			for (VideoItem item : videoMaps.values()) {
 				if (item.live == null) {
 					continue;
 				}
-				if (item.live.equals(list.get(i))) {
+				if (item.live.equals(live)) {
 					inUsed = true;
 					break;
 				}
@@ -816,8 +841,10 @@ public class MainActivity extends FragmentActivity implements
 			if (inUsed) {
 				continue;
 			} else {
-				playLive(list.get(i));
-				return true;
+				if (!TextUtils.isEmpty(live.getUrl())) {
+					playLive(live);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -869,7 +896,7 @@ public class MainActivity extends FragmentActivity implements
 		public boolean onMarkerClick(Marker marker) {
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
-				if (!TextUtils.isEmpty(l.getUrl())) {
+				if (l != null && !TextUtils.isEmpty(l.getUrl())) {
 					if (mCurrentVideoFragment != null) {
 						updateCurrentVideoState(mCurrentVideoFragment, false);
 					}
@@ -941,6 +968,80 @@ public class MainActivity extends FragmentActivity implements
 		}
 		
 	};
+	
+	
+	
+	private MapVideoLayout.OnNotificationClickedListener mOnNotificationClicked = new MapVideoLayout.OnNotificationClickedListener() {
+
+		@Override
+		public void onNotificationClicked(View v, Live live, User u) {
+			playLive(live);
+			mMapVideoLayout.removeLiveNotificaiton(live);
+		}
+		
+	};
+	
+	
+	private void handleRequestPublishCallback(Message msg) {
+		JNIResponse resp = (JNIResponse)msg.obj;
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			RequestPublishResponse  hr = (RequestPublishResponse)resp;
+			
+			isRecording = true;
+			
+			String uuid = null;
+			int ind = hr.url.indexOf("file=");
+			if (ind != -1) {
+				uuid =hr.url
+						.substring(ind + 5);
+			}
+			cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
+					+ uuid;
+			V2Log.i("Start to pushlish "+ cv.publishUrl);
+			cv.startPublish();
+			
+		} else {
+			//TODO get neiberhood error
+		}
+	}
+	
+	
+	private void handleGetNeihoodrCallback(Message msg) {
+		JNIResponse resp = (JNIResponse)msg.obj;
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			GetNeiborhoodResponse hr = (GetNeiborhoodResponse)resp;
+			neiborhoodList.clear();
+			neiborhoodList.addAll(hr.list);
+			updateLiveMarkOnMap(neiborhoodList);
+			if (!isInCameraView) {
+				autoPlayNecessary();
+			}
+			
+		} else {
+			//TODO get neiberhood error
+		}
+	}
+	
+	private void handleLiveNotification(Message msg) {
+		final LiveNotification ln = (LiveNotification) msg.obj;
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				
+				V2Log.e("handleLiveNotification" + ln.live);
+				if (ln.live != null) {
+					if (ln.type == LiveNotification.TYPE_START) {
+						mMapVideoLayout.addLiveNotificaiton(ln.live);
+					} else if (ln.type == LiveNotification.TYPE_STOPPED) {
+						mMapVideoLayout.removeLiveNotificaiton(ln.live);
+					}
+				}
+
+			}
+
+		});
+			
+	}
 
 
 	class LocalHandler extends Handler {
@@ -969,49 +1070,55 @@ public class MainActivity extends FragmentActivity implements
 				playLive((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
-				VideoBCRequest.getInstance().GetNeiborhood_Region(
-						"<gps lon=\"" + lng + "\" lat=\"" + lat
-								+ "\" distance=\"1000\" ></gps>");
+				liveService.scanNear(lat, lng, 1000F, new MessageListener(this, SCAN_CALL_BACK, null));
+//				VideoBCRequest.getInstance().GetNeiborhood_Region(
+//						"<gps lon=\"" + lng + "\" lat=\"" + lat
+//								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 10000);
-					mLocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK,
-							1000);
-
-					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
+//					mLocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK,
+//							1000);
+//
+//					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
 				break;
 			case UPDATE_LIVE_MARK:
-				if (isSuspended) {
-					break;
-				}
-				List<Live> liveList = VideoBCRequest.getInstance().lives;
-				updateLiveMarkOnMap(liveList);
+//				if (isSuspended) {
+//					break;
+//				}
+//				List<Live> liveList = VideoBCRequest.getInstance().lives;
+//				updateLiveMarkOnMap(liveList);
 				break;
 			case RECORDING:
-				isRecording = true;
-				if (VideoBCRequest.getInstance().url == null) {
-					Message dm = obtainMessage(RECORDING);
-					this.sendMessageDelayed(dm, 300);
-				} else {
-					String uuid = null;
-					int ind = VideoBCRequest.getInstance().url.indexOf("file=");
-					if (ind != -1) {
-						uuid = VideoBCRequest.getInstance().url
-								.substring(ind + 5);
-					}
-					cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
-							+ uuid;
-					cv.startPublish();
-				}
+//				isRecording = true;
+//				if (VideoBCRequest.getInstance().url == null) {
+//					Message dm = obtainMessage(RECORDING);
+//					this.sendMessageDelayed(dm, 300);
+//				} else {
+//					String uuid = null;
+//					int ind = VideoBCRequest.getInstance().url.indexOf("file=");
+//					if (ind != -1) {
+//						uuid = VideoBCRequest.getInstance().url
+//								.substring(ind + 5);
+//					}
+//					cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
+//							+ uuid;
+//					cv.startPublish();
+//				}
 				break;
 			case START_PUBLISH:
-				VideoBCRequest.getInstance().startLive();
-				Message m = Message.obtain(this, RECORDING);
-				this.sendMessageDelayed(m, 300);
+//				VideoBCRequest.getInstance().startLive();
+//				Message m = Message.obtain(this, RECORDING);
+//				this.sendMessageDelayed(m, 300);
+				liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
+				break;
+			case REQUEST_PUBLISH_CALLBACK:
+				handleRequestPublishCallback(msg);
 				break;
 			case STOP_PUBLISH:
-				VideoBCRequest.getInstance().stopLive();
+				//VideoBCRequest.getInstance().stopLive();
+				liveService.requestFinishPublish(null);
 				cv.stopPublish();
 				isRecording = false;
 				break;
@@ -1036,12 +1143,23 @@ public class MainActivity extends FragmentActivity implements
 			case AUTO_LOGIN_CALL_BACK:{
 				JNIResponse resp = (JNIResponse)msg.obj;
 				if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-					RequestLogInResponse lir = (RequestLogInResponse)resp;
-					lir.getUser().setName(phone);
-					GlobalHolder.getInstance().setCurrentUser(lir.getUser());
+					if ((Boolean)resp.callerObject == true) {
+						RequestLogInResponse lir = (RequestLogInResponse)resp;
+						GlobalHolder.getInstance().nyUserId = lir.getUser().getmUserId();
+					} else {
+						RequestLogInResponse lir = (RequestLogInResponse)resp;
+						lir.getUser().setName(phone);
+						GlobalHolder.getInstance().setCurrentUser(lir.getUser());
+					}
 				}
 				break;
 			}
+			case SCAN_CALL_BACK:
+				handleGetNeihoodrCallback(msg);
+				break;
+			case NOTIFICATION_LIVE:
+				handleLiveNotification(msg);
+				break;
 			}
 		}
 

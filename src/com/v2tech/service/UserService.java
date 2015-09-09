@@ -60,6 +60,24 @@ public class UserService extends AbstractHandler {
 				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, false);
 	}
 	
+	/**
+	 * Asynchronous login function. After login, will call post message to your
+	 * handler
+	 * 
+	 * 
+	 * @param mail
+	 *            user mail
+	 * @param passwd
+	 *            password
+	 * @param caller
+	 *            callback message Message.obj is {@link MessageListener}
+	 */
+	public void login(String mail, String passwd, boolean isNY, MessageListener caller) {
+		initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
+		ImRequest.getInstance().login(mail, passwd,
+				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, isNY);
+	}
+	
 	
 	
 	public void logout( MessageListener caller) {

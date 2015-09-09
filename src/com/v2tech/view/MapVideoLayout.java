@@ -1,6 +1,7 @@
 package com.v2tech.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,13 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.V2.jni.ConfRequest;
-import com.V2.jni.VideoBCRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
+import com.v2tech.vo.User;
 import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
@@ -69,9 +70,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	private Operation mOper = Operation.NONE;
 	private boolean fireFlyingdown = false;
 	private ImageView favButton;
-
+	private LinearLayout notificationLayout;
 	
+	private OnNotificationClickedListener mNotificationClickedListener;
 	private OnVideoFragmentChangedListener mVideoChangedListener;
+	private List<NotificationWrapper> notificationList;
 
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
@@ -143,12 +146,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 
 		initIcons();
+		notificationList = new ArrayList<NotificationWrapper>();
 	}
 	
 	
 	
 	private void initIcons() {
 		favButton = new ImageView(this.getContext());
+		favButton.setId((int)System.currentTimeMillis());
 		favButton.setPadding(10, 10, 10, 10);
 		favButton.setImageResource(R.drawable.fav_button_selector);
 		RelativeLayout.LayoutParams favButtonLayout = new RelativeLayout.LayoutParams(
@@ -161,6 +166,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		
 		
 		ImageView publisherButton = new ImageView(this.getContext());
+		publisherButton.setId((int)System.currentTimeMillis());
 		publisherButton.setPadding(10, 10, 10, 10);
 		publisherButton.setImageResource(R.drawable.publisher);
 		RelativeLayout.LayoutParams publisherButtonLayout = new RelativeLayout.LayoutParams(
@@ -202,6 +208,17 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			
 		});
 		
+		
+		notificationLayout = new LinearLayout(getContext());
+		RelativeLayout.LayoutParams notificationLayoutParameter = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		notificationLayoutParameter.setMargins(10, 0, 10, 0);
+		notificationLayoutParameter.addRule(RelativeLayout.RIGHT_OF, publisherButton.getId());
+		notificationLayoutParameter.addRule(RelativeLayout.LEFT_OF, favButton.getId());
+		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_TOP, favButton.getId());
+		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_BOTTOM, favButton.getId());
+		mDragLayout.addView(notificationLayout, notificationLayoutParameter);
 	}
 
 	public BaiduMap getMap() {
@@ -308,6 +325,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			OnVideoFragmentChangedListener videoChangedListener) {
 		this.mVideoChangedListener = videoChangedListener;
 	}
+	
+	public void setNotificationClickedListener(OnNotificationClickedListener listener) {
+		this.mNotificationClickedListener = listener;
+	}
 
 	public VideoShowFragment getCurrentVideoFragment() {
 		return (VideoShowFragment) mViewPagerAdapter
@@ -342,6 +363,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		public void onFlyingOut();
 	}
 
+	
+	public interface OnNotificationClickedListener {
+		public void onNotificationClicked(View v, Live live, User u);
+	}
+	
+	
+	
+	
 	private float mInitX;
 	private float mInitY;
 	private float mLastY;
@@ -432,6 +461,67 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			}
 		}
 	}
+	
+	public void addLiveNotificaiton(Live l) {
+		if (l == null || l.getPublisher() == null) {
+			return;
+		}
+		NotificationWrapper nw = new NotificationWrapper();
+		ImageView iv = new ImageView(getContext());
+		iv.setImageResource(R.drawable.publisher);
+		iv.setTag(nw);
+		nw.v = iv;
+		nw.live = l;
+		nw.u = l.getPublisher();
+		notificationList.add(nw);
+		updateNotificationLayout(iv, 1);
+	}
+	
+	public void removeLiveNotificaiton(Live l) {
+		if (l == null || l.getPublisher() == null) {
+			return;
+		}
+		for (NotificationWrapper wr: notificationList) {
+			if (wr.u.getmUserId() == l.getPublisher().getmUserId()) {
+				removeLiveNotificaiton(wr);
+				break;
+			}
+		}
+	}
+	
+	
+	private void removeLiveNotificaiton(NotificationWrapper wr) {
+		notificationList.remove(wr);
+		updateNotificationLayout(wr.v, 0);
+	}
+	
+	
+	private void updateNotificationLayout(View v, int type) {
+		if (type == 1) {
+			notificationLayout.addView(v, new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT));
+			v.setOnClickListener(mLocalNotificationClickListener);
+		} else {
+			notificationLayout.removeView(v);	
+		}
+	}
+	
+	
+	private OnClickListener mLocalNotificationClickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (mNotificationClickedListener != null) {
+				NotificationWrapper wrapper = (NotificationWrapper)v.getTag();
+				mNotificationClickedListener.onNotificationClicked(v, wrapper.live, wrapper.u);
+			}
+		
+		}
+		
+	};
+	
+	
 
 	
 	int mActivePointerId = -1;
@@ -722,6 +812,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 			}
 		}
 
+	}
+	
+	
+	
+	class NotificationWrapper {
+		Live live;
+		View v;
+		User u;
 	}
 
 	
