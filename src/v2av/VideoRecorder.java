@@ -1,14 +1,14 @@
 package v2av;
 
-import java.io.IOException;
-
 import v2av.VideoCaptureDevInfo.CapParams;
 import v2av.VideoCaptureDevInfo.FrontFacingCameraType;
 import v2av.VideoCaptureDevInfo.VideoCaptureDevice;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -31,7 +31,7 @@ public class VideoRecorder {
 	// private int mCameraRotation;
 	// private boolean mbMirror;
 	private int framecount;
-	
+
 	private int cameraRotation;
 
 	private VideoEncoder mEncoder = null;
@@ -41,15 +41,23 @@ public class VideoRecorder {
 
 	private EncoderPreviewCallBack mVRCallback = null;
 
+	public static boolean isOpenCamera;
+
 	VideoRecorder() {
 		mCapDevInfo = VideoCaptureDevInfo.CreateVideoCaptureDevInfo();
 	}
 
 	@SuppressWarnings("unused")
 	private int StartRecordVideo() {
-		VideoCaptureDevice device = mCapDevInfo.GetDevice(mCapDevInfo
-				.GetDefaultDevName());
+
+		Log.i("DEBUG", "===============================");
+		if (mCapDevInfo == null) {
+			return -1;
+		}
+		Log.i("DEBUG", "要开启的默认视频是：" + mCapDevInfo.GetDefaultDevName());
+		VideoCaptureDevice device = mCapDevInfo.GetDevice(mCapDevInfo.GetDefaultDevName());
 		if (device == null) {
+			Log.e("DEBUG", "开启默认视频失败！ -1");
 			return -1;
 		}
 
@@ -63,26 +71,22 @@ public class VideoRecorder {
 		VeritifyRecordInfo(device);
 
 		switch (InitCamera(device)) {
-		case Err_CameraOpenError: {
+		case Err_CameraOpenError:
 			return -1;
-		}
-		default: {
+		default:
 			break;
-		}
 		}
 
 		StartPreview();
-
+		isOpenCamera = true;
 		return 0;
 	}
 
 	@SuppressWarnings("unused")
 	private int StopRecordVideo() {
-		Log.i("VideoRecorder UI", "StopRecordVideo");
-
-		StopPreview();
+		isOpenCamera = false;
+		Log.i("DEBUG", "开始关闭本地视频！isOpenCamera ： " + isOpenCamera);
 		UninitCamera();
-
 		return 0;
 	}
 
@@ -93,24 +97,18 @@ public class VideoRecorder {
 
 	@SuppressWarnings("unused")
 	private int GetRecordWidth() {
-		if (cameraRotation == 90 || cameraRotation == 270)
-		{
+		if (cameraRotation == 90 || cameraRotation == 270) {
 			return mVideoHeight;
-		}
-		else
-		{
+		} else {
 			return mVideoWidth;
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private int GetRecordHeight() {
-		if (cameraRotation == 90 || cameraRotation == 270)
-		{
+		if (cameraRotation == 90 || cameraRotation == 270) {
 			return mVideoWidth;
-		}
-		else
-		{
+		} else {
 			return mVideoHeight;
 		}
 	}
@@ -136,18 +134,18 @@ public class VideoRecorder {
 			return -1;
 		}
 		Size s = null;
-		// for MANUFACTURER=Teclast BRAND=MID HOST=droid07-szto cache runtimeexception
+		// for MANUFACTURER=Teclast BRAND=MID HOST=droid07-szto cache
+		// runtimeexception
 		try {
 			Camera.Parameters para = mCamera.getParameters();
 			s = para.getPreviewSize();
 		} catch (RuntimeException e) {
-			
+
 		}
 
 		if (s == null) {
 			mSrcWidth = 1920;
 			mSrcHeight = 1080;
-			
 		} else {
 			mSrcWidth = s.width;
 			mSrcHeight = s.height;
@@ -165,7 +163,7 @@ public class VideoRecorder {
 	private int GetPreviewHeight() {
 		return mSrcHeight;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private int GetRotation() {
 		return cameraRotation;
@@ -192,17 +190,8 @@ public class VideoRecorder {
 		return 0;
 	}
 
-	private VideoSize GetSrcSizeByEncSize(VideoCaptureDevice device, int width,
-			int height) {
+	private VideoSize GetSrcSizeByEncSize(VideoCaptureDevice device, int width, int height) {
 		VideoSize size = new VideoSize();
-
-		// for (CaptureCapability capability : device.capabilites) {
-		// if (capability.width * capability.height >= width * height) {
-		// size.width = capability.width;
-		// size.height = capability.height;
-		// break;
-		// }
-		// }
 
 		int length = device.capabilites.size();
 		if (length <= 0) {
@@ -247,12 +236,6 @@ public class VideoRecorder {
 		mSrcHeight = size.height;
 
 		mSelectedFrameRate = SelectFramerate(device, mFrameRate);
-		/*
-		 * if (device.frontCameraType ==
-		 * VideoCaptureDevInfo.FrontFacingCameraType.Android23) { mbMirror =
-		 * true; } else { mbMirror = false; }
-		 */
-		// mCameraRotation = device.orientation;
 	}
 
 	public void onGetVideoFrame(byte[] databuf, int len) {
@@ -314,18 +297,17 @@ public class VideoRecorder {
 	}
 
 	private AVCode InitCamera(VideoCaptureDevice device) {
-		Log.i("VideoRecorder UI", "InitCamera");
+		Log.i("DEBUG", "start init Camera !");
 		if (mCamera != null) {
 			return AVCode.Err_CameraAlreadyOpen;
 		}
 
 		if (Build.VERSION.SDK_INT <= VERSION_CODES.GINGERBREAD) {
-			Log.e("VideoRecorder UI", "System Version Error");
+			Log.e("DEBUG", "Mobile System Version Error , Less than 2.3");
 			return AVCode.Err_ErrorState;
 		} else {
 			if (!OpenCamera(device)) {
-				Log.e("VideoRecorder UI",
-						"OpenCamera failed!!!!!!!!!!!!!!!!!!!!!");
+				Log.e("DEBUG", "OpenCamera failed!!!!!!!!!!!!!!!!!!!!!");
 			}
 		}
 
@@ -340,7 +322,7 @@ public class VideoRecorder {
 		try {
 			mCamera = Camera.open(device.index);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			throw new RuntimeException("OpenCamera 打开视频出错！" + e.getLocalizedMessage());
 		}
 
 		if (mCamera == null) {
@@ -348,35 +330,49 @@ public class VideoRecorder {
 		}
 
 		Camera.Parameters para = mCamera.getParameters();
-		para.setPreviewSize(mSrcWidth, mSrcHeight);
-		Log.i("wzl","设置width："+mSrcWidth+" height:"+mSrcHeight);
-		//para.setPreviewFrameRate(mSelectedFrameRate);
-		para.setPreviewFormat(mPreviewFormat);
-		mCamera.setParameters(para);
+		CapParams capParams = mCapDevInfo.GetCapParams();
+		try {
+
+			Parameters beforeParam = mCamera.getParameters();
+			Size before = beforeParam.getPreviewSize();
+			Log.d("DEBUG", "设置前 preview size : " + before.width + " : " + before.height + " | capParams.width : "
+					+ capParams.width + " | capParams.height ： " + capParams.height);
+
+			para.setPreviewSize(capParams.width, capParams.height);
+			para.setPreviewFormat(mPreviewFormat);
+			mCamera.setParameters(para);
+
+			Parameters afterParam = mCamera.getParameters();
+			Size after = afterParam.getPreviewSize();
+			Log.d("DEBUG", "设置后 preview size : " + after.width + " : " + after.height);
+		} catch (Exception e) {
+			para.setPreviewSize(mSrcWidth, mSrcHeight);
+			para.setPreviewFormat(mPreviewFormat);
+			Parameters afterParam = mCamera.getParameters();
+			Size after = afterParam.getPreviewSize();
+			Log.d("DEBUG", "catch 设置后 preview size : " + after.width + " : " + after.height);
+			para.setPreviewFormat(mPreviewFormat);
+			mCamera.setParameters(para);
+		}
 
 		if (device.frontCameraType == FrontFacingCameraType.Android23) {
 			cameraRotation = (device.orientation + DisplayRotation) % 360;
-			cameraRotation = (360 - cameraRotation) % 360; // compensate the mirror
-			
+			cameraRotation = (360 - cameraRotation) % 360; // compensate the
+															// mirror
+
 			mCamera.setDisplayOrientation(cameraRotation);
-			
-			if (cameraRotation == 90)
-			{
+
+			if (cameraRotation == 90) {
 				cameraRotation = 270;
-			} 
-			else if (cameraRotation == 270)
-			{
+			} else if (cameraRotation == 270) {
 				cameraRotation = 90;
 			}
 		} else {
 			// back-facing
 			cameraRotation = (device.orientation - DisplayRotation + 360) % 360;
-			
 			mCamera.setDisplayOrientation(cameraRotation);
 		}
-
-		//mCamera.setDisplayOrientation(cameraRotation);
-
+		// mCamera.setDisplayOrientation(cameraRotation);
 		return true;
 	}
 
@@ -386,20 +382,17 @@ public class VideoRecorder {
 				mCamera.setPreviewCallback(null);
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				SystemClock.sleep(50);
+				mCamera.stopPreview();
+				mCamera.release();
+				mCamera = null;
 			}
-
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			mCamera.release();
-			mCamera = null;
 		}
 	}
 
 	private void StartPreview() {
-		Log.i("VideoRecorder UI", "StartPreview");
+		Log.i("DEBUG", "StartPreview");
 
 		if (mCamera == null) {
 			return;
@@ -410,40 +403,25 @@ public class VideoRecorder {
 				mCamera.setPreviewDisplay(VideoPreviewSurfaceHolder);
 				mCamera.startPreview();
 			}
-		} catch (IOException e) {
-			Log.e("ConfRoomActivity", "----����ͷ��ʼԤ��ʧ��----");
-			e.printStackTrace();
-
-			mCamera.release();
-			mCamera = null;
+		} catch (Exception e) {
+			UninitCamera();
+			throw new RuntimeException("StartPreview 打开视频出错！" + e.getLocalizedMessage());
 		}
-	}
-
-	private void StopPreview() {
-		Log.i("VideoRecorder UI", "StopPreview");
-
-		if (mCamera == null) {
-			return;
-		}
-
-		mCamera.stopPreview();
 	}
 
 	private boolean StartRecord(IPreviewCallBack callback) {
-		Log.i("VideoRecorder UI", "StartRecord");
+		Log.i("DEBUG", "StartRecord");
 		if (mCamera == null) {
 			return false;
 		}
 
 		mEncoder = new VideoEncoder();
-
 		mCamera.setPreviewCallback(callback);
-
 		return true;
 	}
 
 	private void StopRecord() {
-		Log.i("VideoRecorder UI", "StopRecord");
+		Log.i("DEBUG", "StopRecord");
 		if (mCamera == null) {
 			return;
 		}

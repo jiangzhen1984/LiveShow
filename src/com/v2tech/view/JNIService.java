@@ -19,11 +19,11 @@ import com.V2.jni.ConfRequestCallbackAdapter;
 import com.V2.jni.GroupRequest;
 import com.V2.jni.GroupRequestCallbackAdapter;
 import com.V2.jni.ImRequest;
-import com.V2.jni.ImRequestCallback;
 import com.V2.jni.ImRequestCallbackAdapter;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.VideoRequestCallbackAdapter;
+import com.V2.jni.callback.ImRequestCallback;
 import com.V2.jni.ind.GroupJoinErrorJNIObject;
 import com.V2.jni.ind.V2Conference;
 import com.V2.jni.ind.V2Group;
@@ -146,7 +146,7 @@ public class JNIService extends Service
 		mCallbackHandler = new JNICallbackHandler(callback.getLooper());
 
 		mImCB = new ImRequestCB(mCallbackHandler);
-		ImRequest.getInstance(this.getApplicationContext()).addCallback(mImCB);
+		ImRequest.getInstance().addCallback(mImCB);
 
 		mGRCB = new GroupRequestCB(mCallbackHandler);
 		GroupRequest.getInstance().addCallback(
@@ -154,7 +154,7 @@ public class JNIService extends Service
 
 
 		mVRCB = new VideoRequestCB(mCallbackHandler);
-		VideoRequest.getInstance(this.getApplicationContext()).addCallback(
+		VideoRequest.getInstance().addCallback(
 				mVRCB);
 
 
@@ -360,8 +360,9 @@ public class JNIService extends Service
 							+ cache.getName() + "  " + cache.getmGId());
 					return;
 				}
-				GroupRequest.getInstance().getGroupInfo(
-						GroupType.CONFERENCE.intValue(), g.getmGId());
+				//TODO confernet 
+//				GroupRequest.getInstance().(
+//						GroupType.CONFERENCE.intValue(), g.getmGId());
 				if (g != null) {
 					GlobalHolder.getInstance().addGroupToList(
 							GroupType.CONFERENCE.intValue(), g);
@@ -394,12 +395,15 @@ public class JNIService extends Service
 			this.mCallbackHandler = mCallbackHandler;
 		}
 
+		
+		
+
 		@Override
 		public void OnLoginCallback(long nUserID, int nStatus, int nResult,
-				long serverTime) {
+				long serverTime, String sDBID) {
 			if (JNIResponse.Result.fromInt(nResult) == JNIResponse.Result.SUCCESS) {
 				// Just request current logged in user information
-				ImRequest.getInstance().getUserBaseInfo(nUserID);
+				ImRequest.getInstance().ImGetUserBaseInfo(nUserID);
 			}
 		}
 
@@ -414,15 +418,16 @@ public class JNIService extends Service
 					.sendToTarget();
 		}
 
+
+
 		@Override
-		public void OnUpdateBaseInfoCallback(V2User user) {
-			if (user == null || user.uid <= 0) {
-				return;
-			}
-			User u = convertUser(user);
-			Message.obtain(mCallbackHandler, JNI_UPDATE_USER_INFO,u).sendToTarget();
+		public void OnUpdateBaseInfoCallback(long nUserID, String updatexml) {
+			// TODO Auto-generated method stub
+			super.OnUpdateBaseInfoCallback(nUserID, updatexml);
 		}
 
+		
+		
 
 	}
 
@@ -434,10 +439,12 @@ public class JNIService extends Service
 			this.mCallbackHandler = mCallbackHandler;
 		}
 
+		
+
 		@Override
-		public void OnGetGroupInfoCallback(int groupType, List<V2Group> list) {
-			Message.obtain(mCallbackHandler, JNI_GROUP_NOTIFY, groupType, 0,
-					list).sendToTarget();
+		public void OnGetGroupInfo(int groupType, String sXml) {
+//			Message.obtain(mCallbackHandler, JNI_GROUP_NOTIFY, groupType, 0,
+//					list).sendToTarget();
 		}
 
 		@Override
@@ -450,36 +457,43 @@ public class JNIService extends Service
 					new GroupUserInfoOrig(groupType, nGroupID, sXml))
 					.sendToTarget();
 		}
+		
+		
 
 		@Override
-		public void OnModifyGroupInfoCallback(V2Group group) {
-			if (group == null) {
-				V2Log.e(TAG,
-						"OnModifyGroupInfoCallback --> update Group Infos failed...get V2Group is null!");
-				return;
-			}
-
-			if (group.type == GroupType.CONFERENCE.intValue()) {
-
-			} else if (group.type == GroupType.CHATING.intValue()) {
-				CrowdGroup cg = (CrowdGroup) GlobalHolder.getInstance()
-						.getGroupById(group.id);
-				cg.setAnnouncement(group.announce);
-				cg.setBrief(group.brief);
-				cg.setAuthType(CrowdGroup.AuthType.fromInt(group.authType));
-				cg.setName(group.name);
-				// update crowd group infos in globle collections
-				// GlobalHolder.getInstance().updateCrwodGroupByID(V2GlobalEnum.GROUP_TYPE_CROWD
-				// , group);
-			}
-
-			// Send broadcast
-			Intent i = new Intent(JNI_BROADCAST_GROUP_UPDATED);
-			i.addCategory(JNI_BROADCAST_CATEGROY);
-			i.putExtra("gid", group.id);
-			mContext.sendBroadcast(i);
-
+		public void OnModifyGroupInfo(int groupType, long nGroupID, String sXml) {
+			// TODO Auto-generated method stub
+			super.OnModifyGroupInfo(groupType, nGroupID, sXml);
+			
+//			if (group == null) {
+//				V2Log.e(TAG,
+//						"OnModifyGroupInfoCallback --> update Group Infos failed...get V2Group is null!");
+//				return;
+//			}
+//
+//			if (group.type == GroupType.CONFERENCE.intValue()) {
+//
+//			} else if (group.type == GroupType.CHATING.intValue()) {
+//				CrowdGroup cg = (CrowdGroup) GlobalHolder.getInstance()
+//						.getGroupById(group.id);
+//				cg.setAnnouncement(group.announce);
+//				cg.setBrief(group.brief);
+//				cg.setAuthType(CrowdGroup.AuthType.fromInt(group.authType));
+//				cg.setName(group.name);
+//				// update crowd group infos in globle collections
+//				// GlobalHolder.getInstance().updateCrwodGroupByID(V2GlobalEnum.GROUP_TYPE_CROWD
+//				// , group);
+//			}
+//
+//			// Send broadcast
+//			Intent i = new Intent(JNI_BROADCAST_GROUP_UPDATED);
+//			i.addCategory(JNI_BROADCAST_CATEGROY);
+//			i.putExtra("gid", group.id);
+//			mContext.sendBroadcast(i);
 		}
+
+
+
 
 	
 		@Override
@@ -494,39 +508,6 @@ public class JNIService extends Service
 
 
 
-
-
-		@Override
-		public void onAddGroupInfo(V2Group crowd) {
-			if(crowd == null)
-				return ;
-			
-			if(crowd.creator == null)
-				return ;
-			
-			if(isAcceptApply){
-				isAcceptApply = false;
-				return ;
-			}
-			
-			if (crowd.type == V2Group.TYPE_CROWD && GlobalHolder.getInstance().getCurrentUserId() != crowd.owner.uid) {
-				V2Log.e(TAG , "onAddGroupInfo--> add a new group , id is : "
-						+ crowd.id);
-				User user = GlobalHolder.getInstance().getUser(crowd.creator.uid);
-				if(user == null){
-					V2Log.e(TAG , "onAddGroupInfo--> add a new group failed , get user is null , id is : "
-							+ crowd.creator.uid);
-					return ;
-				}
-				CrowdGroup g = new CrowdGroup(crowd.id, crowd.name,
-						user, null);
-				g.setBrief(crowd.brief);
-				g.setAnnouncement(crowd.announce);
-				GlobalHolder.getInstance().addGroupToList(GroupType.CHATING.intValue(),
-						g);
-			}
-		}
-
 		
 	}
 
@@ -536,27 +517,27 @@ public class JNIService extends Service
 		public ConfRequestCB(JNICallbackHandler mCallbackHandler) {
 		}
 
-		@Override
-		public void OnConfNotify(V2Conference v2conf, V2User user) {
-			if (v2conf == null || user == null) {
-				V2Log.e(" v2conf is " + v2conf + " or user is null" + user);
-				return;
-			}
-
-			User owner = GlobalHolder.getInstance().getUser(user.uid);
-			Group g = new ConferenceGroup(v2conf.cid, v2conf.name, owner,
-					v2conf.startTime, owner);
-			User u = GlobalHolder.getInstance().getUser(user.uid);
-			g.setOwnerUser(u);
-			GlobalHolder.getInstance().addGroupToList(
-					Group.GroupType.CONFERENCE.intValue(), g);
-
-			Intent i = new Intent();
-			i.setAction(JNIService.JNI_BROADCAST_CONFERENCE_INVATITION);
-			i.addCategory(JNIService.JNI_BROADCAST_CATEGROY);
-			i.putExtra("gid", g.getmGId());
-			sendBroadcast(i);
-		}
+//		@Override
+//		public void OnConfNotify(V2Conference v2conf, V2User user) {
+//			if (v2conf == null || user == null) {
+//				V2Log.e(" v2conf is " + v2conf + " or user is null" + user);
+//				return;
+//			}
+//
+//			User owner = GlobalHolder.getInstance().getUser(user.uid);
+//			Group g = new ConferenceGroup(v2conf.cid, v2conf.name, owner,
+//					v2conf.startTime, owner);
+//			User u = GlobalHolder.getInstance().getUser(user.uid);
+//			g.setOwnerUser(u);
+//			GlobalHolder.getInstance().addGroupToList(
+//					Group.GroupType.CONFERENCE.intValue(), g);
+//
+//			Intent i = new Intent();
+//			i.setAction(JNIService.JNI_BROADCAST_CONFERENCE_INVATITION);
+//			i.addCategory(JNIService.JNI_BROADCAST_CATEGROY);
+//			i.putExtra("gid", g.getmGId());
+//			sendBroadcast(i);
+//		}
 
 	}
 	

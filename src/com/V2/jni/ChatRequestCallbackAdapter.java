@@ -1,5 +1,6 @@
 package com.V2.jni;
 
+import com.V2.jni.callback.ChatRequestCallback;
 import com.V2.jni.ind.SendingResultJNIObjectInd;
 
 public abstract class ChatRequestCallbackAdapter implements ChatRequestCallback {
@@ -10,29 +11,34 @@ public abstract class ChatRequestCallbackAdapter implements ChatRequestCallback 
 			String szXmlText) {
 		
 	}
-	
+
 	@Override
 	public void OnRecvChatBinaryCallback(int eGroupType, long nGroupID,
-			long nFromUserID, long nToUserID, long nTime, String messageId,
-			int binaryType, String binaryPath) {
+			long nFromUserID, long nToUserID, long nTime, int binaryType,
+			String messageId, String binaryPath) {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void OnRecvChatPictureCallback(long nGroupID, int nBusinessType,
-			long nFromUserID, long nTime, String szSeqID, byte[] pPicData) {
-
+	public void OnSendTextResultCallback(int eGroupType, long nGroupID,
+			long nFromUserID, long nToUserID, String sSeqID, int nResult) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void OnRecvChatAudio(long gid, int businessType, long fromUserId,
-			long timeStamp, String messageId, String audioPath) {
-
+	public void OnSendBinaryResultCallback(int eGroupType, long nGroupID,
+			long nFromUserID, long nToUserID, int mediaType, String sSeqID,
+			int nResult) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void OnSendChatResult(SendingResultJNIObjectInd ind) {
-
+	public void OnMonitorRecv(int eGroupType, String sSeqID, int nResult) {
+		// TODO Auto-generated method stub
+		
 	}
-
+	
 }

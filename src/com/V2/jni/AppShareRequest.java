@@ -1,40 +1,95 @@
 package com.V2.jni;
 
-public class AppShareRequest
-{
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.V2.jni.callback.AppShareRequestCallBack;
+
+import v2av.VideoPlayer;
+
+public class AppShareRequest {
+	private static AppShareRequest mAppShareRequest;
+
+	private List<WeakReference<AppShareRequestCallBack>> mCallbacks;
+
+	private AppShareRequest() {
+		mCallbacks = new ArrayList<WeakReference<AppShareRequestCallBack>>();
+	}
+
+	public static synchronized AppShareRequest getInstance() {
+		if (mAppShareRequest == null) {
+			synchronized (AppShareRequest.class) {
+				if (mAppShareRequest == null) {
+					mAppShareRequest = new AppShareRequest();
+					if (!mAppShareRequest.initialize(mAppShareRequest)) {
+						throw new RuntimeException("can't initilaize AppShareRequest");
+					}
+				}
+			}
+		}
+		return mAppShareRequest;
+	}
+
+	/**
+	 * æ·»åŠ è‡ªå®šä¹‰çš„å›è°ƒï¼Œç›‘å¬æ¥æ”¶åˆ°çš„æœåŠ¡ä¿¡ä»¤
+	 * 
+	 * @param callback
+	 */
+	public void addCallbacks(AppShareRequestCallBack callback) {
+		mCallbacks.add(new WeakReference<AppShareRequestCallBack>(callback));
+	}
+
+	/**
+	 * ç§»é™¤è‡ªå®šä¹‰æ·»åŠ çš„å›è°ƒ
+	 * 
+	 * @param callback
+	 */
+	public void removeCallback(AppShareRequestCallBack callback) {
+		for (int i = 0; i < mCallbacks.size(); i++) {
+			if (mCallbacks.get(i).get() == callback) {
+				mCallbacks.remove(i);
+				break;
+			}
+		}
+	}
+
 	public native boolean initialize(AppShareRequest requestObj);
+
 	public native void unInitialize();
-	
-	//·¢ÆğÓ¦ÓÃ³ÌĞò¹²Ïí
-	public native void InviteAppShare(long  nGroupID, long  nDstUserID, int nPID, int type); //type=0:driver type=1: hook
-	//½áÊøÓ¦ÓÃ³ÌĞò¹²Ïí
-	public native void CloseAppShare(long  nGroupID, long  nDstUserID);
-	//¿ØÖÆÓ¦ÓÃ³ÌĞò¹²Ïí
-	public native void EnableControl(boolean bEnable);
-	//ÉèÖÃÎ»¿í
-	public native void SetBitWidth(int width);
-	//ÉèÖÃÖ¡ÂÊ
-	public native void SetFrameRate(int rate);
-	//Ëõ·Å
-	public native void SetScaleMode(boolean bZoom);
-	
-	private void OnInviteAppHostShare(int result)
-	{
-		// TODO
+
+	/**
+	 * @brief æ‰“å¼€æ¡Œé¢å…±äº«çš„Viewç«¯
+	 *
+	 * @param nGroupType
+	 *            ç»„ç±»å‹
+	 * @param nGroupID
+	 *            ç»„ID
+	 * @param nHostUserID
+	 *            Hostç«¯çš„ç”¨æˆ·ID
+	 * @param szVideoDeviceID
+	 *            è¿œç¨‹æ¡Œé¢çš„è§†é¢‘è®¾å¤‡ID
+	 * @param nCustomData
+	 *            ç¨‹åºè‡ªå®šä¹‰æ•°æ®
+	 *
+	 * @return None
+	 */
+	public native void AppShareStartView(int nGroupType, long nGroupID, long nHostUserID, String szVideoDeviceID,
+			VideoPlayer nCustomData);
+
+	private void OnAppShareCreated(int nGroupType, long nGroupID, long nHostUserID, String szVideoDeviceID) {
+		for (WeakReference<AppShareRequestCallBack> wr : mCallbacks) {
+			if (wr != null && wr.get() != null) {
+				wr.get().OnAppShareCreated(nGroupType, nGroupID, nHostUserID, szVideoDeviceID);
+			}
+		}
 	}
-	
-	private void OnInviteAppViewerShare(Object hwnd,int result)
-	{
-		// TODO
-	}
-	
-	private void OnClostAppHostShare(int result)
-	{
-		// TODO
-	}
-	
-	private void OnCloseAppViewerShare( int result)
-	{
-		// TODO
+
+	private void OnAppShareDestroyed(String szVideoDeviceID) {
+		for (WeakReference<AppShareRequestCallBack> wr : mCallbacks) {
+			if (wr != null && wr.get() != null) {
+				wr.get().OnAppShareDestroyed(szVideoDeviceID);
+			}
+		}
 	}
 }

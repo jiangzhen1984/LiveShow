@@ -53,7 +53,7 @@ public class DeviceService extends AbstractHandler {
 		V2Log.i(" request open video   UID:" + userDevice.getUserID()
 				+ " deviceid:" + userDevice.getDeviceID() + "   videoplayer:"
 				+ userDevice.getVp());
-		VideoRequest.getInstance().openVideoDevice(0, 0,
+		VideoRequest.getInstance().VideoOpenDevice(0, 0,
 				userDevice.getType().ordinal(), userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestOpenUserVideoDeviceResponse(
@@ -91,7 +91,7 @@ public class DeviceService extends AbstractHandler {
 		initTimeoutMessage(JNI_REQUEST_CLOSE_VIDEO, DEFAULT_TIME_OUT_SECS,
 				caller);
 
-		VideoRequest.getInstance().closeVideoDevice(0, 0, 
+		VideoRequest.getInstance().VideoCloseDevice(0, 0, 
 				userDevice.getType().ordinal(), userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestCloseUserVideoDeviceResponse(
@@ -132,7 +132,7 @@ public class DeviceService extends AbstractHandler {
 		V2Log.i(" request open video   UID:" + userDevice.getUserID()
 				+ " deviceid:" + userDevice.getDeviceID() + "   videoplayer:"
 				+ userDevice.getVp());
-		VideoRequest.getInstance().openVideoDevice(group.getGroupType().intValue(), group.getmGId(), 
+		VideoRequest.getInstance().VideoOpenDevice(group.getGroupType().intValue(), group.getmGId(), 
 				userDevice.getType().ordinal(), userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestOpenUserVideoDeviceResponse(
@@ -172,7 +172,7 @@ public class DeviceService extends AbstractHandler {
 		initTimeoutMessage(JNI_REQUEST_CLOSE_VIDEO, DEFAULT_TIME_OUT_SECS,
 				caller);
 
-		VideoRequest.getInstance().closeVideoDevice(group.getGroupType().intValue(), group.getmGId(), 
+		VideoRequest.getInstance().VideoCloseDevice(group.getGroupType().intValue(), group.getmGId(), 
 				userDevice.getType().ordinal(), userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestCloseUserVideoDeviceResponse(
@@ -205,8 +205,8 @@ public class DeviceService extends AbstractHandler {
 			return;
 		}
 		initTimeoutMessage(JNI_UPDATE_CAMERA_PAR, DEFAULT_TIME_OUT_SECS, caller);
-		VideoRequest.getInstance().setCapParam(cc.getDeviceId(),
-				cc.getCameraIndex(), cc.getFrameRate(), cc.getBitRate());
+//		VideoRequest.getInstance().(cc.getDeviceId(),
+//				cc.getCameraIndex(), cc.getFrameRate(), cc.getBitRate());
 	}
 
 	@Override

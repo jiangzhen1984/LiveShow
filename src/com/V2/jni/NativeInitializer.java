@@ -11,10 +11,13 @@ public class NativeInitializer {
 	}
 	public static NativeInitializer getIntance() {
 		if (instance == null) {
-			instance = new NativeInitializer();
+			synchronized (NativeInitializer.class) {
+				if (instance == null) {
+					instance = new NativeInitializer();
+				}
+			}
 		}
 		return instance;
 	}
 	public native void initialize(Context context, String path);
-
 }

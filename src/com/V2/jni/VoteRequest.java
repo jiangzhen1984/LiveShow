@@ -1,35 +1,28 @@
 package com.V2.jni;
 
-import android.content.Context;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.V2.jni.util.V2Log;
+import com.V2.jni.callback.VoteRequestCallBack;
 
+/**
+ * 该类还没有被使用
+ * @author 
+ *
+ */
 public class VoteRequest {
-
 	private static VoteRequest VoteRequest;
+	private List<WeakReference<VoteRequestCallBack>> mCallBacks;
 
-//	private List<WeakReference<VoteRequestCallback>> callbacks;
-
-	private VoteRequest(Context context) {
-//		callbacks = new ArrayList<WeakReference<VoteRequestCallback>>();
+	private VoteRequest() {
+		mCallBacks = new ArrayList<WeakReference<VoteRequestCallBack>>();
 	};
-
-	public static synchronized VoteRequest getInstance(Context context) {
-		if (VoteRequest == null) {
-			VoteRequest = new VoteRequest(context);
-			if (!VoteRequest.initialize(VoteRequest)) {
-				V2Log.e(" can't  initialize imrequest ");
-				throw new RuntimeException("can't initilaize imrequest");
-			}
-		}
-		return VoteRequest;
-	}
 
 	public static synchronized VoteRequest getInstance() {
 		if (VoteRequest == null) {
-			VoteRequest = new VoteRequest(null);
+			VoteRequest = new VoteRequest();
 			if (!VoteRequest.initialize(VoteRequest)) {
-				V2Log.e(" can't  initialize imrequest ");
 				throw new RuntimeException("can't initilaize imrequest");
 			}
 		}
@@ -37,50 +30,141 @@ public class VoteRequest {
 	}
 
 	/**
+	 * 添加自定义的回调，监听接收到的服务信令
 	 * 
 	 * @param callback
 	 */
-//	public void addCallback(VoteRequestCallback callback) {
-//		this.callbacks.add(new WeakReference<VoteRequestCallback>(callback));
-//	}
+	public void addCallback(VoteRequestCallBack callback) {
+		this.mCallBacks.add(new WeakReference<VoteRequestCallBack>(callback));
+	}
+
+	/**
+	 * 移除自定义添加的回调
+	 * 
+	 * @param callback
+	 */
+	public void removeCallback(VoteRequestCallBack callback) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				if (wf.get() == callback) {
+					mCallBacks.remove(wf);
+					return;
+				}
+			}
+		}
+	}
 
 	public native boolean initialize(VoteRequest request);
 
 	public native void unInitialize();
-	
-	//创建投票
-	public native void createVote(String sVoteID, String sVoteSubject, int eVoteStatus, 
-			int nTotalUserCount, String szQuestionXml, int nLen);
-	//删除投票
+
+	/**
+	 * 创建投票
+	 * 
+	 * @param sVoteID
+	 * @param sVoteSubject
+	 * @param eVoteStatus
+	 * @param nTotalUserCount
+	 * @param szQuestionXml
+	 * @param nLen
+	 */
+	public native void createVote(String sVoteID, String sVoteSubject, int eVoteStatus, int nTotalUserCount,
+			String szQuestionXml, int nLen);
+
+	/**
+	 * 删除投票
+	 * 
+	 * @param sVoteID
+	 */
 	public native void destroyVote(String sVoteID);
-	//修改投票内容
-	public native void modifyVoteContent(String sVoteID, String sVoteSubject, String szQuestionXml,
-			int nLen);
-	//修改投票状态
+
+	/**
+	 * 修改投票内容
+	 * 
+	 * @param sVoteID
+	 * @param sVoteSubject
+	 * @param szQuestionXml
+	 * @param nLen
+	 */
+	public native void modifyVoteContent(String sVoteID, String sVoteSubject, String szQuestionXml, int nLen);
+
+	/**
+	 * 修改投票状态
+	 * 
+	 * @param sVoteID
+	 * @param eVoteStatus
+	 */
 	public native void modifyVoteStatus(String sVoteID, int eVoteStatus);
-	//修改投票总人数
+
+	/**
+	 * 修改投票总人数
+	 * 
+	 * @param sVoteID
+	 * @param nTotalUserCount
+	 */
 	public native void modifyVoteTotalUserCount(String sVoteID, int nTotalUserCount);
-	//单个投票
+
+	/**
+	 * 单个投票
+	 * 
+	 * @param sVoteID
+	 * @param sAnswer
+	 */
 	public native void vote(String sVoteID, String sAnswer);
 
-	
-	
-	//创建投票结果,状态：未开始、进行中、已结束、已发布
-	private void OnCreateVote(String sVoteID, String sVoteSubject, int eVoteStatus, 
-	int nTotalUserCount, String szQuestionXml, int nLen){};
-		
-	//删除投票结果
-	private void OnDestroyVote(String sVoteID){};
+	private void OnCreateVote(String sVoteID, String sVoteSubject, int eVoteStatus, int nTotalUserCount,
+			String szQuestionXml, int nLen) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnCreateVote(sVoteID, sVoteSubject, eVoteStatus, nTotalUserCount, szQuestionXml, nLen);
+			}
+		}
+	};
 
-	//修改投票内容结果
-	private void OnModifyVote(String sVoteID, String sVoteSubject, String szQuestionXml, int nLen){};
+	private void OnDestroyVote(String sVoteID) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnDestroyVote(sVoteID);
+			}
+		}
+	};
 
-	//修改投票状态结果
-	private void OnModifyVoteStatus(String sVoteID, int eVoteStatus){};
+	private void OnModifyVote(String sVoteID, String sVoteSubject, String szQuestionXml, int nLen) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnModifyVote(sVoteID, sVoteSubject, szQuestionXml, nLen);
+			}
+		}
+	};
 
-	//修改投票总人数
-	private void OnModifyVoteTotalUserCount(String sVoteID, int nTotalUserCount){};
+	private void OnModifyVoteStatus(String sVoteID, int eVoteStatus) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnModifyVoteStatus(sVoteID, eVoteStatus);
+			}
+		}
+	};
 
-	//单个投票结果
-	private void OnVote(String sVoteID, long nUserID, String sAnswer){};
+	private void OnModifyVoteTotalUserCount(String sVoteID, int nTotalUserCount) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnModifyVoteTotalUserCount(sVoteID, nTotalUserCount);
+			}
+		}
+	};
+
+	private void OnVote(String sVoteID, long nUserID, String sAnswer) {
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<VoteRequestCallBack> wf = mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnVote(sVoteID, nUserID, sAnswer);
+			}
+		}
+	};
 }

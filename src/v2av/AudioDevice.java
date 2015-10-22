@@ -50,6 +50,7 @@ class AudioDevice {
 
     @SuppressWarnings("unused")
     private int InitRecording(int audioSource, int sampleRate) {
+    	Log.d("test", "InitRecording --> audioSource : " + audioSource);
         // get the minimum buffer size that can be used
         int minRecBufSize = AudioRecord.getMinBufferSize(
             sampleRate,
@@ -76,7 +77,6 @@ class AudioDevice {
                             AudioFormat.CHANNEL_IN_MONO,
                             AudioFormat.ENCODING_PCM_16BIT,
                             recBufSize);
-
         } catch (Exception e) {
             DoLog(e.getMessage());
             return -1;

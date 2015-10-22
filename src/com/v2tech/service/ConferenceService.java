@@ -14,9 +14,9 @@ import com.V2.jni.GroupRequestCallbackAdapter;
 import com.V2.jni.ImRequest;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.VideoMixerRequest;
-import com.V2.jni.VideoMixerRequestCallback;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.VideoRequestCallbackAdapter;
+import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2Group;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
@@ -121,7 +121,7 @@ public class ConferenceService extends DeviceService {
 	public void requestEnterConference(Conference conf, MessageListener caller) {
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
-		ConfRequest.getInstance().enterConf(conf.getId());
+		ConfRequest.getInstance().ConfEnter(conf.getId());
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class ConferenceService extends DeviceService {
 			return;
 		}
 		initTimeoutMessage(JNI_REQUEST_EXIT_CONF, DEFAULT_TIME_OUT_SECS, caller);
-		ConfRequest.getInstance().exitConf(conf.getId());
+		ConfRequest.getInstance().ConfExit(conf.getId());
 		// send response to caller because exitConf no call back from JNI
 		JNIResponse jniRes = new RequestExitedConfResponse(conf.getId(),
 				System.currentTimeMillis() / 1000, JNIResponse.Result.SUCCESS);
@@ -179,7 +179,7 @@ public class ConferenceService extends DeviceService {
 		}
 		initTimeoutMessage(JNI_REQUEST_CREATE_CONFERENCE,
 				DEFAULT_TIME_OUT_SECS, caller);
-		GroupRequest.getInstance().createGroup(
+		GroupRequest.getInstance().GroupCreate(
 				Group.GroupType.CONFERENCE.intValue(),
 				conf.getConferenceConfigXml(), conf.getInvitedAttendeesXml());
 	}
@@ -204,11 +204,11 @@ public class ConferenceService extends DeviceService {
 				caller);
 		// If conference owner is self, then delete group
 		if (conf.getCreator() == GlobalHolder.getInstance().getCurrentUserId()) {
-			GroupRequest.getInstance().delGroup(
+			GroupRequest.getInstance().GroupDestroy(
 					Group.GroupType.CONFERENCE.intValue(), conf.getId());
 			// If conference owner isn't self, just leave group
 		} else {
-			GroupRequest.getInstance().leaveGroup(
+			GroupRequest.getInstance().GroupLeave(
 					Group.GroupType.CONFERENCE.intValue(), conf.getId());
 		}
 	}
@@ -239,7 +239,7 @@ public class ConferenceService extends DeviceService {
 			attendees.append(" <user id='" + at.getmUserId() + "' />");
 		}
 		attendees.append("</userlist>");
-		GroupRequest.getInstance().inviteJoinGroup(
+		GroupRequest.getInstance().GroupInviteUsers(
 				GroupType.CONFERENCE.intValue(), conf.getConferenceConfigXml(),
 				attendees.toString(), "");
 
@@ -267,7 +267,7 @@ public class ConferenceService extends DeviceService {
 			MessageListener caller) {
 		initTimeoutMessage(JNI_REQUEST_SPEAK, DEFAULT_TIME_OUT_SECS, caller);
 
-		ConfRequest.getInstance().applyForControlPermission(type.intValue());
+		ConfRequest.getInstance().ConfApplyPermission(type.intValue());
 
 		JNIResponse jniRes = new RequestPermissionResponse(
 				RequestPermissionResponse.Result.SUCCESS);
@@ -294,7 +294,7 @@ public class ConferenceService extends DeviceService {
 		initTimeoutMessage(JNI_REQUEST_RELEASE_SPEAK, DEFAULT_TIME_OUT_SECS,
 				caller);
 
-		ConfRequest.getInstance().releaseControlPermission(type.intValue());
+		ConfRequest.getInstance().ConfReleasePermission(type.intValue());
 
 		JNIResponse jniRes = new RequestPermissionResponse(
 				RequestPermissionResponse.Result.SUCCESS);
@@ -306,11 +306,11 @@ public class ConferenceService extends DeviceService {
 	
 	
 	public void queryList(int type, MessageListener caller) {
-		if (type == 1) {
-			ConfRequest.getInstance().getMyFans();
-		} else if (type == 2) {
-			ConfRequest.getInstance().getMyConcerns();
-		}
+//		if (type == 1) {
+//			ConfRequest.getInstance().getMyFans();
+//		} else if (type == 2) {
+//			ConfRequest.getInstance().getMyConcerns();
+//		}
 	}
 
 	/**
@@ -456,23 +456,23 @@ public class ConferenceService extends DeviceService {
 					.sendToTarget();
 		}
 
-		@Override
-		public void OnConfMemberEnterCallback(long nConfID, long nTime,
-				V2User v2user) {
-			User user = null;
-			if (v2user.type == V2GlobalEnum.USER_ACCOUT_TYPE_NON_REGISTERED) {
-				user = new User(v2user.uid, v2user.name);
-			} else {
-				user = GlobalHolder.getInstance().getUser(v2user.uid);
-			}
-
-			if (user == null) {
-				V2Log.e("User is null can not dispatch notification");
-				return;
-			}
-
-			notifyListenerWithPending(KEY_ATTENDEE_STATUS_LISTNER, 1, 0, user);
-		}
+//		@Override
+//		public void OnConfMemberEnterCallback(long nConfID, long nTime,
+//				V2User v2user) {
+//			User user = null;
+//			if (v2user.type == V2GlobalEnum.USER_ACCOUT_TYPE_NON_REGISTERED) {
+//				user = new User(v2user.uid, v2user.name);
+//			} else {
+//				user = GlobalHolder.getInstance().getUser(v2user.uid);
+//			}
+//
+//			if (user == null) {
+//				V2Log.e("User is null can not dispatch notification");
+//				return;
+//			}
+//
+//			notifyListenerWithPending(KEY_ATTENDEE_STATUS_LISTNER, 1, 0, user);
+//		}
 
 		@Override
 		public void OnConfMemberExitCallback(long nConfID, long nTime,
@@ -504,7 +504,7 @@ public class ConferenceService extends DeviceService {
 		public void onUserListNotify(int type, List<V2User> list) {
 			List<User> userList = new ArrayList<User>(list.size());
 			for (V2User vu : list) {
-				ImRequest.getInstance().getUserBaseInfo(vu.mUserId);
+				ImRequest.getInstance().ImGetUserBaseInfo(vu.mUserId);
 				User u = new User(vu.mUserId, vu.name);
 				userList.add(u);
 			}
@@ -555,27 +555,27 @@ public class ConferenceService extends DeviceService {
 		public GroupRequestCB(Handler mCallbackHandler) {
 		}
 
-		@Override
-		public void OnModifyGroupInfoCallback(V2Group group) {
-			if (group == null) {
-				return;
-			}
-			if (group.type == Group.GroupType.CONFERENCE.intValue()) {
-				ConferenceGroup cache = (ConferenceGroup) GlobalHolder
-						.getInstance().findGroupById(group.id);
-
-				// if doesn't find matched group, mean this is new group
-				if (cache == null) {
-
-				} else {
-					cache.setSyn(group.isSync);
-						notifyListenerWithPending(KEY_SYNC_LISTNER,
-								(cache.isSyn() ? 1 : 0), 0, null);
-
-				}
-
-			}
-		}
+//		@Override
+//		public void OnModifyGroupInfoCallback(V2Group group) {
+//			if (group == null) {
+//				return;
+//			}
+//			if (group.type == Group.GroupType.CONFERENCE.intValue()) {
+//				ConferenceGroup cache = (ConferenceGroup) GlobalHolder
+//						.getInstance().findGroupById(group.id);
+//
+//				// if doesn't find matched group, mean this is new group
+//				if (cache == null) {
+//
+//				} else {
+//					cache.setSyn(group.isSync);
+//						notifyListenerWithPending(KEY_SYNC_LISTNER,
+//								(cache.isSyn() ? 1 : 0), 0, null);
+//
+//				}
+//
+//			}
+//		}
 
 	}
 

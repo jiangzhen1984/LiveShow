@@ -1,5 +1,6 @@
 package com.v2tech.util;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +76,21 @@ public class GlobalConfig {
 
 	public static long getGlobalServerTime() {
 		return (((System.currentTimeMillis() - GlobalConfig.LOCAL_TIME) / 1000) + GlobalConfig.SERVER_TIME) * 1000;
+	}
+	
+	public static final String DEFAULT_CONFIG_FILE = "v2platform.cfg";
+	public static final String DEFAULT_CONFIG_LOG_FILE = "log_options.xml";
+	public static final String DATA_SAVE_FILE_NAME = "CommBar";
+
+	public static String getGlobalRootPath() {
+		boolean sdExist = android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment.getExternalStorageState());
+		if (!sdExist) {// 如果不存在,
+			// --data/data/com.v2tech
+			return DEFAULT_GLOBLE_PATH + File.separator + DATA_SAVE_FILE_NAME;
+		} else {
+			// --mnt/sdcard
+			return SDCARD_GLOBLE_PATH + File.separator + DATA_SAVE_FILE_NAME;
+		}
 	}
 
 }

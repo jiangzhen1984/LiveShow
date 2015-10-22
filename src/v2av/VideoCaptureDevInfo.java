@@ -3,7 +3,6 @@ package v2av;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeSet;
 
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -36,15 +35,14 @@ public class VideoCaptureDevInfo {
 		return mDefaultDevName;
 	}
 
-	public void SetCapParams(int width, int height, int bitrate, int fps,
-			int format) {
+	public void SetCapParams(int width, int height, int bitrate, int fps, int format) {
 		mCapParams.width = width;
 		mCapParams.height = height;
 		mCapParams.bitrate = bitrate;
 		mCapParams.fps = fps;
 		mCapParams.format = format;
 	}
-	
+
 	public void SetCapParams(int width, int height) {
 		mCapParams.width = width;
 		mCapParams.height = height;
@@ -101,8 +99,7 @@ public class VideoCaptureDevInfo {
 				tempWidth = capabilites.get(i).width;
 				tempHeight = capabilites.get(i).height;
 				int value = tempWidth * tempHeight;
-				if (Math.pow(value - setArea, 2) < Math.pow(
-						lastValue - setArea, 2)) {
+				if (Math.pow(value - setArea, 2) < Math.pow(lastValue - setArea, 2)) {
 					size.width = tempWidth;
 					size.height = tempHeight;
 					lastValue = value;
@@ -171,8 +168,7 @@ public class VideoCaptureDevInfo {
 			mDefaultDevName = CAMERA_FACE_FRONT;
 			return true;
 		} else {
-			Log.e("VideoCaptureDevInfo", " Unknow camera default name:"
-					+ mDefaultDevName);
+			Log.e("VideoCaptureDevInfo", " Unknow camera default name:" + mDefaultDevName);
 			return false;
 		}
 	}
@@ -186,8 +182,7 @@ public class VideoCaptureDevInfo {
 			for (int i = 0; i < Camera.getNumberOfCameras(); ++i) {
 				VideoCaptureDevice newDevice = new VideoCaptureDevice();
 				// Set first camera
-				if (this.mDefaultDevName == null
-						|| this.mDefaultDevName.isEmpty()) {
+				if (this.mDefaultDevName == null || this.mDefaultDevName.isEmpty()) {
 					this.mDefaultDevName = newDevice.deviceUniqueName;
 				}
 
@@ -198,15 +193,11 @@ public class VideoCaptureDevInfo {
 				if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
 					newDevice.deviceUniqueName = CAMERA_FACE_BACK;
 					newDevice.frontCameraType = FrontFacingCameraType.None;
-					Log.d(TAG, "Camera " + i
-							+ ", Camera Facing back, Orientation "
-							+ info.orientation);
+					Log.d(TAG, "Camera " + i + ", Camera Facing back, Orientation " + info.orientation);
 				} else {
 					newDevice.deviceUniqueName = CAMERA_FACE_FRONT;
 					newDevice.frontCameraType = FrontFacingCameraType.Android23;
-					Log.d(TAG, "Camera " + i
-							+ ", Camera Facing front, Orientation "
-							+ info.orientation);
+					Log.d(TAG, "Camera " + i + ", Camera Facing front, Orientation " + info.orientation);
 					// If has front-side camera, use front-side camera as
 					// default
 					this.mDefaultDevName = newDevice.deviceUniqueName;
@@ -222,9 +213,7 @@ public class VideoCaptureDevInfo {
 
 			// VerifyCapabilities();
 		} catch (Exception ex) {
-			Log.e(TAG,
-					"Failed to init VideoCaptureDeviceInfo ex"
-							+ ex.getLocalizedMessage());
+			Log.e(TAG, "Failed to init VideoCaptureDeviceInfo ex" + ex.getLocalizedMessage());
 			return -1;
 		}
 
@@ -232,14 +221,12 @@ public class VideoCaptureDevInfo {
 	}
 
 	// Adds the capture capabilities of the currently opened device
-	private void AddDeviceInfo(VideoCaptureDevice newDevice,
-			Camera.Parameters parameters) {
+	private void AddDeviceInfo(VideoCaptureDevice newDevice, Camera.Parameters parameters) {
 		newDevice.previewformats = parameters.getSupportedPreviewFormats();
 
 		List<Size> sizes = parameters.getSupportedPreviewSizes();
 		for (Size s : sizes) {
-			Log.v(TAG, "VideoCaptureDeviceInfo " + "CaptureCapability:"
-					+ s.width + " " + s.height);
+			Log.v(TAG, "VideoCaptureDeviceInfo " + "CaptureCapability:" + s.width + " " + s.height);
 			newDevice.capabilites.add(new CaptureCapability(s.width, s.height));
 		}
 
@@ -253,6 +240,7 @@ public class VideoCaptureDevInfo {
 			Log.e("getSupportedPreviewFpsRange", strRange);
 		}
 
+		@SuppressWarnings("deprecation")
 		List<Integer> frameRates = parameters.getSupportedPreviewFrameRates();
 		for (Integer fps : frameRates) {
 			if (fps == 5 || fps == 10 || fps == 15 || fps == 30) {

@@ -35,7 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
-import com.V2.jni.VideoBCRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -460,7 +459,7 @@ public class MainActivity extends FragmentActivity implements
 		mHandlerThread.quit();
 
 		mLocalHandler = null;
-		ImRequest.getInstance().logout();
+		ImRequest.getInstance().ImLogout();
 		liveService.clearCalledBack();
 		neiborhoodList.clear();
 	}
@@ -691,9 +690,9 @@ public class MainActivity extends FragmentActivity implements
 							.getLongitude() || mCacheLocation.getLatitude() != location
 							.getLatitude())) {
 				mCacheLocation = location;
-				VideoBCRequest.getInstance().updateGpsRequest(
-						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
-								+ location.getLatitude() + "\"></gps>");
+//				VideoBCRequest.getInstance().updateGpsRequest(
+//						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
+//								+ location.getLatitude() + "\"></gps>");
 
 				lat = location.getLatitude();
 				lng = location.getLongitude();
@@ -1071,9 +1070,6 @@ public class MainActivity extends FragmentActivity implements
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
 				liveService.scanNear(lat, lng, 1000F, new MessageListener(this, SCAN_CALL_BACK, null));
-//				VideoBCRequest.getInstance().GetNeiborhood_Region(
-//						"<gps lon=\"" + lng + "\" lat=\"" + lat
-//								+ "\" distance=\"1000\" ></gps>");
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 10000);

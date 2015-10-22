@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.V2.jni.VideoBCRequest;
 import com.V2.jni.util.V2Log;
 import com.v2tech.view.Constants;
 

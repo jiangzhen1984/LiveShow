@@ -56,8 +56,7 @@ public class UserService extends AbstractHandler {
 	 */
 	public void login(String mail, String passwd, MessageListener caller) {
 		initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-		ImRequest.getInstance().login(mail, passwd,
-				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, false);
+		ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", false);
 	}
 	
 	/**
@@ -74,14 +73,13 @@ public class UserService extends AbstractHandler {
 	 */
 	public void login(String mail, String passwd, boolean isNY, MessageListener caller) {
 		initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-		ImRequest.getInstance().login(mail, passwd,
-				V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, isNY);
+		ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",isNY);
 	}
 	
 	
 	
 	public void logout( MessageListener caller) {
-		ImRequest.getInstance().logout();
+		ImRequest.getInstance().ImLogout();
 	}
 	
 
@@ -105,14 +103,14 @@ public class UserService extends AbstractHandler {
 		initTimeoutMessage(JNI_REQUEST_UPDAE_USER, DEFAULT_TIME_OUT_SECS,
 				caller);
 		if (user.getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
-			ImRequest.getInstance().modifyBaseInfo(user.toXml());
+			ImRequest.getInstance().ImModifyBaseInfo(user.toXml());
 		} else {
-			if (!TextUtils.isEmpty(user.getNickName()))
-				ImRequest.getInstance()
-						.modifyCommentName(
-								user.getmUserId(),
-								EscapedcharactersProcessing.convert(user
-										.getNickName()));
+//			if (!TextUtils.isEmpty(user.getNickName()))
+//				ImRequest.getInstance().im
+//						.modifyCommentName(
+//								user.getmUserId(),
+//								EscapedcharactersProcessing.convert(user
+//										.getNickName()));
 		}
 	}
 
@@ -174,10 +172,12 @@ public class UserService extends AbstractHandler {
 		public ImRequestCB(Handler handler) {
 			this.handler = handler;
 		}
+		
+		
 
 		@Override
 		public void OnLoginCallback(long nUserID, int nStatus, int nResult,
-				long serverTime) {
+				long serverTime, String sDBID) {
 			// 获取系统时间
 			GlobalConfig.LOCAL_TIME = System.currentTimeMillis();
 			GlobalConfig.SERVER_TIME = serverTime;
@@ -192,6 +192,8 @@ public class UserService extends AbstractHandler {
 					new RequestLogInResponse(new User(nUserID), res));
 			handler.dispatchMessage(m);
 		}
+
+
 
 		@Override
 		public void OnConnectResponseCallback(int nResult) {

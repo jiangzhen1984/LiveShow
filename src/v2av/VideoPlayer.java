@@ -2,12 +2,12 @@ package v2av;
 
 import java.nio.ByteBuffer;
 
-import com.V2.jni.util.V2Log;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -29,6 +29,8 @@ public class VideoPlayer {
 	private VideoDisplayMatrix mDisMatrix;
 
 	private ByteBuffer _playBuffer;
+
+	private int mixVideoType = -1;
 
 	public VideoPlayer() {
 	}
@@ -66,7 +68,7 @@ public class VideoPlayer {
 	}
 
 	private float mBaseScale;
-	
+
 	public float getBaseScale() {
 		return mBaseScale;
 	}
@@ -93,8 +95,6 @@ public class VideoPlayer {
 			UpdateMatrix();
 		}
 	}
-	
-	
 
 	public boolean isSuspended() {
 		return mIsSuspended;
@@ -152,6 +152,10 @@ public class VideoPlayer {
 		mDisMatrix = null;
 	}
 
+	public void setLayout(int lay) {
+		mixVideoType = lay;
+	}
+
 	/*
 	 * Called by native
 	 */
@@ -165,7 +169,7 @@ public class VideoPlayer {
 			UpdateMatrix();
 		}
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void DestroyBitmap() {
 		Log.w("V2TECH", "JNI destroy bitmap");
@@ -206,7 +210,7 @@ public class VideoPlayer {
 	 */
 	@SuppressWarnings("unused")
 	private void OnPlayVideo() {
-		if (mSurfaceH  == null || !mSurfaceH.getSurface().isValid()) {
+		if (mSurfaceH == null || !mSurfaceH.getSurface().isValid()) {
 			return;
 		}
 		if (this.mIsSuspended) {
@@ -225,11 +229,125 @@ public class VideoPlayer {
 			++mClearCanvas;
 		}
 		Rect dest = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-		//if (mMatrix == null) {
-			canvas.drawBitmap(mBitmap, null, dest, null);
-//		} else {
-//			canvas.drawBitmap(mBitmap, mMatrix, null);
-//		}
+		// if (mMatrix == null) {
+		canvas.drawBitmap(mBitmap, null, dest, null);
+		// } else {
+		// canvas.drawBitmap(mBitmap, mMatrix, null);
+		// }
+
+		// draw border for combined video
+		// if mixVideoType equals -1, means current video is not combined video
+		// FIXME this class should not cared combined video type,
+		// see MixVideo.LayoutType
+		if (mixVideoType > 0) {
+			int width = canvas.getWidth();
+			int height = canvas.getHeight();
+			Paint p = new Paint();
+			p.setColor(Color.WHITE);
+			int boxHeight = 0;
+			int boxWidth = 0;
+			switch (mixVideoType) {
+			case 4:
+				boxHeight = height / 2;
+				boxWidth = width / 2;
+				canvas.drawLine(0, boxHeight, width, boxHeight, p);
+				canvas.drawLine(boxWidth, 0, boxWidth, height, p);
+				break;
+			case 6:
+				boxHeight = height / 3;
+				boxWidth = width / 3;
+				canvas.drawLine(boxWidth * 2, boxHeight, width, boxHeight, p);
+				canvas.drawLine(0, boxHeight * 2, width, boxHeight * 2, p);
+
+				canvas.drawLine(boxWidth, boxHeight * 2, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, 0, boxWidth * 2, height, p);
+				break;
+			case 8:
+				boxHeight = height / 4;
+				boxWidth = width / 4;
+				canvas.drawLine(boxWidth * 3, boxHeight, width, boxHeight, p);
+				canvas.drawLine(boxWidth * 3, boxHeight * 2, width,
+						boxHeight * 2, p);
+				canvas.drawLine(0, boxHeight * 3, width, boxHeight * 3, p);
+
+				canvas.drawLine(boxWidth, boxHeight * 3, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, boxHeight * 3, boxWidth * 2,
+						height, p);
+				canvas.drawLine(boxWidth * 3, 0, boxWidth * 3, height, p);
+
+				break;
+			case 9:
+				boxHeight = height / 3;
+				boxWidth = width / 3;
+
+				canvas.drawLine(0, boxHeight, width, boxHeight, p);
+				canvas.drawLine(0, boxHeight * 2, width, boxHeight * 2, p);
+
+				canvas.drawLine(boxWidth, 0, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, 0, boxWidth * 2, height, p);
+				break;
+			case 101:
+				boxHeight = height / 4;
+				boxWidth = width / 4;
+
+				canvas.drawLine(0, boxHeight * 2, width, boxHeight * 2, p);
+				canvas.drawLine(0, boxHeight * 3, width, boxHeight * 3, p);
+
+				canvas.drawLine(boxWidth, boxHeight * 2, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, boxHeight * 2, boxWidth * 2,
+						height, p);
+				canvas.drawLine(boxWidth * 3, boxHeight * 2, boxWidth * 3,
+						height, p);
+				break;
+
+			case 11:
+				boxHeight = height / 4;
+				boxWidth = width / 4;
+				canvas.drawLine(0, boxHeight, boxWidth, boxHeight, p);
+				canvas.drawLine(boxWidth * 3, boxHeight, width, boxHeight, p);
+				canvas.drawLine(0, boxHeight * 2, boxWidth, boxHeight * 2, p);
+				canvas.drawLine(boxWidth * 3, boxHeight * 2, width,
+						boxHeight * 2, p);
+				canvas.drawLine(0, boxHeight * 3, width, boxHeight * 3, p);
+
+				canvas.drawLine(boxWidth, 0, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, boxHeight * 3, boxWidth * 2,
+						height, p);
+				canvas.drawLine(boxWidth * 3, boxHeight * 3, boxWidth * 3,
+						height, p);
+				canvas.drawLine(boxWidth * 3, 0, boxWidth * 3, height, p);
+
+				break;
+			case 131:
+				boxHeight = height / 4;
+				boxWidth = width / 4;
+				canvas.drawLine(0, boxHeight, width, boxHeight, p);
+				canvas.drawLine(0, boxHeight * 2, boxWidth, boxHeight * 2, p);
+				canvas.drawLine(boxWidth * 3, boxHeight * 2, width,
+						boxHeight * 2, p);
+				canvas.drawLine(0, boxHeight * 3, width, boxHeight * 3, p);
+
+				canvas.drawLine(boxWidth, 0, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, 0, boxWidth * 2, boxHeight, p);
+				canvas.drawLine(boxWidth * 2, boxHeight * 3, boxWidth * 2,
+						height, p);
+				canvas.drawLine(boxWidth * 3, 0, boxWidth * 3, height, p);
+
+				break;
+			case 16:
+				boxHeight = height / 4;
+				boxWidth = width / 4;
+				canvas.drawLine(0, boxHeight, width, boxHeight, p);
+				canvas.drawLine(0, boxHeight * 2, width, boxHeight * 2, p);
+				canvas.drawLine(0, boxHeight * 3, width, boxHeight * 3, p);
+
+				canvas.drawLine(boxWidth, 0, boxWidth, height, p);
+				canvas.drawLine(boxWidth * 2, 0, boxWidth * 2, height, p);
+				canvas.drawLine(boxWidth * 3, 0, boxWidth * 3, height, p);
+
+				break;
+			}
+		}
 
 		mSurfaceH.unlockCanvasAndPost(canvas);
 	}

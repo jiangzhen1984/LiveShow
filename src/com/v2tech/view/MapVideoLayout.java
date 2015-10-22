@@ -189,11 +189,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				}
 				Live l = frag.getCurrentLive();
 				long uid = frag.getCurrentLive().getPublisher().getmUserId();
-				if (v.isSelected()) {
-					ConfRequest.getInstance().concern(uid);
-				} else {
-					ConfRequest.getInstance().concernCancel(uid);
-				}
+				//TODO update API
+//				if (v.isSelected()) {
+//					ConfRequest.getInstance().concern(uid);
+//				} else {
+//					ConfRequest.getInstance().concernCancel(uid);
+//				}
 				l.setFollow(!l.isFollow());
 			}
 			
