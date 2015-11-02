@@ -216,20 +216,21 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	}
 	
 	private void tryOpenCamera() {
-		if (cameraPosition == 1)
-		{
-			mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
-		}
-		else
-		{
-			mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);// 打开摄像头
-		}
 		try 
 		{
+			if (cameraPosition == 1)
+			{
+				mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+			}
+			else
+			{
+				mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);// 打开摄像头
+			}
 			mCamera.setPreviewDisplay(holder);
 		} 
 		catch (Exception ex) 
 		{
+			ex.printStackTrace();
 			if (null != mCamera) 
 			{
 				mCamera.release();

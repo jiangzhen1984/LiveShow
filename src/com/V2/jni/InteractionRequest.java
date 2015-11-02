@@ -73,8 +73,7 @@ public class InteractionRequest {
 	 *            距离
 	 */
 	public native void getNeiborhood(int distance);
-	
-	
+
 	/**
 	 * 特定范围的好友查询
 	 * 
@@ -83,17 +82,6 @@ public class InteractionRequest {
 	 *            lon:为double类型， distance 为int类型 单位（米）
 	 */
 	public native void GetNeiborhood_Region(String stXml);
-
-
-	/**
-	 * 特定范围的好友查询
-	 * 
-	 * @param nUserID
-	 * @param stXml
-	 *            strXml = <gps lon = "经度“ ,lat = "维度” distance = “范围”> //lat
-	 *            lon:为double类型， distance 为int类型 单位（米）
-	 */
-	public native void GetNeiborhood_Region(long nUserID, String stXml);
 
 	/**
 	 * 更新观看状态

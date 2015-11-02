@@ -47,6 +47,15 @@ public class LiveService extends AbstractHandler {
 		bcCallback = new LocalBCCallback(this);
 		InteractionRequest.getInstance().addCallback(bcCallback);
 	}
+	
+	
+	public void updateGps(double lat, double lng) {
+		
+		InteractionRequest.getInstance().updateGpsRequest(
+				"<gps lon=\"" + lng + "\" lat=\""
+						+ lat + "\"></gps>");
+	}
+	
 
 	@Override
 	public void clearCalledBack() {
@@ -55,6 +64,7 @@ public class LiveService extends AbstractHandler {
 	
 	public void scanNear(double lat, double lng, float radius, MessageListener caller) {
 		initTimeoutMessage(QUERY_NERY, DEFAULT_TIME_OUT_SECS, caller);
+		V2Log.e("start call InteractionRequest.getInstance().GetNeiborhood_Region" );
 		InteractionRequest.getInstance().GetNeiborhood_Region("<gps lon=\"" + lng + "\" lat=\"" + lat
 								+ "\" distance=\""+radius+"\" ></gps>");
 	}

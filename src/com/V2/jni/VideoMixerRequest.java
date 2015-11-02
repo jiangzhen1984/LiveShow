@@ -57,6 +57,10 @@ public class VideoMixerRequest {
 	public native boolean initialize(VideoMixerRequest instance);
 
 	public native void unInitialize();
+	
+	
+	public native void delVideoMixerDevID(String str, long id, String str1);
+
 
 	// public native void createVideoMixer(String szMediaId, int layout, int
 	// width, int height);

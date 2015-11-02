@@ -77,6 +77,10 @@ public class ConfRequest {
 	 * @return None
 	 */
 	public native void ConfExit(long nConfID);
+	
+	
+	public native void ConfEnumMembers(long gid);
+
 
 	/**
 	 * @brief 将某人请出会议

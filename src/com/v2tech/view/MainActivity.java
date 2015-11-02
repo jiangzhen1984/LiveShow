@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
+import com.V2.jni.InteractionRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -685,19 +686,21 @@ public class MainActivity extends FragmentActivity implements
 				
 			}
 
+		
+
 			if (mCacheLocation == null
 					|| (mCacheLocation.getLongitude() != location
 							.getLongitude() || mCacheLocation.getLatitude() != location
 							.getLatitude())) {
 				mCacheLocation = location;
-//				VideoBCRequest.getInstance().updateGpsRequest(
-//						"<gps lon=\"" + location.getLongitude() + "\" lat=\""
-//								+ location.getLatitude() + "\"></gps>");
-
-				lat = location.getLatitude();
-				lng = location.getLongitude();
+			    liveService.updateGps(location.getLatitude(), location.getLongitude());
+			    
 				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
 						1000);
+				
+				lat = location.getLatitude();
+				lng = location.getLongitude();
+				
 
 			}
 		}
