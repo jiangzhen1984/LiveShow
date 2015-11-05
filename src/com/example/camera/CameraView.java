@@ -170,7 +170,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 	private void initSurface() 
 	{
 		holder = getHolder();
-		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+	//	holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		holder.addCallback(this);
 	}
 
@@ -190,10 +190,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		holder.unlockCanvasAndPost(c);
 		
 		
-		if (mCamera == null) {
-			tryOpenCamera();
-			initCamera();
-		}
+//		if (mCamera == null) {
+//			tryOpenCamera();
+//			initCamera();
+//		}
 		
 //		if (isPreViewing) {
 //			mCamera.setPreviewCallback(this);

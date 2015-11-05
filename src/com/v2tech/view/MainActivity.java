@@ -999,11 +999,11 @@ public class MainActivity extends FragmentActivity implements
 			}
 			cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
 					+ uuid;
-			V2Log.i("Start to pushlish "+ cv.publishUrl);
+			V2Log.e("Start to pushlish "+ cv.publishUrl);
 			cv.startPublish();
 			
 		} else {
-			//TODO get neiberhood error
+			Toast.makeText(getBaseContext(), "发布视频错误:" + resp.getResult(), Toast.LENGTH_SHORT).show();
 		}
 	}
 	

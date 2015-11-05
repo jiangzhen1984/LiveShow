@@ -213,6 +213,7 @@ public class VideoCaptureDevInfo {
 
 			// VerifyCapabilities();
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Log.e(TAG, "Failed to init VideoCaptureDeviceInfo ex" + ex.getLocalizedMessage());
 			return -1;
 		}
