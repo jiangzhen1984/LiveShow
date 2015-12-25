@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.V2.jni.callback.ConfRequestCallback;
+import com.V2.jni.util.V2Log;
 
 public class ConfRequest {
 	private static ConfRequest mConfRequest;
@@ -142,6 +143,10 @@ public class ConfRequest {
 	 * @return None
 	 */
 	public native void ConfGrantPermission(long nUserID, int nType, int nPermissionStatus);
+	
+	
+	
+	
 
 	/**
 	 * 同步打开某人视频

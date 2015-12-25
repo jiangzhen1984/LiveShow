@@ -143,7 +143,7 @@ public class LiveService extends AbstractHandler {
 
 		@Override
 		public void OnGPSUpdated() {
-			// TODO Auto-generated method stub
+			V2Log.e("=====================");
 			
 		}
 		
@@ -230,82 +230,81 @@ public class LiveService extends AbstractHandler {
 				list.add(live);			
 			}
 
-//			
-//			
-//			V2Live live = new V2Live();
-//			live.uuid = "test001";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/test001"+ ".m3u8";
-//			V2User v2user = new V2User();
-//			v2user.uid = 1;
-//			live.publisher = v2user;
-//			V2Location v2location = new V2Location();
-//			v2location.lat = 39.978437D;
-//			v2location.lng =116.294172D;
-//			live.location = v2location;
-//			
-//			list.add(live);		
-//			
-//			
-//			live = new V2Live();
-//			live.uuid = "103D7D14-49A6-414D-940C-67A1FD23C60A";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/103D7D14-49A6-414D-940C-67A1FD23C60A"+ ".m3u8";
-//			v2user = new V2User();
-//			v2user.uid = 2;
-//			live.publisher = v2user;
-//			v2location = new V2Location();
-//			v2location.lat = 39.984186D;
-//			v2location.lng =116.449975D;
-//			live.location = v2location;
-//			list.add(live);	
-//			
-//			
-//			live = new V2Live();
-//			live.uuid = "test003";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/test003"+ ".m3u8";
-//			v2user = new V2User();
-//			v2user.uid = 3;
-//			live.publisher = v2user;
-//			v2location = new V2Location();
-//			v2location.lat = 39.873527D;
-//			v2location.lng =116.308545D;
-//			live.location = v2location;
-//			list.add(live);	
-//			
-//			live = new V2Live();
-//			live.uuid = "95585331-dfe1-46f7-a694-f932294789d1";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/95585331-dfe1-46f7-a694-f932294789d1"+ ".m3u8";
-//			v2user = new V2User();
-//			v2user.uid = 4;
-//			live.publisher = v2user;
-//			v2location = new V2Location();
-//			v2location.lat = 39.871312D;
-//			v2location.lng =116.466072D;
-//			live.location = v2location;
-//			list.add(live);	
-//			
-//			live = new V2Live();
-//			live.uuid = "8270814d-6a4c-4e24-82a4-4a689e044619";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/8270814d-6a4c-4e24-82a4-4a689e044619"+ ".m3u8";
-//			v2user = new V2User();
-//			v2user.uid = 6;
-//			live.publisher = v2user;
-//			v2location = new V2Location();
-//			v2location.lat = 39.926224D;
-//			v2location.lng =116.361438D;
-//			live.location = v2location;
-//			list.add(live);	
-//			
-//			live = new V2Live();
-//			live.uuid = "A4D8A057-8BE4-4DFF-9568-88B4AA12BD8B";
-//			live.url = "http://" + Constants.SERVER + ":8090/hls/A4D8A057-8BE4-4DFF-9568-88B4AA12BD8B"+ ".m3u8";
-//			v2user = new V2User();
-//			v2user.uid = 7;
-//			live.publisher = v2user;
-//			v2location = new V2Location();
-//			v2location.lat = 39.917813D;
-//			v2location.lng =116.444225D;
-//			live.location = v2location;
-//			list.add(live);	
+			
+			V2Live live = new V2Live();
+			live.uuid = "2004";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/2004"+ ".m3u8";
+			V2User v2user = new V2User();
+			v2user.uid = 1;
+			live.publisher = v2user;
+			V2Location v2location = new V2Location();
+			v2location.lat = 39.978437D;
+			v2location.lng =116.294172D;
+			live.location = v2location;
+			
+			list.add(live);		
+			
+			
+			live = new V2Live();
+			live.uuid = "2005";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+			v2user = new V2User();
+			v2user.uid = 2;
+			live.publisher = v2user;
+			v2location = new V2Location();
+			v2location.lat = 39.984186D;
+			v2location.lng =116.449975D;
+			live.location = v2location;
+			list.add(live);	
+			
+			
+			live = new V2Live();
+			live.uuid = "2007";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+			v2user = new V2User();
+			v2user.uid = 3;
+			live.publisher = v2user;
+			v2location = new V2Location();
+			v2location.lat = 39.873527D;
+			v2location.lng =116.308545D;
+			live.location = v2location;
+			list.add(live);	
+			
+			live = new V2Live();
+			live.uuid = "2006";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+			v2user = new V2User();
+			v2user.uid = 4;
+			live.publisher = v2user;
+			v2location = new V2Location();
+			v2location.lat = 39.871312D;
+			v2location.lng =116.466072D;
+			live.location = v2location;
+			list.add(live);	
+			
+			live = new V2Live();
+			live.uuid = "2008";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+			v2user = new V2User();
+			v2user.uid = 6;
+			live.publisher = v2user;
+			v2location = new V2Location();
+			v2location.lat = 39.926224D;
+			v2location.lng =116.361438D;
+			live.location = v2location;
+			list.add(live);	
+			
+			live = new V2Live();
+			live.uuid = "2009";
+			live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+			v2user = new V2User();
+			v2user.uid = 7;
+			live.publisher = v2user;
+			v2location = new V2Location();
+			v2location.lat = 39.917813D;
+			v2location.lng =116.444225D;
+			live.location = v2location;
+			list.add(live);	
 			
 			
 //			lives.add(new Live(new User(1, "a"),  "http://" + Constants.SERVER + ":8090/hls/test001"+ ".m3u8", 39.978437D,116.294172D));

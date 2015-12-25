@@ -36,6 +36,9 @@ import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
 import com.V2.jni.InteractionRequest;
+import com.V2.jni.ind.V2Live;
+import com.V2.jni.ind.V2Location;
+import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -1008,19 +1011,120 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
+
+
+	private List<Live> getTestlist() {
+		List<V2Live> list = new ArrayList<V2Live>();
+		
+		V2Live live = new V2Live();
+		live.uuid = "2004";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/2004"+ ".m3u8";
+		V2User v2user = new V2User();
+		v2user.uid = 1;
+		live.publisher = v2user;
+		V2Location v2location = new V2Location();
+		v2location.lat = 39.978437D;
+		v2location.lng =116.294172D;
+		live.location = v2location;
+		
+		list.add(live);		
+		
+		
+		live = new V2Live();
+		live.uuid = "2005";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+		v2user = new V2User();
+		v2user.uid = 2;
+		live.publisher = v2user;
+		v2location = new V2Location();
+		v2location.lat = 39.984186D;
+		v2location.lng =116.449975D;
+		live.location = v2location;
+		list.add(live);	
+		
+		
+		live = new V2Live();
+		live.uuid = "2007";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+		v2user = new V2User();
+		v2user.uid = 3;
+		live.publisher = v2user;
+		v2location = new V2Location();
+		v2location.lat = 39.873527D;
+		v2location.lng =116.308545D;
+		live.location = v2location;
+		list.add(live);	
+		
+		live = new V2Live();
+		live.uuid = "2006";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+		v2user = new V2User();
+		v2user.uid = 4;
+		live.publisher = v2user;
+		v2location = new V2Location();
+		v2location.lat = 39.871312D;
+		v2location.lng =116.466072D;
+		live.location = v2location;
+		list.add(live);	
+		
+		live = new V2Live();
+		live.uuid = "2008";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+		v2user = new V2User();
+		v2user.uid = 6;
+		live.publisher = v2user;
+		v2location = new V2Location();
+		v2location.lat = 39.926224D;
+		v2location.lng =116.361438D;
+		live.location = v2location;
+		list.add(live);	
+		
+		live = new V2Live();
+		live.uuid = "2009";
+		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
+		v2user = new V2User();
+		v2user.uid = 7;
+		live.publisher = v2user;
+		v2location = new V2Location();
+		v2location.lat = 39.917813D;
+		v2location.lng =116.444225D;
+		live.location = v2location;
+		list.add(live);	
+		
+		
+		
+		List<Live> l = new ArrayList<Live>(list.size());
+		for (V2Live v2live : list) {
+			l.add(new Live(new User(v2live.publisher.uid, v2live.publisher.name), v2live.url, v2live.location.lat, v2live.location.lng));
+		}
+		return l;
+	}
+		
+
+	
+	
+	
 	private void handleGetNeihoodrCallback(Message msg) {
 		JNIResponse resp = (JNIResponse)msg.obj;
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			GetNeiborhoodResponse hr = (GetNeiborhoodResponse)resp;
 			neiborhoodList.clear();
 			neiborhoodList.addAll(hr.list);
+			neiborhoodList.addAll(getTestlist());
 			updateLiveMarkOnMap(neiborhoodList);
 			if (!isInCameraView) {
 				autoPlayNecessary();
 			}
 			
 		} else {
-			//TODO get neiberhood error
+			//FIXME use 
+			neiborhoodList.clear();
+			neiborhoodList.addAll(getTestlist());
+			updateLiveMarkOnMap(neiborhoodList);
+			if (!isInCameraView) {
+				autoPlayNecessary();
+			}
+	
 		}
 	}
 	

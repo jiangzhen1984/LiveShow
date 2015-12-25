@@ -28,6 +28,9 @@ public class VideoMixerRequest {
 		return mVideoMixerRequest;
 	}
 
+	
+	
+	
 	/**
 	 * 添加自定义的回调，监听接收到的服务信令
 	 * 
