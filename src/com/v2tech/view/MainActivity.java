@@ -114,6 +114,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int REQUEST_PUBLISH_CALLBACK = 16;
 	private static final int REQUEST_FINISH_PUBLISH_CALLBACK = 17;
 	private static final int NOTIFICATION_LIVE = 18;
+	private static final int UPDATE_GPS = 19;
 
 	private static float mCurrentZoomLevel = 12F;
 
@@ -696,8 +697,9 @@ public class MainActivity extends FragmentActivity implements
 							.getLongitude() || mCacheLocation.getLatitude() != location
 							.getLatitude())) {
 				mCacheLocation = location;
-			    liveService.updateGps(location.getLatitude(), location.getLongitude());
-			    
+			   
+				updateGPS();
+			
 				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
 						1000);
 				
@@ -710,6 +712,14 @@ public class MainActivity extends FragmentActivity implements
 
 		public void onReceivePoi(BDLocation poiLocation) {
 		}
+	}
+	
+	
+	
+	private void updateGPS() {
+		mLocalHandler.sendMessageDelayed(Message.obtain(mLocalHandler,
+				UPDATE_GPS, new Double[] { mCacheLocation.getLatitude(),
+				mCacheLocation.getLongitude() }), 2000);
 	}
 
 	private LocalState mSearchState = LocalState.DONE;
@@ -1179,13 +1189,20 @@ public class MainActivity extends FragmentActivity implements
 				liveService.scanNear(lat, lng, 1000F, new MessageListener(this, SCAN_CALL_BACK, null));
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
-							INTERVAL_GET_NEIBERHOOD, 10000);
+							INTERVAL_GET_NEIBERHOOD, 5000);
 //					mLocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK,
 //							1000);
 //
 //					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
 				break;
+				
+			case UPDATE_GPS:
+				liveService.updateGps(((Double[])msg.obj)[0],((Double[])msg.obj)[1]);
+				updateGPS();
+				break;
+					
+				
 			case UPDATE_LIVE_MARK:
 //				if (isSuspended) {
 //					break;
