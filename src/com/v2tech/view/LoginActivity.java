@@ -224,11 +224,13 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private void handleRegCallback(JNIResponse resp) {
 		if (resp.getResult() != JNIResponse.Result.SUCCESS) {
 			String[] data = (String[])resp.callerObject;
-			us.login(data[0], data[1], null);
+			if (data != null) {
+				us.login(data[0], data[1], null);
+				requestHandler.post(new LoginRegRunnable(data[0], data[1]));
+			}
 			Toast.makeText(getApplicationContext(),
 					R.string.error_get_verification_code, Toast.LENGTH_SHORT)
 					.show();
-			requestHandler.post(new LoginRegRunnable(data[0], data[1]));
 		} else {
 			Toast.makeText(getApplicationContext(),
 					R.string.notification_get_verification_code,
@@ -275,7 +277,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 		@Override
 		public void run() {
 			if (isReg) {
-				us.register(number, new MessageListener(localHandler,
+				us.register(number, code,new MessageListener(localHandler,
 						REG_CALLBACK, new String[]{number, code}));
 			} else {
 				us.logout(null);

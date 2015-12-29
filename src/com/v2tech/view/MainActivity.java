@@ -35,7 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.V2.jni.ImRequest;
-import com.V2.jni.InteractionRequest;
 import com.V2.jni.ind.V2Live;
 import com.V2.jni.ind.V2Location;
 import com.V2.jni.ind.V2User;
@@ -89,7 +88,7 @@ import com.v2tech.vo.User;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
-		OnGetGeoCoderResultListener {
+		OnGetGeoCoderResultListener, UserControllerAPI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
@@ -115,6 +114,8 @@ public class MainActivity extends FragmentActivity implements
 	private static final int REQUEST_FINISH_PUBLISH_CALLBACK = 17;
 	private static final int NOTIFICATION_LIVE = 18;
 	private static final int UPDATE_GPS = 19;
+	private static final int ADD_FANDS_CALLBACK = 20;
+	private static final int REMOVE_FANDS_CALLBACK = 21;
 
 	private static float mCurrentZoomLevel = 12F;
 
@@ -198,7 +199,7 @@ public class MainActivity extends FragmentActivity implements
 		if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(code)) {
 			us.login(phone, code, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, false));
 		} else {
-			us.login(tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+			us.login((tl.getLine1Number() == null || tl.getLine1Number().isEmpty()) ? System.currentTimeMillis() + ""
 					: tl.getLine1Number(), "111111", true, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, true));
 //			ImRequest.getInstance().login(
 //					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
@@ -446,6 +447,21 @@ public class MainActivity extends FragmentActivity implements
 		}
 		super.onStop();
 	}
+	
+	
+	
+
+	@Override
+	public void addFans(long userId) {
+		liveService.addFans(userId, new MessageListener(mLocalHandler, ADD_FANDS_CALLBACK, null));
+		
+	}
+
+	@Override
+	public void removeFans(long userId) {
+		liveService.addFans(userId, new MessageListener(mLocalHandler, REMOVE_FANDS_CALLBACK, null));
+		
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -504,6 +520,7 @@ public class MainActivity extends FragmentActivity implements
 					//click word button
 				} else if (action == 2) {
 					mVideoController.addNewMessage(text);
+					liveService.sendComments(mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId(), text);
 				}
 					
 			}
@@ -959,6 +976,7 @@ public class MainActivity extends FragmentActivity implements
 				mLocalHandler.sendMessage(msg);
 			} else if (BUTTON_TAG_WORD.equals(v.getTag())) {
 				mVideoController.addNewMessage(mEditText.getText().toString());
+				liveService.sendComments(mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId(),mEditText.getText().toString());
 			}
 
 			mEditText.setText("");
@@ -1190,10 +1208,6 @@ public class MainActivity extends FragmentActivity implements
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 5000);
-//					mLocalHandler.sendEmptyMessageDelayed(UPDATE_LIVE_MARK,
-//							1000);
-//
-//					mLocalHandler.sendEmptyMessageDelayed(AUTO_PLAY_LIVE, 1000);
 				}
 				break;
 				
@@ -1204,11 +1218,6 @@ public class MainActivity extends FragmentActivity implements
 					
 				
 			case UPDATE_LIVE_MARK:
-//				if (isSuspended) {
-//					break;
-//				}
-//				List<Live> liveList = VideoBCRequest.getInstance().lives;
-//				updateLiveMarkOnMap(liveList);
 				break;
 			case RECORDING:
 //				isRecording = true;

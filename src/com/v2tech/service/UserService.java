@@ -113,12 +113,14 @@ public class UserService extends AbstractHandler {
 //										.getNickName()));
 		}
 	}
-
-	public void register(String phoneNumber, MessageListener caller) {
-		JNIResponse resp = null;
+	
+	
+	
+	public String  sendVaidationCode(String phoneNumber) {
+	JNIResponse resp = null;
 		
 		SoapObject request = new SoapObject(Constants.NAME_SPACE,
-				"AddUserByPhoneNum");
+				"CreateValidationCode");
 
 		PropertyInfo propInfo = new PropertyInfo();
 		propInfo.name = "phonenumber";
@@ -134,7 +136,7 @@ public class UserService extends AbstractHandler {
 		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
 
 		try {
-			androidHttpTransport.call("urn:AddUserByPhoneNum", envelope);
+			androidHttpTransport.call("urn:CreateValidationCode", envelope);
 
 			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
 					.getResponse();
@@ -142,9 +144,58 @@ public class UserService extends AbstractHandler {
 			
 			
 			if ("0".equals(retVale)) {
-				resp = new JNIResponse(JNIResponse.Result.FAILED);
-			} else {
 				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
+			} else {
+				resp = new JNIResponse(JNIResponse.Result.FAILED);
+			}
+
+			return retVale;
+		} catch (Exception e) {
+			e.printStackTrace();
+			resp = new JNIResponse(JNIResponse.Result.FAILED);
+		}
+		
+		return null;
+
+	}
+
+	public void register(String phoneNumber, String code,MessageListener caller) {
+		JNIResponse resp = null;
+		
+		SoapObject request = new SoapObject(Constants.NAME_SPACE,
+				"PhoneUserRegisterRequest");
+
+		PropertyInfo propInfo = new PropertyInfo();
+		propInfo.name = "phonenumber";
+		propInfo.type = PropertyInfo.STRING_CLASS;
+		propInfo.setValue(phoneNumber);
+		
+		PropertyInfo codeInfo = new PropertyInfo();
+		codeInfo.name = "code";
+		codeInfo.type = PropertyInfo.STRING_CLASS;
+		codeInfo.setValue(code);
+
+		request.addProperty(propInfo);
+		request.addProperty(codeInfo);
+
+		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+				SoapEnvelope.VER11);
+
+		envelope.setOutputSoapObject(request);
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
+
+		try {
+			androidHttpTransport.call("urn:PhoneUserRegisterRequest", envelope);
+
+			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
+					.getResponse();
+			String retVale = resultsRequestSOAP.getValue().toString();
+			
+			
+			if ("0".equals(retVale)) {
+				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
+			} else {
+				resp = new JNIResponse(JNIResponse.Result.FAILED);
 			}
 
 		} catch (Exception e) {

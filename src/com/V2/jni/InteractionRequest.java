@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.V2.jni.callback.InteractionRequestCallBack;
+import com.V2.jni.util.V2Log;
 
 public class InteractionRequest {
 	private static InteractionRequest mInteractionRequest;
@@ -175,6 +176,7 @@ public class InteractionRequest {
 	};
 
 	private void OnCommentVideo(long nUserID, String szCommentXml) {
+		V2Log.e("OnCommentVideo "+nUserID+"   "+szCommentXml);
 		for (int i = 0; i < mCallBacks.size(); i++) {
 			WeakReference<InteractionRequestCallBack> wf = mCallBacks.get(i);
 			if (wf != null && wf.get() != null) {

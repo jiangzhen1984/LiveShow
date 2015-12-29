@@ -38,6 +38,8 @@ public class LiveService extends AbstractHandler {
 	private static final int QUERY_NERY = 100;
 	private static final int REQUEST_PUBLISH = 101;
 	private static final int REQUEST_FINISH_PUBLISH = 102;
+	private static final int ADD_FANDS = 103;
+	private static final int REMOVE_FANDS = 104;
 	
 	
 	private MessageListener mLiveNotification;
@@ -75,15 +77,32 @@ public class LiveService extends AbstractHandler {
 	}
 	
 	
-	public void requestFinishPublish( MessageListener caller) {
+	public void requestFinishPublish(MessageListener caller) {
 		initTimeoutMessage(REQUEST_FINISH_PUBLISH, DEFAULT_TIME_OUT_SECS, caller);
 		InteractionRequest.getInstance().stopLive();
 	}
 	
 	
 	
+	public void sendComments(long userId, String msg) {
+		V2Log.e(userId+":"+msg);
+		InteractionRequest.getInstance().CommentVideo(userId, msg);
+	}
+	
 	public void registerLiveNotification(MessageListener listener) {
 		this.mLiveNotification = listener;
+	}
+	
+	
+	public void addFans(long userId,MessageListener caller) {
+		initTimeoutMessage(ADD_FANDS, DEFAULT_TIME_OUT_SECS, caller);
+		InteractionRequest.getInstance().addConcern(userId);
+		
+	}
+
+	public void removeFans(long userId, MessageListener caller) {
+		initTimeoutMessage(REMOVE_FANDS, DEFAULT_TIME_OUT_SECS, caller);
+		InteractionRequest.getInstance().cancelConcern(userId);
 	}
 	
 	
@@ -319,19 +338,19 @@ public class LiveService extends AbstractHandler {
 
 		@Override
 		public void OnCommentVideo(long nUserID, String szCommentXml) {
-			// TODO Auto-generated method stub
+			V2Log.e("OnCommentVideo:"+nUserID+":"+szCommentXml);
 			
 		}
 
 		@Override
 		public void OnAddConcern(long nSrcUserID, long nDstUserID) {
-			// TODO Auto-generated method stub
+			V2Log.e("OnAddConcern"+  nSrcUserID+":"+nDstUserID);
 			
 		}
 
 		@Override
 		public void OnCancelConcernl(long nSrcUserID, long nDstUserID) {
-			// TODO Auto-generated method stub
+			V2Log.e("OnCancelConcernl"+  nSrcUserID+":"+nDstUserID);
 			
 		}
 

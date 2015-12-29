@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.V2.jni.ConfRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
@@ -79,6 +78,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
+	
+	private UserControllerAPI userControllerAPI;
 
 	public MapVideoLayout(Context context) {
 		super(context);
@@ -147,6 +148,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 		initIcons();
 		notificationList = new ArrayList<NotificationWrapper>();
+		
+		userControllerAPI = (UserControllerAPI)this.getContext();
 	}
 	
 	
@@ -189,12 +192,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 				}
 				Live l = frag.getCurrentLive();
 				long uid = frag.getCurrentLive().getPublisher().getmUserId();
-				//TODO update API
-//				if (v.isSelected()) {
-//					ConfRequest.getInstance().concern(uid);
-//				} else {
-//					ConfRequest.getInstance().concernCancel(uid);
-//				}
+				if (v.isSelected()) {
+					userControllerAPI.addFans(uid);
+				} else {
+					userControllerAPI.removeFans(uid);
+				}
 				l.setFollow(!l.isFollow());
 			}
 			
