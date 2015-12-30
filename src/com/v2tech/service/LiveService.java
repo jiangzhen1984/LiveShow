@@ -3,7 +3,6 @@ package com.v2tech.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import com.V2.jni.callback.InteractionRequestCallBack;
 import com.V2.jni.ind.V2Live;
 import com.V2.jni.ind.V2Location;
 import com.V2.jni.ind.V2User;
+import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
@@ -84,6 +84,10 @@ public class LiveService extends AbstractHandler {
 	
 	
 	
+	public void addFans(Live l) {
+		InteractionRequest.getInstance().UpdateWatchStatusRequest(l.getPublisher().getmUserId(), true);
+	}
+	
 	public void sendComments(long userId, String msg) {
 		V2Log.e(userId+":"+msg);
 		InteractionRequest.getInstance().CommentVideo(userId, msg);
@@ -103,6 +107,12 @@ public class LiveService extends AbstractHandler {
 	public void removeFans(long userId, MessageListener caller) {
 		initTimeoutMessage(REMOVE_FANDS, DEFAULT_TIME_OUT_SECS, caller);
 		InteractionRequest.getInstance().cancelConcern(userId);
+	}
+	
+	
+	private MessageListener notificator;
+	public void setCommentsNotifier(MessageListener ml) {
+		notificator = ml;
 	}
 	
 	
@@ -336,9 +346,23 @@ public class LiveService extends AbstractHandler {
 			
 		}
 
+
 		@Override
 		public void OnCommentVideo(long nUserID, String szCommentXml) {
+			String msg = "";
+			int idx = szCommentXml.indexOf("data=");
+			if (idx != -1) {
+				char cr =szCommentXml.charAt(idx+6);
+				int end = szCommentXml.indexOf(cr, idx + 6);
+				if (end != -1) {
+					msg = szCommentXml.substring(idx + 6, end);
+				}
+			}
 			V2Log.e("OnCommentVideo:"+nUserID+":"+szCommentXml);
+			Handler h = notificator.refH.get();
+			if (h != null) {
+				Message.obtain(h, notificator.what, new VideoCommentInd(nUserID, msg)).sendToTarget();;
+			}
 			
 		}
 

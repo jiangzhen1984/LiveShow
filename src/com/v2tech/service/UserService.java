@@ -163,7 +163,7 @@ public class UserService extends AbstractHandler {
 		JNIResponse resp = null;
 		
 		SoapObject request = new SoapObject(Constants.NAME_SPACE,
-				"PhoneUserRegisterRequest");
+				"PhoneUserRegister");
 
 		PropertyInfo propInfo = new PropertyInfo();
 		propInfo.name = "phonenumber";
@@ -185,7 +185,7 @@ public class UserService extends AbstractHandler {
 		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
 
 		try {
-			androidHttpTransport.call("urn:PhoneUserRegisterRequest", envelope);
+			androidHttpTransport.call("urn:PhoneUserRegister", envelope);
 
 			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
 					.getResponse();
@@ -194,6 +194,7 @@ public class UserService extends AbstractHandler {
 			
 			if ("0".equals(retVale)) {
 				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
+				resp.callerObject = caller.userObj;
 			} else {
 				resp = new JNIResponse(JNIResponse.Result.FAILED);
 			}

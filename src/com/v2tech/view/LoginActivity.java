@@ -94,9 +94,17 @@ public class LoginActivity extends Activity implements OnClickListener {
 						.setError(getText(R.string.error_cellphone_required));
 				return;
 			}
-			// TODO check phone number is correct
-			requestHandler.post(new LoginRegRunnable(mCellphoneNumberET
-					.getText().toString()));
+			requestHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					us.sendVaidationCode(mCellphoneNumberET
+							.getText().toString());
+					
+				}
+				
+			});
+			
 			break;
 		case R.id.login_reg_btn:
 			if (TextUtils.isEmpty(mCellphoneNumberET.getText())) {
@@ -111,7 +119,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			}
 			requestHandler.post(new LoginRegRunnable(mCellphoneNumberET
 					.getText().toString(), mVerificationCodeET.getText()
-					.toString()));
+					.toString(),  true));
 			break;
 		case R.id.return_button:
 			finish();
@@ -223,18 +231,12 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	private void handleRegCallback(JNIResponse resp) {
 		if (resp.getResult() != JNIResponse.Result.SUCCESS) {
-			String[] data = (String[])resp.callerObject;
-			if (data != null) {
-				us.login(data[0], data[1], null);
-				requestHandler.post(new LoginRegRunnable(data[0], data[1]));
-			}
 			Toast.makeText(getApplicationContext(),
 					R.string.error_get_verification_code, Toast.LENGTH_SHORT)
 					.show();
 		} else {
-			Toast.makeText(getApplicationContext(),
-					R.string.notification_get_verification_code,
-					Toast.LENGTH_SHORT).show();
+			String[] data = (String[])resp.callerObject;
+			requestHandler.post(new LoginRegRunnable(data[0], data[1], false));
 		}
 	}
 
@@ -263,22 +265,18 @@ public class LoginActivity extends Activity implements OnClickListener {
 		private String code;
 		private boolean isReg;
 
-		public LoginRegRunnable(String number, String code) {
+		public LoginRegRunnable(String number, String code, boolean reg) {
 			this.number = number;
 			this.code = code;
-			isReg = false;
+			isReg = reg;
 		}
 
-		public LoginRegRunnable(String number) {
-			this.number = number;
-			isReg = true;
-		}
 
 		@Override
 		public void run() {
 			if (isReg) {
 				us.register(number, code,new MessageListener(localHandler,
-						REG_CALLBACK, new String[]{number, code}));
+							REG_CALLBACK, new String[]{number, code}));
 			} else {
 				us.logout(null);
 				us.login(number,code, new MessageListener(localHandler,
@@ -292,5 +290,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 		}
 	}
+	
+	
+	
+	
 
 }

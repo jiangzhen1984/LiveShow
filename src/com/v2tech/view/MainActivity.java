@@ -38,6 +38,7 @@ import com.V2.jni.ImRequest;
 import com.V2.jni.ind.V2Live;
 import com.V2.jni.ind.V2Location;
 import com.V2.jni.ind.V2User;
+import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -116,6 +117,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int UPDATE_GPS = 19;
 	private static final int ADD_FANDS_CALLBACK = 20;
 	private static final int REMOVE_FANDS_CALLBACK = 21;
+	private static final int VIDEO_COMMENT_IND = 22;
 
 	private static float mCurrentZoomLevel = 12F;
 
@@ -206,6 +208,8 @@ public class MainActivity extends FragmentActivity implements
 //							: tl.getLine1Number(), "111111",
 //					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
 		}
+		
+		liveService.setCommentsNotifier(new MessageListener(mLocalHandler, VIDEO_COMMENT_IND, null));
 
 	}
 
@@ -929,6 +933,7 @@ public class MainActivity extends FragmentActivity implements
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (l != null && !TextUtils.isEmpty(l.getUrl())) {
+					liveService.addFans(l);
 					if (mCurrentVideoFragment != null) {
 						updateCurrentVideoState(mCurrentVideoFragment, false);
 					}
@@ -1288,6 +1293,12 @@ public class MainActivity extends FragmentActivity implements
 				break;
 			case NOTIFICATION_LIVE:
 				handleLiveNotification(msg);
+				break;
+			case VIDEO_COMMENT_IND:
+				VideoCommentInd vci = (VideoCommentInd)msg.obj;
+				if (mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId() == vci.userId) {
+					mVideoController.addNewMessage(vci.msg);
+				}
 				break;
 			}
 		}
