@@ -1,5 +1,7 @@
 package com.v2tech.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,13 +14,11 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.V2.jni.ImRequest;
 import com.V2.jni.ImRequestCallbackAdapter;
 import com.V2.jni.V2ClientType;
 import com.V2.jni.V2GlobalEnum;
-import com.V2.jni.util.EscapedcharactersProcessing;
 import com.V2.jni.util.V2Log;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
@@ -158,6 +158,19 @@ public class UserService extends AbstractHandler {
 		return null;
 
 	}
+	
+	public static String getMD5(String val) throws NoSuchAlgorithmException {
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		md5.update(val.getBytes());
+		byte[] m = md5.digest();// 加密
+		StringBuilder hex = new StringBuilder(m.length * 2);  
+	    for (byte b : m) {  
+	        if ((b & 0xFF) < 0x10)  
+	            hex.append("0");  
+	        hex.append(Integer.toHexString(b & 0xFF));  
+	    }  
+		return hex.toString();
+	}
 
 	public void register(String phoneNumber, String code,MessageListener caller) {
 		JNIResponse resp = null;
@@ -173,7 +186,17 @@ public class UserService extends AbstractHandler {
 		PropertyInfo codeInfo = new PropertyInfo();
 		codeInfo.name = "code";
 		codeInfo.type = PropertyInfo.STRING_CLASS;
-		codeInfo.setValue(code);
+		try {
+			codeInfo.setValue(getMD5(code).toUpperCase());
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+			resp = new JNIResponse(JNIResponse.Result.FAILED);
+			Message msg = Message.obtain();
+			msg.what = caller.what;
+			msg.obj = resp;
+			caller.refH.get().sendMessage(msg);
+			return;
+		}
 
 		request.addProperty(propInfo);
 		request.addProperty(codeInfo);
