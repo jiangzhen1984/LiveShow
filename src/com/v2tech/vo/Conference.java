@@ -226,17 +226,23 @@ public class Conference implements Parcelable {
 	public String getInvitedAttendeesXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<xml>");
-		for (User u : this.invitedList) {
-			sb.append("<user id=\"").append(u.getmUserId()).append("\" ")
-					.append("nickname=\"")
-					.append(EscapedcharactersProcessing.convert(u.getName()))
-					.append("\"/>");
+			if (invitedList != null && invitedList.size() > 0) {
+			for (User u : this.invitedList) {
+				sb.append("<user id=\"").append(u.getmUserId()).append("\" ")
+						.append("nickname=\"")
+						.append(EscapedcharactersProcessing.convert(u.getName()))
+						.append("\"/>");
+			}
 		}
 
 		sb.append("</xml>");
 		return sb.toString();
 	}
 
+	
+	public void updateConfId(long id) {
+		this.id = id;
+	}
 	/**
 	 * <conf canoper='0' chairuserid='17' createuserid='17' endtime='0'
 	 * id='514015216076' inviteuser='1' layout='1' starttime='1401521340'

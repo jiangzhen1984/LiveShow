@@ -73,6 +73,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
+import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveService;
 import com.v2tech.service.MessageListener;
@@ -80,10 +81,11 @@ import com.v2tech.service.UserService;
 import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
+import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
-import com.v2tech.service.jni.RequestPublishResponse;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.widget.VideoShowFragment;
@@ -103,7 +105,6 @@ public class MainActivity extends FragmentActivity implements
 	private static final int PLAY_LIVE = 3;
 	private static final int INTERVAL_GET_NEIBERHOOD = 4;
 	private static final int UPDATE_LIVE_MARK = 5;
-	private static final int RECORDING = 6;
 	private static final int START_PUBLISH = 8;
 	private static final int STOP_PUBLISH = 9;
 	private static final int GET_MAP_SNAPSHOT = 10;
@@ -159,7 +160,9 @@ public class MainActivity extends FragmentActivity implements
 	private UserService us;
 	private String phone;
 	private LiveService liveService;
+	private ConferenceService confService;
 	private List<Live> neiborhoodList;
+	Conference currentLive;
 	
 
 	@Override
@@ -167,6 +170,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 
 		liveService = new LiveService();
+		confService = new ConferenceService();
 		neiborhoodList = new ArrayList<Live>();
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
@@ -319,8 +323,8 @@ public class MainActivity extends FragmentActivity implements
 		});
 
 
-		mLocateButton = findViewById(R.id.location);
-		mLocateButton.setOnClickListener(mLocateClickListener);
+//		mLocateButton = findViewById(R.id.location);
+//		mLocateButton.setOnClickListener(mLocateClickListener);
 		mBottomLayout.bringToFront();
 
 	}
@@ -487,6 +491,8 @@ public class MainActivity extends FragmentActivity implements
 		ImRequest.getInstance().ImLogout();
 		liveService.clearCalledBack();
 		neiborhoodList.clear();
+		
+		confService.clearCalledBack();
 	}
 
 	@Override
@@ -706,8 +712,8 @@ public class MainActivity extends FragmentActivity implements
 					return;
 				}
 				mBaiduMap.animateMapStatus(u);
-				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
-						selfLocation));
+//				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
+//						selfLocation));
 				
 			}
 
@@ -781,7 +787,7 @@ public class MainActivity extends FragmentActivity implements
 		mBaiduMap.clear();
 		currentOverlay.clear();
 		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_online);
+				.fromResource(R.drawable.marker_live);
 		BitmapDescriptor live = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		for (Live l : list) {
@@ -854,8 +860,8 @@ public class MainActivity extends FragmentActivity implements
 				currentVideoLocation, mCurrentZoomLevel);
 		mBaiduMap.animateMapStatus(u);
 
-		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
-				currentVideoLocation));
+//		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
+//				currentVideoLocation));
 	}
 
 	private boolean autoPlayNecessary() {
@@ -1023,20 +1029,8 @@ public class MainActivity extends FragmentActivity implements
 	private void handleRequestPublishCallback(Message msg) {
 		JNIResponse resp = (JNIResponse)msg.obj;
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			RequestPublishResponse  hr = (RequestPublishResponse)resp;
-			
-			isRecording = true;
-			
-			String uuid = null;
-			int ind = hr.url.indexOf("file=");
-			if (ind != -1) {
-				uuid =hr.url
-						.substring(ind + 5);
-			}
-			cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
-					+ uuid;
-			V2Log.e("Start to pushlish "+ cv.publishUrl);
-			cv.startPublish();
+			RequestConfCreateResponse  hr = (RequestConfCreateResponse)resp;
+			currentLive.updateConfId(hr.getConfId());
 			
 		} else {
 			Toast.makeText(getBaseContext(), "发布视频错误:" + resp.getResult(), Toast.LENGTH_SHORT).show();
@@ -1050,7 +1044,7 @@ public class MainActivity extends FragmentActivity implements
 		List<V2Live> list = new ArrayList<V2Live>();
 		
 		V2Live live = new V2Live();
-		live.uuid = "2004";
+		live.uuid = "8002";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/2004"+ ".m3u8";
 		V2User v2user = new V2User();
 		v2user.uid = 1;
@@ -1064,7 +1058,7 @@ public class MainActivity extends FragmentActivity implements
 		
 		
 		live = new V2Live();
-		live.uuid = "2005";
+		live.uuid = "8001";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
 		v2user = new V2User();
 		v2user.uid = 2;
@@ -1077,7 +1071,7 @@ public class MainActivity extends FragmentActivity implements
 		
 		
 		live = new V2Live();
-		live.uuid = "2007";
+		live.uuid = "8002";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
 		v2user = new V2User();
 		v2user.uid = 3;
@@ -1089,7 +1083,7 @@ public class MainActivity extends FragmentActivity implements
 		list.add(live);	
 		
 		live = new V2Live();
-		live.uuid = "2006";
+		live.uuid = "8001";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
 		v2user = new V2User();
 		v2user.uid = 4;
@@ -1101,7 +1095,7 @@ public class MainActivity extends FragmentActivity implements
 		list.add(live);	
 		
 		live = new V2Live();
-		live.uuid = "2008";
+		live.uuid = "8004";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
 		v2user = new V2User();
 		v2user.uid = 6;
@@ -1113,7 +1107,7 @@ public class MainActivity extends FragmentActivity implements
 		list.add(live);	
 		
 		live = new V2Live();
-		live.uuid = "2009";
+		live.uuid = "8001";
 		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
 		v2user = new V2User();
 		v2user.uid = 7;
@@ -1224,37 +1218,25 @@ public class MainActivity extends FragmentActivity implements
 				
 			case UPDATE_LIVE_MARK:
 				break;
-			case RECORDING:
-//				isRecording = true;
-//				if (VideoBCRequest.getInstance().url == null) {
-//					Message dm = obtainMessage(RECORDING);
-//					this.sendMessageDelayed(dm, 300);
-//				} else {
-//					String uuid = null;
-//					int ind = VideoBCRequest.getInstance().url.indexOf("file=");
-//					if (ind != -1) {
-//						uuid = VideoBCRequest.getInstance().url
-//								.substring(ind + 5);
-//					}
-//					cv.publishUrl = "rtmp://" + Constants.SERVER + "/vod/"
-//							+ uuid;
-//					cv.startPublish();
-//				}
-				break;
 			case START_PUBLISH:
 //				VideoBCRequest.getInstance().startLive();
 //				Message m = Message.obtain(this, RECORDING);
 //				this.sendMessageDelayed(m, 300);
-				liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
+				//liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
+				currentLive = new Conference(0, GlobalHolder.getInstance().getCurrentUserId());
+				confService.createConference(currentLive, new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
 				break;
 			case REQUEST_PUBLISH_CALLBACK:
 				handleRequestPublishCallback(msg);
 				break;
 			case STOP_PUBLISH:
 				//VideoBCRequest.getInstance().stopLive();
-				liveService.requestFinishPublish(null);
-				cv.stopPublish();
+//				liveService.requestFinishPublish(null);
+//				cv.stopPublish();
+				confService.quitConference(currentLive, null);
+				currentLive = null;
 				isRecording = false;
+				currentLive = null;
 				break;
 			case GET_MAP_SNAPSHOT:
 				getMapSnapshot();

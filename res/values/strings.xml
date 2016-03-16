@@ -7,7 +7,7 @@
      <string name="live_video_start_record">开始共享</string>
      <string name="live_video_stop_recording">停止共享</string>
      
-     <string name="msg_send_button_text">W</string>
+     <string name="msg_send_button_text">发送</string>
      <string name="pos_search_button_text">M</string>
      
      
@@ -31,5 +31,7 @@
      <string name="error_verification_code_required">请输入验证码</string>
      <string name="error_get_verification_code">获取验证码失败!</string>
      <string name="error_login_in">登录失败!</string>
+     
+     <string name="bottom_seatch_text_tip">搜索or说点什么?</string>
 </resources>
 

@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -112,7 +113,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.compassEnabled(true);
 		mapOptions.scaleControlEnabled(true);
-		mapOptions.zoomControlsEnabled(true);
+		mapOptions.zoomControlsEnabled(false);
 		mapOptions.rotateGesturesEnabled(true);
 		mMapView = new MapView(getContext(), mapOptions);
 
@@ -155,30 +156,29 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	
 	
 	private void initIcons() {
-		favButton = new ImageView(this.getContext());
-		favButton.setId((int)System.currentTimeMillis());
-		favButton.setPadding(10, 10, 10, 10);
-		favButton.setImageResource(R.drawable.fav_button_selector);
-		RelativeLayout.LayoutParams favButtonLayout = new RelativeLayout.LayoutParams(
+		
+		View rightSideLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, null);
+		favButton = (ImageView)rightSideLayout.findViewById(R.id.recommendation_button);
+		
+
+		RelativeLayout.LayoutParams rightSideLayoutParm = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.MATCH_PARENT);
+		rightSideLayoutParm.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//		
+		mDragLayout.addView(rightSideLayout, rightSideLayoutParm);
+		
+		
+		
+		View bottomLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_layout_bottom_layout, null);
+		
+		View publisherButton = bottomLayout.findViewById(R.id.liver_ly);
+		RelativeLayout.LayoutParams bottomLayoutParm = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		favButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		favButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		bottomLayoutParm.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		
-		mDragLayout.addView(favButton, favButtonLayout);
-		
-		
-		ImageView publisherButton = new ImageView(this.getContext());
-		publisherButton.setId((int)System.currentTimeMillis());
-		publisherButton.setPadding(10, 10, 10, 10);
-		publisherButton.setImageResource(R.drawable.publisher);
-		RelativeLayout.LayoutParams publisherButtonLayout = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		publisherButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		publisherButtonLayout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		
-		mDragLayout.addView(publisherButton, publisherButtonLayout);
+		mDragLayout.addView(bottomLayout, bottomLayoutParm);
 		
 		favButton.setOnClickListener(new OnClickListener() {
 
@@ -212,16 +212,16 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		});
 		
 		
-		notificationLayout = new LinearLayout(getContext());
-		RelativeLayout.LayoutParams notificationLayoutParameter = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		notificationLayoutParameter.setMargins(10, 0, 10, 0);
-		notificationLayoutParameter.addRule(RelativeLayout.RIGHT_OF, publisherButton.getId());
-		notificationLayoutParameter.addRule(RelativeLayout.LEFT_OF, favButton.getId());
-		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_TOP, favButton.getId());
-		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_BOTTOM, favButton.getId());
-		mDragLayout.addView(notificationLayout, notificationLayoutParameter);
+//		notificationLayout = new LinearLayout(getContext());
+//		RelativeLayout.LayoutParams notificationLayoutParameter = new RelativeLayout.LayoutParams(
+//				RelativeLayout.LayoutParams.MATCH_PARENT,
+//				RelativeLayout.LayoutParams.WRAP_CONTENT);
+//		notificationLayoutParameter.setMargins(10, 0, 10, 0);
+//		notificationLayoutParameter.addRule(RelativeLayout.RIGHT_OF, publisherButton.getId());
+//		notificationLayoutParameter.addRule(RelativeLayout.LEFT_OF, favButton.getId());
+//		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_TOP, favButton.getId());
+//		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_BOTTOM, favButton.getId());
+//		mDragLayout.addView(notificationLayout, notificationLayoutParameter);
 	}
 
 	public BaiduMap getMap() {

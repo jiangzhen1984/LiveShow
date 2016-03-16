@@ -53,97 +53,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
 
-        <ImageView
-            android:id="@+id/location"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            android:src="@drawable/location" />
 
-        <!--
-        <com.v2tech.widget.BottomButtonLayout
-            android:id="@+id/bottom_button_ly"
+             
+               <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/location" />
-        -->
+            layout="@layout/bottom_button_layout" />
 
-        <RelativeLayout
-            android:id="@+id/bottom_button_ly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/location"
-            android:layout_centerVertical="true"
-             >
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:alpha="0.5"
-                android:background="#000000" >
-                
-                  <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="6dp"
-                    android:text="@string/pos_search_button_text"
-                    android:textColor="#ffffff"
-                    android:textSize="25sp"
-                    android:textStyle="bold"
-                    android:visibility="invisible" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:padding="5dp" >
-
-                <TextView
-                    android:id="@+id/map_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="6dp"
-                    android:text="@string/pos_search_button_text"
-                    android:textColor="@color/bottom_button_text_color"
-                    android:textSize="@dimen/bottom_button_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/msg_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="6dp"
-                    android:text="@string/msg_send_button_text"
-                    android:textColor="@color/bottom_button_text_color"
-                    android:textSize="@dimen/bottom_button_text_size"
-                    android:textStyle="bold" />
-
-                <com.v2tech.widget.FloatEditText
-                    android:id="@+id/edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/msg_button"
-                    android:layout_alignTop="@+id/msg_button"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/msg_button"
-                    android:layout_toRightOf="@+id/map_button"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" >
-                </com.v2tech.widget.FloatEditText>
-            </RelativeLayout>
-        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

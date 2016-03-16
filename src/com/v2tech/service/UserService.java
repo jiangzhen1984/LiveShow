@@ -260,7 +260,7 @@ public class UserService extends AbstractHandler {
 					"yyyy-MM-dd HH:mm:ss");
 			String date = fromat.format(new Date(
 					GlobalConfig.SERVER_TIME * 1000));
-			V2Log.d("get server time ：" + date);
+			V2Log.i("get server time ：" + date+"   ===> "+ nUserID);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
 			Message m = Message.obtain(handler, JNI_REQUEST_LOG_IN,

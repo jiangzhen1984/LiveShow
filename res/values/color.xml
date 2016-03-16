@@ -29,5 +29,9 @@
     <color name="login_reg_title_bar_bg">#ffffff</color>
     <color name="login_reg_layout_bg">#f2f2f2</color>
     
-     <color name="bottom_button_text_color">#ff5500</color>
+     <color name="bottom_button_text_color">#ffffff</color>
+     <color name="bottom_search_text_color">#b0acab</color>
+     <color name="video_right_border_text_color">#ffffff</color>
+     
+     <color name="video_layout_bottom_text_color">#ffffff</color>
 </resources>
