@@ -3,24 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <RelativeLayout
-        android:id="@+id/bottom_button_ly"
+   <include
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            >
-
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            layout="@layout/bottom_button_layout" />
-        </RelativeLayout>
-
-        
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/bottom_button_layout"
+		 />
 
 </RelativeLayout>

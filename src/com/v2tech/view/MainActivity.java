@@ -183,6 +183,7 @@ public class MainActivity extends FragmentActivity implements
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
 		initLocation();
+		initResetOrder();
 
 		mHandlerThread = new HandlerThread("back-end");
 		mHandlerThread.start();
@@ -290,14 +291,11 @@ public class MainActivity extends FragmentActivity implements
 			}
 			 
 		 });
-		 mPersonalButton.bringToFront();
+		
 	}
 
 	private void initBottomButtonLayout() {
 		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
-		// mBottomButtonLayout =
-		// (BottomButtonLayout)findViewById(R.id.bottom_button_ly);
-		// mBottomButtonLayout.setButtonListener(mButtonClickedListener);
 
 		View button = findViewById(R.id.map_button);
 		button.setTag(BUTTON_TAG_MAP);
@@ -314,6 +312,7 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onClick(View v) {
+				mBottomLayout.setVisibility(View.INVISIBLE);
 				Intent i = new Intent();
 				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
 				startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
@@ -323,9 +322,9 @@ public class MainActivity extends FragmentActivity implements
 		});
 
 
-//		mLocateButton = findViewById(R.id.location);
-//		mLocateButton.setOnClickListener(mLocateClickListener);
-		mBottomLayout.bringToFront();
+		mLocateButton = findViewById(R.id.map_locate_button);
+		mLocateButton.setOnClickListener(mLocateClickListener);
+		
 
 	}
 
@@ -398,7 +397,14 @@ public class MainActivity extends FragmentActivity implements
 						.getMeasuredHeight()) / 2;
 		videoShareLayout.addView(mShareVideoButton, buttonfl);
 
-		mMainLayout.bringToFront();
+		
+	}
+	
+	
+	private void initResetOrder() {
+		mBottomLayout.bringToFront();
+		mPersonalButton.bringToFront();
+		mLocateButton.bringToFront();
 	}
 
 	private int getPreWidth() {
@@ -506,6 +512,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_CANCELED) {
+			mBottomLayout.setVisibility(View.VISIBLE);
+			mLocateButton.setVisibility(View.VISIBLE);
+			initResetOrder();
 			return;
 		}
 		
@@ -513,6 +522,9 @@ public class MainActivity extends FragmentActivity implements
 			mShareVideoButton.performClick();
 			return;
 		} else if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
+			mBottomLayout.setVisibility(View.VISIBLE);
+			mLocateButton.setVisibility(View.VISIBLE);
+			initResetOrder();
 			if (data == null || data.getExtras() == null) {
 				return;
 			}
@@ -596,6 +608,7 @@ public class MainActivity extends FragmentActivity implements
 			}
 			isInCameraView = true;
 			updateCurrentVideoState(mCurrentVideoFragment, false);
+			mLocateButton.setVisibility(View.GONE);
 			mBottomLayout.setVisibility(View.GONE);
 		}
 
@@ -608,8 +621,9 @@ public class MainActivity extends FragmentActivity implements
 			isInCameraView = false;
 			updateCurrentVideoState(mCurrentVideoFragment, true);
 			mBottomLayout.setVisibility(View.VISIBLE);
-			mBottomLayout.bringToFront();
+			mLocateButton.setVisibility(View.VISIBLE);
 			mMapVideoLayout.pauseDrawState(false);
+			initResetOrder();
 		}
 		
 		@Override
@@ -712,8 +726,8 @@ public class MainActivity extends FragmentActivity implements
 					return;
 				}
 				mBaiduMap.animateMapStatus(u);
-//				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
-//						selfLocation));
+				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
+						selfLocation));
 				
 			}
 
@@ -860,8 +874,8 @@ public class MainActivity extends FragmentActivity implements
 				currentVideoLocation, mCurrentZoomLevel);
 		mBaiduMap.animateMapStatus(u);
 
-//		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
-//				currentVideoLocation));
+		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
+				currentVideoLocation));
 	}
 
 	private boolean autoPlayNecessary() {

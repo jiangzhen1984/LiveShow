@@ -34,18 +34,17 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/bottom_button_layout_margin"
         android:layout_marginEnd="@dimen/bottom_button_layout_margin"
+        android:layout_marginRight="@dimen/bottom_button_layout_margin"
         android:background="@drawable/search_bg"
-        android:paddingRight="@dimen/bottom_button_text_padding"
-        android:paddingLeft="@dimen/bottom_button_text_padding"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
         android:gravity="center"
+        android:paddingBottom="1dp"
+        android:paddingLeft="@dimen/bottom_button_text_padding"
+        android:paddingRight="@dimen/bottom_button_text_padding"
+        android:paddingTop="1dp"
         android:text="@string/msg_send_button_text"
         android:textColor="@color/bottom_button_text_color"
-        android:textSize="@dimen/bottom_button_text_size"
-         />
+        android:textSize="@dimen/bottom_button_text_size" />
 
     <com.v2tech.widget.FloatEditText
         android:id="@+id/edit_text"
@@ -62,9 +61,20 @@
         android:ems="10"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:text="@string/bottom_seatch_text_tip"
+        android:freezesText="false"
+        android:gravity="bottom|left"
+        android:hint="@string/bottom_seatch_text_tip"
         android:textColor="@color/bottom_search_text_color"
-        android:textSize="15sp" >
+        android:textSize="@dimen/bottom_button_text_size" >
     </com.v2tech.widget.FloatEditText>
+
+    <ImageView
+        android:id="@+id/emoji_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/edit_text"
+        android:layout_alignRight="@+id/edit_text"
+        android:layout_centerVertical="true"
+        android:src="@drawable/emoji" />
 
 </RelativeLayout>
