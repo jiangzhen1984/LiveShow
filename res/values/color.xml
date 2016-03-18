@@ -34,4 +34,11 @@
      <color name="video_right_border_text_color">#ffffff</color>
      
      <color name="video_layout_bottom_text_color">#ffffff</color>
+     <color name="video_share_button_text_color">#00ff00</color>
+     
+     
+     <color name="login_verification_text_code_color">#ff0000</color>
+     
+     <color name="login_start_button_text_enabled_color">#ffffff</color>
+     <color name="login_start_button_text_disable_color">#ff0000</color>
 </resources>

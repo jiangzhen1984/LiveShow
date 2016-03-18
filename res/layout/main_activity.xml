@@ -19,8 +19,12 @@
     <FrameLayout
         android:id="@+id/video_share_ly"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg" >
+        android:layout_height="match_parent" >
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/video_share_layout" />
     </FrameLayout>
 
     <FrameLayout

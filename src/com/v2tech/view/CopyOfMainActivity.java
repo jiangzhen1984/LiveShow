@@ -73,7 +73,6 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
-import com.v2tech.presenter.MainPresenter;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveService;
@@ -91,8 +90,8 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.widget.VideoShowFragment;
 
-public class MainActivity extends FragmentActivity implements
-		OnGetGeoCoderResultListener,View.OnClickListener, MainPresenter.MainPresenterUI {
+public class CopyOfMainActivity extends FragmentActivity implements
+		OnGetGeoCoderResultListener, UserControllerAPI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
@@ -160,21 +159,24 @@ public class MainActivity extends FragmentActivity implements
 	private View mPersonalButton;
 	private UserService us;
 	private String phone;
+	private LiveService liveService;
+	private ConferenceService confService;
+	private List<Live> neiborhoodList;
 	Conference currentLive;
-
 	
-	MainPresenter presenter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (presenter == null) {
-			presenter = new MainPresenter(this, this);
-		}
+
+		liveService = new LiveService();
+		confService = new ConferenceService();
+		neiborhoodList = new ArrayList<Live>();
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
 		mDisplay = getResources().getDisplayMetrics();
+		us = new UserService();
 
 		initMapviewLayout();
 		initVideoShareLayout();
@@ -183,7 +185,36 @@ public class MainActivity extends FragmentActivity implements
 		initLocation();
 		initResetOrder();
 
-		presenter.uicreated();
+		mHandlerThread = new HandlerThread("back-end");
+		mHandlerThread.start();
+		while (!mHandlerThread.isAlive()) {
+			try {
+				wait(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		mLocalHandler = new LocalHandler(mHandlerThread.getLooper());
+
+		liveService.registerLiveNotification(new MessageListener(mLocalHandler, NOTIFICATION_LIVE, null));
+		
+		
+		TelephonyManager tl = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		
+		phone = SPUtil.getConfigStrValue(getApplicationContext(), "cellphone");
+		String code = SPUtil.getConfigStrValue(getApplicationContext(), "code");
+		if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(code)) {
+			us.login(phone, code, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, false));
+		} else {
+			us.login((tl.getLine1Number() == null || tl.getLine1Number().isEmpty()) ? System.currentTimeMillis() + ""
+					: tl.getLine1Number(), "111111", true, new MessageListener(mLocalHandler, AUTO_LOGIN_CALL_BACK, true));
+//			ImRequest.getInstance().login(
+//					tl.getLine1Number() == null ? System.currentTimeMillis() + ""
+//							: tl.getLine1Number(), "111111",
+//					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, true);
+		}
+		
+		liveService.setCommentsNotifier(new MessageListener(mLocalHandler, VIDEO_COMMENT_IND, null));
 
 	}
 
@@ -241,26 +272,25 @@ public class MainActivity extends FragmentActivity implements
 //		 titleBar.setBackgroundColor(Color.TRANSPARENT);
 //		 titleBar.setAlpha(0.3F);
 		 this.mPersonalButton = findViewById(R.id.personal_button);
-		 mPersonalButton.setOnClickListener(this);
-//		 new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				if (GlobalHolder.getInstance().getCurrentUser() != null) {
-//					Intent i = new Intent();
-//					i.setClass(getApplicationContext(), PersonalActivity.class);
-//					startActivity(i);
-//				} else {
-//					Intent i = new Intent();
-//					i.setClass(getApplicationContext(), LoginActivity.class);
-//					Intent pending = new Intent();
-//					pending.setClass(getApplicationContext(), PersonalActivity.class);
-//				    i.putExtra("pendingintent", pending);
-//					startActivity(i);
-//				}
-//			}
-//			 
-//		 });
+		 mPersonalButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (GlobalHolder.getInstance().getCurrentUser() != null) {
+					Intent i = new Intent();
+					i.setClass(getApplicationContext(), PersonalActivity.class);
+					startActivity(i);
+				} else {
+					Intent i = new Intent();
+					i.setClass(getApplicationContext(), LoginActivity.class);
+					Intent pending = new Intent();
+					pending.setClass(getApplicationContext(), PersonalActivity.class);
+				    i.putExtra("pendingintent", pending);
+					startActivity(i);
+				}
+			}
+			 
+		 });
 		
 	}
 
@@ -269,32 +299,31 @@ public class MainActivity extends FragmentActivity implements
 
 		View button = findViewById(R.id.map_button);
 		button.setTag(BUTTON_TAG_MAP);
-		button.setOnClickListener(this);
+		button.setOnClickListener(mBottomButtonClickedListener);
 
 		button = findViewById(R.id.msg_button);
 		button.setTag(BUTTON_TAG_WORD);
-		button.setOnClickListener(this);
+		button.setOnClickListener(mBottomButtonClickedListener);
 
 		mEditText = (EditText) findViewById(R.id.edit_text);
 		mEditText.setInputType(InputType.TYPE_NULL);
 		mEditText.setFocusable(true);
-		mEditText.setOnClickListener(this);
-//		new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				mBottomLayout.setVisibility(View.INVISIBLE);
-//				Intent i = new Intent();
-//				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
-//				startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
-//				
-//			}
-//			
-//		});
+		mEditText.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mBottomLayout.setVisibility(View.INVISIBLE);
+				Intent i = new Intent();
+				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
+				startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
+				
+			}
+			
+		});
 
 
 		mLocateButton = findViewById(R.id.map_locate_button);
-		mLocateButton.setOnClickListener(this);
+		mLocateButton.setOnClickListener(mLocateClickListener);
 		
 
 	}
@@ -302,10 +331,73 @@ public class MainActivity extends FragmentActivity implements
 	
 	private boolean initVideoShareLayoutFlag = true;
 	private void initVideoShareLayout() {
+		videoShareLayout = (FrameLayout) findViewById(R.id.video_share_ly);
+		int width = getPreWidth();
+		int height = getPreHeight(width);
+		cv = new CameraView(this);
+		cv.setZOrderOnTop(false);
+		cv.setZOrderMediaOverlay(false);
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(width, height - 80);
+		fl.leftMargin = (mDisplay.widthPixels - width) / 2;
+		videoShareLayout.addView(cv, fl);
 		
-		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
-		mShareVideoButton = (Button)findViewById(R.id.video_share_button);
-		mShareVideoButton.setOnClickListener(this);
+
+		mShareVideoButton = new Button(this);
+		mShareVideoButton.setText("分享视频");
+		mShareVideoButton.setPadding(12, 12, 12, 12);
+		mShareVideoButton.setTextColor(Color.GREEN);
+		mShareVideoButton
+				.setBackgroundResource(R.drawable.video_share_button_bg);
+		mShareVideoButton.setTextSize(13);
+		mShareVideoButton.setTag("none");
+		mShareVideoButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+//				if (GlobalHolder.getInstance().getCurrentUser() == null) {
+//					Intent i = new Intent();
+//					i.setClass(getApplicationContext(), LoginActivity.class);
+//					startActivityForResult(i, REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE);
+//					return;
+//				}
+				if ("none".equals(mShareVideoButton.getTag())) {
+					mShareVideoButton.setTag("recording");
+					mShareVideoButton.setText("取消分享");
+					Message.obtain(mLocalHandler, START_PUBLISH).sendToTarget();
+				} else {
+					mShareVideoButton.setTag("none");
+					mShareVideoButton.setText("分享视频");
+					Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
+					mMapVideoLayout.requestUpFlying();
+				}
+			}
+
+		});
+
+		mapSnapshot = new ImageView(this);
+		mapSnapshot.setImageResource(R.drawable.bg);
+		mapSnapshot.setScaleType(ScaleType.FIT_CENTER);
+		mapSnapshot.setAlpha(0.3F);
+		mapSnapshot.setOnTouchListener(dragListener);
+		FrameLayout.LayoutParams flMapView = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT, mDisplay.heightPixels
+						- height);
+		flMapView.topMargin = height;
+		videoShareLayout.addView(mapSnapshot, flMapView);
+
+		FrameLayout.LayoutParams buttonfl = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.WRAP_CONTENT,
+				FrameLayout.LayoutParams.WRAP_CONTENT);
+		mShareVideoButton.measure(View.MeasureSpec.UNSPECIFIED,
+				View.MeasureSpec.UNSPECIFIED);
+		buttonfl.leftMargin = (mDisplay.widthPixels - mShareVideoButton
+				.getMeasuredWidth()) / 2;
+		buttonfl.topMargin = height
+				+ (mDisplay.heightPixels - height - mShareVideoButton
+						.getMeasuredHeight()) / 2;
+		videoShareLayout.addView(mShareVideoButton, buttonfl);
+
+		
 	}
 	
 	
@@ -327,19 +419,19 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-//		isSuspended = false;
-//		if (isRecording) {
-//
-//		} else {
-//			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive() != null)  {
-////				//FIXME send delay message since after surface view is created
-////				Message m = Message.obtain(mLocalHandler, DELAY_RESUME);
-////				mLocalHandler.sendMessageDelayed(m, 1000);
-//				
-//				((VideoShowFragment)mCurrentVideoFragment).setStateListener(mCurrentVideoFragmentListener);
-//				
-//			}
-//		}
+		isSuspended = false;
+		if (isRecording) {
+
+		} else {
+			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive() != null)  {
+//				//FIXME send delay message since after surface view is created
+//				Message m = Message.obtain(mLocalHandler, DELAY_RESUME);
+//				mLocalHandler.sendMessageDelayed(m, 1000);
+				
+				((VideoShowFragment)mCurrentVideoFragment).setStateListener(mCurrentVideoFragmentListener);
+				
+			}
+		}
 	}
 
 	@Override
@@ -357,21 +449,33 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStop() {
 		isSuspended = true;
-//		if (cv != null) {
-//			cv.stopPreView();
-//		}
-//		if (isRecording) {
-//			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
-//		} else {
-//			if (mCurrentVideoFragment != null) {
-//				mCurrentVideoFragment.stop();
-//			}
-//		}
+		if (cv != null) {
+			cv.stopPreView();
+		}
+		if (isRecording) {
+			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
+		} else {
+			if (mCurrentVideoFragment != null) {
+				mCurrentVideoFragment.stop();
+			}
+		}
 		super.onStop();
 	}
 	
 	
 	
+
+	@Override
+	public void addFans(long userId) {
+		liveService.addFans(userId, new MessageListener(mLocalHandler, ADD_FANDS_CALLBACK, null));
+		
+	}
+
+	@Override
+	public void removeFans(long userId) {
+		liveService.addFans(userId, new MessageListener(mLocalHandler, REMOVE_FANDS_CALLBACK, null));
+		
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -391,7 +495,10 @@ public class MainActivity extends FragmentActivity implements
 
 		mLocalHandler = null;
 		ImRequest.getInstance().ImLogout();
+		liveService.clearCalledBack();
+		neiborhoodList.clear();
 		
+		confService.clearCalledBack();
 	}
 
 	@Override
@@ -404,41 +511,42 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		if (resultCode == Activity.RESULT_CANCELED) {
-//			mBottomLayout.setVisibility(View.VISIBLE);
-//			mLocateButton.setVisibility(View.VISIBLE);
-//			initResetOrder();
-//			return;
-//		}
-//		
-//		if (requestCode == 	REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE) {
-//			mShareVideoButton.performClick();
-//			return;
-//		} else if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
-//			mBottomLayout.setVisibility(View.VISIBLE);
-//			mLocateButton.setVisibility(View.VISIBLE);
-//			initResetOrder();
-//			if (data == null || data.getExtras() == null) {
-//				return;
-//			}
-//			int action = data.getExtras().getInt("action");
-//			String text = data.getExtras().getString("text");
-//			if (TextUtils.isEmpty(text)) {
-//				return;
-//			}
-//			if (resultCode == Activity.RESULT_OK) {
-//				//click map button
-//				if (action == 1) {
-//					mLocalHandler.removeMessages(SEARCH);
-//					Message msg = Message.obtain(mLocalHandler, SEARCH, text);
-//					mLocalHandler.sendMessage(msg);
-//					//click word button
-//				} else if (action == 2) {
-//					mVideoController.addNewMessage(text);
-//				}
-//					
-//			}
-//		}
+		if (resultCode == Activity.RESULT_CANCELED) {
+			mBottomLayout.setVisibility(View.VISIBLE);
+			mLocateButton.setVisibility(View.VISIBLE);
+			initResetOrder();
+			return;
+		}
+		
+		if (requestCode == 	REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE) {
+			mShareVideoButton.performClick();
+			return;
+		} else if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
+			mBottomLayout.setVisibility(View.VISIBLE);
+			mLocateButton.setVisibility(View.VISIBLE);
+			initResetOrder();
+			if (data == null || data.getExtras() == null) {
+				return;
+			}
+			int action = data.getExtras().getInt("action");
+			String text = data.getExtras().getString("text");
+			if (TextUtils.isEmpty(text)) {
+				return;
+			}
+			if (resultCode == Activity.RESULT_OK) {
+				//click map button
+				if (action == 1) {
+					mLocalHandler.removeMessages(SEARCH);
+					Message msg = Message.obtain(mLocalHandler, SEARCH, text);
+					mLocalHandler.sendMessage(msg);
+					//click word button
+				} else if (action == 2) {
+					mVideoController.addNewMessage(text);
+					liveService.sendComments(mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId(), text);
+				}
+					
+			}
+		}
 	}
 
 	@Override
@@ -575,7 +683,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
+			Toast.makeText(CopyOfMainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
@@ -774,27 +882,27 @@ public class MainActivity extends FragmentActivity implements
 		if (mCurrentVideoFragment.isPlaying() || mCurrentVideoFragment.isPause()) {
 				return false;
 		}
-//		for (int i = 0; i < neiborhoodList.size(); i++) {
-//			Live live = neiborhoodList.get(i);
-//			boolean inUsed = false;
-//			for (VideoItem item : videoMaps.values()) {
-//				if (item.live == null) {
-//					continue;
-//				}
-//				if (item.live.equals(live)) {
-//					inUsed = true;
-//					break;
-//				}
-//			}
-//			if (inUsed) {
-//				continue;
-//			} else {
-//				if (!TextUtils.isEmpty(live.getUrl())) {
-//					playLive(live);
-//					return true;
-//				}
-//			}
-//		}
+		for (int i = 0; i < neiborhoodList.size(); i++) {
+			Live live = neiborhoodList.get(i);
+			boolean inUsed = false;
+			for (VideoItem item : videoMaps.values()) {
+				if (item.live == null) {
+					continue;
+				}
+				if (item.live.equals(live)) {
+					inUsed = true;
+					break;
+				}
+			}
+			if (inUsed) {
+				continue;
+			} else {
+				if (!TextUtils.isEmpty(live.getUrl())) {
+					playLive(live);
+					return true;
+				}
+			}
+		}
 		return false;
 
 	}
@@ -845,6 +953,7 @@ public class MainActivity extends FragmentActivity implements
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (l != null && !TextUtils.isEmpty(l.getUrl())) {
+					liveService.addFans(l);
 					if (mCurrentVideoFragment != null) {
 						updateCurrentVideoState(mCurrentVideoFragment, false);
 					}
@@ -892,6 +1001,7 @@ public class MainActivity extends FragmentActivity implements
 				mLocalHandler.sendMessage(msg);
 			} else if (BUTTON_TAG_WORD.equals(v.getTag())) {
 				mVideoController.addNewMessage(mEditText.getText().toString());
+				liveService.sendComments(mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId(),mEditText.getText().toString());
 			}
 
 			mEditText.setText("");
@@ -942,68 +1052,8 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 
 
-	@Override
-	public void onClick(View v) {
-		int id = v.getId();
-		switch(id) {
-		case R.id.video_share_button:
-			presenter.videoShareButtonClicked();
-			break;
-		case R.id.edit_text:
-			presenter.textClicked();
-			break;
-		case R.id.map_button:
-			presenter.mapSearchButtonClicked();
-			break;
-		case R.id.msg_button:
-			presenter.sendMessageButtonClicked();
-			break;
-		case R.id.personal_button:
-			presenter.personelButtonClicked();
-			break;
-		case R.id.map_locate_button:
-			presenter.mapLocationButtonClicked();
-		}
-	}
-
-	@Override
-	public void resetUIDisplayOrder() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void showTextKeyboard(boolean flag) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void showVideoScreentItem(int tag, boolean showFlag) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resetMapCenter(double lat, double lng, int zoom) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	private List<Live> getTestlist() {
 		List<V2Live> list = new ArrayList<V2Live>();
 		
@@ -1096,27 +1146,27 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	private void handleGetNeihoodrCallback(Message msg) {
-//		JNIResponse resp = (JNIResponse)msg.obj;
-//		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-//			GetNeiborhoodResponse hr = (GetNeiborhoodResponse)resp;
-//			neiborhoodList.clear();
-//			neiborhoodList.addAll(hr.list);
-//			neiborhoodList.addAll(getTestlist());
-//			updateLiveMarkOnMap(neiborhoodList);
-//			if (!isInCameraView) {
-//				autoPlayNecessary();
-//			}
-//			
-//		} else {
-//			//FIXME use 
-//			neiborhoodList.clear();
-//			neiborhoodList.addAll(getTestlist());
-//			updateLiveMarkOnMap(neiborhoodList);
-//			if (!isInCameraView) {
-//				autoPlayNecessary();
-//			}
-//	
-//		}
+		JNIResponse resp = (JNIResponse)msg.obj;
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			GetNeiborhoodResponse hr = (GetNeiborhoodResponse)resp;
+			neiborhoodList.clear();
+			neiborhoodList.addAll(hr.list);
+			neiborhoodList.addAll(getTestlist());
+			updateLiveMarkOnMap(neiborhoodList);
+			if (!isInCameraView) {
+				autoPlayNecessary();
+			}
+			
+		} else {
+			//FIXME use 
+			neiborhoodList.clear();
+			neiborhoodList.addAll(getTestlist());
+			updateLiveMarkOnMap(neiborhoodList);
+			if (!isInCameraView) {
+				autoPlayNecessary();
+			}
+	
+		}
 	}
 	
 	private void handleLiveNotification(Message msg) {
@@ -1167,6 +1217,7 @@ public class MainActivity extends FragmentActivity implements
 				playLive((Live) msg.obj);
 				break;
 			case INTERVAL_GET_NEIBERHOOD:
+				liveService.scanNear(lat, lng, 1000F, new MessageListener(this, SCAN_CALL_BACK, null));
 				if (!isSuspended) {
 					mLocalHandler.sendEmptyMessageDelayed(
 							INTERVAL_GET_NEIBERHOOD, 5000);
@@ -1174,6 +1225,7 @@ public class MainActivity extends FragmentActivity implements
 				break;
 				
 			case UPDATE_GPS:
+				liveService.updateGps(((Double[])msg.obj)[0],((Double[])msg.obj)[1]);
 				updateGPS();
 				break;
 					
@@ -1186,6 +1238,7 @@ public class MainActivity extends FragmentActivity implements
 //				this.sendMessageDelayed(m, 300);
 				//liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
 				currentLive = new Conference(0, GlobalHolder.getInstance().getCurrentUserId());
+				confService.createConference(currentLive, new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
 				break;
 			case REQUEST_PUBLISH_CALLBACK:
 				handleRequestPublishCallback(msg);
@@ -1194,6 +1247,7 @@ public class MainActivity extends FragmentActivity implements
 				//VideoBCRequest.getInstance().stopLive();
 //				liveService.requestFinishPublish(null);
 //				cv.stopPublish();
+				confService.quitConference(currentLive, null);
 				currentLive = null;
 				isRecording = false;
 				currentLive = null;

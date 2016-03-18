@@ -20,7 +20,7 @@
      <string name="notification_get_verification_code">验证码已发送!</string>
      
      
-     <string name="personal_my_follow">我的关注</string>
+     <string name="personal_my_follow">我的关注</string> 
      <string name="personal_my_fans">我的粉丝</string>
      <string name="personal_my_setting">设置</string>
      
@@ -33,5 +33,18 @@
      <string name="error_login_in">登录失败!</string>
      
      <string name="bottom_seatch_text_tip">左击搜地图 右击发评论</string>
+     <string name="video_share_button_share">分享视频</string>
+     <string name="video_share_button_unshare">取消视频</string>
+     
+     
+     <string name="login_action_text_verification">验证</string>
+     <string name="login_action_text_start">开  始</string>
+     <string name="login_action_text_1">点击</string>
+     <string name="login_action_text_2">开始</string>
+     <string name="login_action_text_3">即表示您同意</string>
+     <string name="login_action_text_4">《</string>
+     <string name="login_action_text_5"><u>法律声明及隐私政策</u></string>
+     <string name="login_action_text_6">》</string>
 </resources>
+
 
