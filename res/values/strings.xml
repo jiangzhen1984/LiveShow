@@ -45,6 +45,8 @@
      <string name="login_action_text_4">《</string>
      <string name="login_action_text_5"><u>法律声明及隐私政策</u></string>
      <string name="login_action_text_6">》</string>
+     <string name="login_action_text_username_hint">手机号</string>
+     <string name="login_action_text_code_hint">验证码</string>
 </resources>
 
 

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -169,7 +170,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (presenter == null) {
-			presenter = new MainPresenter(this, this);
+			presenter = new MainPresenter(getApplicationContext(), this);
 		}
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
@@ -496,7 +497,7 @@ public class MainActivity extends FragmentActivity implements
 				initVideoShareLayoutFlag = true;
 			}
 			if (!isRecording) {
-				cv.startPreView();
+				//cv.startPreView();
 			}
 			isInCameraView = true;
 			updateCurrentVideoState(mCurrentVideoFragment, false);
@@ -507,7 +508,7 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public void onFlyingIn() {
 			if (initVideoShareLayoutFlag) {
-				cv.stopPreView();
+				//cv.stopPreView();
 			}
 			
 			isInCameraView = false;
@@ -633,8 +634,8 @@ public class MainActivity extends FragmentActivity implements
 			   
 				updateGPS();
 			
-				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
-						1000);
+//				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
+//						1000);
 				
 				lat = location.getLatitude();
 				lng = location.getLongitude();
@@ -650,9 +651,9 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	private void updateGPS() {
-		mLocalHandler.sendMessageDelayed(Message.obtain(mLocalHandler,
-				UPDATE_GPS, new Double[] { mCacheLocation.getLatitude(),
-				mCacheLocation.getLongitude() }), 2000);
+//		mLocalHandler.sendMessageDelayed(Message.obtain(mLocalHandler,
+//				UPDATE_GPS, new Double[] { mCacheLocation.getLatitude(),
+//				mCacheLocation.getLongitude() }), 2000);
 	}
 
 	private LocalState mSearchState = LocalState.DONE;
@@ -871,7 +872,7 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onMapStatusChangeFinish(MapStatus mp) {
-			mLocalHandler.sendEmptyMessageDelayed(GET_MAP_SNAPSHOT, 1000);
+			//mLocalHandler.sendEmptyMessageDelayed(GET_MAP_SNAPSHOT, 1000);
 		}
 
 		@Override

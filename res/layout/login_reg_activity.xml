@@ -41,7 +41,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/login_input_text"
-                android:ems="5" >
+                android:hint="@string/login_action_text_username_hint"
+                android:ems="5" android:inputType="phone" android:textColorHint="#c0c0c0">
             </EditText>
 
             <EditText
@@ -52,7 +53,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/login_input_text"
-                android:ems="5" >
+                android:hint="@string/login_action_text_code_hint"
+                android:ems="5" android:inputType="number" android:textColorHint="#c0c0c0">
             </EditText>
 
             <TextView
@@ -61,11 +63,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/edt_user_name"
                 android:layout_alignRight="@+id/edt_user_name"
+                android:layout_alignEnd="@+id/edt_user_name"
                 android:layout_alignTop="@+id/edt_user_name"
                 android:background="@drawable/verfication_code_bg"
                 android:gravity="center"
                 android:paddingRight="13dp"
                 android:text="@string/login_action_text_verification"
+                android:textSize="@dimen/login_text_verfication_code_size"
                 android:textColor="@color/login_verification_text_code_color" />
 
             <TextView
@@ -80,6 +84,7 @@
                 android:gravity="center"
                 android:text="@string/login_action_text_start"
                 android:textColor="@color/login_start_button_text_disable_color"
+                android:textSize="@dimen/login_text_start_button_size"
                 android:enabled="false"/>
 
             <RelativeLayout

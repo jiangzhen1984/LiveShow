@@ -32,6 +32,7 @@ public class MainPresenter {
 	public MainPresenter(Context context, MainPresenterUI ui) {
 		super();
 		this.ui = ui;
+		this.context = context;
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG | LIVER_SHOW_FLAG);

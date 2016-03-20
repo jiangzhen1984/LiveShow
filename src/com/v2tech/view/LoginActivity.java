@@ -6,7 +6,6 @@ package com.v2tech.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,7 +81,11 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 
 		@Override
 		public void afterTextChanged(Editable s) {
-			presenter.codeTextChanged();
+			if (mUserNameET.getEditableText() == s) {
+				presenter.userNameTextChanged();
+			} else {
+				presenter.codeTextChanged();
+			}
 		}
 	};
 	
@@ -116,10 +119,22 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		mStartBtn.setEnabled(enable);
 		 
 	}
+	
+	@Override
+	public void appendBlankSpace() {
+		mUserNameET.removeTextChangedListener(textWatcher);
+		mUserNameET.append(" ");
+		mUserNameET.addTextChangedListener(textWatcher);
+		
+	}
+
+	
+	
 
 ///////////////////////////////////////presenter//////////////
 	
 	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();

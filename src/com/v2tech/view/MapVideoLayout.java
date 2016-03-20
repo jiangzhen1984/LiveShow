@@ -149,8 +149,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 		initIcons();
 		notificationList = new ArrayList<NotificationWrapper>();
-		
-		userControllerAPI = (UserControllerAPI)this.getContext();
+		//FIXME update contoroller
+	//	userControllerAPI = (UserControllerAPI)this.getContext();
 	}
 	
 	

@@ -13,6 +13,8 @@ public class LoginPresenter {
 		public String getCodeText();
 		
 		public void updateStartButton(boolean enable);
+		
+		public void appendBlankSpace();
 	}
 	
 	
@@ -35,8 +37,12 @@ public class LoginPresenter {
 	}
 	
 	public void userNameTextChanged() {
-		
+		int len = ui.getUserNameText().length();
+		if (len == 3 || len == 8) {
+			ui.appendBlankSpace();
+		}
 	}
+	
 	
 	public void codeTextChanged() {
 		if (!TextUtils.isEmpty(ui.getUserNameText()) && !TextUtils.isEmpty(ui.getCodeText()) ) {
