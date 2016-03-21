@@ -1,7 +1,6 @@
 package com.v2tech.net;
 
 
-import android.util.Log;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,24 +15,42 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 
-public class DeamonWorker implements Runnable, NetAPI {
+import com.v2tech.net.pkt.Header;
+import com.v2tech.net.pkt.IndicationPacket;
+import com.v2tech.net.pkt.Packet;
+import com.v2tech.net.pkt.ResponsePacket;
+import com.v2tech.net.pkt.Transformer;
+
+
+public class DeamonWorker implements Runnable, NetConnector {
 	
 	NioEventLoopGroup group;
 	Bootstrap strap;
-	private State st;
+	private WorkerState st;
+	private ConnectionState cs;
 	private Thread deamon;
 	private Object stLock;
 	private Object trLock;
+	private Object csLock;
 	private int port;
 	private String host;
+	
+	private Transformer<Header, String> transform;
+	
+	private Queue<LocalBind> pq;
 	
 	public DeamonWorker() {
 		stLock = new Object();
 		trLock = new Object();
-		st = State.NONE;
+		csLock = new Object();
+		st = WorkerState.NONE;
+		cs = ConnectionState.IDLE;
 		group = new NioEventLoopGroup();
 		strap = new Bootstrap();
+		pq = new PriorityBlockingQueue<LocalBind>();
 	}
 
 	
@@ -43,86 +60,175 @@ public class DeamonWorker implements Runnable, NetAPI {
 	
 	@Override
 	public void run() {
-		if (st != State.INITIALIZED)  {
-			//FIXME notify error
-			synchronized(stLock) {
-				st = State.STOPPED;
-			}
-			return;
-		}
-		synchronized(stLock) {
-			st = State.RUNNING;
-		}
-		
+		updateWorkerState(WorkerState.RUNNING);
+		Channel ch = null;
 		try {
-			Channel ch = strap.connect(host, port).sync().channel();
-			while(st == State.RUNNING) {
-				
+			updateConnectionState(ConnectionState.CONNECTING);
+			ch = strap.connect(host, port).sync().channel();
+			if (!ch.isOpen()) {
+				updateConnectionState(ConnectionState.ERROR);
+				updateWorkerState(WorkerState.STOPPED);
+				return;
 			}
+			
+			while(st == WorkerState.RUNNING) {
+				
+				//TODO 
+				
+				synchronized(trLock) {
+					trLock.wait();
+				}
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			synchronized(stLock) {
-				st = State.STOPPED;
-				group.shutdownGracefully();
+			if (ch != null && !ch.isOpen()) {
+				updateConnectionState(ConnectionState.ERROR);
 			}
+		} finally {
+			if (st == WorkerState.REQUEST_STOP) {
+				updateConnectionState(ConnectionState.DISCONNECTED);
+			}
+			updateWorkerState(WorkerState.STOPPED);
+			group.shutdownGracefully();
 		}
 	}
 
 	@Override
 	public boolean connect(String host, int port) {
-		if (st == State.RUNNING || (deamon != null && deamon.isAlive())) {
+		if (cs == ConnectionState.CONNECTED) {
+			return true;
+		}
+		while (cs == ConnectionState.CONNECTING) {
+			try {
+				wait(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if (cs != ConnectionState.CONNECTED) {
+			return cs == ConnectionState.CONNECTED;
+		}
+		
+		if (st == WorkerState.RUNNING || (deamon != null && deamon.isAlive())) {
 			throw new RuntimeException("Current worker is still running, please stop first");
 		}
 		
-		synchronized(stLock) {
-			if (st == State.NONE){
-				strap.group(group)
-		         .channel(NioSocketChannel.class).handler(new LocalChannel());
-				st = State.INITIALIZED;
-			}
-			this.port = port;
-			this.host = host;
-	
-			deamon = new Thread(this);
-			deamon.start();
-			while (st != State.RUNNING && st != State.STOPPED) {
-				try {
-					wait(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		this.port = port;
+		this.host = host;
+		
+		startWorker();
+		
+		return cs == ConnectionState.CONNECTED;
+	}
+
+	@Override
+	public ResponsePacket request(Packet packet) {
+		if (packet instanceof IndicationPacket) {
+			throw new IllegalArgumentException("Indication not allowed");
+		}
+		LocalBind ll = new LocalBind(packet);
+		boolean ret = pq.offer(ll);
+		if (!ret) {
+			ResponsePacket rp = new ResponsePacket();
+			rp.getHeader().setError(true);
+			rp.setRequestId(packet.getId());
+			return rp;
+		}
+		notifyWorker();
+		synchronized(ll) {
+			try {
+				ll.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-		
-		return st == State.RUNNING;
+		return (ResponsePacket)ll.resp;
 	}
 
 	@Override
-	public ResponsePacket request(RequestPacket packet) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void requestAsync(RequestPacket packet) {
+	public void requestAsync(Packet packet) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void disconnect() {
-		synchronized(stLock) {
-			st = State.REQUEST_STOP;
-		}
-		synchronized(trLock) {
-			trLock.notifyAll();
-		}
+		updateWorkerState(WorkerState.REQUEST_STOP);
 		
 	}
 	
+	@Override
+	public boolean isConnected() {
+		return cs == ConnectionState.CONNECTED;
+	}
 	
-	enum State {
+	
+	
+	
+	
+	
+	
+	@Override
+	public void setTransformer(Transformer<Header, String> transformer) {
+		this.transform = transformer;
+	}
+
+
+
+
+
+
+	private void startWorker() {
+	
+		if (cs == ConnectionState.IDLE) {
+			strap.group(group).channel(NioSocketChannel.class)
+					.handler(new LocalChannel());
+
+		}
+		
+		updateWorkerState(WorkerState.INITIALIZED);
+		deamon = new Thread(this);
+		deamon.start();
+		while (!deamon.isAlive()) {
+			try {
+				wait(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	private void updateWorkerState(WorkerState ws) {
+		synchronized (stLock) {
+			st = ws;
+		}
+	}
+	
+	private void updateConnectionState(ConnectionState ws) {
+		synchronized (csLock) {
+			cs = ws;
+		}
+	}
+	
+	private void notifyWorker() {
+
+		synchronized(trLock) {
+			trLock.notifyAll();
+		}
+	}
+	
+	
+	private LocalBind findRequestBind(Header header) {
+		return null;
+	}
+	
+	
+	private void handleResponseBind(LocalBind req, String resp) {
+	}
+	
+	enum WorkerState {
 		NONE,
 		INITIALIZED,
 		RUNNING,
@@ -130,6 +236,15 @@ public class DeamonWorker implements Runnable, NetAPI {
 		STOPPED;
 	}
 	
+	
+	enum ConnectionState {
+		IDLE,
+		CONNECTING,
+		CONNECTED,
+		DISCONNECTED,
+		ERROR,
+		
+	}
 	
 
 	class LocalChannel extends ChannelInitializer<SocketChannel> {
@@ -165,7 +280,13 @@ public class DeamonWorker implements Runnable, NetAPI {
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg)
 				throws Exception {
-			Log.i("ReaderChannel", "111===>" + msg);
+			if (transform != null) {
+				Header h = transform.unserializeFromStr(msg);
+				LocalBind lb = findRequestBind(h);
+				if (lb != null) {
+					handleResponseBind(lb, msg);
+				}
+			}
 		}
 
 		@Override
@@ -173,6 +294,42 @@ public class DeamonWorker implements Runnable, NetAPI {
 			cause.printStackTrace();
 			ctx.close();
 		}
+		
+	}
+	
+	
+	
+	class LocalBind implements Comparable<LocalBind>  {
+		
+		long reqId;
+		Packet req;
+		Packet resp;
+		
+		
+		
+		
+		public LocalBind(Packet req) {
+			super();
+			this.req = req;
+		}
+
+
+
+
+		public LocalBind(Packet req, Packet resp) {
+			super();
+			this.req = req;
+			this.resp = resp;
+		}
+
+
+
+
+		@Override
+		public int compareTo(LocalBind another) {
+			return this.req.compareTo(another.req);
+		}
+		
 		
 	}
 

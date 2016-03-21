@@ -1,21 +1,34 @@
-package com.v2tech.net;
+package com.v2tech.net.pkt;
 
-import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class Packet implements Comparable<Packet> {
 	
-	private static AtomicLong atomic = new AtomicLong();
+	protected Header header;
 	
 	protected long id;
 	
-	protected long timestamp;
-
 	protected int prioirty;
 	
 	
 	protected Packet () {
-		id = atomic.getAndIncrement();
+		this.header = new Header();
 	}
+	
+	
+	public void setErrorFlag(boolean flag) {
+		this.header.setError(flag);
+	}
+	
+	public Header getHeader() {
+		return this.header;
+	}
+	
+	
+
+	public long getId() {
+		return id;
+	}
+
 
 	@Override
 	public int compareTo(Packet another) {
@@ -25,13 +38,7 @@ public abstract class Packet implements Comparable<Packet> {
 		if (prioirty > another.prioirty) {
 			return -1;
 		} else if (prioirty == another.prioirty) {
-			if (timestamp > another.timestamp) {
-				return 1;
-			} else if (timestamp == another.timestamp) {
-				return 0;
-			} else {
-				return -1;
-			}
+			return 0;
 		} else {
 			return 1;
 		}
