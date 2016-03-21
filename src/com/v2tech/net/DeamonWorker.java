@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import android.util.Log;
+
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.ResponsePacket;
@@ -78,6 +80,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 				
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
+					Log.e("DeamonWorker", packetTransform.serialize(lb.req));
 					ChannelFuture cf = ch.writeAndFlush(packetTransform.serialize(lb.req));
 					cf.sync();
 					synchronized(lb) {
@@ -112,14 +115,16 @@ public class DeamonWorker implements Runnable, NetConnector {
 		if (cs == ConnectionState.CONNECTED) {
 			return true;
 		}
+		boolean did = false;
 		while (cs == ConnectionState.CONNECTING) {
+			did = true;
 			try {
 				wait(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		if (cs != ConnectionState.CONNECTED) {
+		if (did) {
 			return cs == ConnectionState.CONNECTED;
 		}
 		
@@ -200,7 +205,8 @@ public class DeamonWorker implements Runnable, NetConnector {
 		updateWorkerState(WorkerState.INITIALIZED);
 		deamon = new Thread(this);
 		deamon.start();
-		while (!deamon.isAlive()) {
+		int count = 0;
+		while (!deamon.isAlive() && (cs != ConnectionState.CONNECTED) && count++ < 10) {
 			try {
 				wait(50);
 			} catch (InterruptedException e) {
@@ -304,8 +310,12 @@ public class DeamonWorker implements Runnable, NetConnector {
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg)
 				throws Exception {
+			Log.e("ReaderChannel", msg);
 			if (packetTransform != null) {
 				Packet p = packetTransform.unserializeFromStr(msg);
+				if (p == null) {
+					return;
+				}
 				LocalBind lb = findRequestBind(p);
 				if (lb != null) {
 					handleResponseBind(lb, p);
@@ -338,6 +348,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 		public LocalBind(Packet req) {
 			super();
 			this.req = req;
+			this.reqId = req.getId();
 		}
 
 

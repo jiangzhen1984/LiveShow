@@ -59,6 +59,9 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		case R.id.start_button:
 			presenter.startButtonClicked();
 			break;
+		case R.id.get_verification_code_button:
+			presenter.verificationCodeButtonClicked();
+			break;
 		}
 
 	}
@@ -99,7 +102,7 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 	
 	@Override
 	public String getUserNameText() {
-		return mUserNameET.getEditableText().toString();
+		return mUserNameET.getEditableText().toString().replaceAll(" ", "");
 	}
 
 	@Override

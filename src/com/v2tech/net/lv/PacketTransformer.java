@@ -30,7 +30,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 
 	@Override
 	public Packet unserializeFromStr(String t) {
-		Pattern regrex = Pattern.compile("(xmlns=\")([a-zA-Z]{1, *})(\")");
+		Pattern regrex = Pattern.compile("(xmlns=\")([a-zA-Z]+)(\")");
 		Matcher mat = regrex.matcher(t);
 		if (mat.find()) {
 			String sg = mat.group();
@@ -46,7 +46,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			} else if ("followUser".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
 			} else if ("getSMScode".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraGetSMSResponse(t);
 			} else if ("watchVideo".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
 			} else if ("mapPosition".equalsIgnoreCase(type)) {
@@ -85,7 +85,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			appendTagText(buffer, "deviceID", "");
 		}
 		appendTagEnd(buffer, "iq");
-		
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -97,10 +97,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendTagStart(buffer, "query", false);
 		appendAttrText(buffer, "xmlns", "getSMScode");
 		appendAttrText(buffer, "type", "login");
-		appendTagStartEnd(buffer, false);
+		appendTagStartEnd(buffer, true);
 		
 		appendTagText(buffer, "phone", p.phone);
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -121,6 +122,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		
 		
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -149,6 +151,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		
 		
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -169,6 +172,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendTagText(buffer, "videoId", p.lid+"");
 		
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -188,6 +192,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendTagStartEnd(buffer, true);
 		
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -201,6 +206,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendTagStartEnd(buffer, true);
 		
 		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
 		return buffer.toString();
 	}
 	
@@ -212,6 +218,18 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	}
 	
 	
+	
+	private Packet extraGetSMSResponse(String str) {
+		Pattern p = Pattern.compile("type=\"success\"");
+		Matcher m = p.matcher(str);
+		GetCodeRespPacket gcp = new GetCodeRespPacket();
+		if (m.find()) {
+			gcp.setErrorFlag(false);
+		} else {
+			gcp.setErrorFlag(true);
+		}
+		return gcp;
+	}
 	
 	
 	
