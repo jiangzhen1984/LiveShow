@@ -3,6 +3,7 @@ package com.v2tech.net;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -15,10 +16,10 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import com.v2tech.net.pkt.Header;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.ResponsePacket;
@@ -38,9 +39,10 @@ public class DeamonWorker implements Runnable, NetConnector {
 	private int port;
 	private String host;
 	
-	private Transformer<Header, String> transform;
+	private Transformer<Packet, String> packetTransform;
 	
-	private Queue<LocalBind> pq;
+	private Queue<LocalBind> pending;
+	private Queue<LocalBind> waiting;
 	
 	public DeamonWorker() {
 		stLock = new Object();
@@ -50,7 +52,8 @@ public class DeamonWorker implements Runnable, NetConnector {
 		cs = ConnectionState.IDLE;
 		group = new NioEventLoopGroup();
 		strap = new Bootstrap();
-		pq = new PriorityBlockingQueue<LocalBind>();
+		pending = new PriorityBlockingQueue<LocalBind>();
+		waiting = new PriorityBlockingQueue<LocalBind>();
 	}
 
 	
@@ -73,7 +76,17 @@ public class DeamonWorker implements Runnable, NetConnector {
 			
 			while(st == WorkerState.RUNNING) {
 				
-				//TODO 
+				LocalBind lb = null;
+				while ((lb = pending.poll()) != null) {
+					ChannelFuture cf = ch.writeAndFlush(packetTransform.serialize(lb.req));
+					cf.sync();
+					synchronized(lb) {
+						//FIXME if lb timeout
+						lb.sendflag = true;
+						lb.timestamp = System.currentTimeMillis();
+					}
+					waiting.offer(lb);
+				}
 				
 				synchronized(trLock) {
 					trLock.wait();
@@ -128,7 +141,9 @@ public class DeamonWorker implements Runnable, NetConnector {
 			throw new IllegalArgumentException("Indication not allowed");
 		}
 		LocalBind ll = new LocalBind(packet);
-		boolean ret = pq.offer(ll);
+		ll.sync = true;
+		boolean ret = false;
+		ret = pending.offer(ll);
 		if (!ret) {
 			ResponsePacket rp = new ResponsePacket();
 			rp.getHeader().setError(true);
@@ -164,14 +179,9 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 	
 	
-	
-	
-	
-	
-	
 	@Override
-	public void setTransformer(Transformer<Header, String> transformer) {
-		this.transform = transformer;
+	public void setPacketTransformer(Transformer<Packet, String> transformer) {
+		this.packetTransform = transformer;
 	}
 
 
@@ -220,12 +230,26 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 	
 	
-	private LocalBind findRequestBind(Header header) {
-		return null;
+	private LocalBind findRequestBind(Packet packet) {
+		LocalBind lb = null;
+		Iterator<LocalBind> it = waiting.iterator();
+		while (it.hasNext()) {
+			lb = it.next();
+			if (lb.reqId == packet.getId()) {
+				waiting.remove(lb);
+			}
+		}
+		return lb;
 	}
 	
 	
-	private void handleResponseBind(LocalBind req, String resp) {
+	private void handleResponseBind(LocalBind req, Packet resp) {
+		req.resp = resp;
+		if (req.sync) {
+			synchronized(req) {
+				req.notify();
+			}
+		}
 	}
 	
 	enum WorkerState {
@@ -280,11 +304,13 @@ public class DeamonWorker implements Runnable, NetConnector {
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg)
 				throws Exception {
-			if (transform != null) {
-				Header h = transform.unserializeFromStr(msg);
-				LocalBind lb = findRequestBind(h);
+			if (packetTransform != null) {
+				Packet p = packetTransform.unserializeFromStr(msg);
+				LocalBind lb = findRequestBind(p);
 				if (lb != null) {
-					handleResponseBind(lb, msg);
+					handleResponseBind(lb, p);
+				} else {
+					//TODO indication packet
 				}
 			}
 		}
@@ -304,9 +330,10 @@ public class DeamonWorker implements Runnable, NetConnector {
 		long reqId;
 		Packet req;
 		Packet resp;
-		
-		
-		
+		boolean sync;
+		boolean timeout;
+		long timestamp;
+		boolean sendflag;
 		
 		public LocalBind(Packet req) {
 			super();

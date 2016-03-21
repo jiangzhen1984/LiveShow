@@ -1,6 +1,5 @@
 package com.v2tech.net;
 
-import com.v2tech.net.pkt.Header;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
@@ -19,5 +18,5 @@ public interface NetConnector {
 	public boolean isConnected();
 	
 	
-	public void setTransformer(Transformer<Header, String> transformer);
+	public void setPacketTransformer(Transformer<Packet, String> transformer);
 }
