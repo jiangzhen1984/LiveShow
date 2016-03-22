@@ -47,6 +47,10 @@
      <string name="login_action_text_6">》</string>
      <string name="login_action_text_username_hint">手机号</string>
      <string name="login_action_text_code_hint">验证码</string>
+     
+     
+     
+     <string name="main_search_no_element_found">没有找到相关的信息</string>
 </resources>
 
 

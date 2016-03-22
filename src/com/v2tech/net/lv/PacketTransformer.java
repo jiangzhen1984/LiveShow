@@ -66,7 +66,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		
 		appendTagStart(buffer, "query", false);
 		appendAttrText(buffer, "xmlns", "login");
-		appendTagStartEnd(buffer, false);
+		
 		
 		if (p.isAs()) {
 			appendAttrText(buffer, "type", "visitor");
@@ -214,7 +214,26 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	
 	private Packet extraLoginResponse(String str) {
-		return null;
+		LoginRespPacket lrp = new LoginRespPacket();
+		Pattern p = Pattern.compile("type=\"success\"");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			lrp.setErrorFlag(false);
+			
+			Pattern idp = Pattern.compile("(to=\")([0-9]+)(\")");
+			Matcher idm = idp.matcher(str);
+			if (idm.find()) {
+				String sg = idm.group();
+				String strId = sg.substring(4, sg.length() - 1);
+				lrp.uid = Long.parseLong(strId);
+			}
+			
+		} else {
+			lrp.setErrorFlag(true);
+		}
+		
+
+		return lrp;
 	}
 	
 	

@@ -36,6 +36,8 @@ import com.V2.jni.VideoRequest;
 import com.V2.jni.WBRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.PacketTransformer;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
 
@@ -85,7 +87,7 @@ public class MainApplication extends Application {
 		initConfigSP();
 		initConfigFile();
 
-		initHZPYDBFile();
+		//initHZPYDBFile();
 		initResource();
 
 
@@ -121,6 +123,10 @@ public class MainApplication extends Application {
 		initGlobalConfiguration();
 		
 		new ConfigRequest().setServerAddress(Constants.SERVER, 5123);
+		
+		
+		DeamonWorker.getInstance().setPacketTransformer(new PacketTransformer());
+		DeamonWorker.getInstance().connect("114.215.84.236", 9999);
 	}
 
 

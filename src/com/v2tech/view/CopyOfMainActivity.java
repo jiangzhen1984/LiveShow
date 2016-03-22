@@ -271,7 +271,7 @@ public class CopyOfMainActivity extends FragmentActivity implements
 		 titleBar.bringToFront();
 //		 titleBar.setBackgroundColor(Color.TRANSPARENT);
 //		 titleBar.setAlpha(0.3F);
-		 this.mPersonalButton = findViewById(R.id.personal_button);
+		 this.mPersonalButton =null;// findViewById(R.id.personal_button);
 		 mPersonalButton.setOnClickListener(new OnClickListener() {
 
 			@Override

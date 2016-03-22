@@ -41,4 +41,6 @@
      
      <color name="login_start_button_text_enabled_color">#ffffff</color>
      <color name="login_start_button_text_disable_color">#ff0000</color>
+     
+     <color name="login_root_bg">#f0eff5</color>
 </resources>

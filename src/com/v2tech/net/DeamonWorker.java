@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
+import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
 
@@ -46,7 +47,9 @@ public class DeamonWorker implements Runnable, NetConnector {
 	private Queue<LocalBind> pending;
 	private Queue<LocalBind> waiting;
 	
-	public DeamonWorker() {
+	private static DeamonWorker instance;
+	
+	private DeamonWorker() {
 		stLock = new Object();
 		trLock = new Object();
 		csLock = new Object();
@@ -59,7 +62,12 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 
 	
-	
+	public static synchronized DeamonWorker getInstance() {
+		if (instance == null) {
+			instance = new DeamonWorker();
+		}
+		return instance;
+	}
 	
 	
 	
@@ -158,6 +166,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 		notifyWorker();
 		synchronized(ll) {
 			try {
+				Log.e("ReaderChannel", ll+"  to wait");
 				ll.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -167,9 +176,19 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 
 	@Override
-	public void requestAsync(Packet packet) {
-		// TODO Auto-generated method stub
-		
+	public void requestAsync(PacketProxy packet) {
+		LocalBind ll = new LocalBind(packet);
+		boolean ret = false;
+		ret = pending.offer(ll);
+		if (!ret) {
+			if (packet.getListener() != null) {
+				ResponsePacket rp = new ResponsePacket();
+				rp.getHeader().setError(true);
+				rp.setRequestId(packet.getId());
+				packet.getListener() .onResponse(rp);
+			}
+		}
+		notifyWorker();
 	}
 
 	@Override
@@ -190,9 +209,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 
 
-
-
-
+	
 
 	private void startWorker() {
 	
@@ -253,8 +270,11 @@ public class DeamonWorker implements Runnable, NetConnector {
 		req.resp = resp;
 		if (req.sync) {
 			synchronized(req) {
+				Log.e("ReaderChannel", req+"  to notify");
 				req.notify();
 			}
+		} else if (((PacketProxy)req.req).getListener()  != null) {
+			((PacketProxy)req.req).getListener().onResponse((ResponsePacket)req.resp);
 		}
 	}
 	
@@ -314,13 +334,17 @@ public class DeamonWorker implements Runnable, NetConnector {
 			if (packetTransform != null) {
 				Packet p = packetTransform.unserializeFromStr(msg);
 				if (p == null) {
+					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
 				LocalBind lb = findRequestBind(p);
+				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
 					handleResponseBind(lb, p);
 				} else {
-					//TODO indication packet
+					if (p instanceof IndicationPacket) {
+						((PacketProxy)p).getListener().onNodification((IndicationPacket)p);
+					}
 				}
 			}
 		}

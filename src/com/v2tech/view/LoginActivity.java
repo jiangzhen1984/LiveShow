@@ -28,6 +28,7 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 	private EditText mUserCodeET;
 	private View mVerificationCodeBtn;
 	private TextView mStartBtn;
+	private View returnButton;
 	
 	
 	private LoginPresenter presenter;
@@ -43,12 +44,15 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		mUserCodeET = (EditText)findViewById(R.id.edt_user_code);
 		mVerificationCodeBtn = findViewById(R.id.get_verification_code_button);
 		mStartBtn = (TextView)findViewById(R.id.start_button);
+		returnButton = findViewById(R.id.title_bar_left_btn);
 		
 		mVerificationCodeBtn.setOnClickListener(this);
 		mStartBtn.setOnClickListener(this);
+		returnButton.setOnClickListener(this);
 		
 		mUserNameET.addTextChangedListener(textWatcher);
 		mUserCodeET.addTextChangedListener(textWatcher);
+		presenter.onUICreate();
 
 	}
 
@@ -61,6 +65,9 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 			break;
 		case R.id.get_verification_code_button:
 			presenter.verificationCodeButtonClicked();
+			break;
+		case R.id.title_bar_left_btn:
+			presenter.returnButtonClicked();
 			break;
 		}
 
@@ -110,6 +117,8 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		return mUserCodeET.getEditableText().toString();
 	}
 
+
+
 	@Override
 	public void updateStartButton(boolean enable) {
 		if (enable) {
@@ -125,18 +134,48 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 	
 	@Override
 	public void appendBlankSpace() {
+		Editable et = mUserNameET.getEditableText();
 		mUserNameET.removeTextChangedListener(textWatcher);
-		mUserNameET.append(" ");
+		et.insert(et.length() - 1, " ");
 		mUserNameET.addTextChangedListener(textWatcher);
 		
 	}
 
 	
+
+	@Override
+	public void showLogingInProgress() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+	@Override
+	public void doLogedIn() {
+		finish();
+	}
+	
+
+
+	@Override
+	public void doReturned() {
+		finish();
+	}
+	
+	
+	@Override
+	public void setPhoneNumberError() {
+		mUserNameET.setError("手机号不正确");
+	}
+	
+	
+	
+	
 	
 
 ///////////////////////////////////////presenter//////////////
 	
-	
+
 
 	@Override
 	public void onBackPressed() {
@@ -158,6 +197,7 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		super.onDestroy();
 		mUserNameET.removeTextChangedListener(textWatcher);
 		mUserCodeET.removeTextChangedListener(textWatcher);
+		presenter.onUIDestroy();
 	}
 
 

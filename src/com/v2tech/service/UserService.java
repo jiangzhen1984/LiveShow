@@ -20,6 +20,11 @@ import com.V2.jni.ImRequestCallbackAdapter;
 import com.V2.jni.V2ClientType;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.GetCodeReqPacket;
+import com.v2tech.net.lv.LoginReqPacket;
+import com.v2tech.net.lv.LoginRespPacket;
+import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.service.jni.RequestUserUpdateResponse;
@@ -72,8 +77,26 @@ public class UserService extends AbstractHandler {
 	 *            callback message Message.obj is {@link MessageListener}
 	 */
 	public void login(String mail, String passwd, boolean isNY, MessageListener caller) {
-		initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-		ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",isNY);
+		
+		ResponsePacket p = null;
+		if (isNY) {
+			p = DeamonWorker.getInstance().request(new LoginReqPacket(true, mail));
+		} else {
+			p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, passwd));
+		}
+		if (!p.getHeader().isError()) {
+			LoginRespPacket lrp = (LoginRespPacket) p;
+			User u = new User(-1);
+			u.nId = lrp.uid;
+			u.isNY = isNY;
+			GlobalHolder.getInstance().setCurrentUser(u);
+			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
+			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",isNY);
+		} else {
+			if (caller != null) {
+				V2Log.e("Loged in failed ");
+			}
+		}
 	}
 	
 	
@@ -117,46 +140,8 @@ public class UserService extends AbstractHandler {
 	
 	
 	public String  sendVaidationCode(String phoneNumber) {
-	JNIResponse resp = null;
-		
-		SoapObject request = new SoapObject(Constants.NAME_SPACE,
-				"CreateValidationCode");
-
-		PropertyInfo propInfo = new PropertyInfo();
-		propInfo.name = "phonenumber";
-		propInfo.type = PropertyInfo.STRING_CLASS;
-		propInfo.setValue(phoneNumber);
-
-		request.addProperty(propInfo);
-
-		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-				SoapEnvelope.VER11);
-
-		envelope.setOutputSoapObject(request);
-		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
-
-		try {
-			androidHttpTransport.call("urn:CreateValidationCode", envelope);
-
-			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
-					.getResponse();
-			String retVale = resultsRequestSOAP.getValue().toString();
-			
-			
-			if ("0".equals(retVale)) {
-				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
-			} else {
-				resp = new JNIResponse(JNIResponse.Result.FAILED);
-			}
-
-			return retVale;
-		} catch (Exception e) {
-			e.printStackTrace();
-			resp = new JNIResponse(JNIResponse.Result.FAILED);
-		}
-		
+		DeamonWorker.getInstance().request(new GetCodeReqPacket(phoneNumber));
 		return null;
-
 	}
 	
 	public static String getMD5(String val) throws NoSuchAlgorithmException {
@@ -263,8 +248,15 @@ public class UserService extends AbstractHandler {
 			V2Log.i("get server time ：" + date+"   ===> "+ nUserID);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
+			
+			User u  = GlobalHolder.getInstance().getCurrentUser();
+			if (u != null) {
+				u.setmUserId(nUserID);
+			} else {
+				u = new User(nUserID);
+			}
 			Message m = Message.obtain(handler, JNI_REQUEST_LOG_IN,
-					new RequestLogInResponse(new User(nUserID), res));
+					new RequestLogInResponse(u, res));
 			handler.dispatchMessage(m);
 		}
 

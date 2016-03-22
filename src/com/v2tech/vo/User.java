@@ -38,6 +38,8 @@ import com.v2tech.service.GlobalHolder;
 
 public class User implements Comparable<User> {
 
+	
+	public long nId;
 	// Server transfer fields
 	// 通过OnGetGroupUserInfo传来
 	// 登录用的帐号字符串
@@ -80,6 +82,9 @@ public class User implements Comparable<User> {
 	// This value indicate this object is dirty, construct locally without any
 	// user information
 	private boolean isDirty;
+	
+	
+	public boolean isNY;
 
 	public User(long mUserId) {
 		this(mUserId, null, null, null);

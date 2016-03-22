@@ -98,6 +98,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE = 102;
+	private static final int REQUEST_PERSONAL_ACTIVITY = 103;
 	
 	private static final String BUTTON_TAG_MAP = "map";
 	private static final String BUTTON_TAG_WORD = "word";
@@ -131,14 +132,11 @@ public class MainActivity extends FragmentActivity implements
 	private View mLocateButton;
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
-
+ 
 	private VideoControllerAPI mVideoController;
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
-	private LocationClient mLocClient;
-	private GeoCoder mSearch;
-	private MyLocationListenner myListener = new MyLocationListenner();
 	private boolean showCurrentLocation = true;// 是否首次定位
 	private boolean isSuspended;
 
@@ -151,15 +149,13 @@ public class MainActivity extends FragmentActivity implements
 	private Map<VideoOpt, VideoItem> videoMaps = new HashMap<VideoOpt, VideoItem>();
 	private Map<Live, Overlay> currentOverlay = new HashMap<Live, Overlay>();
 	private VideoOpt mCurrentVideoFragment;
-	private ImageView mapSnapshot;
 
 	private LatLng selfLocation;
 	private LatLng currentVideoLocation;
 
 	private LocalHandler mLocalHandler;
 	private HandlerThread mHandlerThread;
-	private View mPersonalButton;
-	private UserService us;
+	private ImageView mPersonalButton;
 	private String phone;
 	Conference currentLive;
 
@@ -181,30 +177,13 @@ public class MainActivity extends FragmentActivity implements
 		initVideoShareLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
-		initLocation();
 		initResetOrder();
 
 		presenter.uicreated();
 
 	}
 
-	private void initLocation() {
-		// 定位初始化
-		mLocClient = new LocationClient(this);
-		mLocClient.registerLocationListener(myListener);
-		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true);// 打开gps
-		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(5000);
-		mLocClient.setLocOption(option);
-		mLocClient.start();
 
-		CloudManager.getInstance().init(mLocalCloudListener);
-		// 初始化搜索模块，注册事件监听
-		mSearch = GeoCoder.newInstance();
-		mSearch.setOnGetGeoCodeResultListener(this);
-
-	}
 
 	private void initMapviewLayout() {
 		mMapVideoLayout = new MapVideoLayout(this);
@@ -237,31 +216,12 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	private void initTitleBarButtonLayout() {
-		 View titleBar = findViewById(R.id.title_bar);
-		 titleBar.bringToFront();
-//		 titleBar.setBackgroundColor(Color.TRANSPARENT);
-//		 titleBar.setAlpha(0.3F);
-		 this.mPersonalButton = findViewById(R.id.personal_button);
+//		 View titleBar = findViewById(R.id.title_bar);
+//		 titleBar.bringToFront();
+		 this.mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
+		 this.mPersonalButton.setImageResource(R.drawable.user_icon);
 		 mPersonalButton.setOnClickListener(this);
-//		 new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				if (GlobalHolder.getInstance().getCurrentUser() != null) {
-//					Intent i = new Intent();
-//					i.setClass(getApplicationContext(), PersonalActivity.class);
-//					startActivity(i);
-//				} else {
-//					Intent i = new Intent();
-//					i.setClass(getApplicationContext(), LoginActivity.class);
-//					Intent pending = new Intent();
-//					pending.setClass(getApplicationContext(), PersonalActivity.class);
-//				    i.putExtra("pendingintent", pending);
-//					startActivity(i);
-//				}
-//			}
-//			 
-//		 });
+
 		
 	}
 
@@ -280,19 +240,6 @@ public class MainActivity extends FragmentActivity implements
 		mEditText.setInputType(InputType.TYPE_NULL);
 		mEditText.setFocusable(true);
 		mEditText.setOnClickListener(this);
-//		new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				mBottomLayout.setVisibility(View.INVISIBLE);
-//				Intent i = new Intent();
-//				i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
-//				startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
-//				
-//			}
-//			
-//		});
-
 
 		mLocateButton = findViewById(R.id.map_locate_button);
 		mLocateButton.setOnClickListener(this);
@@ -328,19 +275,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-//		isSuspended = false;
-//		if (isRecording) {
-//
-//		} else {
-//			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive() != null)  {
-////				//FIXME send delay message since after surface view is created
-////				Message m = Message.obtain(mLocalHandler, DELAY_RESUME);
-////				mLocalHandler.sendMessageDelayed(m, 1000);
-//				
-//				((VideoShowFragment)mCurrentVideoFragment).setStateListener(mCurrentVideoFragmentListener);
-//				
-//			}
-//		}
 	}
 
 	@Override
@@ -377,21 +311,17 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mLocalHandler.removeMessages(MARKER_ANIMATION);
+	//	mLocalHandler.removeMessages(MARKER_ANIMATION);
 		// 退出时销毁定位
-		mLocClient.stop();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
 		// activity 销毁时同时销毁地图控件
 		mMapView.onDestroy();
 
 		CloudManager.getInstance().destroy();
-		mSearch.destroy();
-
-		mHandlerThread.quit();
 
 		mLocalHandler = null;
-		ImRequest.getInstance().ImLogout();
+		presenter.onUIDestroy();
 		
 	}
 
@@ -405,41 +335,11 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		if (resultCode == Activity.RESULT_CANCELED) {
-//			mBottomLayout.setVisibility(View.VISIBLE);
-//			mLocateButton.setVisibility(View.VISIBLE);
-//			initResetOrder();
-//			return;
-//		}
-//		
-//		if (requestCode == 	REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE) {
-//			mShareVideoButton.performClick();
-//			return;
-//		} else if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
-//			mBottomLayout.setVisibility(View.VISIBLE);
-//			mLocateButton.setVisibility(View.VISIBLE);
-//			initResetOrder();
-//			if (data == null || data.getExtras() == null) {
-//				return;
-//			}
-//			int action = data.getExtras().getInt("action");
-//			String text = data.getExtras().getString("text");
-//			if (TextUtils.isEmpty(text)) {
-//				return;
-//			}
-//			if (resultCode == Activity.RESULT_OK) {
-//				//click map button
-//				if (action == 1) {
-//					mLocalHandler.removeMessages(SEARCH);
-//					Message msg = Message.obtain(mLocalHandler, SEARCH, text);
-//					mLocalHandler.sendMessage(msg);
-//					//click word button
-//				} else if (action == 2) {
-//					mVideoController.addNewMessage(text);
-//				}
-//					
-//			}
-//		}
+		if (requestCode == REQUEST_KEYBOARD_ACTIVITY) {
+			presenter.onKeyboardChildUIFinished(requestCode, data);
+		} else if (requestCode == REQUEST_LOGIN_ACTIVITY_CODE) {
+			presenter.onLoginChildUIFinished(requestCode, data);
+		}
 	}
 
 	@Override
@@ -569,9 +469,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private BDLocation mCacheLocation;
 
-	private void doSearch(String key) {
-		mSearch.geocode(new GeoCodeOption().city("北京").address(key));
-	}
 
 	@Override
 	public void onGetGeoCodeResult(GeoCodeResult result) {
@@ -595,59 +492,9 @@ public class MainActivity extends FragmentActivity implements
 	private double lat;
 	private double lng;
 
-	public class MyLocationListenner implements BDLocationListener {
-
-		@Override
-		public void onReceiveLocation(BDLocation location) {
-			// map view 销毁后不在处理新接收的位置
-			if (location == null || mMapView == null)
-				return;
-
-			LatLng ll = new LatLng(location.getLatitude(),
-					location.getLongitude());
-			selfLocation = ll;
-			MyLocationData locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius())
-					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(100).latitude(ll.latitude)
-					.longitude(ll.longitude).build();
-			mBaiduMap.setMyLocationData(locData);
-			if (showCurrentLocation) {
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-						selfLocation, mCurrentZoomLevel);
-				if (u == null) {
-					return;
-				}
-				mBaiduMap.animateMapStatus(u);
-				mLocateButton.setTag(new LocationItem(LocationItemType.SELF,
-						selfLocation));
-				
-			}
-
-		
-
-			if (mCacheLocation == null
-					|| (mCacheLocation.getLongitude() != location
-							.getLongitude() || mCacheLocation.getLatitude() != location
-							.getLatitude())) {
-				mCacheLocation = location;
-			   
-				updateGPS();
-			
-//				mLocalHandler.sendEmptyMessageDelayed(INTERVAL_GET_NEIBERHOOD,
-//						1000);
-				
-				lat = location.getLatitude();
-				lng = location.getLongitude();
-				
-
-			}
-		}
-
-		public void onReceivePoi(BDLocation poiLocation) {
-		}
-	}
 	
+
+
 	
 	
 	private void updateGPS() {
@@ -969,7 +816,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.msg_button:
 			presenter.sendMessageButtonClicked();
 			break;
-		case R.id.personal_button:
+		case R.id.title_bar_left_btn:
 			presenter.personelButtonClicked();
 			break;
 		case R.id.map_locate_button:
@@ -985,7 +832,15 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void showTextKeyboard(boolean flag) {
-		// TODO Auto-generated method stub
+		if (flag) {
+			mBottomLayout.setVisibility(View.INVISIBLE);
+			Intent i = new Intent();
+			i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
+			startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
+		} else {
+			mBottomLayout.setVisibility(View.VISIBLE);
+			mLocateButton.setVisibility(View.VISIBLE);
+		}
 		
 	}
 
@@ -1001,10 +856,51 @@ public class MainActivity extends FragmentActivity implements
 		
 	}
 
+	@Override
+	public void showLoginUI() {
+		Intent i = new Intent();
+		i.setClass(getApplicationContext(), LoginActivity.class);
+		this.startActivityForResult(i, REQUEST_LOGIN_ACTIVITY_CODE);
+	}
+
+	@Override
+	public void showPersonelUI() {
+		Intent i = new Intent();
+		i.setClass(getApplicationContext(), PersonalActivity.class);
+		this.startActivityForResult(i, REQUEST_PERSONAL_ACTIVITY);
+	}
+	
+	
+
+	@Override
+	public String getTextString() {
+		return mEditText.getEditableText().toString();
+	}
+
+	@Override
+	public BaiduMap getMapInstance() {
+		return this.mBaiduMap;
+	}
+
+	private Toast last;
+	@Override
+	public void showSearchErrorToast() {
+		if (last != null) {
+			last.cancel();
+		} else {
+			last = Toast.makeText(this, R.string.main_search_no_element_found, Toast.LENGTH_SHORT);
+		}
+		
+		last.setText(R.string.main_search_no_element_found);
+		last.show();
+	}
+	
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
+
+
 	private List<Live> getTestlist() {
 		List<V2Live> list = new ArrayList<V2Live>();
 		
@@ -1155,7 +1051,6 @@ public class MainActivity extends FragmentActivity implements
 			case SEARCH:
 				synchronized (mSearchState) {
 					mSearchState = LocalState.DONING;
-					doSearch((String) msg.obj);
 				}
 				break;
 			case AUTO_PLAY_LIVE:
