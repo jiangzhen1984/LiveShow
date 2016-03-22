@@ -1,17 +1,13 @@
 package com.v2tech.view;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.content.Context;
+import v2av.VideoRecorder;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -19,32 +15,24 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
-import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.V2.jni.ImRequest;
-import com.V2.jni.ind.V2Live;
-import com.V2.jni.ind.V2Location;
-import com.V2.jni.ind.V2User;
 import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.cloud.CloudListener;
 import com.baidu.mapapi.cloud.CloudManager;
 import com.baidu.mapapi.cloud.CloudPoiInfo;
@@ -61,35 +49,28 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
-import com.v2tech.service.ConferenceService;
+import com.v2tech.service.DeviceService;
 import com.v2tech.service.GlobalHolder;
-import com.v2tech.service.LiveService;
-import com.v2tech.service.MessageListener;
-import com.v2tech.service.UserService;
-import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
 import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
-import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
@@ -249,11 +230,16 @@ public class MainActivity extends FragmentActivity implements
 
 	
 	private boolean initVideoShareLayoutFlag = true;
+	private SurfaceView localSurfaceView;
 	private void initVideoShareLayout() {
 		
 		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
 		mShareVideoButton = (Button)findViewById(R.id.video_share_button);
 		mShareVideoButton.setOnClickListener(this);
+		localSurfaceView = (SurfaceView)videoShareLayout.findViewById(R.id.local_camera_view);
+		VideoRecorder.VideoPreviewSurfaceHolder = localSurfaceView.getHolder();
+		VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		
 	}
 	
 	
@@ -263,14 +249,6 @@ public class MainActivity extends FragmentActivity implements
 		mLocateButton.bringToFront();
 	}
 
-	private int getPreWidth() {
-		return mDisplay.widthPixels - mDisplay.widthPixels % 16;
-	}
-
-	private int getPreHeight(int width) {
-		int height = width / 4 * 3;
-		return height - height % 16;
-	}
 
 	@Override
 	protected void onStart() {
@@ -292,16 +270,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStop() {
 		isSuspended = true;
-//		if (cv != null) {
-//			cv.stopPreView();
-//		}
-//		if (isRecording) {
-//			Message.obtain(mLocalHandler, STOP_PUBLISH).sendToTarget();
-//		} else {
-//			if (mCurrentVideoFragment != null) {
-//				mCurrentVideoFragment.stop();
-//			}
-//		}
 		super.onStop();
 	}
 	
@@ -388,6 +356,7 @@ public class MainActivity extends FragmentActivity implements
 
 	};
 
+	DeviceService ds = new DeviceService();
 	private MapVideoLayout.LayoutPositionChangedListener posChangedListener = new MapVideoLayout.LayoutPositionChangedListener() {
 
 		@Override
@@ -397,6 +366,9 @@ public class MainActivity extends FragmentActivity implements
 				initVideoShareLayoutFlag = true;
 			}
 			if (!isRecording) {
+				UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+				duc.setSVHolder(localSurfaceView);
+				ds.requestOpenVideoDevice(duc, null);
 				//cv.startPreView();
 			}
 			isInCameraView = true;
@@ -660,31 +632,7 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	private OnClickListener mLocateClickListener = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			LocationItem li = (LocationItem) v.getTag();
-			if (li == null) {
-				return;
-			}
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(li.ll,
-					mCurrentZoomLevel);
-			mBaiduMap.animateMapStatus(u);
-			if (li.type == LocationItemType.SELF) {
-				if (currentVideoLocation != null) {
-					li.type = LocationItemType.VIDEO;
-					li.ll = currentVideoLocation;
-				}
-			} else {
-				if (selfLocation != null) {
-					li.type = LocationItemType.SELF;
-					li.ll = selfLocation;
-				}
-			}
-		}
-
-	};
 
 	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
 
@@ -729,41 +677,7 @@ public class MainActivity extends FragmentActivity implements
 
 	};
 
-	private OnClickListener mBottomButtonClickedListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			if (BUTTON_TAG_MAP.equals(v.getTag())) {
-				mLocalHandler.removeMessages(SEARCH);
-				Message msg = Message.obtain(mLocalHandler, SEARCH, mEditText
-						.getText().toString());
-				mLocalHandler.sendMessage(msg);
-			} else if (BUTTON_TAG_WORD.equals(v.getTag())) {
-				mVideoController.addNewMessage(mEditText.getText().toString());
-			}
-
-			mEditText.setText("");
-
-		}
-
-	};
 	
-	
-	private VideoShowFragment.VideoFragmentStateListener mCurrentVideoFragmentListener = new VideoShowFragment.VideoFragmentStateListener() {
-
-		@Override
-		public void onInited() {
-			mCurrentVideoFragment.restart();
-			((VideoShowFragment)mCurrentVideoFragment).setStateListener(null);
-		}
-
-		@Override
-		public void onUnInited() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	};
 	
 	
 	
@@ -896,125 +810,18 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 
 
-	private List<Live> getTestlist() {
-		List<V2Live> list = new ArrayList<V2Live>();
-		
-		V2Live live = new V2Live();
-		live.uuid = "8002";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/2004"+ ".m3u8";
-		V2User v2user = new V2User();
-		v2user.uid = 1;
-		live.publisher = v2user;
-		V2Location v2location = new V2Location();
-		v2location.lat = 39.978437D;
-		v2location.lng =116.294172D;
-		live.location = v2location;
-		
-		list.add(live);		
-		
-		
-		live = new V2Live();
-		live.uuid = "8001";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
-		v2user = new V2User();
-		v2user.uid = 2;
-		live.publisher = v2user;
-		v2location = new V2Location();
-		v2location.lat = 39.984186D;
-		v2location.lng =116.449975D;
-		live.location = v2location;
-		list.add(live);	
-		
-		
-		live = new V2Live();
-		live.uuid = "8002";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
-		v2user = new V2User();
-		v2user.uid = 3;
-		live.publisher = v2user;
-		v2location = new V2Location();
-		v2location.lat = 39.873527D;
-		v2location.lng =116.308545D;
-		live.location = v2location;
-		list.add(live);	
-		
-		live = new V2Live();
-		live.uuid = "8001";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
-		v2user = new V2User();
-		v2user.uid = 4;
-		live.publisher = v2user;
-		v2location = new V2Location();
-		v2location.lat = 39.871312D;
-		v2location.lng =116.466072D;
-		live.location = v2location;
-		list.add(live);	
-		
-		live = new V2Live();
-		live.uuid = "8004";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
-		v2user = new V2User();
-		v2user.uid = 6;
-		live.publisher = v2user;
-		v2location = new V2Location();
-		v2location.lat = 39.926224D;
-		v2location.lng =116.361438D;
-		live.location = v2location;
-		list.add(live);	
-		
-		live = new V2Live();
-		live.uuid = "8001";
-		live.url = "http://" + Constants.SERVER + ":8090/hls/"+ live.uuid+ ".m3u8";
-		v2user = new V2User();
-		v2user.uid = 7;
-		live.publisher = v2user;
-		v2location = new V2Location();
-		v2location.lat = 39.917813D;
-		v2location.lng =116.444225D;
-		live.location = v2location;
-		list.add(live);	
-		
-		
-		
-		List<Live> l = new ArrayList<Live>(list.size());
-		for (V2Live v2live : list) {
-			l.add(new Live(new User(v2live.publisher.uid, v2live.publisher.name), v2live.url, v2live.location.lat, v2live.location.lng));
-		}
-		return l;
+	@Override
+	public boolean getRecommandationButtonState() {
+		// TODO Auto-generated method stub
+		return false;
 	}
-		
 
 	
+	/////////////////////////////////////////////////////////////
 	
-	
-	private void handleGetNeihoodrCallback(Message msg) {
-//		JNIResponse resp = (JNIResponse)msg.obj;
-//		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-//			GetNeiborhoodResponse hr = (GetNeiborhoodResponse)resp;
-//			neiborhoodList.clear();
-//			neiborhoodList.addAll(hr.list);
-//			neiborhoodList.addAll(getTestlist());
-//			updateLiveMarkOnMap(neiborhoodList);
-//			if (!isInCameraView) {
-//				autoPlayNecessary();
-//			}
-//			
-//		} else {
-//			//FIXME use 
-//			neiborhoodList.clear();
-//			neiborhoodList.addAll(getTestlist());
-//			updateLiveMarkOnMap(neiborhoodList);
-//			if (!isInCameraView) {
-//				autoPlayNecessary();
-//			}
-//	
-//		}
-	}
+
 	
 	private void handleLiveNotification(Message msg) {
 		final LiveNotification ln = (LiveNotification) msg.obj;
@@ -1127,7 +934,6 @@ public class MainActivity extends FragmentActivity implements
 				break;
 			}
 			case SCAN_CALL_BACK:
-				handleGetNeihoodrCallback(msg);
 				break;
 			case NOTIFICATION_LIVE:
 				handleLiveNotification(msg);

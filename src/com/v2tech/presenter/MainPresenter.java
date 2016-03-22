@@ -34,6 +34,7 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	
 	private static final int INIT = 1;
 	private static final int LOGIN_CALLBACK = 2;
+	private static final int RECOMMENDAATION = 3;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -96,6 +97,8 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		
 		public String getTextString();
 		
+		public boolean getRecommandationButtonState();
+		
 	}
 	
 	public void uicreated() {
@@ -108,6 +111,11 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		h = new LocalHandler(th.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}
+	
+	public void onResume() {
+		
+	}
+	
 	
 	public void mapLocationButtonClicked() {
 		
@@ -225,6 +233,9 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	}
 	
 	
+	public void onStop() {
+		
+	}
 
 	
 	
@@ -232,7 +243,7 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		us.clearCalledBack();
 		stopLocationScan(locationClient);
 	}
-	
+	///////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	private void searchMap(String text) {
@@ -355,6 +366,11 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		locationClient = startLocationScan();
 	}
 	
+	
+	private void doRecommendationInBack() {
+		
+	}
+	
 	HandlerThread th;
 	private Handler h;
 	
@@ -371,6 +387,9 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 			switch (w) {
 			case INIT:
 				doInitInBack();
+				break;
+			case RECOMMENDAATION:
+				doRecommendationInBack();
 				break;
 			}
 		}
