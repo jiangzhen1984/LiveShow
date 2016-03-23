@@ -192,6 +192,12 @@ public class Conference implements Parcelable {
 	public long getId() {
 		return this.id;
 	}
+	
+	
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	/**
 	 * <conf canaudio="1" candataop="1" canvideo="1" conftype="0" haskey="0" //

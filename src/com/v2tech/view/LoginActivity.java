@@ -52,7 +52,7 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		
 		mUserNameET.addTextChangedListener(textWatcher);
 		mUserCodeET.addTextChangedListener(textWatcher);
-		presenter.onUICreate();
+		presenter.onUICreated();
 
 	}
 
@@ -203,7 +203,7 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		super.onDestroy();
 		mUserNameET.removeTextChangedListener(textWatcher);
 		mUserCodeET.removeTextChangedListener(textWatcher);
-		presenter.onUIDestroy();
+		presenter.onUIDestroyed();
 	}
 
 

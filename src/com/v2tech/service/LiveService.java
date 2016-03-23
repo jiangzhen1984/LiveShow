@@ -23,6 +23,9 @@ import com.V2.jni.ind.V2Location;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.pkt.PacketProxy;
+import com.v2tech.net.lv.LocationReportReqPacket;
 import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
@@ -52,10 +55,7 @@ public class LiveService extends AbstractHandler {
 	
 	
 	public void updateGps(double lat, double lng) {
-		
-		InteractionRequest.getInstance().updateGpsRequest(
-				"<gps lon=\"" + lng + "\" lat=\""
-						+ lat + "\"></gps>");
+		 DeamonWorker.getInstance().request(new PacketProxy(new LocationReportReqPacket(lat, lng), null));
 	}
 	
 

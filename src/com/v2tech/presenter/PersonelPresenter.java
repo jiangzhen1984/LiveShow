@@ -37,35 +37,11 @@ public class PersonelPresenter extends BasePresenter {
 		ui.finishMainUI();
 	}
 
-	@Override
-	public void onUICreated() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void onUIStarted() {
-		
-	}
-
-	@Override
-	public void onUIResumed() {
-		
-	}
-
-	@Override
-	public void onUIPaused() {
-		
-	}
-
-	@Override
-	public void onUIStopped() {
-		
-	}
 
 	@Override
 	public void onUIDestroyed() {
-		
+		destroyBackendThread();
 	}
 	
 	

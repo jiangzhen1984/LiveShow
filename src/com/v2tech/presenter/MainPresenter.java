@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.telephony.TelephonyManager;
@@ -25,9 +24,18 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.LivePublishReqPacket;
+import com.v2tech.net.lv.LiveWatchingReqPacket;
+import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.LiveService;
+import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
+import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.util.SPUtil;
+import com.v2tech.vo.Conference;
 import com.v2tech.vo.User;
 
 public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultListener,  BDLocationListener {
@@ -35,6 +43,8 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private static final int INIT = 1;
 	private static final int LOGIN_CALLBACK = 2;
 	private static final int RECOMMENDAATION = 3;
+	private static final int CREATE_VIDEO_SHARE_CALL_BACK = 4;
+	private static final int REPORT_LOCATION = 5;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -48,7 +58,10 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private Context context;
 	private MainPresenterUI ui;
 	private UserService us;
-	
+	private ConferenceService vs;
+	private LiveService ls;
+	private Handler h;
+	private Conference conf;
 	
 	private int videoScreenState; 
 	private boolean keyboardState = false;
@@ -102,14 +115,7 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		
 	}
 	
-	public void uicreated() {
-		h = new LocalHandler(backendThread.getLooper());
-		Message.obtain(h, INIT).sendToTarget();
-	}
 	
-	public void onResume() {
-		
-	}
 	
 	
 	public void mapLocationButtonClicked() {
@@ -184,7 +190,14 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	public void videoShareButtonClicked() {
-		
+		if ((videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
+			vs.quitConference(conf, null);
+			DeamonWorker.getInstance().request(new LiveWatchingReqPacket(conf.getId(), LiveWatchingReqPacket.CANCEL));
+			videoScreenState |= (~PUBLISHING_FLAG);
+		} else {
+			conf = new Conference(0);
+			vs.createConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
+		}
 	}
 	
 	public void personelButtonClicked() {
@@ -228,19 +241,38 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	}
 	
 	
-	public void onStart() {
+	
+	
+	@Override
+	public void onUICreated() {
+		h = new LocalHandler(backendThread.getLooper());
+		Message.obtain(h, INIT).sendToTarget();
+	}
+
+
+	@Override
+	public void onUIStarted() {
 		startLocationScan(locationClient);
 	}
 	
-	public void onStop() {
+
+
+	@Override
+	public void onUIStopped() {
 		stopLocationScan(locationClient);
 	}
 
-	
-	
-	public void onUIDestroy() {
+
+	@Override
+	public void onUIDestroyed() {
 		us.clearCalledBack();
+		vs.clearCalledBack();
+		ls.clearCalledBack();
+		this.h.removeMessages(REPORT_LOCATION);
+		destroyBackendThread();
 	}
+
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -324,12 +356,15 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		}
 		currentMapCenter.ll = result.getLocation();
 		
-		updateMapCenter(currentMapCenter , mCurrentZoomLevel);
+		if (prepreUpdateMap()) {
+			updateMapCenter(currentMapCenter , mCurrentZoomLevel);
+		}
+		
+		
 	}
 
 	@Override
 	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult res) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -355,12 +390,15 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	private void doInitInBack() {
+		vs = new ConferenceService();
+		us = new UserService();
+		ls = new LiveService();
+		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 			String phone = SPUtil.getConfigStrValue(context, "cellphone");
 			String code = SPUtil.getConfigStrValue(context, "code");
 			String lp = tl.getLine1Number();
-			us = new UserService();
 			if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {
 				if (TextUtils.isEmpty(lp)) {
 					lp = System.currentTimeMillis()+"";
@@ -382,7 +420,25 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		
 	}
 	
-	private Handler h;
+	private void handleCreateVideoShareBack(JNIResponse resp) {
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			DeamonWorker.getInstance().request(new LivePublishReqPacket());
+			conf.setId(((RequestConfCreateResponse)resp).getConfId());
+			videoScreenState |= PUBLISHING_FLAG;
+		} else {
+			//FIXME show error UI
+		}
+	}
+	
+	private void reportLocation() {
+		if (currentLocation != null) {
+			ls.updateGps(currentLocation.ll.latitude, currentLocation.ll.longitude);
+			Message msg = Message.obtain();
+			msg.what = REPORT_LOCATION;
+			this.h.sendMessageDelayed(msg, 30000);
+		}
+	}
+	
 	
 	class LocalHandler  extends Handler {
 		
@@ -400,6 +456,12 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 				break;
 			case RECOMMENDAATION:
 				doRecommendationInBack();
+				break;
+			case CREATE_VIDEO_SHARE_CALL_BACK:
+				handleCreateVideoShareBack((JNIResponse)msg.obj);
+				break;
+			case REPORT_LOCATION:
+				reportLocation();
 				break;
 			}
 		}

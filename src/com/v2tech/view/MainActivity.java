@@ -32,12 +32,7 @@ import android.widget.Toast;
 
 import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
-import com.baidu.location.BDLocation;
-import com.baidu.mapapi.cloud.CloudListener;
 import com.baidu.mapapi.cloud.CloudManager;
-import com.baidu.mapapi.cloud.CloudPoiInfo;
-import com.baidu.mapapi.cloud.CloudSearchResult;
-import com.baidu.mapapi.cloud.DetailSearchResult;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
@@ -52,12 +47,6 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
-import com.baidu.mapapi.model.LatLngBounds.Builder;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.service.DeviceService;
@@ -118,7 +107,6 @@ public class MainActivity extends FragmentActivity implements
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
-	private boolean showCurrentLocation = true;// 是否首次定位
 	private boolean isSuspended;
 
 	private CameraView cv;
@@ -160,7 +148,7 @@ public class MainActivity extends FragmentActivity implements
 		initTitleBarButtonLayout();
 		initResetOrder();
 
-		presenter.uicreated();
+		presenter.onUICreated();
 
 	}
 
@@ -252,7 +240,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-		presenter.onStart();
+		presenter.onUIStarted();
 	
 	}
 
@@ -272,7 +260,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onStop() {
 		isSuspended = true;
 		super.onStop();
-		presenter.onStop();
+		presenter.onUIStopped();
 	}
 	
 	
@@ -291,7 +279,7 @@ public class MainActivity extends FragmentActivity implements
 		CloudManager.getInstance().destroy();
 
 		mLocalHandler = null;
-		presenter.onUIDestroy();
+		presenter.onUIDestroyed();
 		
 	}
 
@@ -510,8 +498,6 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 		
-		showCurrentLocation = false;
-		
 		mCurrentVideoFragment.play(l);
 
 		videoMaps.get(mCurrentVideoFragment).live = l;
@@ -610,7 +596,6 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onMapStatusChange(MapStatus arg0) {
-
 		}
 
 		@Override

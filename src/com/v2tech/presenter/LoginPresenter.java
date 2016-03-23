@@ -1,7 +1,6 @@
 package com.v2tech.presenter;
 
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
@@ -55,9 +54,6 @@ public class LoginPresenter extends BasePresenter {
 	
 	
 	
-	
-	
-	
 	@Override
 	public void onUICreated() {
 		h = new LocalHandler(backendThread.getLooper());
@@ -67,66 +63,10 @@ public class LoginPresenter extends BasePresenter {
 
 
 
-
-
-
-
-
-	@Override
-	public void onUIStarted() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-
-
-
-
-	@Override
-	public void onUIResumed() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-
-
-
-
-	@Override
-	public void onUIPaused() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-
-
-
-
-	@Override
-	public void onUIStopped() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-
-
-
-
 	@Override
 	public void onUIDestroyed() {
-		// TODO Auto-generated method stub
+		us.clearCalledBack();
+		super.destroyBackendThread();
 		
 	}
 
@@ -163,16 +103,6 @@ public class LoginPresenter extends BasePresenter {
 		} else {
 			ui.updateStartButton(false);
 		}
-	}
-	
-	
-	
-	
-	
-	public void onUIDestroy() {
-		us.clearCalledBack();
-		super.destroyBackendThread();
-		
 	}
 	
 	

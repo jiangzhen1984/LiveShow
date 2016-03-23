@@ -18,6 +18,8 @@ import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.service.jni.JNIIndication;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.PermissionUpdateIndication;
@@ -443,7 +445,7 @@ public class ConferenceService extends DeviceService {
 					nConfID, 0, RequestConfCreateResponse.Result.SUCCESS);
 			Message.obtain(mCallbackHandler, JNI_REQUEST_CREATE_CONFERENCE,
 					jniConfCreateRes).sendToTarget();
-
+			
 			JNIResponse jniRes = new RequestEnterConfResponse(
 					nConfID,
 					nTime,
