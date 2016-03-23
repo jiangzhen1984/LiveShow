@@ -22,6 +22,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import android.util.Log;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
@@ -105,6 +106,9 @@ public class DeamonWorker implements Runnable, NetConnector {
 			}
 			
 		} catch (Exception e) {
+			//FIXME add recovery policy
+			V2Log.e(e.getMessage());
+			Log.e("DeamonWorker"," error :",e);
 			e.printStackTrace();
 			if (ch != null && !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);

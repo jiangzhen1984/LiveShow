@@ -106,9 +106,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <permission
-        android:name="com.v2tech.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature" />
+   
 
     <application
         android:name="com.v2tech.view.MainApplication"
@@ -125,7 +123,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateVisible" >
         
               
         </activity>
@@ -184,8 +182,7 @@
         </service>
         <service
             android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" >
+            android:enabled="true" >
         </service>
     </application>
 

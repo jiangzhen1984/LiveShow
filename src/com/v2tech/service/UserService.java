@@ -24,6 +24,8 @@ import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.GetCodeReqPacket;
 import com.v2tech.net.lv.LoginReqPacket;
 import com.v2tech.net.lv.LoginRespPacket;
+import com.v2tech.net.lv.LogoutReqPacket;
+import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
@@ -60,8 +62,17 @@ public class UserService extends AbstractHandler {
 	 *            callback message Message.obj is {@link MessageListener}
 	 */
 	public void login(String mail, String passwd, MessageListener caller) {
-		initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-		ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", false);
+		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, passwd));
+		if (!p.getHeader().isError()) {
+			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
+			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", false);
+		} else {
+			if (caller != null) {
+				Message m = Message.obtain(caller.getHandler(), caller.what,
+						new RequestLogInResponse(null, JNIResponse.Result.FAILED));
+				m.sendToTarget();
+			}
+		}
 	}
 	
 	/**
@@ -102,6 +113,7 @@ public class UserService extends AbstractHandler {
 	
 	
 	public void logout( MessageListener caller) {
+		DeamonWorker.getInstance().requestAsync(new PacketProxy(new LogoutReqPacket(), null));
 		ImRequest.getInstance().ImLogout();
 	}
 	

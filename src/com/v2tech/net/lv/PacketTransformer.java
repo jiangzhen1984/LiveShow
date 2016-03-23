@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.v2tech.net.pkt.Packet;
+import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.Transformer;
 
 public class PacketTransformer implements Transformer<Packet, String> {
@@ -24,8 +25,12 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			return serializeLocationReportRequest((LocationReportReqPacket)f);
 		} else if (f instanceof LogoutReqPacket) {
 			return serializeLogoutRequest((LogoutReqPacket)f);
+		} else if (f instanceof PacketProxy) {
+			return serialize(((PacketProxy)f).getPacket());
+		} else {
+			throw new RuntimeException("packet is not support : "+ f);
 		}
-		return null;
+		
 	}
 
 	@Override

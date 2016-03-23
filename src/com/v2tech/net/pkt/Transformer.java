@@ -6,4 +6,5 @@ public interface Transformer<F, T> {
 
 	public F unserializeFromStr(T t);
 	
+	
 }

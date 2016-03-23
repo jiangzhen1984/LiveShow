@@ -165,11 +165,17 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 	
 	@Override
 	public void setPhoneNumberError() {
-		mUserNameET.setError("手机号不正确");
+		mUserNameET.setError(getResources().getText(R.string.login_error_incorrect_phone_number));
 	}
 	
 	
-	
+
+	@Override
+	public void showKeyboard() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 	
 

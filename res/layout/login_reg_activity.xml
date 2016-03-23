@@ -38,7 +38,9 @@
                 android:ems="5"
                 android:hint="@string/login_action_text_username_hint"
                 android:inputType="phone"
+                android:maxLength="13"
                 android:textColorHint="#c0c0c0" >
+                <requestFocus />
             </EditText>
 
             <EditText

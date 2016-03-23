@@ -8,13 +8,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.v2tech.service.ConferenceService;
-import com.v2tech.service.GlobalHolder;
+import com.v2tech.presenter.PersonelPresenter;
+import com.v2tech.presenter.PersonelPresenter.PersonelPresenterUI;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
 
@@ -22,8 +21,8 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class PersonalActivity extends Activity implements OnClickListener {
-
+public class PersonalActivity extends Activity implements OnClickListener,
+		PersonelPresenterUI {
 
 	private UserService us;
 
@@ -34,79 +33,63 @@ public class PersonalActivity extends Activity implements OnClickListener {
 	private View mMyFollowingBtn;
 	private View mMyFansBtn;
 	private View mSettingBtn;
-	private ConferenceService confService;
-	
-	
+	private View mFriendsBtn;
+
+	private PersonelPresenter presenter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personal_activity);
-		us = new UserService();
-		confService = new ConferenceService();
-		ht = new HandlerThread("PersonalActivity");
-		ht.start();
+		presenter = new PersonelPresenter(this, this);
 
-		mPersonalNameTv =  (TextView)findViewById(R.id.personal_name);
-		mMyFollowingBtn =  findViewById(R.id.personal_follow_btn);
-		mMyFansBtn =  findViewById(R.id.personal_fans_btn);
-		mSettingBtn =  findViewById(R.id.personal_setting_btn);
+		mPersonalNameTv = (TextView) findViewById(R.id.personal_name);
+		mMyFollowingBtn = findViewById(R.id.personal_follow_btn);
+		mMyFansBtn = findViewById(R.id.personal_fans_btn);
+		mSettingBtn = findViewById(R.id.personal_setting_btn);
+		mFriendsBtn = findViewById(R.id.personal_friends_btn);
 
-
+		mFriendsBtn.setOnClickListener(this);
 		mMyFollowingBtn.setOnClickListener(this);
 		mMyFansBtn.setOnClickListener(this);
-	//	mSettingBtn.setOnClickListener(this);
-		
-		findViewById(R.id.return_button).setOnClickListener(this);
-		
-		
-		try {
-			Thread.sleep(300);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		requestHandler = new Handler(ht.getLooper());
-		this.overridePendingTransition(R.animator.right_to_left_in, 0);
-		
-		mPersonalNameTv.setText(GlobalHolder.getInstance().getCurrentUser().getMobile());
+		mSettingBtn.setOnClickListener(this);
+
+		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
+
+		this.overridePendingTransition(R.animator.left_to_right_in, R.animator.left_to_right_out);
 
 	}
 
 	@Override
 	public void onClick(View v) {
-		Intent i = new Intent();
 		int id = v.getId();
 		switch (id) {
 		case R.id.personal_follow_btn:
-			i.addCategory("com.v2tech");
-			i.setAction("com.v2tech.action.FOLLOWING_FANS_ACTIVITY");
-			//i.setClass(getApplicationContext(), FansFollowingListActivity.class);
-			i.putExtra("type", "following");
-			confService.queryList(2, null);
+			presenter.followBtnClicked();
 			break;
 		case R.id.personal_fans_btn:
-			i.addCategory("com.v2tech");
-			i.setAction("com.v2tech.action.FOLLOWING_FANS_ACTIVITY");
-			//i.setClass(getApplicationContext(), FansFollowingListActivity.class);
-			i.putExtra("type", "fans");
-			confService.queryList(1, null);
+			presenter.followBtnClicked();
 			break;
 		case R.id.personal_setting_btn:
+			presenter.settingBtnClicked();
 			break;
-		case R.id.return_button:
+		case R.id.personal_friends_btn:
+			presenter.friendsBtnClicked();
+			break;
+		case R.id.title_bar_left_btn:
+			presenter.returnBtnClicked();
+			break;
 		default:
-				finish();
-				return;
 		}
-		
-		startActivity(i);
 
 	}
 
-
-
-
-	
+	private void showFollowsUI() {
+		Intent i = new Intent();
+		i.addCategory("com.v2tech");
+		i.setAction("com.v2tech.action.FOLLOWING_FANS_ACTIVITY");
+		i.putExtra("type", "following");
+	}
 
 	@Override
 	public void finish() {
@@ -114,11 +97,6 @@ public class PersonalActivity extends Activity implements OnClickListener {
 		overridePendingTransition(0, R.animator.left_to_right_out);
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -142,25 +120,16 @@ public class PersonalActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		us.clearCalledBack();
-		ht.quit();
-		confService.clearCalledBack();
 	}
 
+	@Override
+	public void finishMainUI() {
+		finish();
+		
+	}
 
-
-	private Handler localHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			int what = msg.what;
-			switch (what) {
-			default:
-				break;
-			}
-		}
-
-	};
-
-
+	
+	
+	
+	
 }

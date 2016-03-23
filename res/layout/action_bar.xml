@@ -13,6 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
+        android:padding="10dp"
         android:src="@drawable/title_bar_return_btn" />
 
     <TextView

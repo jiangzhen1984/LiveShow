@@ -10,6 +10,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -24,13 +25,12 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.v2tech.presenter.LoginPresenter.LocalHandler;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
 import com.v2tech.util.SPUtil;
 import com.v2tech.vo.User;
 
-public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationListener {
+public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultListener,  BDLocationListener {
 	
 	private static final int INIT = 1;
 	private static final int LOGIN_CALLBACK = 2;
@@ -52,7 +52,6 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	
 	private int videoScreenState; 
 	private boolean keyboardState = false;
-	private boolean loginState = false;
 	
 	private LocationWrapper currentLocation;
 	private LocationWrapper currentMapCenter;
@@ -62,6 +61,7 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	private GeoCoder mSearch;
 	private BaiduMap  mapInstance;
 	private LocationClient locationClient;
+	private boolean locating;
 	
 	/////////////////////////////////////////
 	
@@ -99,16 +99,11 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		
 		public boolean getRecommandationButtonState();
 		
+		
 	}
 	
 	public void uicreated() {
-		if (th != null) {
-			th.quit();
-		}
-		th = new HandlerThread("LoginPresenterBackEnd");
-		th.start();
-		
-		h = new LocalHandler(th.getLooper());
+		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}
 	
@@ -233,15 +228,18 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	}
 	
 	
+	public void onStart() {
+		startLocationScan(locationClient);
+	}
+	
 	public void onStop() {
-		
+		stopLocationScan(locationClient);
 	}
 
 	
 	
 	public void onUIDestroy() {
 		us.clearCalledBack();
-		stopLocationScan(locationClient);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -260,12 +258,22 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		option.setCoorType("bd09ll"); // 设置坐标类型
 		option.setScanSpan(5000);
 		lc.setLocOption(option);
-		lc.start();
 		return lc;
 	}
 	
+	
+	private void startLocationScan(LocationClient lc) {
+		if (lc != null && !locating) {
+			locating = true;
+			lc.start();
+		}
+	}
+	
 	private void stopLocationScan(LocationClient lc) {
-		lc.stop();
+		if (lc != null && locating) {
+			locating = false;
+			lc.stop();
+		}
 	}
 	
 	
@@ -347,23 +355,26 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 	
 	
 	private void doInitInBack() {
-
-		TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-		String phone = SPUtil.getConfigStrValue(context, "cellphone");
-		String code = SPUtil.getConfigStrValue(context, "code");
-		String lp = tl.getLine1Number();
-		us = new UserService();
-		if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {
-			if (TextUtils.isEmpty(lp)) {
-				lp = System.currentTimeMillis()+"";
+		if (GlobalHolder.getInstance().getCurrentUser() == null) {
+			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			String phone = SPUtil.getConfigStrValue(context, "cellphone");
+			String code = SPUtil.getConfigStrValue(context, "code");
+			String lp = tl.getLine1Number();
+			us = new UserService();
+			if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {
+				if (TextUtils.isEmpty(lp)) {
+					lp = System.currentTimeMillis()+"";
+				}
+				us.login(lp, "", true, null);
+			} else {
+				us.login(phone, code, false, null);
 			}
-			us.login(lp, "", true, null);
 		} else {
-			us.login(phone, code, false, null);
+			V2Log.w("Already login, no need login again" + GlobalHolder.getInstance().getCurrentUser());
 		}
-		
 		mapInstance = ui.getMapInstance();
 		locationClient = startLocationScan();
+		startLocationScan(locationClient);
 	}
 	
 	
@@ -371,7 +382,6 @@ public class MainPresenter implements OnGetGeoCoderResultListener,  BDLocationLi
 		
 	}
 	
-	HandlerThread th;
 	private Handler h;
 	
 	class LocalHandler  extends Handler {

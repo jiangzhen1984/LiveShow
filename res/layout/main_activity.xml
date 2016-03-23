@@ -45,9 +45,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_layout"
-        android:layout_alignLeft="@+id/bottom_layout"
-        android:layout_alignStart="@+id/bottom_layout"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/main_layout_map_locate_button"
         android:layout_marginStart="@dimen/main_layout_map_locate_button"
         android:src="@drawable/map_locate_button" />

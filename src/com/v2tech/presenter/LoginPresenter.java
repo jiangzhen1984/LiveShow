@@ -6,16 +6,19 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
+import com.v2tech.vo.User;
 
-public class LoginPresenter {
+public class LoginPresenter extends BasePresenter {
 
 	
 	private static final int INIT = 1;
 	private static final int LOGIN_ACTION = 2;
 	private static final int GET_CODE_ACTION = 3;
 	private static final int LOGIN_CALLBACK = 4;
+	private static final int LOGOUT_AS_CALLBACK = 5;
 	
 	
 	public interface LoginPresenterUI {
@@ -35,6 +38,8 @@ public class LoginPresenter {
 		public void doReturned();
 		
 		public void setPhoneNumberError();
+		
+		public void showKeyboard();
 	}
 	
 	
@@ -47,6 +52,91 @@ public class LoginPresenter {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	@Override
+	public void onUICreated() {
+		h = new LocalHandler(backendThread.getLooper());
+		Message.obtain(h, INIT).sendToTarget();
+		ui.showKeyboard();
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public void onUIStarted() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public void onUIResumed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public void onUIPaused() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public void onUIStopped() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public void onUIDestroyed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
 	public void verificationCodeButtonClicked() {
 		Message.obtain(h, GET_CODE_ACTION, null).sendToTarget();;
 	}
@@ -77,27 +167,21 @@ public class LoginPresenter {
 	
 	
 	
-	public void onUICreate() {
-		if (th != null) {
-			th.quit();
-		}
-		th = new HandlerThread("LoginPresenterBackEnd");
-		th.start();
-		
-		h = new LocalHandler(th.getLooper());
-		Message.obtain(h, INIT).sendToTarget();;
-	}
 	
 	
 	public void onUIDestroy() {
 		us.clearCalledBack();
-		th.quit();
+		super.destroyBackendThread();
 		
 	}
 	
 	
 	
 	private void doLoginInBack() {
+		User u = GlobalHolder.getInstance().getCurrentUser();
+		if (u!= null && u.isNY) {
+			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null));
+		}
 		String username = ui.getUserNameText();
 		String code = ui.getCodeText();
 		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
@@ -114,7 +198,6 @@ public class LoginPresenter {
 		us.sendVaidationCode(number);
 	}
 	
-	HandlerThread th;
 	private Handler h;
 	
 	class LocalHandler  extends Handler {
@@ -138,6 +221,8 @@ public class LoginPresenter {
 				doGetCodeInBack();
 				break;
 			case LOGIN_CALLBACK:
+				//TODO test code
+				GlobalHolder.getInstance().getCurrentUser().isNY = false;
 				ui.doLogedIn();
 				break;
 			}

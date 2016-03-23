@@ -20,6 +20,7 @@
      <string name="notification_get_verification_code">验证码已发送!</string>
      
      
+     <string name="personal_my_friends">我的朋友</string> 
      <string name="personal_my_follow">我的关注</string> 
      <string name="personal_my_fans">我的粉丝</string>
      <string name="personal_my_setting">设置</string>
@@ -47,6 +48,7 @@
      <string name="login_action_text_6">》</string>
      <string name="login_action_text_username_hint">手机号</string>
      <string name="login_action_text_code_hint">验证码</string>
+     <string name="login_error_incorrect_phone_number">手机号不正确</string>
      
      
      

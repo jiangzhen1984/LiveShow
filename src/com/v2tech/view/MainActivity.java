@@ -74,7 +74,7 @@ import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
-		OnGetGeoCoderResultListener,View.OnClickListener, MainPresenter.MainPresenterUI {
+		View.OnClickListener, MainPresenter.MainPresenterUI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (presenter == null) {
-			presenter = new MainPresenter(getApplicationContext(), this);
+			presenter = new MainPresenter(this, this);
 		}
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
@@ -203,7 +203,6 @@ public class MainActivity extends FragmentActivity implements
 		 this.mPersonalButton.setImageResource(R.drawable.user_icon);
 		 mPersonalButton.setOnClickListener(this);
 
-		
 	}
 
 	private void initBottomButtonLayout() {
@@ -253,6 +252,8 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
+		presenter.onStart();
+	
 	}
 
 	@Override
@@ -271,6 +272,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onStop() {
 		isSuspended = true;
 		super.onStop();
+		presenter.onStop();
 	}
 	
 	
@@ -439,32 +441,9 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	private BDLocation mCacheLocation;
 
 
-	@Override
-	public void onGetGeoCodeResult(GeoCodeResult result) {
-		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(MainActivity.this, "抱歉，未能找到位置", Toast.LENGTH_LONG)
-					.show();
-			return;
-		}
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-				.getLocation()));
 
-		lat = result.getLocation().latitude;
-		lng = result.getLocation().longitude;
-	}
-
-	@Override
-	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-
-	}
-
-	private double lat;
-	private double lng;
-
-	
 
 
 	
@@ -477,37 +456,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private LocalState mSearchState = LocalState.DONE;
 
-	private CloudListener mLocalCloudListener = new CloudListener() {
-
-		@Override
-		public void onGetDetailSearchResult(DetailSearchResult arg0, int arg1) {
-
-		}
-
-		@Override
-		public void onGetSearchResult(CloudSearchResult result, int error) {
-			if (result != null && result.poiList != null
-					&& result.poiList.size() > 0) {
-				mBaiduMap.clear();
-				BitmapDescriptor bd = BitmapDescriptorFactory
-						.fromResource(R.drawable.icon_gcoding);
-				LatLng ll;
-				LatLngBounds.Builder builder = new Builder();
-				for (CloudPoiInfo info : result.poiList) {
-					ll = new LatLng(info.latitude, info.longitude);
-					OverlayOptions oo = new MarkerOptions().icon(bd).position(
-							ll);
-					mBaiduMap.addOverlay(oo);
-					builder.include(ll);
-				}
-				LatLngBounds bounds = builder.build();
-				MapStatusUpdate u = MapStatusUpdateFactory
-						.newLatLngBounds(bounds);
-				mBaiduMap.animateMapStatus(u);
-			}
-		}
-
-	};
 
 	private void updateLiveMarkOnMap(List<Live> list) {
 		mBaiduMap.clear();
