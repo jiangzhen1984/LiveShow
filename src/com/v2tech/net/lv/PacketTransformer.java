@@ -23,7 +23,9 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			return serializeLiveWatchingRequest((LiveWatchingReqPacket)f);
 		} else if (f instanceof LocationReportReqPacket) {
 			return serializeLocationReportRequest((LocationReportReqPacket)f);
-		} else if (f instanceof LogoutReqPacket) {
+		} else if (f instanceof LivePublishReqPacket) {
+			return serializeLivePublishRequest((LivePublishReqPacket)f);
+		}else if (f instanceof LogoutReqPacket) {
 			return serializeLogoutRequest((LogoutReqPacket)f);
 		} else if (f instanceof PacketProxy) {
 			return serialize(((PacketProxy)f).getPacket());
@@ -214,6 +216,29 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		buffer.append("\r\n");
 		return buffer.toString();
 	}
+	
+	
+	private String serializeLivePublishRequest(LivePublishReqPacket p) {
+		StringBuffer buffer = new StringBuffer();
+		appendStart(buffer, p.getId()+"", "", "");
+		
+		appendTagStart(buffer, "query", false);
+		appendAttrText(buffer, "xmlns", "publicVideo");
+		appendAttrText(buffer, "type", "public");
+		appendTagStartEnd(buffer, true);
+		
+		appendTagStart(buffer, "video", false);
+		appendAttrText(buffer, "videoNum", p.lid+"");
+		appendAttrText(buffer, "longitude", p.lng+"");
+		appendAttrText(buffer, "latitude", p.lat+"");
+		appendTagStartEnd(buffer, true);
+		
+		
+		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
+		return buffer.toString();
+	}
+	
 	
 	
 	

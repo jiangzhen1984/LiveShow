@@ -126,7 +126,7 @@ public class MainApplication extends Application {
 		
 		
 		DeamonWorker.getInstance().setPacketTransformer(new PacketTransformer());
-		DeamonWorker.getInstance().connect("114.215.84.236", 9999);
+		DeamonWorker.getInstance().connect("115.28.100.110", 9999);
 	}
 
 

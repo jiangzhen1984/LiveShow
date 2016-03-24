@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <dimen name="title_bar_text_size">20sp</dimen>
+    
+    <dimen name="bottom_button_text_size">13sp</dimen>
+    <dimen name="bottom_button_text_padding">5dp</dimen>
+    <dimen name="bottom_button_layout_margin">20dp</dimen>
+    <dimen name="main_layout_map_locate_button">20dp</dimen>
+    <dimen name="video_right_border_text_size">13sp</dimen>
+    <dimen name="video_right_border_margin_right">15dp</dimen>
+    <dimen name="video_right_border_recommandation_button_margin_top">25dp</dimen>
+    <dimen name="video_layout_bottom_layout_margin_bottom">15dp</dimen>
+    <dimen name="video_layout_bottom_layout_margin_left">15dp</dimen>
+    <dimen name="video_layout_bottom_layout_margin_right">15dp</dimen>
+    
+    
+    <dimen name="login_activity_main_margin_left">25dp</dimen>
+    <dimen name="login_activity_main_margin_right">25dp</dimen>
+    <dimen name="login_text_size">14sp</dimen>
+    
+    <dimen name="login_text_verfication_code_size">17sp</dimen>
+    <dimen name="login_text_start_button_size">17sp</dimen>
+    
+    
+    <dimen name="personel_root_margin_right">80dp</dimen>
+
+</resources>

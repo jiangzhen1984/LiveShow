@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.V2.jni.AudioRequest;
+import com.V2.jni.ChatRequest;
 import com.V2.jni.ConfRequest;
 import com.V2.jni.ConfRequestCallbackAdapter;
 import com.V2.jni.GroupRequest;
@@ -18,8 +19,6 @@ import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
-import com.v2tech.net.DeamonWorker;
-import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.service.jni.JNIIndication;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.PermissionUpdateIndication;
@@ -37,6 +36,7 @@ import com.v2tech.vo.Group.GroupType;
 import com.v2tech.vo.MixVideo;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.VMessage;
 
 /**
  * <ul>
@@ -341,6 +341,17 @@ public class ConferenceService extends DeviceService {
 			Object obj) {
 		unRegisterListener(KEY_KICKED_LISTNER, h, what, obj);
 
+	}
+	
+	
+	
+	
+	public void sendMessage(VMessage msg) {
+		String xml = msg.toXml();
+		V2Log.e(xml);
+		byte[] bytes = xml.getBytes();
+		ChatRequest.getInstance().ChatSendTextMessage(msg.getMsgCode(), msg.getGroupId(),
+				msg.getToUser() == null ? 0 : msg.getToUser().getmUserId(), msg.getUUID(), bytes, bytes.length);
 	}
 
 	// =============================

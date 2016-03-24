@@ -1,5 +1,8 @@
 package com.v2tech.presenter;
 
+import java.util.Date;
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.SurfaceView;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
@@ -28,23 +32,27 @@ import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.service.ConferenceService;
+import com.v2tech.service.DeviceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveService;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
-import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.util.SPUtil;
+import com.v2tech.view.MapVideoLayout;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.User;
+import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.VMessage;
 
-public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultListener,  BDLocationListener {
+public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultListener,  BDLocationListener, MapVideoLayout.LayoutPositionChangedListener {
 	
 	private static final int INIT = 1;
 	private static final int LOGIN_CALLBACK = 2;
 	private static final int RECOMMENDAATION = 3;
 	private static final int CREATE_VIDEO_SHARE_CALL_BACK = 4;
 	private static final int REPORT_LOCATION = 5;
+	private static final int CREATE_VIDEO_SHARE = 6;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -53,6 +61,10 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private static final int LIVER_SHOW_FLAG = 1 << 4;
 	private static final int PUBLISHING_FLAG = 1 << 5;
 	private static final int WATCHING_FLAG = 1 << 6;
+	private static final int LOCAL_CAMERA_OPENING = 1 << 7;
+	private static final int BOTTOM_LAYOUT_SHOW = 1 << 8;
+	
+	private Random confIdRandom;
 	
 	
 	private Context context;
@@ -60,11 +72,13 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private UserService us;
 	private ConferenceService vs;
 	private LiveService ls;
+	private DeviceService ds;
 	private Handler h;
 	private Conference conf;
 	
-	private int videoScreenState; 
+	private int videoScreenState;
 	private boolean keyboardState = false;
+	private boolean cameraSurfaceViewMeasure = false;
 	
 	private LocationWrapper currentLocation;
 	private LocationWrapper currentMapCenter;
@@ -82,9 +96,10 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		super();
 		this.ui = ui;
 		this.context = context;
+		confIdRandom = new Random();
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
-				| FOLLOW_COUNT_SHOW_FLAG );
+				| FOLLOW_COUNT_SHOW_FLAG |BOTTOM_LAYOUT_SHOW);
 		
 		mSearch = GeoCoder.newInstance();
 		mSearch.setOnGetGeoCodeResultListener(this);
@@ -112,7 +127,19 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		
 		public boolean getRecommandationButtonState();
 		
+		public void updateVideShareButtonText(boolean publish);
 		
+		public void videoShareLayoutFlyout();
+		
+		public SurfaceView getCameraSurfaceView();
+		
+		public void showBottomLayout(boolean flag);
+		
+		public void resizeCameraSurfaceSize();
+		
+		public void showMessage(String msg);
+		
+		public void showError(int flag);
 	}
 	
 	
@@ -124,8 +151,14 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	public void sendMessageButtonClicked() {
-		
+		String txt = ui.getTextString();
+		if (TextUtils.isEmpty(txt)) {
+			return;
+		}
+		sendMessage(txt);
 	}
+	
+	
 	
 	public void mapMarkerClicked() {
 		
@@ -191,12 +224,15 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	public void videoShareButtonClicked() {
 		if ((videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
+			videoScreenState &= (~PUBLISHING_FLAG);
+			ui.updateVideShareButtonText(false);
+			ui.videoShareLayoutFlyout();
 			vs.quitConference(conf, null);
 			DeamonWorker.getInstance().request(new LiveWatchingReqPacket(conf.getId(), LiveWatchingReqPacket.CANCEL));
-			videoScreenState |= (~PUBLISHING_FLAG);
 		} else {
-			conf = new Conference(0);
-			vs.createConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
+			videoScreenState |= PUBLISHING_FLAG;
+			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
+			ui.updateVideShareButtonText(true);
 		}
 	}
 	
@@ -231,7 +267,7 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 			if (action == 1) {
 				searchMap(text);
 			} else {
-				
+				sendMessage(text);
 			}
 		}
 	}
@@ -239,8 +275,6 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	public void onLoginChildUIFinished(int ret,Intent data) {
 		
 	}
-	
-	
 	
 	
 	@Override
@@ -389,10 +423,70 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	
+	////////////////////////////////////LayoutPositionChangedListener////////////////////////
+	
+	
+	
+	@Override
+	public void onPreparedFlyingIn() {
+		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void onFlyingIn() {
+		if ((this.videoScreenState & LOCAL_CAMERA_OPENING) == LOCAL_CAMERA_OPENING) {
+			this.videoScreenState &= (~LOCAL_CAMERA_OPENING);
+			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+			duc.setSVHolder(ui.getCameraSurfaceView());
+			ds.requestCloseVideoDevice(duc, null);
+			
+		}
+		
+		if ((this.videoScreenState & BOTTOM_LAYOUT_SHOW) != BOTTOM_LAYOUT_SHOW) {
+			ui.showBottomLayout(true);
+			this.videoScreenState |= BOTTOM_LAYOUT_SHOW;
+		}
+		
+	}
+
+
+	@Override
+	public void onPreparedFlyingOut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onFlyingOut() {
+	}
+
+
+	@Override
+	public void onDrag() {
+		if (!cameraSurfaceViewMeasure) {
+			cameraSurfaceViewMeasure = true;
+			ui.resizeCameraSurfaceSize();
+		}
+		if ((this.videoScreenState & LOCAL_CAMERA_OPENING) != LOCAL_CAMERA_OPENING) {
+			
+			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+			duc.setSVHolder(ui.getCameraSurfaceView());
+			ds.requestOpenVideoDevice(duc, null);
+			ui.showBottomLayout(false);
+			this.videoScreenState |= LOCAL_CAMERA_OPENING;
+			this.videoScreenState &= (~BOTTOM_LAYOUT_SHOW);
+		}
+		
+	}
+//////////////////////////////////LayoutPositionChangedListener/////////////////
+
 	private void doInitInBack() {
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
+		ds = new DeviceService();
 		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -422,8 +516,7 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	private void handleCreateVideoShareBack(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			DeamonWorker.getInstance().request(new LivePublishReqPacket());
-			conf.setId(((RequestConfCreateResponse)resp).getConfId());
+			DeamonWorker.getInstance().request(new LivePublishReqPacket(conf.getId(), currentLocation.ll.latitude, currentLocation.ll.longitude));
 			videoScreenState |= PUBLISHING_FLAG;
 		} else {
 			//FIXME show error UI
@@ -437,6 +530,23 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 			msg.what = REPORT_LOCATION;
 			this.h.sendMessageDelayed(msg, 30000);
 		}
+	}
+	
+	
+	private void createVideoShareInBack() {
+		conf = new Conference(confIdRandom.nextLong());
+		vs.requestEnterConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
+	}
+	
+	
+	
+	private void sendMessage(String text) {
+		if (conf == null) {
+			ui.showError(1);
+			return;
+		}
+		VMessage vmsg = new VMessage(1, conf.getId(), GlobalHolder.getInstance().getCurrentUser(), new Date(System.currentTimeMillis()));
+		vs.sendMessage(vmsg);
 	}
 	
 	
@@ -462,6 +572,9 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 				break;
 			case REPORT_LOCATION:
 				reportLocation();
+				break;
+			case CREATE_VIDEO_SHARE:
+				createVideoShareInBack();
 				break;
 			}
 		}

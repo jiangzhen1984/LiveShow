@@ -364,6 +364,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		public void onPreparedFlyingOut();
 		
 		public void onFlyingOut();
+		
+		public void onDrag();
 	}
 
 	
@@ -600,6 +602,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 					}
 				} else {
 					updateOffset((int) dy);
+				}
+				if (mPosInterface != null && mDragType == DragType.SHARE) {
+					mPosInterface.onDrag();
 				}
 				if (mNotificaionShare.getVisibility() == View.GONE 
 						&& Math.abs(offsetY) > mCameraShapeSLop) {

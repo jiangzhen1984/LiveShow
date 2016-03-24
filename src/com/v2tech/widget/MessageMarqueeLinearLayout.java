@@ -17,7 +17,7 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 	
 	private static final String BUSY = "BUSY";
 
-	private int mMaxLines = 3;
+	private int mMaxLines = 1;
 
 	private TextView[] messagesText = new TextView[3];
 	private Animation[] anmations = new Animation[3];

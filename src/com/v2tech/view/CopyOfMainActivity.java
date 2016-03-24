@@ -636,6 +636,14 @@ public class CopyOfMainActivity extends FragmentActivity implements
 		public void onPreparedFlyingOut() {
 			onFlyingOut();
 		}
+
+		@Override
+		public void onDrag() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
 	};
 
 	private MapVideoLayout.OnVideoFragmentChangedListener videoFragmentChangedListener = new MapVideoLayout.OnVideoFragmentChangedListener() {

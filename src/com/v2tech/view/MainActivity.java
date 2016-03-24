@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -39,8 +39,6 @@ import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
@@ -49,7 +47,6 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
-import com.v2tech.service.DeviceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
@@ -59,7 +56,6 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
-import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
@@ -107,6 +103,8 @@ public class MainActivity extends FragmentActivity implements
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
+	private SurfaceView localSurfaceView;
+	
 	private boolean isSuspended;
 
 	private CameraView cv;
@@ -119,11 +117,8 @@ public class MainActivity extends FragmentActivity implements
 	private Map<Live, Overlay> currentOverlay = new HashMap<Live, Overlay>();
 	private VideoOpt mCurrentVideoFragment;
 
-	private LatLng selfLocation;
-	private LatLng currentVideoLocation;
 
 	private LocalHandler mLocalHandler;
-	private HandlerThread mHandlerThread;
 	private ImageView mPersonalButton;
 	private String phone;
 	Conference currentLive;
@@ -157,7 +152,7 @@ public class MainActivity extends FragmentActivity implements
 	private void initMapviewLayout() {
 		mMapVideoLayout = new MapVideoLayout(this);
 
-		mMapVideoLayout.setPosInterface(posChangedListener);
+		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mBaiduMap = mMapVideoLayout.getMap();
@@ -217,7 +212,7 @@ public class MainActivity extends FragmentActivity implements
 
 	
 	private boolean initVideoShareLayoutFlag = true;
-	private SurfaceView localSurfaceView;
+	
 	private void initVideoShareLayout() {
 		
 		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
@@ -346,52 +341,6 @@ public class MainActivity extends FragmentActivity implements
 
 	};
 
-	DeviceService ds = new DeviceService();
-	private MapVideoLayout.LayoutPositionChangedListener posChangedListener = new MapVideoLayout.LayoutPositionChangedListener() {
-
-		@Override
-		public void onFlyingOut() {
-			if (!initVideoShareLayoutFlag) {
-				initVideoShareLayout();
-				initVideoShareLayoutFlag = true;
-			}
-			if (!isRecording) {
-				UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
-				duc.setSVHolder(localSurfaceView);
-				ds.requestOpenVideoDevice(duc, null);
-				//cv.startPreView();
-			}
-			isInCameraView = true;
-			updateCurrentVideoState(mCurrentVideoFragment, false);
-			mLocateButton.setVisibility(View.GONE);
-			mBottomLayout.setVisibility(View.GONE);
-		}
-
-		@Override
-		public void onFlyingIn() {
-			if (initVideoShareLayoutFlag) {
-				//cv.stopPreView();
-			}
-			
-			isInCameraView = false;
-			updateCurrentVideoState(mCurrentVideoFragment, true);
-			mBottomLayout.setVisibility(View.VISIBLE);
-			mLocateButton.setVisibility(View.VISIBLE);
-			mMapVideoLayout.pauseDrawState(false);
-			initResetOrder();
-		}
-		
-		@Override
-		public void onPreparedFlyingIn() {
-			
-		}
-		
-		
-		@Override
-		public void onPreparedFlyingOut() {
-			onFlyingOut();
-		}
-	};
 
 	private MapVideoLayout.OnVideoFragmentChangedListener videoFragmentChangedListener = new MapVideoLayout.OnVideoFragmentChangedListener() {
 
@@ -407,11 +356,9 @@ public class MainActivity extends FragmentActivity implements
 			VideoItem item = videoMaps.get(videoFrag);
 			if (item == null) {
 				videoMaps.put(videoFrag, new VideoItem(videoFrag));
-				autoPlayNecessary();
 			} else {
 				Live cl = videoFrag.getCurrentLive();
 				if (cl != null) {
-					updateMapLocation(cl);
 				}
 			}
 			//bring to front, To make sure surface to show 
@@ -504,7 +451,6 @@ public class MainActivity extends FragmentActivity implements
 		if (l.getLat() <= 0 || l.getLng() <=0) {
 			return;
 		}
-		updateMapLocation(l);
 		// Start new live marker animation
 		animationMaker(l, true);
 		//
@@ -514,44 +460,8 @@ public class MainActivity extends FragmentActivity implements
 		mLocalHandler.sendMessageDelayed(delayMessage, 200);
 	}
 
-	private void updateMapLocation(Live l) {
-		currentVideoLocation = new LatLng(l.getLat(), l.getLng());
-		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
-				currentVideoLocation, mCurrentZoomLevel);
-		mBaiduMap.animateMapStatus(u);
 
-		mLocateButton.setTag(new LocationItem(LocationItemType.VIDEO,
-				currentVideoLocation));
-	}
 
-	private boolean autoPlayNecessary() {
-		if (mCurrentVideoFragment.isPlaying() || mCurrentVideoFragment.isPause()) {
-				return false;
-		}
-//		for (int i = 0; i < neiborhoodList.size(); i++) {
-//			Live live = neiborhoodList.get(i);
-//			boolean inUsed = false;
-//			for (VideoItem item : videoMaps.values()) {
-//				if (item.live == null) {
-//					continue;
-//				}
-//				if (item.live.equals(live)) {
-//					inUsed = true;
-//					break;
-//				}
-//			}
-//			if (inUsed) {
-//				continue;
-//			} else {
-//				if (!TextUtils.isEmpty(live.getUrl())) {
-//					playLive(live);
-//					return true;
-//				}
-//			}
-//		}
-		return false;
-
-	}
 
 	private void getMapSnapshot() {
 		mBaiduMap.snapshot(new SnapshotReadyCallback() {
@@ -743,6 +653,27 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
+	
+
+
+	@Override
+	public void updateVideShareButtonText(boolean publish) {
+		if (publish) {
+			mShareVideoButton.setText(R.string.video_share_button_unshare);
+		} else {
+			mShareVideoButton.setText(R.string.video_share_button_share);
+		}
+	}
+
+	
+	
+
+
+	@Override
+	public void videoShareLayoutFlyout() {
+		mMapVideoLayout.requestUpFlying();
+	}
+
 
 
 	@Override
@@ -750,12 +681,78 @@ public class MainActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
+
+	
+	@Override
+	public SurfaceView getCameraSurfaceView() {
+		return localSurfaceView;
+	}
+
+	
+
+
+	@Override
+	public void showBottomLayout(boolean flag) {
+		int vv = flag ? View.VISIBLE : View.GONE;
+		mBottomLayout.setVisibility(vv);
+		mLocateButton.setVisibility(vv);
+		
+	}
+
+	
+
+
+
+	@Override
+	public void resizeCameraSurfaceSize() {
+		int width = localSurfaceView.getWidth();
+		int height = localSurfaceView.getHeight();
+		int r = width % 16;
+		LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)localSurfaceView.getLayoutParams();
+		if (r > 0) {
+			lp.leftMargin = r /2;
+			lp.rightMargin = r /2;
+		}
+		
+		r = height % 9;
+		if (r > 0) {
+			lp.topMargin = r;
+		}
+		localSurfaceView.setLayoutParams(lp);
+	}
+
+	
+	
+	
+
+
+	@Override
+	public void showMessage(String msg) {
+		mVideoController.addNewMessage(msg);
+	}
+
+
+	@Override
+	public void showError(int flag) {
+		if (flag == 1) {
+			Toast.makeText(this, R.string.error_no_any_watching_video, Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	
 
 	
 	/////////////////////////////////////////////////////////////
 	
 
-	
+
+
+
+
+
+
 	private void handleLiveNotification(Message msg) {
 		final LiveNotification ln = (LiveNotification) msg.obj;
 		runOnUiThread(new Runnable() {
@@ -795,7 +792,6 @@ public class MainActivity extends FragmentActivity implements
 				break;
 			case AUTO_PLAY_LIVE:
 				if (!isInCameraView) {
-					autoPlayNecessary();
 				}
 				
 				break;

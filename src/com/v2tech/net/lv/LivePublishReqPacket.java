@@ -5,11 +5,18 @@ import com.v2tech.net.pkt.RequestPacket;
 public class LivePublishReqPacket extends RequestPacket {
 	
 	long lid;
-	int type;
+
+	double lat;
+	double lng;
 	
-	public LivePublishReqPacket() {
+	public LivePublishReqPacket(long lid, double lat, double lng) {
 		super();
+		this.lid = lid;
+		this.lat = lat;
+		this.lng = lng;
 	}
+
+	
 
 	
 	
