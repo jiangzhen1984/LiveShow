@@ -15,7 +15,6 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -32,15 +31,11 @@ import android.widget.Toast;
 
 import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
-import com.baidu.mapapi.cloud.CloudManager;
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
@@ -153,6 +148,7 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout = new MapVideoLayout(this);
 
 		mMapVideoLayout.setPosInterface(presenter);
+		mMapVideoLayout.setLiverAction(presenter);
 		mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mBaiduMap = mMapVideoLayout.getMap();
@@ -163,9 +159,6 @@ public class MainActivity extends FragmentActivity implements
 				FrameLayout.LayoutParams.MATCH_PARENT);
 		mMainLayout.addView(mMapVideoLayout, fl);
 
-		mBaiduMap.setOnMapStatusChangeListener(mMapStatusChangeListener);
-		mBaiduMap.setOnMarkerClickListener(mMarkerClickerListener);
-		
 		mBaiduMap.setMyLocationEnabled(true);
 		
 		mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
@@ -211,7 +204,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	
-	private boolean initVideoShareLayoutFlag = true;
 	
 	private void initVideoShareLayout() {
 		
@@ -253,8 +245,8 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onStop() {
-		isSuspended = true;
 		super.onStop();
+		isSuspended = true;
 		presenter.onUIStopped();
 	}
 	
@@ -270,8 +262,6 @@ public class MainActivity extends FragmentActivity implements
 		mBaiduMap.setMyLocationEnabled(false);
 		// activity 销毁时同时销毁地图控件
 		mMapView.onDestroy();
-
-		CloudManager.getInstance().destroy();
 
 		mLocalHandler = null;
 		presenter.onUIDestroyed();
@@ -477,51 +467,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 
-
-	private BaiduMap.OnMarkerClickListener mMarkerClickerListener = new BaiduMap.OnMarkerClickListener() {
-
-		@Override
-		public boolean onMarkerClick(Marker marker) {
-			if (marker.getExtraInfo() != null) {
-				Live l = (Live) marker.getExtraInfo().getSerializable("live");
-				if (l != null && !TextUtils.isEmpty(l.getUrl())) {
-					if (mCurrentVideoFragment != null) {
-						updateCurrentVideoState(mCurrentVideoFragment, false);
-					}
-					
-					if (mMapVideoLayout.getVideoWindowNums() < 6) {
-						mCurrentVideoFragment = mVideoController.addNewVideoWindow(l);
-					} else {
-						//Replace current
-						Message.obtain(mLocalHandler, PLAY_LIVE, l).sendToTarget();
-					}
-				}
-			}
-			return true;
-		}
-
-	};
-
-	private OnMapStatusChangeListener mMapStatusChangeListener = new OnMapStatusChangeListener() {
-
-		@Override
-		public void onMapStatusChange(MapStatus arg0) {
-		}
-
-		@Override
-		public void onMapStatusChangeFinish(MapStatus mp) {
-			//mLocalHandler.sendEmptyMessageDelayed(GET_MAP_SNAPSHOT, 1000);
-		}
-
-		@Override
-		public void onMapStatusChangeStart(MapStatus arg0) {
-
-		}
-
-	};
-
-	
-	
 	
 	
 	private MapVideoLayout.OnNotificationClickedListener mOnNotificationClicked = new MapVideoLayout.OnNotificationClickedListener() {
@@ -736,9 +681,34 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void showError(int flag) {
-		if (flag == 1) {
-			Toast.makeText(this, R.string.error_no_any_watching_video, Toast.LENGTH_SHORT).show();
+		if (last != null) {
+			last.cancel();
 		}
+		int res = -1;
+		switch(flag) {
+		case 1:
+			res = R.string.error_no_any_watching_video;
+			break;
+		case 2:
+			res = R.string.error_no_any_watching_video;
+		case 3:
+			res = R.string.error_no_open_remote_live_failed;
+			break;
+		} 
+		last = Toast.makeText(this, res, Toast.LENGTH_SHORT);
+		last.show();
+	}
+	
+	
+
+
+
+
+
+	@Override
+	public void showLiverPersonelUI() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
@@ -746,7 +716,6 @@ public class MainActivity extends FragmentActivity implements
 	
 	/////////////////////////////////////////////////////////////
 	
-
 
 
 

@@ -25,6 +25,7 @@ import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.presenter.LiverAction;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
@@ -35,7 +36,7 @@ import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoShowFragmentAdapter;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
-CircleViewPager.OnPageChangeListener, VideoControllerAPI {
+CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 
 	private static final boolean DEBUG = false;
 	private static final String TAG = "MapVideoLayout";
@@ -80,7 +81,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
 	
-	private UserControllerAPI userControllerAPI;
+	private LiverAction liverAction;
 
 	public MapVideoLayout(Context context) {
 		super(context);
@@ -149,9 +150,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 
 		initIcons();
 		notificationList = new ArrayList<NotificationWrapper>();
-		//FIXME update contoroller
-	//	userControllerAPI = (UserControllerAPI)this.getContext();
 	}
+	
+	
 	
 	
 	
@@ -180,36 +181,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		
 		mDragLayout.addView(bottomLayout, bottomLayoutParm);
 		
-		favButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				v.setSelected(!v.isSelected());
-				
-				VideoShowFragment frag = (VideoShowFragment)mViewPagerAdapter.getItem(mVideoShowPager.getCurrentItem());
-				if (frag.getCurrentLive() == null) {
-					return;
-				}
-				Live l = frag.getCurrentLive();
-				long uid = frag.getCurrentLive().getPublisher().getmUserId();
-				if (v.isSelected()) {
-					userControllerAPI.addFans(uid);
-				} else {
-					userControllerAPI.removeFans(uid);
-				}
-				l.setFollow(!l.isFollow());
-			}
-			
-		});
-		
-		publisherButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//TODO show publisher information
-			}
-			
-		});
+		favButton.setOnClickListener(this);
+		publisherButton.setOnClickListener(this);
 		
 		
 //		notificationLayout = new LinearLayout(getContext());
@@ -540,128 +513,145 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		mVelocityTracker.addMovement(ev);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			removedOffset = 0;
-			mOffsetTop = 0;
-			mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
-			mVideoShowPager.beginFakeDrag();
-			mCurrentPage = mVideoShowPager.getCurrentItem();
-
-			mInitX = ev.getRawX();
-			mInitY = ev.getRawY();
-			mLastX = mInitX;
-			mLastY = mInitY;
-			
-			pasuseCurrentVideo(true);
-			mOper = Operation.PRESS;
+			doTouchDown(ev);
 			break;
 		case MotionEvent.ACTION_MOVE:
-			mMapView.clearFocus();
-			mOper = Operation.DRAGING;
-			float offsetX = ev.getRawX() - mInitX;
-			float offsetY = ev.getRawY() - mInitY;
-			float dy =  ev.getRawY() - mLastY;
-			float dx =  ev.getRawX() - mLastX;
-			
-			
-			if (mDragDir == DragDirection.NONE) {
-				if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
-					mDragDir = DragDirection.HORIZONTAL;
-				} else if (Math.abs(offsetY) > mTouchSlop){
-					mDragDir = DragDirection.VERTICAL;
-				}
-			}
-
-			if (mDragDir == DragDirection.VERTICAL) {
-				
-				DragType newType = determinteDragType((int)offsetY, (int)dy, mDragDir);
-				if (DEBUG) {
-					V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop);
-				}
-				if (mDragType == DragType.NONE) {
-					mDragType = newType;
-					updateOffset((int) dy);
-				} else if (mDragType != newType) {
-					if (mDragType == DragType.REMOVE) {
-						int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
-						//restore removed offset
-						updateOffset(-removedOffset);
-						mDragType = newType;
-						//update new offset for share
-						updateOffset((int)Math.abs(offsetY) - dis1);
-						if (DEBUG) {
-							V2Log.d("old remove  dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
-						}
-					} else if (mDragType == DragType.SHARE) {
-						int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
-						updateOffset(-mOffsetTop);
-						mDragType = newType;
-						updateOffset(-(int)Math.abs(offsetY) - dis1);
-						if (DEBUG) {
-							V2Log.d("old share dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
-						}
-					}
-				} else {
-					updateOffset((int) dy);
-				}
-				if (mPosInterface != null && mDragType == DragType.SHARE) {
-					mPosInterface.onDrag();
-				}
-				if (mNotificaionShare.getVisibility() == View.GONE 
-						&& Math.abs(offsetY) > mCameraShapeSLop) {
-					mNotificaionShare.setVisibility(View.VISIBLE);
-					mNotificaionShare.bringToFront();
-				}
-				
-				
-			} else if (mDragDir == DragDirection.HORIZONTAL) {
-				mVideoShowPager.fakeDragBy(dx);
-			}
-
-			mLastX = ev.getRawX();
-			mLastY = ev.getRawY();
-			
-			mAbsDisX = mLastX- mInitX;
-			mAbsDisY = mLastY- mInitY;
-
+			doTouchMove(ev);
 			break;
 		case MotionEvent.ACTION_UP:
-			mOper = Operation.NONE;
-            // A fling must travel the minimum tap distance
-            final VelocityTracker velocityTracker = mVelocityTracker;
-            final int pointerId = ev.getPointerId(0);
-            velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-            final float velocityX = velocityTracker.getXVelocity(pointerId);
-
-          
-			if (mDragDir == DragDirection.VERTICAL) {
-				if (mDragType == DragType.SHARE) {
-					Flying fl = new Flying();
-					if (fireFlyingdown) {
-						if (mPosInterface != null) {
-							mPosInterface.onPreparedFlyingOut();
-						}
-						fl.startFlying(mDefaultVelocity);
-					} else {
-						fl.startFlying(-mDefaultVelocity);
-					}
-					
-				} else if (mDragType == DragType.REMOVE) {
-					mVideoShowPager.endFakeDrag();
-				}
-			} else if (mDragDir == DragDirection.HORIZONTAL) {
-				mVideoShowPager.endFakeDrag();
-			} else {
-				pasuseCurrentVideo(false);
-			}
-			
-			mDragDir = DragDirection.NONE;
-			
-			mVelocityTracker.clear();
+			doTouchUp(ev);
 			break;
 		}
 
 		return true;
 	}
+	
+	
+	
+	private void doTouchDown(MotionEvent ev) {
+		removedOffset = 0;
+		mOffsetTop = 0;
+		mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+		mVideoShowPager.beginFakeDrag();
+		mCurrentPage = mVideoShowPager.getCurrentItem();
+
+		mInitX = ev.getRawX();
+		mInitY = ev.getRawY();
+		mLastX = mInitX;
+		mLastY = mInitY;
+		
+		pasuseCurrentVideo(true);
+		mOper = Operation.PRESS;
+	}
+	
+	private void doTouchMove(MotionEvent ev) {
+		mMapView.clearFocus();
+		mOper = Operation.DRAGING;
+		float offsetX = ev.getRawX() - mInitX;
+		float offsetY = ev.getRawY() - mInitY;
+		float dy =  ev.getRawY() - mLastY;
+		float dx =  ev.getRawX() - mLastX;
+		
+		
+		if (mDragDir == DragDirection.NONE) {
+			if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
+				mDragDir = DragDirection.HORIZONTAL;
+			} else if (Math.abs(offsetY) > mTouchSlop){
+				mDragDir = DragDirection.VERTICAL;
+			}
+		}
+
+		if (mDragDir == DragDirection.VERTICAL) {
+			
+			DragType newType = determinteDragType((int)offsetY, (int)dy, mDragDir);
+			if (DEBUG) {
+				V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop);
+			}
+			if (mDragType == DragType.NONE) {
+				mDragType = newType;
+				updateOffset((int) dy);
+			} else if (mDragType != newType) {
+				if (mDragType == DragType.REMOVE) {
+					int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
+					//restore removed offset
+					updateOffset(-removedOffset);
+					mDragType = newType;
+					//update new offset for share
+					updateOffset((int)Math.abs(offsetY) - dis1);
+					if (DEBUG) {
+						V2Log.d("old remove  dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
+					}
+				} else if (mDragType == DragType.SHARE) {
+					int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
+					updateOffset(-mOffsetTop);
+					mDragType = newType;
+					updateOffset(-(int)Math.abs(offsetY) - dis1);
+					if (DEBUG) {
+						V2Log.d("old share dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
+					}
+				}
+			} else {
+				updateOffset((int) dy);
+			}
+			if (mPosInterface != null && mDragType == DragType.SHARE) {
+				mPosInterface.onDrag();
+			}
+			if (mNotificaionShare.getVisibility() == View.GONE 
+					&& Math.abs(offsetY) > mCameraShapeSLop) {
+				mNotificaionShare.setVisibility(View.VISIBLE);
+				mNotificaionShare.bringToFront();
+			}
+			
+			
+		} else if (mDragDir == DragDirection.HORIZONTAL) {
+			mVideoShowPager.fakeDragBy(dx);
+		}
+
+		mLastX = ev.getRawX();
+		mLastY = ev.getRawY();
+		
+		mAbsDisX = mLastX- mInitX;
+		mAbsDisY = mLastY- mInitY;
+
+	}
+	
+	private void doTouchUp(MotionEvent ev) {
+		mOper = Operation.NONE;
+        // A fling must travel the minimum tap distance
+        final VelocityTracker velocityTracker = mVelocityTracker;
+        final int pointerId = ev.getPointerId(0);
+        velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
+        final float velocityX = velocityTracker.getXVelocity(pointerId);
+
+      
+		if (mDragDir == DragDirection.VERTICAL) {
+			if (mDragType == DragType.SHARE) {
+				Flying fl = new Flying();
+				if (fireFlyingdown) {
+					if (mPosInterface != null) {
+						mPosInterface.onPreparedFlyingOut();
+					}
+					fl.startFlying(mDefaultVelocity);
+				} else {
+					fl.startFlying(-mDefaultVelocity);
+				}
+				
+			} else if (mDragType == DragType.REMOVE) {
+				mVideoShowPager.endFakeDrag();
+			}
+		} else if (mDragDir == DragDirection.HORIZONTAL) {
+			mVideoShowPager.endFakeDrag();
+		} else {
+			pasuseCurrentVideo(false);
+		}
+		
+		mDragDir = DragDirection.NONE;
+		
+		mVelocityTracker.clear();
+	}
+	
+	
+	
 
 	class Flying implements Runnable {
 
@@ -711,6 +701,39 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI {
 		}
 
 	};
+	
+	
+	
+
+	public LiverAction getLiverAction() {
+		return liverAction;
+	}
+
+	public void setLiverAction(LiverAction liverAction) {
+		this.liverAction = liverAction;
+	}
+	
+	
+	
+	
+
+	
+	
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch(id) {
+		case R.id.liver_ly:
+			liverAction.onLiverButtonClicked();
+			break;
+		case R.id.recommendation_button:
+			liverAction.onRemButtonClicked();
+			break;
+		}
+		
+	}
+	
+	
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,

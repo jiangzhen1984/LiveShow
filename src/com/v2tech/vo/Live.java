@@ -11,6 +11,7 @@ public class Live implements Serializable{
 	 */
 	private static final long serialVersionUID = 5215649680130458839L;
 
+	private long lid;
 	
 	private User publisher;
 	
@@ -26,6 +27,15 @@ public class Live implements Serializable{
 	
 	private boolean isFollow;
 	
+	
+	public Live(User publisher, long lid, double lat, double lng) {
+		super();
+		this.publisher = publisher;
+		this.lid = lid;
+		this.lat = lat;
+		this.lng = lng;
+		this.canRemove = false;
+	}
 	
 	
 	public Live(User publisher, String url, double lat, double lng) {
@@ -128,15 +138,30 @@ public class Live implements Serializable{
 		this.isFollow = isFollow;
 	}
 
+	
+	 
+
+	public long getLid() {
+		return lid;
+	}
+
+
+	public void setLid(long lid) {
+		this.lid = lid;
+	}
+
+
+	
+
+
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + (int) (lid ^ (lid >>> 32));
 		return result;
 	}
-
 
 
 	@Override
@@ -148,14 +173,10 @@ public class Live implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Live other = (Live) obj;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
+		if (lid != other.lid)
 			return false;
 		return true;
 	}
-
 
 
 	@Override

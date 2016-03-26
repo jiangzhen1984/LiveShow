@@ -95,7 +95,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 					synchronized(lb) {
 						//FIXME if lb timeout
 						lb.sendflag = true;
-						lb.timestamp = System.currentTimeMillis();
+						lb.sendtime = System.currentTimeMillis();
 					}
 					waiting.offer(lb);
 				}
@@ -271,6 +271,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 	
 	
 	private void handleResponseBind(LocalBind req, Packet resp) {
+		V2Log.i("["+req.reqId+"]===> message statist queue cost : " +(req.sendtime - req.sendtime)+"   server cost:" +(req.respontime - req.sendtime));
 		req.resp = resp;
 		if (req.sync) {
 			synchronized(req) {
@@ -344,6 +345,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 				LocalBind lb = findRequestBind(p);
 				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
+					lb.respontime = System.currentTimeMillis();
 					handleResponseBind(lb, p);
 				} else {
 					if (p instanceof IndicationPacket) {
@@ -370,13 +372,16 @@ public class DeamonWorker implements Runnable, NetConnector {
 		Packet resp;
 		boolean sync;
 		boolean timeout;
-		long timestamp;
+		long sendtime;
+		long queuetime;
+		long respontime;
 		boolean sendflag;
 		
 		public LocalBind(Packet req) {
 			super();
 			this.req = req;
 			this.reqId = req.getId();
+			queuetime = System.currentTimeMillis();
 		}
 
 
@@ -386,6 +391,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 			super();
 			this.req = req;
 			this.resp = resp;
+			queuetime = System.currentTimeMillis();
 		}
 
 

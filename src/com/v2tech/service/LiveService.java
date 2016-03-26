@@ -24,13 +24,20 @@ import com.V2.jni.ind.V2User;
 import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
-import com.v2tech.net.pkt.PacketProxy;
+import com.v2tech.net.NotificationListener;
+import com.v2tech.net.lv.FollowReqPacket;
+import com.v2tech.net.lv.LiveQueryReqPacket;
+import com.v2tech.net.lv.LiveQueryRespPacket;
 import com.v2tech.net.lv.LocationReportReqPacket;
+import com.v2tech.net.pkt.IndicationPacket;
+import com.v2tech.net.pkt.PacketProxy;
+import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.GetNeiborhoodResponse;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
 import com.v2tech.service.jni.RequestFinishPublishResponse;
 import com.v2tech.service.jni.RequestPublishResponse;
+import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.view.Constants;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
@@ -64,11 +71,46 @@ public class LiveService extends AbstractHandler {
 		InteractionRequest.getInstance().removeCallback(bcCallback);
 	}
 	
-	public void scanNear(double lat, double lng, float radius, MessageListener caller) {
-		initTimeoutMessage(QUERY_NERY, DEFAULT_TIME_OUT_SECS, caller);
-		V2Log.e("start call InteractionRequest.getInstance().GetNeiborhood_Region" );
-		InteractionRequest.getInstance().GetNeiborhood_Region("<gps lon=\"" + lng + "\" lat=\"" + lat
-								+ "\" distance=\""+radius+"\" ></gps>");
+	public void scanNear(double lat, double lng, float radius,
+			final MessageListener caller) {
+		DeamonWorker.getInstance().requestAsync(
+				new PacketProxy(new LiveQueryReqPacket(lat, lng, (int) radius),
+						new NotificationListener() {
+
+							@Override
+							public void onNodification(IndicationPacket ip) {
+								Handler h = caller.refH.get();
+								if (h != null) {
+									Message.obtain(
+											h,
+											caller.what,
+											new SearchLiveResponse(
+													JNIResponse.Result.NO_RESOURCE,
+													null)).sendToTarget();
+								}
+							}
+
+							@Override
+							public void onResponse(ResponsePacket rp) {
+								Handler h = caller.refH.get();
+								if (h != null) {
+									Message.obtain(
+											h,
+											caller.what,
+											new SearchLiveResponse(
+													JNIResponse.Result.SUCCESS,
+													(LiveQueryRespPacket) rp))
+											.sendToTarget();
+								}
+
+							}
+
+							@Override
+							public void onStateChanged() {
+
+							}
+
+						}));
 	}
 
 	public void requestPublish( MessageListener caller) {
@@ -84,9 +126,16 @@ public class LiveService extends AbstractHandler {
 	
 	
 	
-	public void addFans(Live l) {
-		InteractionRequest.getInstance().UpdateWatchStatusRequest(l.getPublisher().getmUserId(), true);
+	public void follow(Live l) {
+		l.setFollow(true);
+		DeamonWorker.getInstance().request(new FollowReqPacket(l.getPublisher().getmUserId()));
 	}
+	
+	public void cancelfollow(Live l) {
+		l.setFollow(false);
+		DeamonWorker.getInstance().request(new FollowReqPacket(l.getPublisher().getmUserId(), false));
+	}
+	
 	
 	public void sendComments(long userId, String msg) {
 		V2Log.e(userId+":"+msg);

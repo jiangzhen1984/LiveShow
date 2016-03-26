@@ -961,7 +961,7 @@ public class CopyOfMainActivity extends FragmentActivity implements
 			if (marker.getExtraInfo() != null) {
 				Live l = (Live) marker.getExtraInfo().getSerializable("live");
 				if (l != null && !TextUtils.isEmpty(l.getUrl())) {
-					liveService.addFans(l);
+					//liveService.addFans(l);
 					if (mCurrentVideoFragment != null) {
 						updateCurrentVideoState(mCurrentVideoFragment, false);
 					}

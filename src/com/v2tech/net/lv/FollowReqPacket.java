@@ -12,6 +12,12 @@ public class FollowReqPacket extends RequestPacket {
 		this.uid = uid;
 	}
 
+	public FollowReqPacket(long uid, boolean add) {
+		super();
+		this.uid = uid;
+		this.add = add;
+	}
+
 	
 	
 

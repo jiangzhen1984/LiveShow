@@ -38,6 +38,7 @@
      <string name="video_share_button_unshare">取消视频</string>
      
      <string name="error_no_any_watching_video">没有视频信息</string>
+     <string name="error_no_open_remote_live_failed">开启远端视频失败</string>
      
      
      <string name="login_action_text_verification">验证</string>

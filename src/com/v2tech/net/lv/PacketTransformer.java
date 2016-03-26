@@ -1,8 +1,15 @@
 package com.v2tech.net.lv;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.V2.jni.util.XmlAttributeExtractor;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.Transformer;
@@ -47,7 +54,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			} else if ("logout".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
 			} else if ("queryVideoList".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraLiveQueryResponse(t);
 			} else if ("publicVideo".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
 			} else if ("followUser".equalsIgnoreCase(type)) {
@@ -265,6 +272,51 @@ public class PacketTransformer implements Transformer<Packet, String> {
 
 		return lrp;
 	}
+	
+	private Packet extraLiveQueryResponse(String str) {
+		
+		str +="<video id='1' userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>" +
+"<video id='2' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>" +
+"<video id='3' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>" +
+"<video id='4' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>" +
+"<video id='5' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
+		String root ="<test>" + str +"</test>";
+		LiveQueryRespPacket lrp = new LiveQueryRespPacket();
+		Pattern p = Pattern.compile("type=\"success\"");
+		Matcher m = p.matcher(root);
+		if (!m.find()) {
+			lrp.setErrorFlag(true);
+			return lrp;
+		}
+		
+		lrp.setErrorFlag(false);
+		Document doc = XmlAttributeExtractor.buildDocument(root);
+		if (doc == null) {
+			lrp.setErrorFlag(true);
+			return lrp;
+		}
+		
+		NodeList nl = doc.getElementsByTagName("video");
+		Element ve;
+		int c = nl.getLength();
+		List<String[]> list = new ArrayList<String[]>(c);
+		for (int i = 0; i < c; i++) {
+			ve = (Element)nl.item(i);
+			String[] data = new String[5];
+			data[0] = ve.getAttribute("id");
+			data[1] = ve.getAttribute("userId");
+			data[2] = ve.getAttribute("longitude");
+			data[3] = ve.getAttribute("latitude");
+			data[4] = ve.getAttribute("sum");
+			list.add(data);
+		}
+		lrp.count = c;
+		lrp.videos = list;
+
+		return lrp;
+	}
+	
+	
 	
 	
 	

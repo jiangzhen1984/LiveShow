@@ -193,6 +193,7 @@ public class VideoCaptureDevInfo {
 				if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
 					newDevice.deviceUniqueName = CAMERA_FACE_BACK;
 					newDevice.frontCameraType = FrontFacingCameraType.None;
+					this.mDefaultDevName = newDevice.deviceUniqueName;
 					Log.d(TAG, "Camera " + i + ", Camera Facing back, Orientation " + info.orientation);
 				} else {
 					newDevice.deviceUniqueName = CAMERA_FACE_FRONT;
@@ -200,7 +201,6 @@ public class VideoCaptureDevInfo {
 					Log.d(TAG, "Camera " + i + ", Camera Facing front, Orientation " + info.orientation);
 					// If has front-side camera, use front-side camera as
 					// default
-					this.mDefaultDevName = newDevice.deviceUniqueName;
 				}
 
 				camera = Camera.open(i);

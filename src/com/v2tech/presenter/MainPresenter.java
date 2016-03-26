@@ -1,14 +1,17 @@
 package com.v2tech.presenter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.SurfaceView;
@@ -19,8 +22,15 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.Overlay;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -38,21 +48,31 @@ import com.v2tech.service.LiveService;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.RequestEnterConfResponse;
+import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.SPUtil;
+import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MapVideoLayout;
 import com.v2tech.vo.Conference;
+import com.v2tech.vo.ConferenceGroup;
+import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
 
-public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultListener,  BDLocationListener, MapVideoLayout.LayoutPositionChangedListener {
+public class MainPresenter extends BasePresenter implements
+		OnGetGeoCoderResultListener, BDLocationListener,
+		MapVideoLayout.LayoutPositionChangedListener,
+		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener, LiverAction {
 	
 	private static final int INIT = 1;
-	private static final int LOGIN_CALLBACK = 2;
 	private static final int RECOMMENDAATION = 3;
 	private static final int CREATE_VIDEO_SHARE_CALL_BACK = 4;
 	private static final int REPORT_LOCATION = 5;
 	private static final int CREATE_VIDEO_SHARE = 6;
+	private static final int SEARCH_LIVE = 7;
+	private static final int SEARCH_LIVE_CALLBACK = 8;
+	private static final int WATCHING_REQUEST_CALLBACK = 9;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -63,6 +83,15 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private static final int WATCHING_FLAG = 1 << 6;
 	private static final int LOCAL_CAMERA_OPENING = 1 << 7;
 	private static final int BOTTOM_LAYOUT_SHOW = 1 << 8;
+	private static final int KEYBOARD_SHOW = 1 << 9;
+	private static final int MAP_CENTER_UPDATE = 1 << 10;
+	
+	private static final int SELF_LOCATION = 1;
+	private static final int LIVER_LOCATION = 1 << 1;
+	private static final int RANDOM_LOCATION = 1 << 2;
+	private static final int REQUEST_SELF_LOCATION = 1 << 3;
+	private static final int REQUEST_LIVER_LOCATION = 1 << 4;
+	private static final int REQUEST_RANDOM_LOCATION = 1 << 5;
 	
 	private Random confIdRandom;
 	
@@ -74,14 +103,17 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	private LiveService ls;
 	private DeviceService ds;
 	private Handler h;
-	private Conference conf;
-	
+    private Live currentLive;
+    private LongSparseArray<Live> lives;
+    
+    
 	private int videoScreenState;
-	private boolean keyboardState = false;
+	private int locationStatus;
 	private boolean cameraSurfaceViewMeasure = false;
 	
 	private LocationWrapper currentLocation;
 	private LocationWrapper currentMapCenter;
+	private LocationWrapper currentLiveLocation;
 	private static float mCurrentZoomLevel = 12F;
 	
 	/////////////////////////////////
@@ -97,6 +129,7 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		this.ui = ui;
 		this.context = context;
 		confIdRandom = new Random();
+		lives = new LongSparseArray<Live>();
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG |BOTTOM_LAYOUT_SHOW);
@@ -140,13 +173,26 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		public void showMessage(String msg);
 		
 		public void showError(int flag);
+		
+		public void showLiverPersonelUI();
 	}
 	
 	
 	
 	
 	public void mapLocationButtonClicked() {
-		
+	
+		if ((this.locationStatus & SELF_LOCATION) == SELF_LOCATION) {
+			this.updateMapCenter(this.currentLiveLocation, mCurrentZoomLevel);
+			this.locationStatus |= REQUEST_SELF_LOCATION; 
+		} else if((this.locationStatus & LIVER_LOCATION) == LIVER_LOCATION) {
+			this.updateMapCenter(this.currentLocation, mCurrentZoomLevel);
+			this.locationStatus |= REQUEST_LIVER_LOCATION; 
+		} else if((this.locationStatus & RANDOM_LOCATION) == RANDOM_LOCATION) {
+			this.updateMapCenter(this.currentLocation, mCurrentZoomLevel);
+			this.locationStatus |= REQUEST_SELF_LOCATION; 
+		}
+		V2Log.i("===> map location clicked:" + this.locationStatus+"   "+currentLocation.ll+"  "+currentLiveLocation);
 	}
 	
 	
@@ -160,9 +206,6 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	
-	public void mapMarkerClicked() {
-		
-	}
 	
 	public void mapSearchButtonClicked() {
 		String text = ui.getTextString();
@@ -214,16 +257,25 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	}
 	
 	public void followButtonClicked() {
-		
+		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
+			if (currentLive.isFollow()) {
+				ls.cancelfollow(currentLive);
+			} else {
+				ls.follow(currentLive);
+			}
+		} else {
+			ui.showError(2);
+		}
 	}
 	
 	public void liverButtonClicked() {
-		
+		ui.showLiverPersonelUI();
 	}
 	
 	
 	public void videoShareButtonClicked() {
 		if ((videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
+			Conference conf = new Conference(currentLive.getLid());
 			videoScreenState &= (~PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
@@ -245,18 +297,15 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		}
 	}
 	
-	public void mapCenterMoved(double lat, double lng) {
-		currentMapCenter.ll = new LatLng(lat, lng);
-	}
 	
 	public void textClicked() {
-		keyboardState = true;
+		this.videoScreenState |= KEYBOARD_SHOW;
 		ui.showTextKeyboard(true);
 	}
 	
 	
 	public void onKeyboardChildUIFinished(int ret,Intent data) {
-		keyboardState = false;
+		this.videoScreenState &= (~KEYBOARD_SHOW);
 		ui.showTextKeyboard(false);
 		if (ret != Activity.RESULT_OK) {
 			int action = data.getExtras().getInt("action");
@@ -286,14 +335,14 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 
 	@Override
 	public void onUIStarted() {
-		startLocationScan(locationClient);
+		updateLocateState(locationClient, true);
 	}
 	
 
 
 	@Override
 	public void onUIStopped() {
-		stopLocationScan(locationClient);
+		updateLocateState(locationClient, false);
 	}
 
 
@@ -328,23 +377,27 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	}
 	
 	
-	private void startLocationScan(LocationClient lc) {
-		if (lc != null && !locating) {
+	private void updateLocateState(LocationClient lc, boolean enable) {
+		if (lc == null) {
+			return;
+		}
+		if (enable && !locating) {
 			locating = true;
 			lc.start();
-		}
-	}
-	
-	private void stopLocationScan(LocationClient lc) {
-		if (lc != null && locating) {
+		} else if (!enable && locating) {
 			locating = false;
 			lc.stop();
 		}
 	}
 	
 	
+	
 	private boolean prepreUpdateMap() {
 		if (isOpenedLiveScreen() || isPublishing()) {
+			return false;
+		}
+		
+		if ((this.videoScreenState & MAP_CENTER_UPDATE) == MAP_CENTER_UPDATE) {
 			return false;
 		}
 		return true;
@@ -365,9 +418,17 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	}
 	
 	private void updateMapCenter(LocationWrapper lw, float level) {
+		if (lw == null) {
+			return;
+		}
+		
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(
 				lw.ll, level);
 		this.ui.getMapInstance().animateMapStatus(u);
+		
+		if ((this.videoScreenState & MAP_CENTER_UPDATE) != MAP_CENTER_UPDATE) { 
+			this.videoScreenState |= MAP_CENTER_UPDATE;
+		}
 	}
 	
 	
@@ -384,14 +445,9 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		mapInstance.setMapStatus(MapStatusUpdateFactory.newLatLng(result
 				.getLocation()));
 		
-		//
-		if (currentMapCenter == null) {
-			currentMapCenter = new LocationWrapper();
-		}
-		currentMapCenter.ll = result.getLocation();
-		
 		if (prepreUpdateMap()) {
-			updateMapCenter(currentMapCenter , mCurrentZoomLevel);
+			this.videoScreenState |= REQUEST_RANDOM_LOCATION;
+			updateMapCenter(new LocationWrapper(result.getLocation()) , mCurrentZoomLevel);
 		}
 		
 		
@@ -409,18 +465,41 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		LatLng ll = new LatLng(location.getLatitude(),
 				location.getLongitude());
 		
-		if (currentLocation == null) {
-			currentLocation = new LocationWrapper();
-		}
-		currentLocation.ll= ll;
-		
+		currentLocation.ll = ll;
 		if (prepreUpdateMap()) {
-			updateMapCenter(currentLocation, mCurrentZoomLevel);
+			this.locationStatus |= REQUEST_SELF_LOCATION;
+			updateMapCenter(new LocationWrapper(ll), mCurrentZoomLevel);
 		}
 		
-		//TODO out of area search from server
 	}
 	
+	
+	///////////////////BaiduMap.OnMarkerClickListener
+
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		if ((this.videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
+			//TODO illegal state
+			return false;
+		}
+		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
+			//TODO check window count
+			
+			//quit from old
+			Conference  currentConf = new Conference(this.currentLive.getLid());
+			vs.requestExitConference(currentConf, null);
+		}
+		
+		//join new one
+		Live l = (Live)marker.getExtraInfo().get("live");
+		Conference  newConf = new Conference(l.getLid());
+		vs.requestEnterConference(newConf, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
+		currentLive = l;
+		return true;
+	}
+	
+	
+	///////////////BaiduMap.OnMarkerClickListener
 	
 	
 	////////////////////////////////////LayoutPositionChangedListener////////////////////////
@@ -431,6 +510,8 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	public void onPreparedFlyingIn() {
 		// TODO Auto-generated method stub
 	}
+
+
 
 
 	@Override
@@ -448,18 +529,19 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 			this.videoScreenState |= BOTTOM_LAYOUT_SHOW;
 		}
 		
+		
+		this.videoScreenState |= LIVER_SHOW_FLAG;
 	}
 
 
 	@Override
 	public void onPreparedFlyingOut() {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public void onFlyingOut() {
+		this.videoScreenState &= (~LIVER_SHOW_FLAG);
 	}
 
 
@@ -481,6 +563,90 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 		
 	}
 //////////////////////////////////LayoutPositionChangedListener/////////////////
+	
+	
+	
+	
+	
+	///////////////////////BaiduMap.OnMapStatusChangeListener
+	
+	
+	@Override
+	public void onMapStatusChange(MapStatus status) {
+	}
+
+
+	@Override
+	public void onMapStatusChangeFinish(MapStatus status) {
+		if ((this.videoScreenState & MAP_CENTER_UPDATE) != MAP_CENTER_UPDATE) { 
+			this.videoScreenState |= MAP_CENTER_UPDATE;
+		}
+		
+		if ((this.locationStatus & REQUEST_SELF_LOCATION) == REQUEST_SELF_LOCATION) {
+			this.locationStatus = 0;
+			this.locationStatus |= SELF_LOCATION;
+		} else if ((this.locationStatus & REQUEST_LIVER_LOCATION) == REQUEST_LIVER_LOCATION) {
+			this.locationStatus = 0;
+			this.locationStatus |= LIVER_LOCATION;
+		} else if ((this.locationStatus & REQUEST_RANDOM_LOCATION) == REQUEST_RANDOM_LOCATION) {
+			this.locationStatus = 0;
+			this.locationStatus |= RANDOM_LOCATION;
+		}
+		
+		currentMapCenter.ll =status.target;
+		V2Log.i("new map location status : " + this.locationStatus +"  center:" +this.currentMapCenter.ll);
+		if (!h.hasMessages(SEARCH_LIVE)) {
+			V2Log.i("send delay message for search live ");
+			Message m = Message.obtain(h, SEARCH_LIVE);
+			h.sendMessageDelayed(m, 200);
+		}
+		
+	}
+
+
+	@Override
+	public void onMapStatusChangeStart(MapStatus status) {
+		if ((this.locationStatus & REQUEST_SELF_LOCATION) == REQUEST_SELF_LOCATION) {
+			return;
+		} else if ((this.locationStatus & REQUEST_LIVER_LOCATION) == REQUEST_LIVER_LOCATION) {
+			return;
+		} else {
+			// For handle when user drag map directly
+			this.locationStatus |= REQUEST_RANDOM_LOCATION;
+		}
+	}
+	
+	
+	
+	////////////////////BaiduMap.OnMapStatusChangeListener
+	
+	
+	
+	////////////////LiverAction
+	@Override
+	public void onFavButtonClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onRemButtonClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onLiverButtonClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	////////////////////LiverAction
+
+
 
 	private void doInitInBack() {
 		vs = new ConferenceService();
@@ -505,18 +671,25 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 			V2Log.w("Already login, no need login again" + GlobalHolder.getInstance().getCurrentUser());
 		}
 		mapInstance = ui.getMapInstance();
+		mapInstance.setOnMarkerClickListener(this);
+		mapInstance.setOnMapStatusChangeListener(this);
+		mapInstance.setOnMarkerClickListener(this);
 		locationClient = startLocationScan();
-		startLocationScan(locationClient);
+		updateLocateState(locationClient, true);
+		
+		currentMapCenter = new LocationWrapper();
+		currentLocation = new LocationWrapper();
 	}
 	
-	
+
+
 	private void doRecommendationInBack() {
 		
 	}
 	
 	private void handleCreateVideoShareBack(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			DeamonWorker.getInstance().request(new LivePublishReqPacket(conf.getId(), currentLocation.ll.latitude, currentLocation.ll.longitude));
+			DeamonWorker.getInstance().request(new LivePublishReqPacket(this.currentLive.getLid(), currentLocation.ll.latitude, currentLocation.ll.longitude));
 			videoScreenState |= PUBLISHING_FLAG;
 		} else {
 			//FIXME show error UI
@@ -534,19 +707,56 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	
 	private void createVideoShareInBack() {
-		conf = new Conference(confIdRandom.nextLong());
+		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), confIdRandom.nextLong(), currentLocation.ll.latitude, currentLocation.ll.longitude);
+		Conference conf = new Conference(currentLive.getLid());
 		vs.requestEnterConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
 	
 	
 	
 	private void sendMessage(String text) {
-		if (conf == null) {
+		if (currentLive == null) {
 			ui.showError(1);
 			return;
 		}
-		VMessage vmsg = new VMessage(1, conf.getId(), GlobalHolder.getInstance().getCurrentUser(), new Date(System.currentTimeMillis()));
+		VMessage vmsg = new VMessage(1, currentLive.getLid(), GlobalHolder.getInstance().getCurrentUser(), new Date(System.currentTimeMillis()));
 		vs.sendMessage(vmsg);
+	}
+	
+	
+	
+	private void handSearchLiveCallback(SearchLiveResponse p) {
+		V2Log.i("===> get search callback ===>" + p.getPacket().getVideos());
+		BitmapDescriptor online = BitmapDescriptorFactory
+				.fromResource(R.drawable.marker_live);
+		
+		List<String[]> list = p.getPacket().getVideos();
+		for(String[] d : list) {
+			long uid = Long.parseLong(d[1]);
+			long vid = Long.parseLong(d[0]);
+			double lng = Double.parseDouble(d[2]);
+			double lat = Double.parseDouble(d[3]);
+			Live live = new Live(new User(uid), vid, lat, lng);
+			this.lives.append(vid, live);
+			
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("live", live);
+			OverlayOptions oo = new MarkerOptions().icon(online)
+					.position(new LatLng(live.getLat(), live.getLng())).extraInfo(bundle);
+			Overlay ol = this.mapInstance.addOverlay(oo);
+		}
+		
+	}
+	
+	private void handWatchRequestCallback(RequestEnterConfResponse resp) {
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			//TODO open chairman device
+			UserDeviceConfig udc = new UserDeviceConfig(0,
+					resp.getConferenceID(), 0L, null, null);
+			vs.requestOpenVideoDevice(new ConferenceGroup(resp.getConferenceID(), null, null,null, null), udc, null);
+		} else {
+			ui.showError(3);
+		}
 	}
 	
 	
@@ -576,6 +786,17 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 			case CREATE_VIDEO_SHARE:
 				createVideoShareInBack();
 				break;
+			case SEARCH_LIVE:
+				ls.scanNear(currentMapCenter.ll.latitude,
+						currentMapCenter.ll.longitude, 5000,
+						new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
+				break;
+			case SEARCH_LIVE_CALLBACK:
+				handSearchLiveCallback((SearchLiveResponse)msg.obj);
+				break;
+			case WATCHING_REQUEST_CALLBACK:
+				handWatchRequestCallback((RequestEnterConfResponse)msg.obj);
+				break;
 			}
 		}
 		
@@ -585,6 +806,20 @@ public class MainPresenter extends BasePresenter implements OnGetGeoCoderResultL
 	
 	final class LocationWrapper {
 		LatLng ll;
+
+		public LocationWrapper() {
+			super();
+		}
+
+		public LocationWrapper(LatLng ll) {
+			super();
+			this.ll = ll;
+		}
+		
+		public LocationWrapper(LocationWrapper lw) {
+			super();
+			this.ll = lw.ll;
+		}
 		
 	}
 

@@ -19,6 +19,9 @@ import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.LiveWatchingReqPacket;
+import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.service.jni.JNIIndication;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.PermissionUpdateIndication;
@@ -119,6 +122,11 @@ public class ConferenceService extends DeviceService {
 	 * @see com.v2tech.service.jni.RequestEnterConfResponse
 	 */
 	public void requestEnterConference(Conference conf, MessageListener caller) {
+		
+		DeamonWorker.getInstance().request(
+				new PacketProxy(new LiveWatchingReqPacket(conf.getId(),
+						LiveWatchingReqPacket.WATCHING), null));
+		
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
 		ConfRequest.getInstance().ConfEnter(conf.getId());
@@ -145,6 +153,10 @@ public class ConferenceService extends DeviceService {
 			}
 			return;
 		}
+		DeamonWorker.getInstance().request(
+				new PacketProxy(new LiveWatchingReqPacket(conf.getId(),
+						LiveWatchingReqPacket.CANCEL), null));
+		
 		initTimeoutMessage(JNI_REQUEST_EXIT_CONF, DEFAULT_TIME_OUT_SECS, caller);
 		ConfRequest.getInstance().ConfExit(conf.getId());
 		// send response to caller because exitConf no call back from JNI
