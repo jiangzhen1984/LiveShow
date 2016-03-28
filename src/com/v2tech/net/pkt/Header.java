@@ -16,6 +16,7 @@ public final class Header {
 
 	public int error;
 	
+	
 	public Header() {
 		super();
 		id = atmoic.getAndIncrement();

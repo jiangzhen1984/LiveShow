@@ -498,6 +498,8 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	
+	
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 
@@ -709,6 +711,15 @@ public class MainActivity extends FragmentActivity implements
 	public void showLiverPersonelUI() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	
+
+
+
+	@Override
+	public SurfaceView getCurrentSurface() {
+		return mMapVideoLayout.getCurrentVideoFragment().getSurfaceView();
 	}
 
 	

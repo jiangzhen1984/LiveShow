@@ -62,7 +62,9 @@ public class LiveService extends AbstractHandler {
 	
 	
 	public void updateGps(double lat, double lng) {
-		 DeamonWorker.getInstance().request(new PacketProxy(new LocationReportReqPacket(lat, lng), null));
+		DeamonWorker.getInstance().request(
+				new PacketProxy(new LocationReportReqPacket(GlobalHolder
+						.getInstance().getCurrentUser().nId, lat, lng), null));
 	}
 	
 
@@ -74,7 +76,7 @@ public class LiveService extends AbstractHandler {
 	public void scanNear(double lat, double lng, float radius,
 			final MessageListener caller) {
 		DeamonWorker.getInstance().requestAsync(
-				new PacketProxy(new LiveQueryReqPacket(lat, lng, (int) radius),
+				new PacketProxy(new LiveQueryReqPacket(GlobalHolder.getInstance().getCurrentUser().nId,lat, lng, (int) radius),
 						new NotificationListener() {
 
 							@Override

@@ -293,7 +293,14 @@ public class VideoShowFragment extends Fragment implements ExoPlayer.Listener,
 	
 	
 	
+	
+	
 
+
+	@Override
+	public SurfaceView getSurfaceView() {
+		return this.mSurfaceView;
+	}
 
 	public void setStateListener(VideoFragmentStateListener stateListener) {
 		this.mStateListener = stateListener;

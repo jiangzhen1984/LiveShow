@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import v2av.VideoPlayer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -166,6 +167,8 @@ public class MainPresenter extends BasePresenter implements
 		
 		public SurfaceView getCameraSurfaceView();
 		
+		public SurfaceView  getCurrentSurface();
+		
 		public void showBottomLayout(boolean flag);
 		
 		public void resizeCameraSurfaceSize();
@@ -280,7 +283,10 @@ public class MainPresenter extends BasePresenter implements
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
 			vs.quitConference(conf, null);
-			DeamonWorker.getInstance().request(new LiveWatchingReqPacket(conf.getId(), LiveWatchingReqPacket.CANCEL));
+			DeamonWorker.getInstance().request(
+					new LiveWatchingReqPacket(GlobalHolder.getInstance()
+							.getCurrentUser().nId, conf.getId(),
+							LiveWatchingReqPacket.CANCEL));
 		} else {
 			videoScreenState |= PUBLISHING_FLAG;
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
@@ -371,7 +377,7 @@ public class MainPresenter extends BasePresenter implements
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(5000);
+		option.setScanSpan(15000);
 		lc.setLocOption(option);
 		return lc;
 	}
@@ -471,6 +477,8 @@ public class MainPresenter extends BasePresenter implements
 			updateMapCenter(new LocationWrapper(ll), mCurrentZoomLevel);
 		}
 		
+		Message.obtain(h, REPORT_LOCATION).sendToTarget();
+		
 	}
 	
 	
@@ -486,7 +494,7 @@ public class MainPresenter extends BasePresenter implements
 			//TODO check window count
 			
 			//quit from old
-			Conference  currentConf = new Conference(this.currentLive.getLid());
+			Conference  currentConf = new Conference(1234L);
 			vs.requestExitConference(currentConf, null);
 		}
 		
@@ -688,9 +696,14 @@ public class MainPresenter extends BasePresenter implements
 	}
 	
 	private void handleCreateVideoShareBack(JNIResponse resp) {
+		V2Log.e("==> CREATE VIDEO SHARE:" +resp.getResult());
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			DeamonWorker.getInstance().request(new LivePublishReqPacket(this.currentLive.getLid(), currentLocation.ll.latitude, currentLocation.ll.longitude));
 			videoScreenState |= PUBLISHING_FLAG;
+			DeamonWorker.getInstance().request(
+					new LivePublishReqPacket(GlobalHolder.getInstance()
+							.getCurrentUser().nId, this.currentLive.getLid(),
+							currentLocation.ll.latitude,
+							currentLocation.ll.longitude));
 		} else {
 			//FIXME show error UI
 		}
@@ -699,15 +712,16 @@ public class MainPresenter extends BasePresenter implements
 	private void reportLocation() {
 		if (currentLocation != null) {
 			ls.updateGps(currentLocation.ll.latitude, currentLocation.ll.longitude);
-			Message msg = Message.obtain();
-			msg.what = REPORT_LOCATION;
-			this.h.sendMessageDelayed(msg, 30000);
+//			Message msg = Message.obtain();
+//			msg.what = REPORT_LOCATION;
+//		//	this.h.sendMessageDelayed(msg, 30000);
 		}
 	}
 	
 	
 	private void createVideoShareInBack() {
-		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), confIdRandom.nextLong(), currentLocation.ll.latitude, currentLocation.ll.longitude);
+//		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), confIdRandom.nextLong(), currentLocation.ll.latitude, currentLocation.ll.longitude);
+		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 1234L, currentLocation.ll.latitude, currentLocation.ll.longitude);
 		Conference conf = new Conference(currentLive.getLid());
 		vs.requestEnterConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
@@ -750,9 +764,11 @@ public class MainPresenter extends BasePresenter implements
 	
 	private void handWatchRequestCallback(RequestEnterConfResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			VideoPlayer vp = new VideoPlayer();
+			vp.SetSurface(ui.getCurrentSurface().getHolder());
 			//TODO open chairman device
 			UserDeviceConfig udc = new UserDeviceConfig(0,
-					resp.getConferenceID(), 0L, null, null);
+					resp.getConferenceID(), resp.getConf().getChairman(), null, vp);
 			vs.requestOpenVideoDevice(new ConferenceGroup(resp.getConferenceID(), null, null,null, null), udc, null);
 		} else {
 			ui.showError(3);

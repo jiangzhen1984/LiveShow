@@ -20,6 +20,7 @@ import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.service.jni.JNIIndication;
@@ -122,11 +123,6 @@ public class ConferenceService extends DeviceService {
 	 * @see com.v2tech.service.jni.RequestEnterConfResponse
 	 */
 	public void requestEnterConference(Conference conf, MessageListener caller) {
-		
-		DeamonWorker.getInstance().request(
-				new PacketProxy(new LiveWatchingReqPacket(conf.getId(),
-						LiveWatchingReqPacket.WATCHING), null));
-		
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
 		ConfRequest.getInstance().ConfEnter(conf.getId());
@@ -154,7 +150,7 @@ public class ConferenceService extends DeviceService {
 			return;
 		}
 		DeamonWorker.getInstance().request(
-				new PacketProxy(new LiveWatchingReqPacket(conf.getId(),
+				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId,conf.getId(),
 						LiveWatchingReqPacket.CANCEL), null));
 		
 		initTimeoutMessage(JNI_REQUEST_EXIT_CONF, DEFAULT_TIME_OUT_SECS, caller);
@@ -473,29 +469,47 @@ public class ConferenceService extends DeviceService {
 					nConfID,
 					nTime,
 					szConfData,
-					nJoinResult == JNIResponse.Result.SUCCESS.value() ? JNIResponse.Result.SUCCESS
-							: JNIResponse.Result.FAILED);
+					JNIResponse.Result.SUCCESS);
 			Message.obtain(mCallbackHandler, JNI_REQUEST_ENTER_CONF, jniRes)
 					.sendToTarget();
+//			
+//			//
+//			DeamonWorker.getInstance().request(
+//					new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, nConfID,
+//							LiveWatchingReqPacket.WATCHING), null));
+//			
+
+		}
+		
+		
+		
+
+
+		@Override
+		public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
+				String szUserInfos) {
+			V2Log.e("====>" +nUserID+"   " +nConfID+"   =>"+szUserInfos);
 		}
 
-//		@Override
-//		public void OnConfMemberEnterCallback(long nConfID, long nTime,
-//				V2User v2user) {
-//			User user = null;
-//			if (v2user.type == V2GlobalEnum.USER_ACCOUT_TYPE_NON_REGISTERED) {
-//				user = new User(v2user.uid, v2user.name);
-//			} else {
-//				user = GlobalHolder.getInstance().getUser(v2user.uid);
-//			}
-//
-//			if (user == null) {
-//				V2Log.e("User is null can not dispatch notification");
-//				return;
-//			}
-//
-//			notifyListenerWithPending(KEY_ATTENDEE_STATUS_LISTNER, 1, 0, user);
-//		}
+		@Override
+		public void OnConfNotify(String confXml, String creatorXml) {
+			V2Log.e("====>" +confXml+"   " +creatorXml+"   =>");
+			// TODO Auto-generated method stub
+			super.OnConfNotify(confXml, creatorXml);
+		}
+
+		@Override
+		public void OnConfNotify(long nSrcUserID, String srcNickName,
+				long nConfID, String subject, long nTime) {
+			// TODO Auto-generated method stub
+			super.OnConfNotify(nSrcUserID, srcNickName, nConfID, subject, nTime);
+		}
+
+		@Override
+		public void OnConfNotifyEnd(long nConfID) {
+			// TODO Auto-generated method stub
+			super.OnConfNotifyEnd(nConfID);
+		}
 
 		@Override
 		public void OnConfMemberExitCallback(long nConfID, long nTime,
@@ -549,6 +563,7 @@ public class ConferenceService extends DeviceService {
 
 		@Override
 		public void OnRemoteUserVideoDevice(long uid, String szXmlData) {
+			V2Log.e("OnRemoteUserVideoDevice===>"+uid+"   "+szXmlData);
 			if (szXmlData == null) {
 				V2Log.e(" No avaiable user device configuration");
 				return;

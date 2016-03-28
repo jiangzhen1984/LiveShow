@@ -9,7 +9,6 @@ public abstract class Packet implements Comparable<Packet> {
 	
 	protected int prioirty;
 	
-	
 	protected Packet () {
 		this.header = new Header();
 		this.id = header.id;

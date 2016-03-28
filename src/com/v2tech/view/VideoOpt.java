@@ -1,5 +1,7 @@
 package com.v2tech.view;
 
+import android.view.SurfaceView;
+
 import com.v2tech.vo.Live;
 
 public interface VideoOpt {
@@ -20,5 +22,7 @@ public interface VideoOpt {
 	
 	
 	public Live getCurrentLive();
+	
+	public SurfaceView getSurfaceView();
 
 }

@@ -122,7 +122,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private String serializeLiveQueryRequest(LiveQueryReqPacket p) {
 		StringBuffer buffer = new StringBuffer();
-		appendStart(buffer, p.getId()+"", "", "");
+		appendStart(buffer, p.getId()+"", p.uid +"", "");
 		
 		appendTagStart(buffer, "query", false);
 		appendAttrText(buffer, "xmlns", "queryVideoList");
@@ -171,7 +171,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private String serializeLiveWatchingRequest(LiveWatchingReqPacket p) {
 		StringBuffer buffer = new StringBuffer();
-		appendStart(buffer, p.getId()+"", "", "");
+		appendStart(buffer, p.getId()+"", p.uid+"", "");
 		
 		appendTagStart(buffer, "query", false);
 		appendAttrText(buffer, "xmlns", "watchVideo");
@@ -193,16 +193,17 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private String serializeLocationReportRequest(LocationReportReqPacket p) {
 		StringBuffer buffer = new StringBuffer();
-		appendStart(buffer, p.getId()+"", "", "");
+		appendStart(buffer, p.getId()+"", p.uid+"", "");
+		
 		
 		appendTagStart(buffer, "query", false);
-		appendAttrText(buffer, "xmlns", "watchVideo");
+		appendAttrText(buffer, "xmlns", "mapPosition");
 		appendTagStartEnd(buffer, true);
 		
 		
-		appendTagStart(buffer, "mapPosition", false);
-		appendTagText(buffer, "longitude", p.lng+"");
-		appendTagText(buffer, "latitude", p.lat+"");
+		appendTagStart(buffer, "position", false);
+		appendAttrText(buffer, "longitude", p.lng+"");
+		appendAttrText(buffer, "latitude", p.lat+"");
 		appendTagStartEnd(buffer, true);
 		
 		appendTagEnd(buffer, "iq");
@@ -227,7 +228,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private String serializeLivePublishRequest(LivePublishReqPacket p) {
 		StringBuffer buffer = new StringBuffer();
-		appendStart(buffer, p.getId()+"", "", "");
+		appendStart(buffer, p.getId()+"", p.uid+"", "");
 		
 		appendTagStart(buffer, "query", false);
 		appendAttrText(buffer, "xmlns", "publicVideo");

@@ -89,8 +89,9 @@ public class DeamonWorker implements Runnable, NetConnector {
 				
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
-					Log.e("DeamonWorker", packetTransform.serialize(lb.req));
-					ChannelFuture cf = ch.writeAndFlush(packetTransform.serialize(lb.req));
+					String  data = packetTransform.serialize(lb.req);
+					Log.e("DeamonWorker", "==>" + data);
+					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized(lb) {
 						//FIXME if lb timeout
