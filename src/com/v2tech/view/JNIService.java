@@ -130,7 +130,7 @@ public class JNIService extends Service
 	public void onCreate() {
 		super.onCreate();
 		mContext = this;
-
+		((MainApplication)this.getApplication()).onMainCreate();
 		HandlerThread callback = new HandlerThread("JNI-Callbck");
 		callback.start();
 		synchronized (callback) {

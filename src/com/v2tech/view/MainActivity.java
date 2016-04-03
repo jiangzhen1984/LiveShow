@@ -1,16 +1,10 @@
 package com.v2tech.view;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import v2av.VideoRecorder;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
@@ -29,29 +23,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.Overlay;
-import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
-import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
 import com.v2tech.service.jni.RequestConfCreateResponse;
-import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
-import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -64,27 +49,6 @@ public class MainActivity extends FragmentActivity implements
 	private static final String BUTTON_TAG_MAP = "map";
 	private static final String BUTTON_TAG_WORD = "word";
 
-	private static final int SEARCH = 1;
-	private static final int AUTO_PLAY_LIVE = 2;
-	private static final int PLAY_LIVE = 3;
-	private static final int INTERVAL_GET_NEIBERHOOD = 4;
-	private static final int UPDATE_LIVE_MARK = 5;
-	private static final int START_PUBLISH = 8;
-	private static final int STOP_PUBLISH = 9;
-	private static final int GET_MAP_SNAPSHOT = 10;
-	private static final int MARKER_ANIMATION = 12;
-	private static final int DELAY_RESUME = 13;
-	private static final int AUTO_LOGIN_CALL_BACK = 14;
-	private static final int SCAN_CALL_BACK = 15;
-	private static final int REQUEST_PUBLISH_CALLBACK = 16;
-	private static final int REQUEST_FINISH_PUBLISH_CALLBACK = 17;
-	private static final int NOTIFICATION_LIVE = 18;
-	private static final int UPDATE_GPS = 19;
-	private static final int ADD_FANDS_CALLBACK = 20;
-	private static final int REMOVE_FANDS_CALLBACK = 21;
-	private static final int VIDEO_COMMENT_IND = 22;
-
-	private static float mCurrentZoomLevel = 12F;
 
 	private RelativeLayout mBottomLayout;
 	// private BottomButtonLayout mBottomButtonLayout;
@@ -108,12 +72,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private DisplayMetrics mDisplay;
 
-	private Map<VideoOpt, VideoItem> videoMaps = new HashMap<VideoOpt, VideoItem>();
-	private Map<Live, Overlay> currentOverlay = new HashMap<Live, Overlay>();
-	private VideoOpt mCurrentVideoFragment;
 
-
-	private LocalHandler mLocalHandler;
 	private ImageView mPersonalButton;
 	private String phone;
 	Conference currentLive;
@@ -124,6 +83,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		((MainApplication)this.getApplication()).onMainCreate();
+		
 		if (presenter == null) {
 			presenter = new MainPresenter(this, this);
 		}
@@ -149,7 +111,7 @@ public class MainActivity extends FragmentActivity implements
 
 		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setLiverAction(presenter);
-		mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
+		//mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
@@ -160,13 +122,6 @@ public class MainActivity extends FragmentActivity implements
 		mMainLayout.addView(mMapVideoLayout, fl);
 
 		mBaiduMap.setMyLocationEnabled(true);
-		
-		mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
-		VideoItem item = videoMaps.get(mCurrentVideoFragment);
-		if (item == null) {
-			videoMaps.put(mCurrentVideoFragment, new VideoItem(
-					mCurrentVideoFragment));
-		}
 		
 		mVideoController = mMapVideoLayout;
 	}
@@ -263,8 +218,9 @@ public class MainActivity extends FragmentActivity implements
 		// activity 销毁时同时销毁地图控件
 		mMapView.onDestroy();
 
-		mLocalHandler = null;
 		presenter.onUIDestroyed();
+		
+		((MainApplication)this.getApplication()).requestQuit();
 		
 	}
 
@@ -332,139 +288,6 @@ public class MainActivity extends FragmentActivity implements
 	};
 
 
-	private MapVideoLayout.OnVideoFragmentChangedListener videoFragmentChangedListener = new MapVideoLayout.OnVideoFragmentChangedListener() {
-
-		@Override
-		public void onChanged(VideoShowFragment videoFrag) {
-			if (mCurrentVideoFragment != null && mCurrentVideoFragment.getCurrentLive()!= null) {
-				animationMaker(mCurrentVideoFragment.getCurrentLive(), false);
-			}
-			updateCurrentVideoState(mCurrentVideoFragment, false);
-			mCurrentVideoFragment = videoFrag;
-			updateCurrentVideoState(videoFrag, true);
-
-			VideoItem item = videoMaps.get(videoFrag);
-			if (item == null) {
-				videoMaps.put(videoFrag, new VideoItem(videoFrag));
-			} else {
-				Live cl = videoFrag.getCurrentLive();
-				if (cl != null) {
-				}
-			}
-			//bring to front, To make sure surface to show 
-			mMapVideoLayout.bringToFront();
-
-		}
-
-	};
-
-	private void updateCurrentVideoState(VideoOpt videoOpt, boolean play) {
-		if (play) {
-			videoOpt.resume();
-		} else {
-			videoOpt.pause();
-		}
-	}
-
-
-
-
-
-
-	
-	
-	private void updateGPS() {
-//		mLocalHandler.sendMessageDelayed(Message.obtain(mLocalHandler,
-//				UPDATE_GPS, new Double[] { mCacheLocation.getLatitude(),
-//				mCacheLocation.getLongitude() }), 2000);
-	}
-
-	private LocalState mSearchState = LocalState.DONE;
-
-
-	private void updateLiveMarkOnMap(List<Live> list) {
-		mBaiduMap.clear();
-		currentOverlay.clear();
-		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live);
-		BitmapDescriptor live = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live);
-		for (Live l : list) {
-			LatLng ll = new LatLng(l.getLat(), l.getLng());
-			Bundle bundle = new Bundle();
-			if (l.getUrl() == null || l.getUrl().isEmpty()) {
-				OverlayOptions oo = new MarkerOptions().icon(online)
-						.position(ll).extraInfo(bundle);
-				Overlay ol = mBaiduMap.addOverlay(oo);
-				// cache overlay
-				currentOverlay.put(l, ol);
-			} else {
-				bundle.putSerializable("live", l);
-				OverlayOptions oo = new MarkerOptions().icon(live).position(ll)
-						.extraInfo(bundle);
-				Overlay ol = mBaiduMap.addOverlay(oo);
-				currentOverlay.put(l, ol);
-			}
-		}
-
-	}
-
-	private void animationMaker(Live l, boolean show) {
-		Overlay old = currentOverlay.get(l);
-		if (old != null) {
-			old.remove();
-		}
-
-		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live);
-		BitmapDescriptor onlineRed = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live_show);
-
-		LatLng ll = new LatLng(l.getLat(), l.getLng());
-		OverlayOptions oo = new MarkerOptions().icon(show ? onlineRed : online)
-				.position(ll);
-		Overlay ol = mBaiduMap.addOverlay(oo);
-		currentOverlay.put(l, ol);
-	}
-
-	private void playLive(Live l) {
-		if (mCurrentVideoFragment != null) {
-			Live old = mCurrentVideoFragment.getCurrentLive();
-			if (old != null) {
-				animationMaker(old, false);
-			}
-		}
-		
-		mCurrentVideoFragment.play(l);
-
-		videoMaps.get(mCurrentVideoFragment).live = l;
-		if (l.getLat() <= 0 || l.getLng() <=0) {
-			return;
-		}
-		// Start new live marker animation
-		animationMaker(l, true);
-		//
-		mLocalHandler.removeMessages(MARKER_ANIMATION);
-		Message delayMessage = Message.obtain(mLocalHandler, MARKER_ANIMATION,
-				0, 0);
-		mLocalHandler.sendMessageDelayed(delayMessage, 200);
-	}
-
-
-
-
-	private void getMapSnapshot() {
-		mBaiduMap.snapshot(new SnapshotReadyCallback() {
-
-			@Override
-			public void onSnapshotReady(Bitmap bm) {
-				// mapSnapshot.setImageBitmap(bm);
-				mMapVideoLayout.udpateCover(bm);
-			}
-
-		});
-
-	}
 
 
 	
@@ -473,26 +296,10 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void onNotificationClicked(View v, Live live, User u) {
-			playLive(live);
 			mMapVideoLayout.removeLiveNotificaiton(live);
 		}
 		
 	};
-	
-	
-	private void handleRequestPublishCallback(Message msg) {
-		JNIResponse resp = (JNIResponse)msg.obj;
-		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			RequestConfCreateResponse  hr = (RequestConfCreateResponse)resp;
-			currentLive.updateConfId(hr.getConfId());
-			
-		} else {
-			Toast.makeText(getBaseContext(), "发布视频错误:" + resp.getResult(), Toast.LENGTH_SHORT).show();
-		}
-	}
-	
-	
-	
 	
 	
 	
@@ -755,108 +562,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 
-	class LocalHandler extends Handler {
-
-		public LocalHandler(Looper looper) {
-			super(looper);
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case SEARCH:
-				synchronized (mSearchState) {
-					mSearchState = LocalState.DONING;
-				}
-				break;
-			case AUTO_PLAY_LIVE:
-				if (!isInCameraView) {
-				}
-				
-				break;
-			case PLAY_LIVE:
-				playLive((Live) msg.obj);
-				break;
-			case INTERVAL_GET_NEIBERHOOD:
-				if (!isSuspended) {
-					mLocalHandler.sendEmptyMessageDelayed(
-							INTERVAL_GET_NEIBERHOOD, 5000);
-				}
-				break;
-				
-			case UPDATE_GPS:
-				updateGPS();
-				break;
-					
-				
-			case UPDATE_LIVE_MARK:
-				break;
-			case START_PUBLISH:
-//				VideoBCRequest.getInstance().startLive();
-//				Message m = Message.obtain(this, RECORDING);
-//				this.sendMessageDelayed(m, 300);
-				//liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
-				currentLive = new Conference(0, GlobalHolder.getInstance().getCurrentUserId());
-				break;
-			case REQUEST_PUBLISH_CALLBACK:
-				handleRequestPublishCallback(msg);
-				break;
-			case STOP_PUBLISH:
-				//VideoBCRequest.getInstance().stopLive();
-//				liveService.requestFinishPublish(null);
-//				cv.stopPublish();
-				currentLive = null;
-				isRecording = false;
-				currentLive = null;
-				break;
-			case GET_MAP_SNAPSHOT:
-				getMapSnapshot();
-				break;
-			case MARKER_ANIMATION:
-				if (mCurrentVideoFragment.getCurrentLive() != null) {
-					animationMaker(mCurrentVideoFragment.getCurrentLive(),
-							msg.arg1 == 0 ? false : true);
-				} else {
-				}
-				Message delayMessage = Message.obtain(mLocalHandler,
-						MARKER_ANIMATION, msg.arg1 == 0 ? 1 : 0, 0);
-				mLocalHandler.sendMessageDelayed(delayMessage, 200);
-				break;
-			case DELAY_RESUME:
-				if (!isSuspended) {
-					mCurrentVideoFragment.restart();
-				}
-				break;
-			case AUTO_LOGIN_CALL_BACK:{
-				JNIResponse resp = (JNIResponse)msg.obj;
-				if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-					if ((Boolean)resp.callerObject == true) {
-						RequestLogInResponse lir = (RequestLogInResponse)resp;
-						GlobalHolder.getInstance().nyUserId = lir.getUser().getmUserId();
-					} else {
-						RequestLogInResponse lir = (RequestLogInResponse)resp;
-						lir.getUser().setName(phone);
-						GlobalHolder.getInstance().setCurrentUser(lir.getUser());
-					}
-				}
-				break;
-			}
-			case SCAN_CALL_BACK:
-				break;
-			case NOTIFICATION_LIVE:
-				handleLiveNotification(msg);
-				break;
-			case VIDEO_COMMENT_IND:
-				VideoCommentInd vci = (VideoCommentInd)msg.obj;
-				if (mCurrentVideoFragment.getCurrentLive().getPublisher().getmUserId() == vci.userId) {
-					mVideoController.addNewMessage(vci.msg);
-				}
-				break;
-			}
-		}
-
-	};
+	
 
 	class LocationItem {
 		LocationItemType type;

@@ -46,11 +46,22 @@ public class MainApplication extends Application {
 	private static final String TAG = MainApplication.class.getSimpleName();
 	private Vector<WeakReference<Activity>> list = new Vector<WeakReference<Activity>>();
 
+	private boolean init = false;
 	@Override
 	public void onCreate() {
 		super.onCreate();
+	}
+
+	
+	
+	
+	public void onMainCreate() {
+		if (init) {
+			return;
+		}
+		init = true;
 		// 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
-				SDKInitializer.initialize(this);
+		SDKInitializer.initialize(this);
 				
 		initGloblePath();
 		
@@ -128,7 +139,6 @@ public class MainApplication extends Application {
 		DeamonWorker.getInstance().setPacketTransformer(new PacketTransformer());
 		DeamonWorker.getInstance().connect("115.28.100.110", 9999);
 	}
-
 
 
 	private void initConfFile() {
@@ -379,6 +389,7 @@ public class MainApplication extends Application {
 		File temp = new File(GlobalConfig.getGlobalRootPath());
 		if (!temp.exists()) {
 			V2Log.e(TAG, "temp - " + GlobalConfig.getGlobalRootPath());
+			temp.mkdirs();
 		}
 
 		if (!optionsFile.exists()) {

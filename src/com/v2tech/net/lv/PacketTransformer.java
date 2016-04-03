@@ -253,11 +253,10 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private Packet extraLoginResponse(String str) {
 		LoginRespPacket lrp = new LoginRespPacket();
-		Pattern p = Pattern.compile("type=\"success\"");
-		Matcher m = p.matcher(str);
-		if (m.find()) {
-			lrp.setErrorFlag(false);
-			
+		lrp.setRequestId(extraRequestId(str));
+		lrp.setErrorFlag(!extraResult(str));
+		
+		if (!lrp.getHeader().isError()) {
 			Pattern idp = Pattern.compile("(to=\")([0-9]+)(\")");
 			Matcher idm = idp.matcher(str);
 			if (idm.find()) {
@@ -266,30 +265,23 @@ public class PacketTransformer implements Transformer<Packet, String> {
 				lrp.uid = Long.parseLong(strId);
 			}
 			
-		} else {
-			lrp.setErrorFlag(true);
-		}
-		
+		} 
 
 		return lrp;
 	}
 	
 	private Packet extraLiveQueryResponse(String str) {
 		
-		str +="<video id='1' userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>" +
-"<video id='2' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>" +
-"<video id='3' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>" +
-"<video id='4' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>" +
-"<video id='5' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
+		str +="<video id='1514593193294' userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>" +
+"<video id='1514593194392' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>" +
+"<video id='1514593193294' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>" +
+"<video id='1514593194392' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>" +
+"<video id='1514593194392' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
 		String root ="<test>" + str +"</test>";
 		LiveQueryRespPacket lrp = new LiveQueryRespPacket();
-		Pattern p = Pattern.compile("type=\"success\"");
-		Matcher m = p.matcher(root);
-		if (!m.find()) {
-			lrp.setErrorFlag(true);
-			return lrp;
-		}
+		lrp.setErrorFlag(!extraResult(str));
 		
+		lrp.setRequestId(extraRequestId(str));
 		lrp.setErrorFlag(false);
 		Document doc = XmlAttributeExtractor.buildDocument(root);
 		if (doc == null) {
@@ -319,17 +311,34 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	
 	
+	private long extraRequestId(String str) {
+		Pattern p = Pattern.compile("(id=\")[0-9]+(\")");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			String gr =  m.group();
+			return Long.parseLong(gr.substring(4, gr.length() -1));
+		} else {
+			return -1;
+		}
+	}
+	
+	private boolean extraResult(String str) {
+		Pattern p = Pattern.compile("type=\"success\"");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
 	
 	
 	private Packet extraGetSMSResponse(String str) {
-		Pattern p = Pattern.compile("type=\"success\"");
-		Matcher m = p.matcher(str);
 		GetCodeRespPacket gcp = new GetCodeRespPacket();
-		if (m.find()) {
-			gcp.setErrorFlag(false);
-		} else {
-			gcp.setErrorFlag(true);
-		}
+		gcp.setRequestId(extraRequestId(str));
+		gcp.setErrorFlag(!extraResult(str));
 		return gcp;
 	}
 	

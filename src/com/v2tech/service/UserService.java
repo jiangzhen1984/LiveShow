@@ -64,6 +64,10 @@ public class UserService extends AbstractHandler {
 	public void login(String mail, String passwd, MessageListener caller) {
 		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, passwd));
 		if (!p.getHeader().isError()) {
+			LoginRespPacket lrp =(LoginRespPacket)p;
+			User loginUser = new User(0);
+			loginUser.nId = lrp.uid;
+			GlobalHolder.getInstance().setCurrentUser(loginUser);
 			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
 			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", false);
 		} else {

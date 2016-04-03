@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
+import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.vo.User;
 
 public class LoginPresenter extends BasePresenter {
@@ -39,6 +41,8 @@ public class LoginPresenter extends BasePresenter {
 		public void setPhoneNumberError();
 		
 		public void showKeyboard();
+		
+		public void doLogonFailed();
 	}
 	
 	
@@ -128,6 +132,16 @@ public class LoginPresenter extends BasePresenter {
 		us.sendVaidationCode(number);
 	}
 	
+	
+	private void handleLoginCallback(RequestLogInResponse resp) {
+		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			GlobalHolder.getInstance().getCurrentUser().isNY = false;
+			ui.doLogedIn();
+		} else {
+			ui.doLogonFailed();
+		}
+	}
+	
 	private Handler h;
 	
 	class LocalHandler  extends Handler {
@@ -151,9 +165,7 @@ public class LoginPresenter extends BasePresenter {
 				doGetCodeInBack();
 				break;
 			case LOGIN_CALLBACK:
-				//TODO test code
-				GlobalHolder.getInstance().getCurrentUser().isNY = false;
-				ui.doLogedIn();
+				handleLoginCallback((RequestLogInResponse)msg.obj);
 				break;
 			}
 		}

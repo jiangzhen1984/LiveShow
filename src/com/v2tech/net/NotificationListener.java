@@ -10,4 +10,6 @@ public interface NotificationListener {
 	public void onResponse(ResponsePacket rp);
 
 	public void onStateChanged();
+	
+	public void onTimeout(ResponsePacket rp);
 }

@@ -34,6 +34,12 @@ public class PacketProxy extends Packet {
 	public void setListener(NotificationListener listener) {
 		this.listener = listener;
 	}
+
+
+	@Override
+	public long getId() {
+		return packet.getId();
+	}
 	
 	
 	

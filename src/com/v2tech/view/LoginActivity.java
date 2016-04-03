@@ -140,8 +140,16 @@ public class LoginActivity extends Activity implements OnClickListener, LoginPre
 		mUserNameET.addTextChangedListener(textWatcher);
 		
 	}
+	
+	
 
 	
+
+	@Override
+	public void doLogonFailed() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void showLogingInProgress() {

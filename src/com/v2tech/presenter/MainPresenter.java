@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Process;
 import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -39,9 +40,6 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.v2tech.net.DeamonWorker;
-import com.v2tech.net.lv.LivePublishReqPacket;
-import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.DeviceService;
 import com.v2tech.service.GlobalHolder;
@@ -60,11 +58,12 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
+import com.v2tech.widget.VideoShowFragment;
 
 public class MainPresenter extends BasePresenter implements
 		OnGetGeoCoderResultListener, BDLocationListener,
 		MapVideoLayout.LayoutPositionChangedListener,
-		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener, LiverAction {
+		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener, LiverAction, MapVideoLayout.OnVideoFragmentChangedListener {
 	
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -74,6 +73,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int SEARCH_LIVE = 7;
 	private static final int SEARCH_LIVE_CALLBACK = 8;
 	private static final int WATCHING_REQUEST_CALLBACK = 9;
+	private static final int CANCEL_WATCHING_REQUEST_CALLBACK = 10;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -134,9 +134,11 @@ public class MainPresenter extends BasePresenter implements
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG |BOTTOM_LAYOUT_SHOW);
+
+
+		currentMapCenter = new LocationWrapper();
+		currentLocation = new LocationWrapper();
 		
-		mSearch = GeoCoder.newInstance();
-		mSearch.setOnGetGeoCodeResultListener(this);
 	}
 
 	public interface MainPresenterUI {
@@ -282,11 +284,7 @@ public class MainPresenter extends BasePresenter implements
 			videoScreenState &= (~PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
-			vs.quitConference(conf, null);
-			DeamonWorker.getInstance().request(
-					new LiveWatchingReqPacket(GlobalHolder.getInstance()
-							.getCurrentUser().nId, conf.getId(),
-							LiveWatchingReqPacket.CANCEL));
+			vs.quitConference(conf, new MessageListener(h, CANCEL_WATCHING_REQUEST_CALLBACK, null));
 		} else {
 			videoScreenState |= PUBLISHING_FLAG;
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
@@ -334,6 +332,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onUICreated() {
+		V2Log.i("===> " + Process.myPid()+"  ===> uiCreate");
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}
@@ -341,6 +340,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onUIStarted() {
+		locationClient = startLocationScan();
 		updateLocateState(locationClient, true);
 	}
 	
@@ -349,6 +349,7 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onUIStopped() {
 		updateLocateState(locationClient, false);
+		locationClient = null;
 	}
 
 
@@ -494,7 +495,7 @@ public class MainPresenter extends BasePresenter implements
 			//TODO check window count
 			
 			//quit from old
-			Conference  currentConf = new Conference(1234L);
+			Conference  currentConf = new Conference(15343434L);
 			vs.requestExitConference(currentConf, null);
 		}
 		
@@ -654,9 +655,42 @@ public class MainPresenter extends BasePresenter implements
 	
 	////////////////////LiverAction
 
+	
+	
+	/////////////OnVideoFragmentChangedListener
+
+	@Override
+	public void onChanged(VideoShowFragment videoFrag) {
+		// TODO Auto-generated method stub
+		if (currentLive != null) {
+			Conference conf = new Conference(currentLive.getLid());
+			vs.requestExitConference(conf, null);
+		}
+		
+		//TODO update show new live
+		Live l = (Live)videoFrag.getTag1();
+		if (l == null) {
+			//TODO request new one
+			
+			//TODO update tag;
+		} else {
+			//join new one
+			Conference  newConf = new Conference(l.getLid());
+			vs.requestEnterConference(newConf, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
+			currentLive = l;
+		}
+		
+	}
+
+	/////////////OnVideoFragmentChangedListener	
+	
+	
+	
+	
 
 
 	private void doInitInBack() {
+		V2Log.i("===> " + Process.myPid()+"  ===> doInitInBack");
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
@@ -678,15 +712,16 @@ public class MainPresenter extends BasePresenter implements
 		} else {
 			V2Log.w("Already login, no need login again" + GlobalHolder.getInstance().getCurrentUser());
 		}
+
+		mSearch = GeoCoder.newInstance();
+		mSearch.setOnGetGeoCodeResultListener(this);
+		
 		mapInstance = ui.getMapInstance();
 		mapInstance.setOnMarkerClickListener(this);
 		mapInstance.setOnMapStatusChangeListener(this);
 		mapInstance.setOnMarkerClickListener(this);
-		locationClient = startLocationScan();
 		updateLocateState(locationClient, true);
 		
-		currentMapCenter = new LocationWrapper();
-		currentLocation = new LocationWrapper();
 	}
 	
 
@@ -699,11 +734,7 @@ public class MainPresenter extends BasePresenter implements
 		V2Log.e("==> CREATE VIDEO SHARE:" +resp.getResult());
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			videoScreenState |= PUBLISHING_FLAG;
-			DeamonWorker.getInstance().request(
-					new LivePublishReqPacket(GlobalHolder.getInstance()
-							.getCurrentUser().nId, this.currentLive.getLid(),
-							currentLocation.ll.latitude,
-							currentLocation.ll.longitude));
+			ls.reportLiveStatus(this.currentLive, null);
 		} else {
 			//FIXME show error UI
 		}
@@ -712,16 +743,16 @@ public class MainPresenter extends BasePresenter implements
 	private void reportLocation() {
 		if (currentLocation != null) {
 			ls.updateGps(currentLocation.ll.latitude, currentLocation.ll.longitude);
-//			Message msg = Message.obtain();
-//			msg.what = REPORT_LOCATION;
-//		//	this.h.sendMessageDelayed(msg, 30000);
 		}
 	}
 	
 	
 	private void createVideoShareInBack() {
-//		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), confIdRandom.nextLong(), currentLocation.ll.latitude, currentLocation.ll.longitude);
-		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 1234L, currentLocation.ll.latitude, currentLocation.ll.longitude);
+		long lid = confIdRandom.nextLong();
+		if (lid < 0) {
+			lid = ~lid;
+		}
+		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), lid, currentLocation.ll.latitude, currentLocation.ll.longitude);
 		Conference conf = new Conference(currentLive.getLid());
 		vs.requestEnterConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
@@ -740,6 +771,9 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void handSearchLiveCallback(SearchLiveResponse p) {
+		if (p == null || p.getPacket() == null) {
+			V2Log.e("===> get search callback ===> No packet");
+		}
 		V2Log.i("===> get search callback ===>" + p.getPacket().getVideos());
 		BitmapDescriptor online = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
@@ -768,7 +802,7 @@ public class MainPresenter extends BasePresenter implements
 			vp.SetSurface(ui.getCurrentSurface().getHolder());
 			//TODO open chairman device
 			UserDeviceConfig udc = new UserDeviceConfig(0,
-					resp.getConferenceID(), resp.getConf().getChairman(), null, vp);
+					resp.getConferenceID(), resp.getConf().getChairman(), "sss", vp);
 			vs.requestOpenVideoDevice(new ConferenceGroup(resp.getConferenceID(), null, null,null, null), udc, null);
 		} else {
 			ui.showError(3);
@@ -804,7 +838,7 @@ public class MainPresenter extends BasePresenter implements
 				break;
 			case SEARCH_LIVE:
 				ls.scanNear(currentMapCenter.ll.latitude,
-						currentMapCenter.ll.longitude, 5000,
+						currentMapCenter.ll.longitude, 500000,
 						new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
 				break;
 			case SEARCH_LIVE_CALLBACK:

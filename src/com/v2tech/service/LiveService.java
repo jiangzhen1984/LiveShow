@@ -26,6 +26,7 @@ import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
 import com.v2tech.net.lv.FollowReqPacket;
+import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LiveQueryReqPacket;
 import com.v2tech.net.lv.LiveQueryRespPacket;
 import com.v2tech.net.lv.LocationReportReqPacket;
@@ -62,6 +63,10 @@ public class LiveService extends AbstractHandler {
 	
 	
 	public void updateGps(double lat, double lng) {
+		if (GlobalHolder.getInstance().getCurrentUser() == null) {
+			V2Log.e("Can not update gps, not login yet");
+			return;
+		}
 		DeamonWorker.getInstance().request(
 				new PacketProxy(new LocationReportReqPacket(GlobalHolder
 						.getInstance().getCurrentUser().nId, lat, lng), null));
@@ -75,6 +80,19 @@ public class LiveService extends AbstractHandler {
 	
 	public void scanNear(double lat, double lng, float radius,
 			final MessageListener caller) {
+		if (GlobalHolder.getInstance().getCurrentUser() == null) {
+			V2Log.e("Can not update gps, not login yet");
+			if (caller != null) {
+				Message.obtain(
+						caller.getHandler(),
+						caller.what,
+						new SearchLiveResponse(
+								JNIResponse.Result.NO_RESOURCE,
+								null)).sendToTarget();
+			}
+			return;
+		}
+		
 		DeamonWorker.getInstance().requestAsync(
 				new PacketProxy(new LiveQueryReqPacket(GlobalHolder.getInstance().getCurrentUser().nId,lat, lng, (int) radius),
 						new NotificationListener() {
@@ -106,6 +124,12 @@ public class LiveService extends AbstractHandler {
 								}
 
 							}
+							
+							
+
+							@Override
+							public void onTimeout(ResponsePacket rp) {
+							}
 
 							@Override
 							public void onStateChanged() {
@@ -126,6 +150,15 @@ public class LiveService extends AbstractHandler {
 		InteractionRequest.getInstance().stopLive();
 	}
 	
+	
+	
+	public void reportLiveStatus(Live l, MessageListener caller) {
+		DeamonWorker.getInstance().request(
+				new LivePublishReqPacket(GlobalHolder.getInstance()
+						.getCurrentUser().nId, l.getLid(),
+						l.getLat(),
+						l.getLng()));
+	}
 	
 	
 	public void follow(Live l) {

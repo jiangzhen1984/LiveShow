@@ -218,7 +218,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 
 			@Override
 			public void onInited() {
-				videoFragment.play(l);
+				//videoFragment.play(l);
 				
 			}
 
@@ -232,7 +232,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		mViewPagerAdapter.notifyDataSetChanged();
 		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
 
-		return videoFragment;
+		return null;
 	}
 	
 	
@@ -257,14 +257,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 					.onChanged((VideoShowFragment) mViewPagerAdapter
 							.getItem(position));
 		}
-		
-		
-		VideoShowFragment frag = (VideoShowFragment)mViewPagerAdapter.getItem(mVideoShowPager.getCurrentItem());
-		if (frag.getCurrentLive() == null) {
-			return;
-		}
-		favButton.setSelected(frag.getCurrentLive().isFollow());
-		
 	}
 
 	@Override
@@ -425,19 +417,19 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	
 	public void pasuseCurrentVideo(boolean flag) {
-		if (flag) {
-			if (mViewPagerAdapter.getCount() > mCurrentPage) {
-				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).pause();
-			} else {
-				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
-			}
-		} else {
-			if (mViewPagerAdapter.getCount() > mCurrentPage) {
-				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).resume();
-			}else {
-				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
-			}
-		}
+//		if (flag) {
+//			if (mViewPagerAdapter.getCount() > mCurrentPage) {
+//				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).pause();
+//			} else {
+//				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
+//			}
+//		} else {
+//			if (mViewPagerAdapter.getCount() > mCurrentPage) {
+//				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).resume();
+//			}else {
+//				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
+//			}
+//		}
 	}
 	
 	public void addLiveNotificaiton(Live l) {

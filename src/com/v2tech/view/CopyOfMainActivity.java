@@ -255,7 +255,7 @@ public class CopyOfMainActivity extends FragmentActivity implements
 		
 		mBaiduMap.setMyLocationEnabled(true);
 		
-		mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
+		//mCurrentVideoFragment = mMapVideoLayout.getCurrentVideoFragment();
 		VideoItem item = videoMaps.get(mCurrentVideoFragment);
 		if (item == null) {
 			videoMaps.put(mCurrentVideoFragment, new VideoItem(
@@ -654,19 +654,19 @@ public class CopyOfMainActivity extends FragmentActivity implements
 				animationMaker(mCurrentVideoFragment.getCurrentLive(), false);
 			}
 			updateCurrentVideoState(mCurrentVideoFragment, false);
-			mCurrentVideoFragment = videoFrag;
-			updateCurrentVideoState(videoFrag, true);
-
-			VideoItem item = videoMaps.get(videoFrag);
-			if (item == null) {
-				videoMaps.put(videoFrag, new VideoItem(videoFrag));
-				autoPlayNecessary();
-			} else {
-				Live cl = videoFrag.getCurrentLive();
-				if (cl != null) {
-					updateMapLocation(cl);
-				}
-			}
+//			mCurrentVideoFragment = videoFrag;
+//			updateCurrentVideoState(videoFrag, true);
+//
+//			VideoItem item = videoMaps.get(videoFrag);
+//			if (item == null) {
+//				videoMaps.put(videoFrag, new VideoItem(videoFrag));
+//				autoPlayNecessary();
+//			} else {
+//				Live cl = videoFrag.getCurrentLive();
+//				if (cl != null) {
+//					updateMapLocation(cl);
+//				}
+//			}
 			//bring to front, To make sure surface to show 
 			mMapVideoLayout.bringToFront();
 

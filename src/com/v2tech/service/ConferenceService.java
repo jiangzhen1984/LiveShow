@@ -20,7 +20,6 @@ import com.V2.jni.callback.VideoMixerRequestCallback;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
-import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.service.jni.JNIIndication;
@@ -127,6 +126,9 @@ public class ConferenceService extends DeviceService {
 				caller);
 		ConfRequest.getInstance().ConfEnter(conf.getId());
 	}
+	
+	
+	
 
 	/**
 	 * User request to quit conference. This API just use to for quit conference
@@ -200,6 +202,10 @@ public class ConferenceService extends DeviceService {
 	 * @param caller
 	 */
 	public void quitConference(Conference conf, MessageListener caller) {
+		DeamonWorker.getInstance().request(
+				new LiveWatchingReqPacket(GlobalHolder.getInstance()
+						.getCurrentUser().nId, conf.getId(),
+						LiveWatchingReqPacket.CANCEL)); 
 		if (conf == null) {
 			if (caller != null) {
 				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,

@@ -30,13 +30,14 @@ import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
 
 
-public class DeamonWorker implements Runnable, NetConnector {
+public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.TimeoutHandler {
 	
 	NioEventLoopGroup group;
 	Bootstrap strap;
 	private WorkerState st;
 	private ConnectionState cs;
 	private Thread deamon;
+	private TimeoutNotificator tiemoutWatchDog;
 	private Object stLock;
 	private Object trLock;
 	private Object csLock;
@@ -60,6 +61,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 		strap = new Bootstrap();
 		pending = new PriorityBlockingQueue<LocalBind>();
 		waiting = new PriorityBlockingQueue<LocalBind>();
+		tiemoutWatchDog = new TimeoutNotificator(this, waiting);
 	}
 
 	
@@ -150,6 +152,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 		
 		startWorker();
 		
+		tiemoutWatchDog.requestStart();
 		return cs == ConnectionState.CONNECTED;
 	}
 
@@ -199,7 +202,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 	@Override
 	public void disconnect() {
 		updateWorkerState(WorkerState.REQUEST_STOP);
-		
+		tiemoutWatchDog.requestStop();
 	}
 	
 	@Override
@@ -212,9 +215,36 @@ public class DeamonWorker implements Runnable, NetConnector {
 	public void setPacketTransformer(Transformer<Packet, String> transformer) {
 		this.packetTransform = transformer;
 	}
+	
+	
+	
+	
 
 
 	
+
+	@Override
+	public void onTimeout(LocalBind bind) {
+		this.waiting.remove(bind);
+		V2Log.e("Timeout " + bind);
+		V2Log.e(this.waiting.toString());
+		ResponsePacket rp = new ResponsePacket();
+		rp.setRequestId(bind.reqId);
+		rp.setErrorFlag(true);
+		bind.resp = rp;
+		if (bind.sync) {
+			synchronized(bind) {
+				bind.notify();
+			}
+		} else {
+			if (!(bind.req instanceof PacketProxy)) {
+				V2Log.e("==================");
+			} else {
+				((PacketProxy)bind.req).getListener().onTimeout(rp);
+			}
+		}
+	}
+
 
 	private void startWorker() {
 	
@@ -226,6 +256,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 		
 		updateWorkerState(WorkerState.INITIALIZED);
 		deamon = new Thread(this);
+		deamon.setName("DeamonWorker");
 		deamon.start();
 		int count = 0;
 		while (!deamon.isAlive() && (cs != ConnectionState.CONNECTED) && count++ < 10) {
@@ -258,12 +289,13 @@ public class DeamonWorker implements Runnable, NetConnector {
 	}
 	
 	
-	private LocalBind findRequestBind(Packet packet) {
+	private LocalBind findRequestBind(ResponsePacket packet) {
 		LocalBind lb = null;
 		Iterator<LocalBind> it = waiting.iterator();
 		while (it.hasNext()) {
 			lb = it.next();
-			if (lb.reqId == packet.getId()) {
+			if (lb.reqId == packet.getRequestId()) {
+				it.remove();
 				waiting.remove(lb);
 			}
 		}
@@ -343,7 +375,7 @@ public class DeamonWorker implements Runnable, NetConnector {
 					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
-				LocalBind lb = findRequestBind(p);
+				LocalBind lb = findRequestBind((ResponsePacket)p);
 				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
 					lb.respontime = System.currentTimeMillis();
@@ -358,52 +390,12 @@ public class DeamonWorker implements Runnable, NetConnector {
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+			Log.e("ReaderChannel", "Exception:" + cause);
 			cause.printStackTrace();
 			ctx.close();
+			//TODO notify restart
 		}
 		
 	}
 	
-	
-	
-	class LocalBind implements Comparable<LocalBind>  {
-		
-		long reqId;
-		Packet req;
-		Packet resp;
-		boolean sync;
-		boolean timeout;
-		long sendtime;
-		long queuetime;
-		long respontime;
-		boolean sendflag;
-		
-		public LocalBind(Packet req) {
-			super();
-			this.req = req;
-			this.reqId = req.getId();
-			queuetime = System.currentTimeMillis();
-		}
-
-
-
-
-		public LocalBind(Packet req, Packet resp) {
-			super();
-			this.req = req;
-			this.resp = resp;
-			queuetime = System.currentTimeMillis();
-		}
-
-
-
-
-		@Override
-		public int compareTo(LocalBind another) {
-			return this.req.compareTo(another.req);
-		}
-		
-		
-	}
-
 }
