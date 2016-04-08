@@ -3,7 +3,6 @@ package com.v2tech.view;
 import v2av.VideoRecorder;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -21,18 +20,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
-import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.LiveNotification;
-import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
@@ -528,12 +525,31 @@ public class MainActivity extends FragmentActivity implements
 	public SurfaceView getCurrentSurface() {
 		return mMapVideoLayout.getCurrentVideoFragment().getSurfaceView();
 	}
+	
+	
 
+	@Override
+	public void showDebugMsg(final String msg) {
+		this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				((TextView)findViewById(R.id.title_bar_center_tv)).setText(msg);
+			}
+			
+		});
+		
+	}
 	
 
 	
 	/////////////////////////////////////////////////////////////
 	
+
+
+
 
 
 

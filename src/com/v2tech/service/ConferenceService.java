@@ -460,6 +460,7 @@ public class ConferenceService extends DeviceService {
 		@Override
 		public void OnEnterConfCallback(long nConfID, long nTime,
 				String szConfData, int nJoinResult) {
+			V2Log.i("OnEnterConfCallback====>" +szConfData+"   " +nJoinResult+"   =>");
 			ConferenceGroup cache = (ConferenceGroup) GlobalHolder
 					.getInstance().findGroupById(nConfID);
 			if (cache != null) {
@@ -494,12 +495,12 @@ public class ConferenceService extends DeviceService {
 		@Override
 		public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
 				String szUserInfos) {
-			V2Log.e("====>" +nUserID+"   " +nConfID+"   =>"+szUserInfos);
+			V2Log.i("====>" +nUserID+"   " +nConfID+"   =>"+szUserInfos);
 		}
 
 		@Override
 		public void OnConfNotify(String confXml, String creatorXml) {
-			V2Log.e("====>" +confXml+"   " +creatorXml+"   =>");
+			V2Log.i("====>" +confXml+"   " +creatorXml+"   =>");
 			// TODO Auto-generated method stub
 			super.OnConfNotify(confXml, creatorXml);
 		}

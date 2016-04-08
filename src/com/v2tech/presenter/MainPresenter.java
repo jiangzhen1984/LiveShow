@@ -40,13 +40,14 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.v2tech.service.AsyncResult;
 import com.v2tech.service.ConferenceService;
-import com.v2tech.service.DeviceService;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveService;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestEnterConfResponse;
 import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.SPUtil;
@@ -74,6 +75,8 @@ public class MainPresenter extends BasePresenter implements
 	private static final int SEARCH_LIVE_CALLBACK = 8;
 	private static final int WATCHING_REQUEST_CALLBACK = 9;
 	private static final int CANCEL_WATCHING_REQUEST_CALLBACK = 10;
+	private static final int ATTEND_LISTENER = 11;
+	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -102,7 +105,6 @@ public class MainPresenter extends BasePresenter implements
 	private UserService us;
 	private ConferenceService vs;
 	private LiveService ls;
-	private DeviceService ds;
 	private Handler h;
     private Live currentLive;
     private LongSparseArray<Live> lives;
@@ -180,6 +182,8 @@ public class MainPresenter extends BasePresenter implements
 		public void showError(int flag);
 		
 		public void showLiverPersonelUI();
+		
+		public void showDebugMsg(String msg);
 	}
 	
 	
@@ -284,7 +288,7 @@ public class MainPresenter extends BasePresenter implements
 			videoScreenState &= (~PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
-			vs.quitConference(conf, new MessageListener(h, CANCEL_WATCHING_REQUEST_CALLBACK, null));
+			vs.quitConference(conf, new MessageListener(h, CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
 			videoScreenState |= PUBLISHING_FLAG;
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
@@ -529,7 +533,7 @@ public class MainPresenter extends BasePresenter implements
 			this.videoScreenState &= (~LOCAL_CAMERA_OPENING);
 			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
 			duc.setSVHolder(ui.getCameraSurfaceView());
-			ds.requestCloseVideoDevice(duc, null);
+			vs.requestCloseVideoDevice(duc, null);
 			
 		}
 		
@@ -564,7 +568,7 @@ public class MainPresenter extends BasePresenter implements
 			
 			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
 			duc.setSVHolder(ui.getCameraSurfaceView());
-			ds.requestOpenVideoDevice(duc, null);
+			vs.requestOpenVideoDevice(duc, null);
 			ui.showBottomLayout(false);
 			this.videoScreenState |= LOCAL_CAMERA_OPENING;
 			this.videoScreenState &= (~BOTTOM_LAYOUT_SHOW);
@@ -694,7 +698,7 @@ public class MainPresenter extends BasePresenter implements
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
-		ds = new DeviceService();
+		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
 		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -733,10 +737,13 @@ public class MainPresenter extends BasePresenter implements
 	private void handleCreateVideoShareBack(JNIResponse resp) {
 		V2Log.e("==> CREATE VIDEO SHARE:" +resp.getResult());
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			RequestConfCreateResponse rcr = (RequestConfCreateResponse)resp;
+			currentLive.setLid(rcr.getConfId());
+			ui.showDebugMsg(this.currentLive.getLid()+"");
 			videoScreenState |= PUBLISHING_FLAG;
 			ls.reportLiveStatus(this.currentLive, null);
 		} else {
-			//FIXME show error UI
+			ui.showDebugMsg("create error");
 		}
 	}
 	
@@ -748,13 +755,14 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void createVideoShareInBack() {
-		long lid = confIdRandom.nextLong();
-		if (lid < 0) {
-			lid = ~lid;
-		}
-		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), lid, currentLocation.ll.latitude, currentLocation.ll.longitude);
-		Conference conf = new Conference(currentLive.getLid());
-		vs.requestEnterConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
+//		long lid = confIdRandom.nextLong();
+//		if (lid < 0) {
+//			lid = ~lid;
+//		}
+		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 0, currentLocation.ll.latitude, currentLocation.ll.longitude);
+		Conference conf = new Conference(0);
+		conf.setName("test");
+		vs.createConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
 	
 	
@@ -796,17 +804,51 @@ public class MainPresenter extends BasePresenter implements
 		
 	}
 	
-	private void handWatchRequestCallback(RequestEnterConfResponse resp) {
+	boolean pending = true;
+	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			VideoPlayer vp = new VideoPlayer();
-			vp.SetSurface(ui.getCurrentSurface().getHolder());
-			//TODO open chairman device
-			UserDeviceConfig udc = new UserDeviceConfig(0,
-					resp.getConferenceID(), resp.getConf().getChairman(), "sss", vp);
-			vs.requestOpenVideoDevice(new ConferenceGroup(resp.getConferenceID(), null, null,null, null), udc, null);
+			RequestEnterConfResponse rer = (RequestEnterConfResponse)resp;
+			if (this.currentLive.getPublisher() == null) {
+				this.currentLive.setPublisher(new User(rer.getConf().getCreator()));
+			} else {
+				this.currentLive.getPublisher().setmUserId((rer.getConf().getCreator()));
+			}
+			pending = true;
 		} else {
+			pending = false;
 			ui.showError(3);
 		}
+	}
+	
+	private void handleAttendDevice(AsyncResult ar) {
+		if (pending) {
+			// TODO waiting for chair man device;
+			Object[] devices = (Object[]) ar.getResult();
+			long uid = Long.parseLong(devices[0].toString());
+			List<UserDeviceConfig> ll = (List<UserDeviceConfig>)devices[1];
+			if (ll == null || ll.size()< 0) {
+				V2Log.e("===== chair man no device" + uid);
+				pending = false;
+				return;
+			}
+			if (uid == this.currentLive.getPublisher().getmUserId()) {
+				VideoPlayer vp = new VideoPlayer();
+				vp.SetSurface(ui.getCurrentSurface().getHolder());
+				// TODO open chairman device
+				UserDeviceConfig udc = new UserDeviceConfig(0,
+						this.currentLive.getLid(), currentLive.getPublisher()
+								.getmUserId(), ll.get(0).getDeviceID(), vp);
+				vs.requestOpenVideoDevice(
+						new ConferenceGroup(this.currentLive.getLid(), null,
+								null, null, null), udc, null);
+				pending = false;
+
+			} else {
+				V2Log.e("=====not chair man" + uid);
+			}
+
+		}
+		
 	}
 	
 	
@@ -845,7 +887,10 @@ public class MainPresenter extends BasePresenter implements
 				handSearchLiveCallback((SearchLiveResponse)msg.obj);
 				break;
 			case WATCHING_REQUEST_CALLBACK:
-				handWatchRequestCallback((RequestEnterConfResponse)msg.obj);
+				handWatchRequestCallback((JNIResponse)msg.obj);
+				break;
+			case ATTEND_LISTENER:
+				handleAttendDevice((AsyncResult)msg.obj);
 				break;
 			}
 		}
