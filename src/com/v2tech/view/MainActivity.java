@@ -34,6 +34,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -108,7 +109,7 @@ public class MainActivity extends FragmentActivity implements
 
 		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setLiverAction(presenter);
-		//mMapVideoLayout.setVideoChangedListener(videoFragmentChangedListener);
+		mMapVideoLayout.setVideoChangedListener(presenter);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
@@ -543,7 +544,23 @@ public class MainActivity extends FragmentActivity implements
 		
 	}
 	
+	
+	public void setCurrentLive(Live l) {
+		mMapVideoLayout.getCurrentVideoFragment().setTag1(l);
+	}
+	
+	
+	public void queuedMessage(final String msg) {
+		this.runOnUiThread(new Runnable() {
 
+			@Override
+			public void run() {
+				mMapVideoLayout.addNewMessage(msg);
+			}
+			
+		});
+		
+	}
 	
 	/////////////////////////////////////////////////////////////
 	

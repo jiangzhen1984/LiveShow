@@ -2,12 +2,15 @@ package com.v2tech.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.os.Handler;
 import android.os.Message;
 
 import com.V2.jni.AudioRequest;
 import com.V2.jni.ChatRequest;
+import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.ConfRequest;
 import com.V2.jni.ConfRequestCallbackAdapter;
 import com.V2.jni.GroupRequest;
@@ -17,6 +20,7 @@ import com.V2.jni.VideoMixerRequest;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.callback.VideoMixerRequestCallback;
+import com.V2.jni.ind.MessageInd;
 import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
@@ -24,6 +28,7 @@ import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.service.jni.JNIIndication;
 import com.v2tech.service.jni.JNIResponse;
+import com.v2tech.service.jni.JNIResponse.Result;
 import com.v2tech.service.jni.PermissionUpdateIndication;
 import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestEnterConfResponse;
@@ -85,11 +90,13 @@ public class ConferenceService extends DeviceService {
 	private static final int KEY_SYNC_LISTNER = 103;
 	private static final int KEY_PERMISSION_CHANGED_LISTNER = 104;
 	private static final int KEY_MIXED_VIDEO_LISTNER = 105;
+	private static final int KEY_MESSAGE_LISTENER = 106;
 
 	private VideoRequestCB videoCallback;
 	private ConfRequestCB confCallback;
 	private GroupRequestCB groupCallback;
 	private MixerRequestCB mrCallback;
+	private ChatRequestCB mcrCallback;
 
 	private boolean mFlag = false;
 
@@ -107,6 +114,8 @@ public class ConferenceService extends DeviceService {
 		GroupRequest.getInstance().addCallback(groupCallback);
 		mrCallback = new MixerRequestCB(this);
 		VideoMixerRequest.getInstance().addCallbacks(mrCallback);
+		mcrCallback = new ChatRequestCB();
+		ChatRequest.getInstance().setChatRequestCallback(mcrCallback);
 		mFlag = flag;
 	}
 
@@ -429,6 +438,15 @@ public class ConferenceService extends DeviceService {
 	public void unRegisterVideoMixerListener(Handler h, int what, Object obj) {
 		unRegisterListener(KEY_MIXED_VIDEO_LISTNER, h, what, obj);
 	}
+	
+	
+	public void registerMessageListener(Handler h, int what, Object obj) {
+		registerListener(KEY_MESSAGE_LISTENER, h, what, obj);
+	}
+	
+	public void unRgisterMessageListener(Handler h, int what, Object obj) {
+		unRegisterListener(KEY_MESSAGE_LISTENER, h, what, obj);
+	}
 
 	@Override
 	public void clearCalledBack() {
@@ -437,6 +455,7 @@ public class ConferenceService extends DeviceService {
 		ConfRequest.getInstance().removeCallback(confCallback);
 		GroupRequest.getInstance().removeCallback(groupCallback);
 		VideoMixerRequest.getInstance().removeCallback(mrCallback);
+		ChatRequest.getInstance().setChatRequestCallback(null);
 	}
 
 	@Override
@@ -622,6 +641,32 @@ public class ConferenceService extends DeviceService {
 //			}
 //		}
 
+	}
+	
+	
+	class ChatRequestCB extends ChatRequestCallbackAdapter {
+
+		@Override
+		public void OnRecvChatTextCallback(int eGroupType, long nGroupID,
+				long nFromUserID, long nToUserID, long nTime, String szSeqID,
+				String szXmlText) {
+			V2Log.i(nGroupID+"   "+nFromUserID+"   "+nToUserID+szXmlText);
+			
+			Pattern p = Pattern.compile("(Text=\")(.+)(\"/)");
+			Matcher m = p.matcher(szXmlText);
+			if (m.find()) {
+				MessageInd ind = new MessageInd(MessageInd.Result.SUCCESS);
+				ind.uid = nFromUserID;
+				String group = m.group();
+				ind.content = group.substring(6, group.length() - 2);
+				notifyListener(KEY_MESSAGE_LISTENER, 0, 0, ind);
+			} else {
+				V2Log.e("====no match");
+			}
+ 			 
+
+		}
+		
 	}
 
 	class MixerRequestCB implements VideoMixerRequestCallback {

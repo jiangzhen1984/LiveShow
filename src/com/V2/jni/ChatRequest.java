@@ -36,6 +36,9 @@ public class ChatRequest {
 	 */
 	public void setChatRequestCallback(ChatRequestCallback callback) {
 		this.callback = callback;
+		if (callback == null) {
+			return;
+		}
 		for (ChatText ct : ctL) {
 			this.callback.OnRecvChatTextCallback(ct.eGroupType, ct.nGroupID, ct.nToUserID, ct.nFromUserID, ct.nTime,
 					ct.szSeqID, ct.szXmlText);

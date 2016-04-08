@@ -18,6 +18,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 
+import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -59,6 +60,7 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
+import com.v2tech.vo.VMessageTextItem;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainPresenter extends BasePresenter implements
@@ -77,6 +79,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int CANCEL_WATCHING_REQUEST_CALLBACK = 10;
 	private static final int ATTEND_LISTENER = 11;
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
+	private static final int MESSAGE_LISTENER = 13;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -184,6 +187,10 @@ public class MainPresenter extends BasePresenter implements
 		public void showLiverPersonelUI();
 		
 		public void showDebugMsg(String msg);
+		
+		public void setCurrentLive(Live l);
+		
+		public void queuedMessage(String msg);
 	}
 	
 	
@@ -499,7 +506,7 @@ public class MainPresenter extends BasePresenter implements
 			//TODO check window count
 			
 			//quit from old
-			Conference  currentConf = new Conference(15343434L);
+			Conference  currentConf = new Conference(this.currentLive.getLid());
 			vs.requestExitConference(currentConf, null);
 		}
 		
@@ -508,6 +515,8 @@ public class MainPresenter extends BasePresenter implements
 		Conference  newConf = new Conference(l.getLid());
 		vs.requestEnterConference(newConf, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
 		currentLive = l;
+		ui.showDebugMsg(currentLive.getLid()+"");
+		ui.setCurrentLive(l);
 		return true;
 	}
 	
@@ -669,7 +678,11 @@ public class MainPresenter extends BasePresenter implements
 		if (currentLive != null) {
 			Conference conf = new Conference(currentLive.getLid());
 			vs.requestExitConference(conf, null);
+			currentLive  = null;
 		}
+		
+		
+		this.videoScreenState &= ~WATCHING_FLAG;
 		
 		//TODO update show new live
 		Live l = (Live)videoFrag.getTag1();
@@ -677,6 +690,7 @@ public class MainPresenter extends BasePresenter implements
 			//TODO request new one
 			
 			//TODO update tag;
+			
 		} else {
 			//join new one
 			Conference  newConf = new Conference(l.getLid());
@@ -694,11 +708,11 @@ public class MainPresenter extends BasePresenter implements
 
 
 	private void doInitInBack() {
-		V2Log.i("===> " + Process.myPid()+"  ===> doInitInBack");
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
 		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
+		vs.registerMessageListener(h, MESSAGE_LISTENER, null);
 		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -772,8 +786,11 @@ public class MainPresenter extends BasePresenter implements
 			ui.showError(1);
 			return;
 		}
-		VMessage vmsg = new VMessage(1, currentLive.getLid(), GlobalHolder.getInstance().getCurrentUser(), new Date(System.currentTimeMillis()));
+		//4 for group type
+		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder.getInstance().getCurrentUser(), new Date(System.currentTimeMillis()));
+		new VMessageTextItem(vmsg, text);
 		vs.sendMessage(vmsg);
+		ui.queuedMessage(text);
 	}
 	
 	
@@ -807,6 +824,7 @@ public class MainPresenter extends BasePresenter implements
 	boolean pending = true;
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			videoScreenState |= WATCHING_FLAG;
 			RequestEnterConfResponse rer = (RequestEnterConfResponse)resp;
 			if (this.currentLive.getPublisher() == null) {
 				this.currentLive.setPublisher(new User(rer.getConf().getCreator()));
@@ -852,6 +870,11 @@ public class MainPresenter extends BasePresenter implements
 	}
 	
 	
+	private void handleNewMessage(MessageInd mi) {
+		ui.queuedMessage(mi.content);
+	}
+	
+	
 	class LocalHandler  extends Handler {
 		
 
@@ -891,6 +914,9 @@ public class MainPresenter extends BasePresenter implements
 				break;
 			case ATTEND_LISTENER:
 				handleAttendDevice((AsyncResult)msg.obj);
+				break;
+			case MESSAGE_LISTENER:
+				handleNewMessage((MessageInd)(((AsyncResult)msg.obj).getResult()));
 				break;
 			}
 		}

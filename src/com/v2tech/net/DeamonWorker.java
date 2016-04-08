@@ -1,6 +1,5 @@
 package com.v2tech.net;
 
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,10 +14,14 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import android.util.Log;
 
@@ -29,9 +32,9 @@ import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
 
+public class DeamonWorker implements Runnable, NetConnector,
+		TimeoutNotificator.TimeoutHandler {
 
-public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.TimeoutHandler {
-	
 	NioEventLoopGroup group;
 	Bootstrap strap;
 	private WorkerState st;
@@ -43,14 +46,14 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 	private Object csLock;
 	private int port;
 	private String host;
-	
+
 	private Transformer<Packet, String> packetTransform;
-	
+
 	private Queue<LocalBind> pending;
 	private Queue<LocalBind> waiting;
-	
+
 	private static DeamonWorker instance;
-	
+
 	private DeamonWorker() {
 		stLock = new Object();
 		trLock = new Object();
@@ -64,16 +67,13 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 		tiemoutWatchDog = new TimeoutNotificator(this, waiting);
 	}
 
-	
 	public static synchronized DeamonWorker getInstance() {
 		if (instance == null) {
 			instance = new DeamonWorker();
 		}
 		return instance;
 	}
-	
-	
-	
+
 	@Override
 	public void run() {
 		updateWorkerState(WorkerState.RUNNING);
@@ -86,32 +86,32 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 				updateWorkerState(WorkerState.STOPPED);
 				return;
 			}
-			
-			while(st == WorkerState.RUNNING) {
-				
+
+			while (st == WorkerState.RUNNING) {
+
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
-					String  data = packetTransform.serialize(lb.req);
+					String data = packetTransform.serialize(lb.req);
 					Log.e("DeamonWorker", "==>" + data);
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
-					synchronized(lb) {
-						//FIXME if lb timeout
+					synchronized (lb) {
+						// FIXME if lb timeout
 						lb.sendflag = true;
 						lb.sendtime = System.currentTimeMillis();
 					}
 					waiting.offer(lb);
 				}
-				
-				synchronized(trLock) {
+
+				synchronized (trLock) {
 					trLock.wait();
 				}
 			}
-			
+
 		} catch (Exception e) {
-			//FIXME add recovery policy
+			// FIXME add recovery policy
 			V2Log.e(e.getMessage());
-			Log.e("DeamonWorker"," error :",e);
+			Log.e("DeamonWorker", " error :", e);
 			e.printStackTrace();
 			if (ch != null && !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
@@ -142,16 +142,17 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 		if (did) {
 			return cs == ConnectionState.CONNECTED;
 		}
-		
+
 		if (st == WorkerState.RUNNING || (deamon != null && deamon.isAlive())) {
-			throw new RuntimeException("Current worker is still running, please stop first");
+			throw new RuntimeException(
+					"Current worker is still running, please stop first");
 		}
-		
+
 		this.port = port;
 		this.host = host;
-		
+
 		startWorker();
-		
+
 		tiemoutWatchDog.requestStart();
 		return cs == ConnectionState.CONNECTED;
 	}
@@ -172,15 +173,15 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 			return rp;
 		}
 		notifyWorker();
-		synchronized(ll) {
+		synchronized (ll) {
 			try {
-				Log.e("ReaderChannel", ll+"  to wait");
+				Log.e("ReaderChannel", ll + "  to wait");
 				ll.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		return (ResponsePacket)ll.resp;
+		return (ResponsePacket) ll.resp;
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 				ResponsePacket rp = new ResponsePacket();
 				rp.getHeader().setError(true);
 				rp.setRequestId(packet.getId());
-				packet.getListener() .onResponse(rp);
+				packet.getListener().onResponse(rp);
 			}
 		}
 		notifyWorker();
@@ -204,24 +205,16 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 		updateWorkerState(WorkerState.REQUEST_STOP);
 		tiemoutWatchDog.requestStop();
 	}
-	
+
 	@Override
 	public boolean isConnected() {
 		return cs == ConnectionState.CONNECTED;
 	}
-	
-	
+
 	@Override
 	public void setPacketTransformer(Transformer<Packet, String> transformer) {
 		this.packetTransform = transformer;
 	}
-	
-	
-	
-	
-
-
-	
 
 	@Override
 	public void onTimeout(LocalBind bind) {
@@ -233,33 +226,33 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 		rp.setErrorFlag(true);
 		bind.resp = rp;
 		if (bind.sync) {
-			synchronized(bind) {
+			synchronized (bind) {
 				bind.notify();
 			}
 		} else {
 			if (!(bind.req instanceof PacketProxy)) {
 				V2Log.e("==================");
 			} else {
-				((PacketProxy)bind.req).getListener().onTimeout(rp);
+				((PacketProxy) bind.req).getListener().onTimeout(rp);
 			}
 		}
 	}
 
-
 	private void startWorker() {
-	
+
 		if (cs == ConnectionState.IDLE) {
 			strap.group(group).channel(NioSocketChannel.class)
 					.handler(new LocalChannel());
 
 		}
-		
+
 		updateWorkerState(WorkerState.INITIALIZED);
 		deamon = new Thread(this);
 		deamon.setName("DeamonWorker");
 		deamon.start();
 		int count = 0;
-		while (!deamon.isAlive() && (cs != ConnectionState.CONNECTED) && count++ < 10) {
+		while (!deamon.isAlive() && (cs != ConnectionState.CONNECTED)
+				&& count++ < 10) {
 			try {
 				wait(50);
 			} catch (InterruptedException e) {
@@ -267,28 +260,26 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 			}
 		}
 	}
-	
-	
+
 	private void updateWorkerState(WorkerState ws) {
 		synchronized (stLock) {
 			st = ws;
 		}
 	}
-	
+
 	private void updateConnectionState(ConnectionState ws) {
 		synchronized (csLock) {
 			cs = ws;
 		}
 	}
-	
+
 	private void notifyWorker() {
 
-		synchronized(trLock) {
+		synchronized (trLock) {
 			trLock.notifyAll();
 		}
 	}
-	
-	
+
 	private LocalBind findRequestBind(ResponsePacket packet) {
 		LocalBind lb = null;
 		Iterator<LocalBind> it = waiting.iterator();
@@ -301,68 +292,57 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 		}
 		return lb;
 	}
-	
-	
+
 	private void handleResponseBind(LocalBind req, Packet resp) {
-		V2Log.i("["+req.reqId+"]===> message statist queue cost : " +(req.sendtime - req.sendtime)+"   server cost:" +(req.respontime - req.sendtime));
+		V2Log.i("[" + req.reqId + "]===> message statist queue cost : "
+				+ (req.sendtime - req.sendtime) + "   server cost:"
+				+ (req.respontime - req.sendtime));
 		req.resp = resp;
 		if (req.sync) {
-			synchronized(req) {
-				Log.e("ReaderChannel", req+"  to notify");
+			synchronized (req) {
+				Log.e("ReaderChannel", req + "  to notify");
 				req.notify();
 			}
-		} else if (((PacketProxy)req.req).getListener()  != null) {
-			((PacketProxy)req.req).getListener().onResponse((ResponsePacket)req.resp);
+		} else if (((PacketProxy) req.req).getListener() != null) {
+			((PacketProxy) req.req).getListener().onResponse(
+					(ResponsePacket) req.resp);
 		}
 	}
-	
+
 	enum WorkerState {
-		NONE,
-		INITIALIZED,
-		RUNNING,
-		REQUEST_STOP,
-		STOPPED;
+		NONE, INITIALIZED, RUNNING, REQUEST_STOP, STOPPED;
 	}
-	
-	
+
 	enum ConnectionState {
-		IDLE,
-		CONNECTING,
-		CONNECTED,
-		DISCONNECTED,
-		ERROR,
-		
+		IDLE, CONNECTING, CONNECTED, DISCONNECTED, ERROR,
+
 	}
-	
 
 	class LocalChannel extends ChannelInitializer<SocketChannel> {
-		private  final StringDecoder DECODER = new StringDecoder();
-	    private  final StringEncoder ENCODER = new StringEncoder();
-	    
-	
-	
+		private final StringDecoder DECODER = new StringDecoder();
+		private final StringEncoder ENCODER = new StringEncoder();
+
 		public LocalChannel() {
 		}
-	
+
 		@Override
 		public void initChannel(SocketChannel ch) {
 			ChannelPipeline pipeline = ch.pipeline();
-	
-	
-	        // Add the text line codec combination first,
-	        pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-	        pipeline.addLast(DECODER);
-	        pipeline.addLast(ENCODER);
-	       // pipeline.addLast("ping", new IdleStateHandler(0, WRITE_WAIT_SECONDS, 0,TimeUnit.SECONDS));
-	        // and then business logic.
-	        pipeline.addLast(new ReaderChannel());
-	
+
+			// Add the text line codec combination first,
+			pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters
+					.lineDelimiter()));
+			pipeline.addLast(DECODER);
+			pipeline.addLast(ENCODER);
+			pipeline.addLast("ping", new IdleStateHandler(0, 10, 0,
+					TimeUnit.SECONDS));
+			// and then business logic.
+			pipeline.addLast(new ReaderChannel());
+
 		}
 
 	}
-	
-	
-	
+
 	class ReaderChannel extends SimpleChannelInboundHandler<String> {
 
 		@Override
@@ -375,14 +355,15 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
-				LocalBind lb = findRequestBind((ResponsePacket)p);
+				LocalBind lb = findRequestBind((ResponsePacket) p);
 				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
 					lb.respontime = System.currentTimeMillis();
 					handleResponseBind(lb, p);
 				} else {
 					if (p instanceof IndicationPacket) {
-						((PacketProxy)p).getListener().onNodification((IndicationPacket)p);
+						((PacketProxy) p).getListener().onNodification(
+								(IndicationPacket) p);
 					}
 				}
 			}
@@ -393,9 +374,18 @@ public class DeamonWorker implements Runnable, NetConnector, TimeoutNotificator.
 			Log.e("ReaderChannel", "Exception:" + cause);
 			cause.printStackTrace();
 			ctx.close();
-			//TODO notify restart
+			// TODO notify restart
 		}
-		
+
+		@Override
+		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+				throws Exception {
+			V2Log.e("====>EVENT==>" + evt.getClass());
+			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
+				ChannelFuture cf = ctx.channel().writeAndFlush("\r\n");
+				cf.sync();
+			}
+		}
 	}
-	
+
 }

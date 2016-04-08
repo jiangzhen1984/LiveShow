@@ -3,7 +3,7 @@ package com.v2tech.vo;
 import java.io.Serializable;
 import java.util.Set;
 
-public class Live implements Serializable{
+public class Live implements Serializable, Comparable<Live>{
 
 	
 	/**
@@ -155,6 +155,7 @@ public class Live implements Serializable{
 
 
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -176,6 +177,15 @@ public class Live implements Serializable{
 		if (lid != other.lid)
 			return false;
 		return true;
+	}
+	
+	
+	
+
+
+	@Override
+	public int compareTo(Live another) {
+		return 0;
 	}
 
 
