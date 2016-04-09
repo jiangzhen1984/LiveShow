@@ -269,11 +269,17 @@ public class MainPresenter extends BasePresenter implements
 	}
 	
 	public void recommendationButtonClicked() {
-		
+		//TODO update ui
+		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
+			ls.recommend(currentLive, !currentLive.isRend());
+		} else {
+			
+		}
 	}
 	
 	public void followButtonClicked() {
 		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
+			//TODO update ui
 			if (currentLive.isFollow()) {
 				ls.cancelfollow(currentLive);
 			} else {
@@ -506,8 +512,7 @@ public class MainPresenter extends BasePresenter implements
 			//TODO check window count
 			
 			//quit from old
-			Conference  currentConf = new Conference(this.currentLive.getLid());
-			vs.requestExitConference(currentConf, null);
+			vs.requestExitConference(currentLive, null);
 		}
 		
 		//join new one
@@ -648,6 +653,16 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onFavButtonClicked() {
 		// TODO Auto-generated method stub
+		if (currentLive == null) {
+			return;
+		}
+		
+		if (currentLive.isFollow()) {
+			ls.cancelfollow(currentLive);
+		} else {
+			ls.follow(currentLive);
+		}
+		
 		
 	}
 
@@ -676,8 +691,7 @@ public class MainPresenter extends BasePresenter implements
 	public void onChanged(VideoShowFragment videoFrag) {
 		// TODO Auto-generated method stub
 		if (currentLive != null) {
-			Conference conf = new Conference(currentLive.getLid());
-			vs.requestExitConference(conf, null);
+			vs.requestExitConference(currentLive, null);
 			currentLive  = null;
 		}
 		
@@ -774,9 +788,7 @@ public class MainPresenter extends BasePresenter implements
 //			lid = ~lid;
 //		}
 		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 0, currentLocation.ll.latitude, currentLocation.ll.longitude);
-		Conference conf = new Conference(0);
-		conf.setName("test");
-		vs.createConference(conf, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
+		vs.createConference(currentLive, new MessageListener(h, CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
 	
 	
@@ -806,10 +818,12 @@ public class MainPresenter extends BasePresenter implements
 		List<String[]> list = p.getPacket().getVideos();
 		for(String[] d : list) {
 			long uid = Long.parseLong(d[1]);
-			long vid = Long.parseLong(d[0]);
+			long vid = Long.parseLong(d[5]);
+			long nid = Long.parseLong(d[0]);
 			double lng = Double.parseDouble(d[2]);
 			double lat = Double.parseDouble(d[3]);
 			Live live = new Live(new User(uid), vid, lat, lng);
+			live.setNid(nid);
 			this.lives.append(vid, live);
 			
 			Bundle bundle = new Bundle();

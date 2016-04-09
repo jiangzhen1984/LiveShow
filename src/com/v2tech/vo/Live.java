@@ -3,6 +3,9 @@ package com.v2tech.vo;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.V2.jni.util.EscapedcharactersProcessing;
+import com.v2tech.service.GlobalHolder;
+
 public class Live implements Serializable, Comparable<Live>{
 
 	
@@ -26,6 +29,12 @@ public class Live implements Serializable, Comparable<Live>{
 	private boolean canRemove;
 	
 	private boolean isFollow;
+	
+	private boolean rend;
+	
+	
+	
+	private long nid;
 	
 	
 	public Live(User publisher, long lid, double lat, double lng) {
@@ -156,6 +165,16 @@ public class Live implements Serializable, Comparable<Live>{
 
 
 
+	public long getNid() {
+		return nid;
+	}
+
+
+	public void setNid(long nid) {
+		this.nid = nid;
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -196,6 +215,54 @@ public class Live implements Serializable, Comparable<Live>{
 	}
 	
 	
+	
+	
+	public boolean isRend() {
+		return rend;
+	}
+
+
+	public void setRend(boolean rend) {
+		this.rend = rend;
+	}
+
+
+	/**
+	 * <conf canaudio="1" candataop="1" canvideo="1" conftype="0" haskey="0" //
+	 * id="0" key="" // layout="1" lockchat="0" lockconf="0" lockfiletrans="0"
+	 * mode="2" // pollingvideo="0" // subject="ss" // chairuserid='0'
+	 * chairnickname=''> // </conf>
+	 * 
+	 * @return
+	 */
+	public String getConferenceConfigXml() {
+		User loggedUser = GlobalHolder.getInstance().getCurrentUser();
+		StringBuilder sb = new StringBuilder();
+		sb.append(
+				"<conf canaudio=\"1\" candataop=\"1\" canvideo=\"1\" conftype=\"0\" haskey=\"0\" ")
+				.append(" id=\"0\" key=\"\" layout=\"1\" lockchat=\"0\" lockconf=\"0\" lockfiletrans=\"0\" mode=\"2\" pollingvideo=\"0\" ")
+				.append(" syncdesktop=\"0\" syncdocument=\"1\" syncvideo=\"0\" ")
+				.append("subject=\"")
+				.append(EscapedcharactersProcessing.convert(System.currentTimeMillis()+""))
+				.append("\" ")
+				.append("chairuserid=\"")
+				.append(GlobalHolder.getInstance().getCurrentUserId())
+				.append("\" ")
+				.append("chairnickname=\"")
+				.append(loggedUser == null ? "" : EscapedcharactersProcessing
+						.convert(loggedUser.getName()))
+				.append("\"  starttime=\"" + System.currentTimeMillis() / 1000
+						+ "\" >").append("</conf>");
+		return sb.toString();
+
+	}
+
+	public String getInvitedAttendeesXml() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<xml>");
+		sb.append("</xml>");
+		return sb.toString();
+	}
 	
 }
 

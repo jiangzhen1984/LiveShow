@@ -62,7 +62,7 @@ public class UserService extends AbstractHandler {
 	 *            callback message Message.obj is {@link MessageListener}
 	 */
 	public void login(String mail, String passwd, MessageListener caller) {
-		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, passwd));
+		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, null, passwd, true));
 		if (!p.getHeader().isError()) {
 			LoginRespPacket lrp =(LoginRespPacket)p;
 			User loginUser = new User(0);

@@ -1,7 +1,9 @@
 package com.v2tech.net.lv;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +14,7 @@ import org.w3c.dom.NodeList;
 import com.V2.jni.util.XmlAttributeExtractor;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
+import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
 
 public class PacketTransformer implements Transformer<Packet, String> {
@@ -32,9 +35,13 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			return serializeLocationReportRequest((LocationReportReqPacket)f);
 		} else if (f instanceof LivePublishReqPacket) {
 			return serializeLivePublishRequest((LivePublishReqPacket)f);
-		}else if (f instanceof LogoutReqPacket) {
+		} else if (f instanceof LogoutReqPacket) {
 			return serializeLogoutRequest((LogoutReqPacket)f);
-		} else if (f instanceof PacketProxy) {
+		} else if (f instanceof FansQueryReqPacket) {
+			return serializeFansQueryRequest((FansQueryReqPacket)f);
+		} else if (f instanceof LiveRecommendReqPacket) {
+			return serializeLiveRecommendRequest((LiveRecommendReqPacket)f);
+		}  else if (f instanceof PacketProxy) {
 			return serialize(((PacketProxy)f).getPacket());
 		} else {
 			throw new RuntimeException("packet is not support : "+ f);
@@ -52,20 +59,27 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			if ("login".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
 			} else if ("logout".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraCommonResponse(t);
 			} else if ("queryVideoList".equalsIgnoreCase(type)) {
 				return extraLiveQueryResponse(t);
 			} else if ("publicVideo".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraCommonResponse(t);
 			} else if ("followUser".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraCommonResponse(t);
 			} else if ("getSMScode".equalsIgnoreCase(type)) {
 				return extraGetSMSResponse(t);
 			} else if ("watchVideo".equalsIgnoreCase(type)) {
-				return extraLoginResponse(t);
+				return extraCommonResponse(t);
 			} else if ("mapPosition".equalsIgnoreCase(type)) {
 				return extraLoginResponse(t);
+			} else if ("getFollowMe".equalsIgnoreCase(type)) {
+				return extraCommonResponse(t);
+			} else if ("likeVideo".equalsIgnoreCase(type)) {
+				return extraCommonResponse(t);
+			} else if ("getFollowMe".equalsIgnoreCase(type)) {
+				return extraFansQueryResponse(t);
 			}
+			
 		}
 		
 		return null;
@@ -91,11 +105,16 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		
 		if (p.isAs()) {
 			appendTagText(buffer, "username", "");
+			appendTagText(buffer, "smscode", "");
 			appendTagText(buffer, "password", "");
 			appendTagText(buffer, "deviceID", p.deviceId);
 		} else {
 			appendTagText(buffer, "username", p.username);
-			appendTagText(buffer, "password", p.pwd);
+			if (p.isUsesms()) {
+				appendTagText(buffer, "smscode", p.smscode);
+			} else {
+				appendTagText(buffer, "password", p.pwd);
+			}
 			appendTagText(buffer, "deviceID", "");
 		}
 		appendTagEnd(buffer, "iq");
@@ -225,6 +244,33 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		return buffer.toString();
 	}
 	
+	private String serializeFansQueryRequest(FansQueryReqPacket p) {
+		StringBuffer buffer = new StringBuffer();
+		appendStart(buffer, p.getId()+"", "", "");
+		
+		appendTagStart(buffer, "query", false);
+		appendAttrText(buffer, "xmlns", "getFollowMe");
+		appendTagStartEnd(buffer, true);
+		
+		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
+		return buffer.toString();
+	}
+	
+	private String serializeLiveRecommendRequest(LiveRecommendReqPacket p) {
+		StringBuffer buffer = new StringBuffer();
+		appendStart(buffer, p.getId()+"", "", "");
+		
+		appendTagStart(buffer, "query", false);
+		appendAttrText(buffer, "xmlns", "likeVideo");
+		appendTagStartEnd(buffer, true);
+		
+		appendTagText(buffer, "videoId", p.nvid+"");
+		
+		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
+		return buffer.toString();
+	}
 	
 	private String serializeLivePublishRequest(LivePublishReqPacket p) {
 		StringBuffer buffer = new StringBuffer();
@@ -272,11 +318,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private Packet extraLiveQueryResponse(String str) {
 		
-		str +="<video id='1514600988896' userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>" +
-"<video id='1514600988896' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>" +
-"<video id='1514600826995' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>" +
-"<video id='1514600988896' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>" +
-"<video id='1514600826995' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
+		str +="<video id ='1' videoNum='1514600988896'  userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>" +
+"<video  id ='5' videoNum='1514600988896' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>" +
+"<video id ='2'  videoNum='1514600826995' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>" +
+"<video id ='3' videoNum='1514600988896' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>" +
+"<video  id ='4' videoNum='1514600826995' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
 		String root ="<test>" + str +"</test>";
 		LiveQueryRespPacket lrp = new LiveQueryRespPacket();
 		lrp.setErrorFlag(!extraResult(str));
@@ -295,12 +341,13 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		List<String[]> list = new ArrayList<String[]>(c);
 		for (int i = 0; i < c; i++) {
 			ve = (Element)nl.item(i);
-			String[] data = new String[5];
+			String[] data = new String[6];
 			data[0] = ve.getAttribute("id");
 			data[1] = ve.getAttribute("userId");
 			data[2] = ve.getAttribute("longitude");
 			data[3] = ve.getAttribute("latitude");
 			data[4] = ve.getAttribute("sum");
+			data[5] = ve.getAttribute("videoNum");
 			list.add(data);
 		}
 		lrp.count = c;
@@ -308,6 +355,47 @@ public class PacketTransformer implements Transformer<Packet, String> {
 
 		return lrp;
 	}
+	
+	
+	private Packet extraFansQueryResponse(String str) {
+		FansQueryRespPacket lrp = new FansQueryRespPacket();
+		lrp.setRequestId(extraRequestId(str));
+		lrp.setErrorFlag(!extraResult(str));
+		
+		Document doc = XmlAttributeExtractor.buildDocument(str);
+		if (doc == null) {
+			lrp.setErrorFlag(true);
+			return lrp;
+		}
+		
+		
+		NodeList nl = doc.getElementsByTagName("user");
+		Element ve;
+		int c = nl.getLength();
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>(c);
+		for (int i = 0; i < c; i++) {
+			Map<String,String> map = new HashMap<String,String>();
+			ve = (Element)nl.item(i);
+			map.put("id", ve.getAttribute("id"));
+			map.put("phone", ve.getAttribute("phone"));
+			map.put("headurl", ve.getAttribute("headurl"));
+			map.put("signText", ve.getAttribute("signText"));
+			list.add(map);
+		}
+		lrp.fansList = list;
+		
+		return lrp;
+	}
+	
+	
+	
+	private Packet extraCommonResponse(String str) {
+		ResponsePacket lrp = new ResponsePacket();
+		lrp.setRequestId(extraRequestId(str));
+		lrp.setErrorFlag(!extraResult(str));
+		return lrp;
+	}
+	
 	
 	
 	

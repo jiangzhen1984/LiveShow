@@ -28,7 +28,6 @@ import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.service.jni.JNIIndication;
 import com.v2tech.service.jni.JNIResponse;
-import com.v2tech.service.jni.JNIResponse.Result;
 import com.v2tech.service.jni.PermissionUpdateIndication;
 import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestEnterConfResponse;
@@ -41,6 +40,7 @@ import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.ConferencePermission;
 import com.v2tech.vo.Group;
 import com.v2tech.vo.Group.GroupType;
+import com.v2tech.vo.Live;
 import com.v2tech.vo.MixVideo;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
@@ -144,15 +144,15 @@ public class ConferenceService extends DeviceService {
 	 * this time.<br>
 	 * User will receive this conference when log in next time.
 	 * 
-	 * @param conf
-	 *            {@link Conference} object which user wants to enter
+	 * @param l
+	 *             {@link Live}  object which user wants to enter
 	 * @param msg
 	 *            if input is null, ignore response Message. Response Message
 	 *            object is
 	 *            {@link com.v2tech.service.jni.RequestExitedConfResponse}
 	 */
-	public void requestExitConference(Conference conf, MessageListener caller) {
-		if (conf == null) {
+	public void requestExitConference(Live l, MessageListener caller) {
+		if (l == null) {
 			if (caller != null && caller.getHandler() != null) {
 				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
 						RequestConfCreateResponse.Result.INCORRECT_PAR);
@@ -161,13 +161,13 @@ public class ConferenceService extends DeviceService {
 			return;
 		}
 		DeamonWorker.getInstance().request(
-				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId,conf.getId(),
+				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
 						LiveWatchingReqPacket.CANCEL), null));
 		
 		initTimeoutMessage(JNI_REQUEST_EXIT_CONF, DEFAULT_TIME_OUT_SECS, caller);
-		ConfRequest.getInstance().ConfExit(conf.getId());
+		ConfRequest.getInstance().ConfExit(l.getLid());
 		// send response to caller because exitConf no call back from JNI
-		JNIResponse jniRes = new RequestExitedConfResponse(conf.getId(),
+		JNIResponse jniRes = new RequestExitedConfResponse(l.getLid(),
 				System.currentTimeMillis() / 1000, JNIResponse.Result.SUCCESS);
 		Message res = Message.obtain(this, JNI_REQUEST_EXIT_CONF, jniRes);
 		// send delayed message for that make sure send response after JNI
@@ -180,15 +180,15 @@ public class ConferenceService extends DeviceService {
 	 * <ul>
 	 * </ul>
 	 * 
-	 * @param conf
-	 *            {@link Conference} object.
+	 * @param live
+	 *            {@link Live} object.
 	 * @param caller
 	 *            if input is null, ignore response Message. Response Message
 	 *            object is
 	 *            {@link com.v2tech.service.jni.RequestConfCreateResponse}
 	 */
-	public void createConference(Conference conf, MessageListener caller) {
-		if (conf == null) {
+	public void createConference(Live l, MessageListener caller) {
+		if (l == null) {
 			if (caller != null && caller.getHandler() != null) {
 				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
 						RequestConfCreateResponse.Result.FAILED);
@@ -200,7 +200,7 @@ public class ConferenceService extends DeviceService {
 				DEFAULT_TIME_OUT_SECS, caller);
 		GroupRequest.getInstance().GroupCreate(
 				Group.GroupType.CONFERENCE.intValue(),
-				conf.getConferenceConfigXml(), conf.getInvitedAttendeesXml());
+				l.getConferenceConfigXml(), l.getInvitedAttendeesXml());
 	}
 
 	/**

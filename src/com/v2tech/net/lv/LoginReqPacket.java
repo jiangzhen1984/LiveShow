@@ -12,6 +12,10 @@ public class LoginReqPacket extends RequestPacket {
 	String username;
 	
 	String pwd;
+	
+	String smscode;
+	
+	boolean usesms;
 
 	public LoginReqPacket(boolean as, String deviceId) {
 		super();
@@ -25,6 +29,18 @@ public class LoginReqPacket extends RequestPacket {
 		this.username = username;
 		this.pwd = pwd;
 	}
+	
+	
+	public LoginReqPacket(boolean as, String username, String pwd, String sms, boolean usesms) {
+		super();
+		this.as = as;
+		this.username = username;
+		this.pwd = pwd;
+		this.smscode = sms;
+		this.usesms = usesms;
+	}
+	
+	
 
 	public boolean isAs() {
 		return as;
@@ -57,6 +73,23 @@ public class LoginReqPacket extends RequestPacket {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
+
+	public String getSmscode() {
+		return smscode;
+	}
+
+	public void setSmscode(String smscode) {
+		this.smscode = smscode;
+	}
+
+	public boolean isUsesms() {
+		return usesms;
+	}
+
+	public void setUsesms(boolean usesms) {
+		this.usesms = usesms;
+	}
+	
 	
 	
 }

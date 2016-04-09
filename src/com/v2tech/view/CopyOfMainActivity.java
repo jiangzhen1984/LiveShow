@@ -1246,7 +1246,7 @@ public class CopyOfMainActivity extends FragmentActivity implements
 //				this.sendMessageDelayed(m, 300);
 				//liveService.requestPublish(new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
 				currentLive = new Conference(0, GlobalHolder.getInstance().getCurrentUserId());
-				confService.createConference(currentLive, new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
+				//confService.createConference(currentLive, new MessageListener(this, REQUEST_PUBLISH_CALLBACK, null));
 				break;
 			case REQUEST_PUBLISH_CALLBACK:
 				handleRequestPublishCallback(msg);

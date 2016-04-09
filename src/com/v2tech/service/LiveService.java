@@ -29,6 +29,7 @@ import com.v2tech.net.lv.FollowReqPacket;
 import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LiveQueryReqPacket;
 import com.v2tech.net.lv.LiveQueryRespPacket;
+import com.v2tech.net.lv.LiveRecommendReqPacket;
 import com.v2tech.net.lv.LocationReportReqPacket;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.PacketProxy;
@@ -171,6 +172,14 @@ public class LiveService extends AbstractHandler {
 		DeamonWorker.getInstance().request(new FollowReqPacket(l.getPublisher().getmUserId(), false));
 	}
 	
+	
+	public void recommend(Live l, boolean rend) {
+		if (l == null) {
+			return;
+		}
+		l.setRend(rend);
+		DeamonWorker.getInstance().request(new LiveRecommendReqPacket(l.getNid(), rend));
+	}
 	
 	public void sendComments(long userId, String msg) {
 		V2Log.e(userId+":"+msg);

@@ -8,7 +8,7 @@ public class LiveQueryRespPacket extends ResponsePacket {
 	
 	int count;
 	/**
-	 * 0 : id='' 1: userId='' 2:longitude='' 3:latitude='' 4:sum=''
+	 * 0 : id='' 1: userId='' 2:longitude='' 3:latitude='' 4:sum=''  5:videoNum=''
 	 */
 	List<String[]> videos;
 	
