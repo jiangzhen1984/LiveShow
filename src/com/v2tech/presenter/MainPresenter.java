@@ -808,8 +808,9 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void handSearchLiveCallback(SearchLiveResponse p) {
-		if (p == null || p.getPacket() == null) {
+		if (p == null || p.getPacket() == null ) {
 			V2Log.e("===> get search callback ===> No packet");
+			return;
 		}
 		V2Log.i("===> get search callback ===>" + p.getPacket().getVideos());
 		BitmapDescriptor online = BitmapDescriptorFactory
@@ -817,6 +818,10 @@ public class MainPresenter extends BasePresenter implements
 		
 		List<String[]> list = p.getPacket().getVideos();
 		for(String[] d : list) {
+			if (TextUtils.isEmpty(d[1]) || TextUtils.isEmpty(d[5]) || TextUtils.isEmpty(d[0])) {
+				V2Log.e("===data formation incorrect ");
+				continue;
+			}
 			long uid = Long.parseLong(d[1]);
 			long vid = Long.parseLong(d[5]);
 			long nid = Long.parseLong(d[0]);

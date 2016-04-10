@@ -64,6 +64,7 @@ public class UserService extends AbstractHandler {
 	public void login(String mail, String passwd, MessageListener caller) {
 		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, null, passwd, true));
 		if (!p.getHeader().isError()) {
+			V2Log.e(p.getClass().getName()+"   "+p);
 			LoginRespPacket lrp =(LoginRespPacket)p;
 			User loginUser = new User(0);
 			loginUser.nId = lrp.uid;
@@ -119,6 +120,9 @@ public class UserService extends AbstractHandler {
 	public void logout( MessageListener caller) {
 		DeamonWorker.getInstance().requestAsync(new PacketProxy(new LogoutReqPacket(), null));
 		ImRequest.getInstance().ImLogout();
+		if (caller != null && caller.getHandler() != null) {
+			Message.obtain(caller.getHandler(), caller.getWhat(), new AsyncResult(caller.getObject(), null)).sendToTarget();
+		}
 	}
 	
 

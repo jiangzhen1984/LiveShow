@@ -91,7 +91,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
 					String data = packetTransform.serialize(lb.req);
-					Log.e("DeamonWorker", "==>" + data);
+					Log.e("DeamonWorker", "write==>" + data);
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized (lb) {
@@ -174,8 +174,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 		notifyWorker();
 		synchronized (ll) {
 			try {
-				Log.e("ReaderChannel", ll + "  to wait");
+				Log.e("ReaderChannel", Thread.currentThread()+"==>" +ll + "  to wait");
 				ll.wait();
+				Log.e("ReaderChannel", Thread.currentThread()+"==>" +ll + "  restore ");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -232,7 +233,10 @@ public class DeamonWorker implements Runnable, NetConnector,
 			if (!(bind.req instanceof PacketProxy)) {
 				V2Log.e("==================");
 			} else {
-				((PacketProxy) bind.req).getListener().onTimeout(rp);
+				PacketProxy pp = (PacketProxy) bind.req;
+				if (pp != null && pp.getListener() != null) {
+					pp.getListener().onTimeout(rp);
+				}
 			}
 		}
 	}
@@ -287,6 +291,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 			if (lb.reqId == packet.getRequestId()) {
 				it.remove();
 				waiting.remove(lb);
+				break;
 			}
 		}
 		return lb;
@@ -347,13 +352,17 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg)
 				throws Exception {
-			Log.e("ReaderChannel", msg);
+			if (msg == null || msg.isEmpty()) {
+				return;
+			}
+			Log.i("ReaderChannel", "Read====>" + msg);
 			if (packetTransform != null) {
 				Packet p = packetTransform.unserializeFromStr(msg);
 				if (p == null) {
 					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
+				Log.i("ReaderChannel", "transform====>packet" + p);
 				LocalBind lb = findRequestBind((ResponsePacket) p);
 				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
@@ -379,7 +388,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
-			V2Log.e("====>EVENT==>" + evt.getClass());
+			V2Log.d("====>EVENT==>" + evt.getClass());
 			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 				ChannelFuture cf = ctx.channel().writeAndFlush("\r\n");
 				cf.sync();

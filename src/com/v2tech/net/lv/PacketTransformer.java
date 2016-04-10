@@ -328,7 +328,6 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		lrp.setErrorFlag(!extraResult(str));
 		
 		lrp.setRequestId(extraRequestId(str));
-		lrp.setErrorFlag(false);
 		Document doc = XmlAttributeExtractor.buildDocument(root);
 		if (doc == null) {
 			lrp.setErrorFlag(true);

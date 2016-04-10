@@ -12,6 +12,11 @@ public class ResponsePacket extends Packet {
 	public void setRequestId(long requestId) {
 		this.requestId = requestId;
 	}
+
+	@Override
+	public String toString() {
+		return "ResponsePacket [requestId=" + requestId + "]";
+	}
 	
 	
 }

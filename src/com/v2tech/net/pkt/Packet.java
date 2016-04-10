@@ -67,6 +67,12 @@ public abstract class Packet implements Comparable<Packet> {
 		return true;
 	}
 
+
+	@Override
+	public String toString() {
+		return "Packet [id=" + id + ", prioirty=" + prioirty + "]";
+	}
+
 	
 	
 	

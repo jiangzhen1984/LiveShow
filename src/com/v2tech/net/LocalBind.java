@@ -38,5 +38,15 @@ class LocalBind implements Comparable<LocalBind> {
 	public int compareTo(LocalBind another) {
 		return this.req.compareTo(another.req);
 	}
+
+
+
+
+	@Override
+	public String toString() {
+		return "LocalBind [reqId=" + reqId + ", req=" + req + ", resp=" + resp
+				+ "]";
+	}
+
 	
 }
