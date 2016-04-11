@@ -64,6 +64,18 @@
      <string name="main_search_no_element_found">没有找到相关的信息</string>
      
      <string name="empty_image_content_desc"></string>
+     
+      <string name="personal_show_avatar_text">头像</string>
+      <string name="personal_show_nick_name_text">昵称</string>
+      <string name="personal_show_gender_text">性别</string>
+      <string name="personal_region_text">地区</string>
+      <string name="personal_siganture_text">签名</string>
+      <string name="personal_name_text">姓名</string>
+      <string name="personal_code_text">二维码</string>
+      
+      <string name="personal_show_title_text">个人信息</string>
+      
+     
 </resources>
 
 

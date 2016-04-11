@@ -28,6 +28,7 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	private View mSettingBtn;
 	private View mFriendsBtn;
 	private TextView titleBarName;
+	private View mPerBtn;
 
 	private PersonelPresenter presenter;
 
@@ -42,7 +43,9 @@ public class PersonalActivity extends Activity implements OnClickListener,
 		mMyFansBtn = findViewById(R.id.personal_fans_btn);
 		mSettingBtn = findViewById(R.id.personal_setting_btn);
 		mFriendsBtn = findViewById(R.id.personal_friends_btn);
-
+		mPerBtn = findViewById(R.id.avatar_layout);
+		
+		mPerBtn.setOnClickListener(this);
 		mFriendsBtn.setOnClickListener(this);
 		mMyFollowingBtn.setOnClickListener(this);
 		mMyFansBtn.setOnClickListener(this);
@@ -59,6 +62,9 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	public void onClick(View v) {
 		int id = v.getId();
 		switch (id) {
+		case R.id.avatar_layout:
+			presenter.personelBtnClicked();
+			break;
 		case R.id.personal_follow_btn:
 			presenter.followBtnClicked();
 			break;
@@ -129,7 +135,11 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	}
 
 	
-	
+	public void showPersonelDetailUI() {
+		Intent i = new Intent();
+		i.setClass(this, PersonalShowActivity.class);
+		this.startActivity(i);
+	}
 	
 	
 }

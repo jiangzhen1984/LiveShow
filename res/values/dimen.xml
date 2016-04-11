@@ -29,5 +29,10 @@
     <dimen name="personel_item_left_icon_margin_left">5dp</dimen>
     <dimen name="personel_item_text_margin_left">15dp</dimen>
     <dimen name="personel_item_right_icon_margin_right">20dp</dimen>
+    
+    <dimen name="personel_show_avatar_margin_right">30dp</dimen>
+    <dimen name="personel_show_text_size">17sp</dimen>
+    <dimen name="personel_show_text_margin_left">15dp</dimen>
+    <dimen name="personel_show_item_layout_padding">15dp</dimen>
 
 </resources>

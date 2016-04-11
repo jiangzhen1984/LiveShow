@@ -2,20 +2,18 @@ package com.v2tech.presenter;
 
 import android.content.Context;
 
-public class PersonelPresenter extends BasePresenter {
+public class PersonelShowPresenter extends BasePresenter {
 
-	public interface PersonelPresenterUI {
+	public interface PersonelShowPresenterUI {
 		public void finishMainUI();
 		
 		public void updateTitleBar();
-		
-		public void showPersonelDetailUI();
 	}
 
 	private Context context;
-	private PersonelPresenterUI ui;
+	private PersonelShowPresenterUI ui;
 
-	public PersonelPresenter(Context context, PersonelPresenterUI ui) {
+	public PersonelShowPresenter(Context context, PersonelShowPresenterUI ui) {
 		super();
 		this.context = context;
 		this.ui = ui;
@@ -29,10 +27,6 @@ public class PersonelPresenter extends BasePresenter {
 		ui.updateTitleBar();
 	}
 
-	
-	public void personelBtnClicked() {
-		ui.showPersonelDetailUI();
-	}
 
 
 
