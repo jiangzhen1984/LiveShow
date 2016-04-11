@@ -6,6 +6,8 @@ public class PersonelPresenter extends BasePresenter {
 
 	public interface PersonelPresenterUI {
 		public void finishMainUI();
+		
+		public void updateTitleBar();
 	}
 
 	private Context context;
@@ -16,6 +18,17 @@ public class PersonelPresenter extends BasePresenter {
 		this.context = context;
 		this.ui = ui;
 	}
+	
+	
+	
+
+	@Override
+	public void onUICreated() {
+		ui.updateTitleBar();
+	}
+
+
+
 
 	public void friendsBtnClicked() {
 

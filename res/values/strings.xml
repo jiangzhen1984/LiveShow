@@ -23,10 +23,15 @@
      <string name="personal_my_friends">我的朋友</string> 
      <string name="personal_my_follow">我的关注</string> 
      <string name="personal_my_fans">我的粉丝</string>
+     <string name="personal_friends_invitation">添加朋友</string>
+     <string name="personal_my_wallet">我的钱包</string>
+     <string name="personal_my_videos">我的视频</string>
+     <string name="personal_my_message">我的消息</string>
      <string name="personal_my_setting">设置</string>
      
      <string name="fans_list_title">我的粉丝</string>
      <string name="following_list_title">我的关注</string>
+     <string name="personal_title_bar">我</string>
      
      <string name="error_cellphone_required">请输入手机号</string>
      <string name="error_verification_code_required">请输入验证码</string>
@@ -52,10 +57,13 @@
      <string name="login_action_text_username_hint">手机号</string>
      <string name="login_action_text_code_hint">验证码</string>
      <string name="login_error_incorrect_phone_number">手机号不正确</string>
+     <string name="login_bottom_other_account_text">第三方帐号登录</string>
      
      
      
      <string name="main_search_no_element_found">没有找到相关的信息</string>
+     
+     <string name="empty_image_content_desc"></string>
 </resources>
 
 

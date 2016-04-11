@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/title_bar_ly"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="25dp"
         android:background="#c0c0c0" >
     </TextView>
 
@@ -51,12 +51,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/avatar"
-            android:layout_toRightOf="@+id/avatar"
             android:layout_alignTop="@+id/avatar"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="19dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/avatar"
             android:orientation="vertical" >
 
             <TextView
@@ -66,11 +66,11 @@
                 android:layout_weight=".5"
                 android:text="Lily"
                 android:textColor="#000000" />
-            
+
             <TextView
                 android:id="@+id/personel_username"
                 android:layout_width="wrap_content"
-                  android:layout_height="0dp"
+                android:layout_height="0dp"
                 android:layout_weight=".5"
                 android:text="153***2321"
                 android:textColor="#000000" />
@@ -86,6 +86,7 @@
     </TextView>
 
     <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar_line2"
@@ -104,15 +105,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="5dp" >
+            android:padding="@dimen/personel_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView8"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_friends_icon" />
 
             <TextView
@@ -120,8 +122,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
                 android:layout_toEndOf="@+id/imageView8"
                 android:layout_toRightOf="@+id/imageView8"
                 android:text="@string/personal_my_friends"
@@ -134,8 +136,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_right_arrow_icon" />
         </RelativeLayout>
 
@@ -150,15 +153,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="5dp" >
+            android:padding="@dimen/personel_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_follow_icon" />
 
             <TextView
@@ -166,8 +170,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
                 android:layout_toEndOf="@+id/imageView2"
                 android:layout_toRightOf="@+id/imageView2"
                 android:text="@string/personal_my_follow"
@@ -180,8 +184,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_right_arrow_icon" />
         </RelativeLayout>
 
@@ -196,16 +201,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="5dp" >
+            android:padding="@dimen/personel_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:src="@drawable/personel_follow_icon" />
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_fans_icon" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -213,21 +219,212 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_right_arrow_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
                 android:layout_toEndOf="@+id/imageView4"
                 android:layout_toRightOf="@+id/imageView4"
                 android:text="@string/personal_my_fans"
                 android:textColor="#000000" />
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" >
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_item_layout_padding" >
+
+            <ImageView
+                android:id="@+id/imageView15"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_friends_invite_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
+                android:layout_toEndOf="@+id/imageView15"
+                android:layout_toRightOf="@+id/imageView15"
+                android:text="@string/personal_friends_invitation"
+                android:textColor="#000000" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="30dp"
+            android:background="#c0c0c0" >
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_item_layout_padding" >
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_wallet_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
+                android:layout_toEndOf="@+id/imageView5"
+                android:layout_toRightOf="@+id/imageView5"
+                android:text="@string/personal_my_wallet"
+                android:textColor="#000000" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" >
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_item_layout_padding" >
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_video_icon" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
+                android:layout_toEndOf="@+id/imageView6"
+                android:layout_toRightOf="@+id/imageView6"
+                android:text="@string/personal_my_videos"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" >
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_item_layout_padding" >
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_msg_icon" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
+                android:layout_toEndOf="@+id/imageView14"
+                android:layout_toRightOf="@+id/imageView14"
+                android:text="@string/personal_my_message"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" >
+        </TextView>
 
         <TextView
             android:layout_width="match_parent"
@@ -241,33 +438,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="5dp" >
+            android:padding="@dimen/personel_item_layout_padding" >
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/imageView11"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
+                android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_setting_icon" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
                 android:src="@drawable/personel_right_arrow_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_toRightOf="@+id/imageView5"
+                android:layout_marginLeft="@dimen/personel_item_text_margin_left"
+                android:layout_marginStart="@dimen/personel_item_text_margin_left"
+                android:layout_toEndOf="@+id/imageView11"
+                android:layout_toRightOf="@+id/imageView11"
                 android:text="@string/personal_my_setting"
                 android:textColor="#000000" />
         </RelativeLayout>

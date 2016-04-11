@@ -112,7 +112,9 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			appendTagText(buffer, "username", p.username);
 			if (p.isUsesms()) {
 				appendTagText(buffer, "smscode", p.smscode);
+				appendTagText(buffer, "password", "");
 			} else {
+				appendTagText(buffer, "smscode", "");
 				appendTagText(buffer, "password", p.pwd);
 			}
 			appendTagText(buffer, "deviceID", "");

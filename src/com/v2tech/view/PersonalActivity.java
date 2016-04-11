@@ -6,15 +6,12 @@ package com.v2tech.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.v2tech.presenter.PersonelPresenter;
 import com.v2tech.presenter.PersonelPresenter.PersonelPresenterUI;
-import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
 
 /**
@@ -24,16 +21,13 @@ import com.v2tech.v2liveshow.R;
 public class PersonalActivity extends Activity implements OnClickListener,
 		PersonelPresenterUI {
 
-	private UserService us;
-
-	HandlerThread ht;
-	Handler requestHandler;
 
 	private TextView mPersonalNameTv;
 	private View mMyFollowingBtn;
 	private View mMyFansBtn;
 	private View mSettingBtn;
 	private View mFriendsBtn;
+	private TextView titleBarName;
 
 	private PersonelPresenter presenter;
 
@@ -55,6 +49,7 @@ public class PersonalActivity extends Activity implements OnClickListener,
 		mSettingBtn.setOnClickListener(this);
 
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
+		titleBarName = (TextView)findViewById(R.id.title_bar_center_tv);
 
 		this.overridePendingTransition(R.animator.left_to_right_in, R.animator.left_to_right_out);
 
@@ -126,6 +121,11 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	public void finishMainUI() {
 		finish();
 		
+	}
+
+	@Override
+	public void updateTitleBar() {
+		titleBarName.setText(R.string.personal_title_bar);
 	}
 
 	
