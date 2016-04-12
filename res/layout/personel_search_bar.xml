@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/login_reg_layout_bg" >
+
+    <EditText
+        android:id="@+id/personel_search_text_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/personel_search_input_text"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/personal_search_bar_follow_text"
+        android:textSize="14sp" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_below="@+id/personel_search_text_et"
+        android:layout_centerHorizontal="true"
+        android:text="" />
+
+</RelativeLayout>

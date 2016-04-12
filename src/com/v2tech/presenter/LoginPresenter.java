@@ -6,6 +6,7 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
@@ -111,16 +112,16 @@ public class LoginPresenter extends BasePresenter {
 	
 	
 	private void doLoginInBack() {
-//		User u = GlobalHolder.getInstance().getCurrentUser();
-//		if (u!= null && u.isNY) {
-//			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null));
-//		}
-//		String username = ui.getUserNameText();
-//		String code = ui.getCodeText();
-//		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
-//		ui.showLogingInProgress();
+		User u = GlobalHolder.getInstance().getCurrentUser();
+		if (u!= null && u.isNY) {
+			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null));
+		}
+		String username = ui.getUserNameText();
+		String code = ui.getCodeText();
+		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
+		ui.showLogingInProgress();
 		
-		handleLoginCallback(new RequestLogInResponse(new User(111), JNIResponse.Result.SUCCESS));
+	//	handleLoginCallback(new RequestLogInResponse(new User(111), JNIResponse.Result.SUCCESS));
 	}
 	
 	

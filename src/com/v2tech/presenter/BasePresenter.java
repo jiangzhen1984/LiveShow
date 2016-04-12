@@ -45,4 +45,9 @@ public abstract class BasePresenter {
 	public  void onUIDestroyed() {
 		
 	}
+	
+	
+	public void onReturnBtnClicked() {
+		
+	}
 }

@@ -84,7 +84,12 @@ public class User implements Comparable<User> {
 	private boolean isDirty;
 	
 	
+	public boolean follow;
+	
+	
 	public boolean isNY;
+	
+	public boolean isMale;
 
 	public User(long mUserId) {
 		this(mUserId, null, null, null);

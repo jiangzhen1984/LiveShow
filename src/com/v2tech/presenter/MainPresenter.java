@@ -812,7 +812,6 @@ public class MainPresenter extends BasePresenter implements
 			V2Log.e("===> get search callback ===> No packet");
 			return;
 		}
-		V2Log.i("===> get search callback ===>" + p.getPacket().getVideos());
 		BitmapDescriptor online = BitmapDescriptorFactory
 				.fromResource(R.drawable.marker_live);
 		

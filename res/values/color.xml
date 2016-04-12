@@ -48,4 +48,6 @@
      
       <color name="personel_show_text_color">#000000</color>
       <color name="personel_show_text_value_color">#c0c0c0</color>
+      <color name="personel_user_item_line_color">#c0c0c0</color>
+      <color name="personel_user_item_bg">#f2f2f2</color>
 </resources>

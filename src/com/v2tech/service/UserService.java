@@ -63,14 +63,14 @@ public class UserService extends AbstractHandler {
 	 */
 	public void login(String mail, String passwd, MessageListener caller) {
 		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, null, passwd, true));
+		V2Log.e("===> login to user " + p.getHeader().isError());
 		if (!p.getHeader().isError()) {
-			V2Log.e(p.getClass().getName()+"   "+p);
 			LoginRespPacket lrp =(LoginRespPacket)p;
 			User loginUser = new User(0);
 			loginUser.nId = lrp.uid;
 			GlobalHolder.getInstance().setCurrentUser(loginUser);
 			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", false);
+			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",  true);
 		} else {
 			if (caller != null) {
 				Message m = Message.obtain(caller.getHandler(), caller.what,
@@ -265,7 +265,7 @@ public class UserService extends AbstractHandler {
 					"yyyy-MM-dd HH:mm:ss");
 			String date = fromat.format(new Date(
 					GlobalConfig.SERVER_TIME * 1000));
-			V2Log.i("get server time ：" + date+"   ===> "+ nUserID);
+			V2Log.i("get server time ：" + date+"   ===> "+ nUserID+"  result:" + nResult);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
 			

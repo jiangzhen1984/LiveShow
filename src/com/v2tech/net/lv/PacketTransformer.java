@@ -99,7 +99,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		if (p.isAs()) {
 			appendAttrText(buffer, "type", "visitor");
 		} else {
-			appendAttrText(buffer, "type", "normal");
+			if (p.isUsesms()) {
+				appendAttrText(buffer, "type", "smscode");
+			} else {
+				appendAttrText(buffer, "type", "normal");
+			}
 		}
 		appendTagStartEnd(buffer, true);
 		
@@ -412,7 +416,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	}
 	
 	private boolean extraResult(String str) {
-		Pattern p = Pattern.compile("type=\"success\"");
+		Pattern p = Pattern.compile("(type=\"success\")");
 		Matcher m = p.matcher(str);
 		if (m.find()) {
 			return true;
