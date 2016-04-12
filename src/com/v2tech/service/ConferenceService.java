@@ -122,18 +122,22 @@ public class ConferenceService extends DeviceService {
 	/**
 	 * User request to enter conference.<br>
 	 * 
-	 * @param conf
-	 *            {@link Conference} object which user wants to enter
+	 * @param l
+	 *            {@link Live l} object which user wants to enter
 	 * @param caller
 	 *            if input is null, ignore response. Message.object is
 	 *            {@link com.v2tech.service.jni.RequestEnterConfResponse}
 	 * 
 	 * @see com.v2tech.service.jni.RequestEnterConfResponse
 	 */
-	public void requestEnterConference(Conference conf, MessageListener caller) {
+	public void requestEnterConference(Live l, MessageListener caller) {
+		DeamonWorker.getInstance().request(
+				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
+						LiveWatchingReqPacket.WATCHING), null));
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
-		ConfRequest.getInstance().ConfEnter(conf.getId());
+		ConfRequest.getInstance().ConfEnter(l.getLid());
+		
 	}
 	
 	
@@ -210,12 +214,8 @@ public class ConferenceService extends DeviceService {
 	 * @param conf
 	 * @param caller
 	 */
-	public void quitConference(Conference conf, MessageListener caller) {
-		DeamonWorker.getInstance().request(
-				new LiveWatchingReqPacket(GlobalHolder.getInstance()
-						.getCurrentUser().nId, conf.getId(),
-						LiveWatchingReqPacket.CANCEL)); 
-		if (conf == null) {
+	public void quitConference(Live l, MessageListener caller) {
+		if (l == null) {
 			if (caller != null) {
 				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
 						RequestConfCreateResponse.Result.INCORRECT_PAR);
@@ -223,16 +223,22 @@ public class ConferenceService extends DeviceService {
 			}
 			return;
 		}
+		
+		DeamonWorker.getInstance().request(
+				new LiveWatchingReqPacket(GlobalHolder.getInstance()
+						.getCurrentUser().nId, l.getNid(),
+						LiveWatchingReqPacket.CANCEL)); 
+		
 		initTimeoutMessage(JNI_REQUEST_QUIT_CONFERENCE, DEFAULT_TIME_OUT_SECS,
 				caller);
 		// If conference owner is self, then delete group
-		if (conf.getCreator() == GlobalHolder.getInstance().getCurrentUserId()) {
+		if (l.getPublisher().getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
 			GroupRequest.getInstance().GroupDestroy(
-					Group.GroupType.CONFERENCE.intValue(), conf.getId());
+					Group.GroupType.CONFERENCE.intValue(), l.getLid());
 			// If conference owner isn't self, just leave group
 		} else {
 			GroupRequest.getInstance().GroupLeave(
-					Group.GroupType.CONFERENCE.intValue(), conf.getId());
+					Group.GroupType.CONFERENCE.intValue(), l.getLid());
 		}
 	}
 

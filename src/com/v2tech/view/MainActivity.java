@@ -562,6 +562,18 @@ public class MainActivity extends FragmentActivity implements
 		
 	}
 	
+	public void updateWatchNum(final int num) {
+		this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				mMapVideoLayout.updateWatcherNum(num);
+			}
+			
+		});
+		
+	}
+	
 	/////////////////////////////////////////////////////////////
 	
 

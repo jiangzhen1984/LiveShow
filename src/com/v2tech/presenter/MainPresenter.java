@@ -191,6 +191,8 @@ public class MainPresenter extends BasePresenter implements
 		public void setCurrentLive(Live l);
 		
 		public void queuedMessage(String msg);
+		
+		public void updateWatchNum(int num);
 	}
 	
 	
@@ -297,11 +299,10 @@ public class MainPresenter extends BasePresenter implements
 	
 	public void videoShareButtonClicked() {
 		if ((videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
-			Conference conf = new Conference(currentLive.getLid());
 			videoScreenState &= (~PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
-			vs.quitConference(conf, new MessageListener(h, CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
+			vs.quitConference(currentLive, new MessageListener(h, CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
 			videoScreenState |= PUBLISHING_FLAG;
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
@@ -384,6 +385,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void searchMap(String text) {
+		//FIXME do not use hard code
 		mSearch.geocode(new GeoCodeOption().city("北京").address(text));
 	}
 	
@@ -517,8 +519,7 @@ public class MainPresenter extends BasePresenter implements
 		
 		//join new one
 		Live l = (Live)marker.getExtraInfo().get("live");
-		Conference  newConf = new Conference(l.getLid());
-		vs.requestEnterConference(newConf, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
+		vs.requestEnterConference(l, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
 		currentLive = l;
 		ui.showDebugMsg(currentLive.getLid()+"");
 		ui.setCurrentLive(l);
@@ -707,8 +708,7 @@ public class MainPresenter extends BasePresenter implements
 			
 		} else {
 			//join new one
-			Conference  newConf = new Conference(l.getLid());
-			vs.requestEnterConference(newConf, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
+			vs.requestEnterConference(l, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
 			currentLive = l;
 		}
 		
@@ -828,6 +828,9 @@ public class MainPresenter extends BasePresenter implements
 			double lat = Double.parseDouble(d[3]);
 			Live live = new Live(new User(uid), vid, lat, lng);
 			live.setNid(nid);
+			if (d[4] != null && !d[4].isEmpty()) {
+				live.watcherCount = Integer.parseInt(d[4]);
+			}
 			this.lives.append(vid, live);
 			
 			Bundle bundle = new Bundle();
@@ -849,6 +852,7 @@ public class MainPresenter extends BasePresenter implements
 			} else {
 				this.currentLive.getPublisher().setmUserId((rer.getConf().getCreator()));
 			}
+			ui.updateWatchNum(this.currentLive.watcherCount);
 			pending = true;
 		} else {
 			pending = false;

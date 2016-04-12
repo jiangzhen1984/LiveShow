@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.V2.jni.util.V2Log;
 import com.V2.jni.util.XmlAttributeExtractor;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
@@ -63,7 +64,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			} else if ("queryVideoList".equalsIgnoreCase(type)) {
 				return extraLiveQueryResponse(t);
 			} else if ("publicVideo".equalsIgnoreCase(type)) {
-				return extraCommonResponse(t);
+				return extraPublisVideoResponse(t);
 			} else if ("followUser".equalsIgnoreCase(type)) {
 				return extraCommonResponse(t);
 			} else if ("getSMScode".equalsIgnoreCase(type)) {
@@ -78,7 +79,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 				return extraCommonResponse(t);
 			} else if ("getFollowMe".equalsIgnoreCase(type)) {
 				return extraFansQueryResponse(t);
-			}
+			} 
 			
 		}
 		
@@ -208,7 +209,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendTagStartEnd(buffer, true);
 		
 		
-		appendTagText(buffer, "videoId", p.lid+"");
+		appendTagText(buffer, "videoId", p.nid+"");
 		
 		appendTagEnd(buffer, "iq");
 		buffer.append("\r\n");
@@ -391,6 +392,28 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		
 		return lrp;
 	}
+	
+	private Packet extraPublisVideoResponse(String str) {
+		LivePublishRespPacket lrp = new LivePublishRespPacket();
+		lrp.setRequestId(extraRequestId(str));
+		lrp.setErrorFlag(!extraResult(str));
+		Pattern p = Pattern.compile("(<video)( +)(id=)('|\")([0-9]+)('|\")");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			String gr = m.group();
+			Pattern p1 = Pattern.compile("([0-9]+)");
+			m = p1.matcher(gr);
+			if (m.find()) {
+				lrp.nvid = Long.parseLong(m.group());
+			}
+		} else {
+			V2Log.e("=== extra video id error");
+			lrp.setErrorFlag(true);
+		}
+		
+		return lrp;
+	}
+	
 	
 	
 	

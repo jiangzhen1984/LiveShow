@@ -1255,7 +1255,7 @@ public class CopyOfMainActivity extends FragmentActivity implements
 				//VideoBCRequest.getInstance().stopLive();
 //				liveService.requestFinishPublish(null);
 //				cv.stopPublish();
-				confService.quitConference(currentLive, null);
+				//confService.quitConference(currentLive, null);
 				currentLive = null;
 				isRecording = false;
 				currentLive = null;

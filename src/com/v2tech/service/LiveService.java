@@ -27,11 +27,13 @@ import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
 import com.v2tech.net.lv.FollowReqPacket;
 import com.v2tech.net.lv.LivePublishReqPacket;
+import com.v2tech.net.lv.LivePublishRespPacket;
 import com.v2tech.net.lv.LiveQueryReqPacket;
 import com.v2tech.net.lv.LiveQueryRespPacket;
 import com.v2tech.net.lv.LiveRecommendReqPacket;
 import com.v2tech.net.lv.LocationReportReqPacket;
 import com.v2tech.net.pkt.IndicationPacket;
+import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.GetNeiborhoodResponse;
@@ -154,11 +156,15 @@ public class LiveService extends AbstractHandler {
 	
 	
 	public void reportLiveStatus(Live l, MessageListener caller) {
-		DeamonWorker.getInstance().request(
+		Packet resp = DeamonWorker.getInstance().request(
 				new LivePublishReqPacket(GlobalHolder.getInstance()
 						.getCurrentUser().nId, l.getLid(),
 						l.getLat(),
 						l.getLng()));
+		V2Log.i("===reportLiveStatus ==>" + resp.getHeader().isError());
+		if (!resp.getHeader().isError()) {
+			l.setNid(((LivePublishRespPacket)resp).nvid);
+		}
 	}
 	
 	

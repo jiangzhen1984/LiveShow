@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
@@ -72,6 +73,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private boolean fireFlyingdown = false;
 	private ImageView favButton;
 	private LinearLayout notificationLayout;
+	private TextView watcherView;
 	
 	private OnNotificationClickedListener mNotificationClickedListener;
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -160,6 +162,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		
 		View rightSideLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, null);
 		favButton = (ImageView)rightSideLayout.findViewById(R.id.recommendation_button);
+		
+		 watcherView = (TextView)rightSideLayout.findViewById(R.id.watcher_count_tv);
 		
 
 		RelativeLayout.LayoutParams rightSideLayoutParm = new RelativeLayout.LayoutParams(
@@ -457,6 +461,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 				break;
 			}
 		}
+	}
+	
+	
+	public void updateWatcherNum(int num) {
+		watcherView.setText(num+"");
 	}
 	
 	

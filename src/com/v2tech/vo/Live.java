@@ -33,6 +33,9 @@ public class Live implements Serializable, Comparable<Live>{
 	private boolean rend;
 	
 	
+	public int watcherCount;
+	
+	
 	
 	private long nid;
 	
