@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/personel_setting_ly_bg" >
+
+    <include
+        android:id="@+id/title_bar_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/action_bar" />
+
+    <LinearLayout
+        android:id="@+id/box_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/personal_setting_account_security_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_show_text_margin_left"
+                android:layout_marginStart="@dimen/personel_show_text_margin_left"
+                android:text="@string/personel_setting_account_security_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/personal_setting_privacy_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_show_text_margin_left"
+                android:layout_marginStart="@dimen/personel_show_text_margin_left"
+                android:text="@string/personel_setting_privacy_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/box_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/box_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/personal_setting_legal_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_show_text_margin_left"
+                android:layout_marginStart="@dimen/personel_show_text_margin_left"
+                android:text="@string/personel_setting_legal_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/personal_setting_about_us_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_show_text_margin_left"
+                android:layout_marginStart="@dimen/personel_show_text_margin_left"
+                android:text="@string/personel_setting_abount_us_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/personal_setting_paging_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/personel_show_text_margin_left"
+                android:layout_marginStart="@dimen/personel_show_text_margin_left"
+                android:text="@string/personel_setting_page_rank_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+                android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+                android:contentDescription="@string/empty_image_content_desc"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/personel_setting_quit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/box_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:padding="@dimen/personel_setting_layout_padding" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/personel_setting_log_out_text"
+                android:textColor="@color/personel_setting_text_color"
+                android:textSize="@dimen/personel_setting_text_size" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

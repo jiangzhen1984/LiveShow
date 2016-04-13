@@ -62,19 +62,9 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:freezesText="false"
-        android:gravity="bottom|left"
         android:hint="@string/bottom_seatch_text_tip"
         android:textColor="@color/bottom_search_text_color"
         android:textSize="@dimen/bottom_button_text_size" >
     </com.v2tech.widget.FloatEditText>
-
-    <ImageView
-        android:id="@+id/emoji_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/edit_text"
-        android:layout_alignRight="@+id/edit_text"
-        android:layout_centerVertical="true"
-        android:src="@drawable/emoji" />
 
 </RelativeLayout>

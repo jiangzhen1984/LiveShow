@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/login_reg_layout_bg" >
+
+    <include
+        android:id="@+id/title_bar_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/action_bar" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/personel_wallet_item_margin_top"
+            android:src="@drawable/my_wallet_icon" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/personel_wallet_item_margin_top"
+            android:text="@string/personel_wallet_balance_text"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/personel_wallet_balance_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/personel_wallet_balance_item_margin_top"
+            android:text="125.5"
+            android:textColor="#ff0000" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/personel_wallet_btn_margin_hor"
+            android:layout_marginRight="@dimen/personel_wallet_btn_margin_hor"
+            android:layout_marginTop="@dimen/personel_wallet_item_margin_top"
+            android:background="@drawable/wallet_incharge_bg"
+            android:gravity="center"
+            android:text="@string/personel_wallet_incharge_text"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/personel_wallet_btn_margin_hor"
+            android:layout_marginRight="@dimen/personel_wallet_btn_margin_hor"
+            android:layout_marginTop="@dimen/personel_wallet_balance_item_margin_top"
+            android:background="@drawable/wallet_withdraw_bg"
+            android:gravity="center"
+            android:text="@string/personel_wallet_withdraw_text"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/personel_wallet_balance_detail" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp" 
+            android:layout_toLeftOf="@+id/textView5"
+             android:layout_toStartOf="@+id/textView5"
+            android:background="#c0c0c0"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_toRightOf="@+id/textView5"
+            android:layout_toEndOf="@+id/textView5" 
+            android:background="#c0c0c0"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/personel_wallet_balance_detail_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:divider="@null"
+        android:background="#ffffff" >
+    </ListView>
+
+</RelativeLayout>

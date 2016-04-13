@@ -2,18 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-     >
+    android:paddingTop="30dp" >
 
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/video_right_border_margin_right"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="@dimen/video_right_border_margin_right"
+        android:layout_marginRight="@dimen/video_right_border_margin_right"
         android:orientation="vertical" >
-        
-        
+
         <TextView
             android:id="@+id/recommendation_count_tv"
             android:layout_width="wrap_content"
@@ -29,8 +28,6 @@
             android:layout_gravity="center"
             android:src="@drawable/recommendation_button"
             android:tag="0" />
-
-      
     </LinearLayout>
 
     <LinearLayout
@@ -38,13 +35,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout1"
-        android:layout_marginTop="@dimen/video_right_border_recommandation_button_margin_top"
-        android:layout_marginRight="@dimen/video_right_border_margin_right"
-        android:layout_marginEnd="@dimen/video_right_border_margin_right"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/video_right_border_margin_right"
+        android:layout_marginRight="@dimen/video_right_border_margin_right"
+        android:layout_marginTop="@dimen/video_right_border_recommandation_button_margin_top"
         android:orientation="vertical" >
-        
-          <TextView
+
+        <TextView
             android:id="@+id/watcher_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +56,24 @@
             android:layout_gravity="center"
             android:src="@drawable/follow_button"
             android:tag="0" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/video_right_border_margin_right"
+        android:layout_marginRight="@dimen/video_right_border_margin_right"
+        android:layout_marginTop="@dimen/video_right_border_recommandation_button_margin_top"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/video_share_up" />
     </LinearLayout>
 
 </RelativeLayout>

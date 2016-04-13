@@ -27,6 +27,8 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	private View mMyFansBtn;
 	private View mSettingBtn;
 	private View mFriendsBtn;
+	private View mWalletBtn;
+	private View mVideoBtn;
 	private TextView titleBarName;
 	private View mPerBtn;
 
@@ -43,17 +45,23 @@ public class PersonalActivity extends Activity implements OnClickListener,
 		mMyFansBtn = findViewById(R.id.personal_fans_btn);
 		mSettingBtn = findViewById(R.id.personal_setting_btn);
 		mFriendsBtn = findViewById(R.id.personal_friends_btn);
+		mWalletBtn = findViewById(R.id.personal_wallet_btn);
+		mVideoBtn = findViewById(R.id.personal_video_btn);
 		mPerBtn = findViewById(R.id.avatar_layout);
 		
+		
+		mVideoBtn.setOnClickListener(this);
 		mPerBtn.setOnClickListener(this);
 		mFriendsBtn.setOnClickListener(this);
 		mMyFollowingBtn.setOnClickListener(this);
 		mMyFansBtn.setOnClickListener(this);
 		mSettingBtn.setOnClickListener(this);
+		mWalletBtn.setOnClickListener(this);
 
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView)findViewById(R.id.title_bar_center_tv);
 
+		presenter.onUICreated();
 		this.overridePendingTransition(R.animator.left_to_right_in, R.animator.left_to_right_out);
 
 	}
@@ -69,7 +77,7 @@ public class PersonalActivity extends Activity implements OnClickListener,
 			presenter.followBtnClicked();
 			break;
 		case R.id.personal_fans_btn:
-			presenter.followBtnClicked();
+			presenter.fansBtnClicked();
 			break;
 		case R.id.personal_setting_btn:
 			presenter.settingBtnClicked();
@@ -79,6 +87,12 @@ public class PersonalActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.title_bar_left_btn:
 			presenter.returnBtnClicked();
+			break;
+		case R.id.personal_wallet_btn: 
+			presenter.walletBtnClicked();
+			break;
+		case R.id.personal_video_btn:
+			presenter.videoBtnClicked();
 			break;
 		default:
 		}

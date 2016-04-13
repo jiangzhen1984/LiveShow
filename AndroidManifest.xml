@@ -132,10 +132,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" >
             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -159,8 +159,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-         <activity
+        <activity
             android:name="com.v2tech.view.PersonalShowActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
@@ -186,28 +185,40 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        
-         <activity
+        <activity
             android:name="com.v2tech.view.PersonelRelatedUserListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
-            <intent-filter>
-            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.v2tech.view.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        
+          <activity
+            android:name="com.v2tech.view.PersonelWalletActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+<activity
+            android:name="com.v2tech.view.PersonelVideosActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <service android:name="com.v2tech.view.JNIService" >
         </service>
-        
-        
-         <service
+        <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":location"
-             >
+            android:process=":location" >
         </service>
-         
     </application>
 
 </manifest>

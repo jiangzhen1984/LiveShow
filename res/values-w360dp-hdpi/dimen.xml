@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-   <dimen name="title_bar_text_size">20sp</dimen>
-    
+    <dimen name="title_bar_text_size">20sp</dimen>
     <dimen name="bottom_button_text_size">5sp</dimen>
     <dimen name="bottom_button_text_padding">5dp</dimen>
     <dimen name="bottom_button_layout_margin">20dp</dimen>
@@ -13,28 +12,28 @@
     <dimen name="video_layout_bottom_layout_margin_bottom">15dp</dimen>
     <dimen name="video_layout_bottom_layout_margin_left">15dp</dimen>
     <dimen name="video_layout_bottom_layout_margin_right">15dp</dimen>
-    
-    
     <dimen name="login_activity_main_margin_left">25dp</dimen>
     <dimen name="login_activity_main_margin_right">25dp</dimen>
     <dimen name="login_activity_main_margin_top">25dp</dimen>
     <dimen name="login_text_size">13sp</dimen>
     <dimen name="login_input_text_size">16sp</dimen>
-    
     <dimen name="login_text_verfication_code_size">16sp</dimen>
     <dimen name="login_text_start_button_size">16sp</dimen>
-    
-    
     <dimen name="personel_root_margin_right">80dp</dimen>
     <dimen name="personel_show_avatar_margin_right">30dp</dimen>
-     <dimen name="personel_show_text_size">17sp</dimen>
-
+    <dimen name="personel_show_text_size">17sp</dimen>
     <dimen name="personel_user_item_padding">15dp</dimen>
     <dimen name="personel_user_item_text_margin_top">10dp</dimen>
     <dimen name="personel_user_item_text_margin_top1">5dp</dimen>
-      <dimen name="personel_user_item_text_margin_left">15dp</dimen>
-      
-      <dimen name="personel_activity_user_padding_ver">10dp</dimen>
-      <dimen name="personel_activity_box_margin_top">10dp</dimen>
-     
+    <dimen name="personel_user_item_text_margin_left">15dp</dimen>
+    <dimen name="personel_activity_user_padding_ver">10dp</dimen>
+    <dimen name="personel_activity_box_margin_top">10dp</dimen>
+    <dimen name="personel_setting_text_size">17sp</dimen>
+    <dimen name="personel_wallet_item_margin_top">10dp</dimen>
+    <dimen name="personel_wallet_balance_item_margin_top">3dp</dimen>
+    <dimen name="personel_wallet_btn_margin_hor">20dp</dimen>
+    <dimen name="personel_wallet_detail_item_text_margin_top">10dp</dimen>
+    <dimen name="personel_wallet_detail_item_text_margin_top1">5dp</dimen>
+    <dimen name="personel_wallet_detail_item_text_margin_left">15dp</dimen>
+
 </resources>

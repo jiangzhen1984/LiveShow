@@ -3,90 +3,83 @@
 
     <string name="app_name">点播</string>
     <string name="title_activity_main">点播</string>
+    <string name="live_video_start_record">开始共享</string>
+    <string name="live_video_stop_recording">停止共享</string>
+    <string name="msg_send_button_text">发送</string>
+    <string name="pos_search_button_text">M</string>
+    <string name="cellphone_numer_hint">手机号</string>
+    <string name="verification_code_hint">验证码</string>
+    <string name="verification_code_text">验证</string>
+    <string name="log_on_btn_text">登录</string>
+    <string name="reg_btn_text">注册</string>
+    <string name="login_reg_btn_text">注册/登录</string>
+    <string name="notification_get_verification_code">验证码已发送!</string>
+    <string name="personal_my_friends">我的朋友</string>
+    <string name="personal_my_follow">我的关注</string>
+    <string name="personal_my_fans">我的粉丝</string>
+    <string name="personal_friends_invitation">添加朋友</string>
+    <string name="personal_my_wallet">我的钱包</string>
+    <string name="personal_my_videos">我的视频</string>
+    <string name="personal_my_message">我的消息</string>
+    <string name="personal_my_setting">设置</string>
+    <string name="fans_list_title">我的粉丝</string>
+    <string name="following_list_title">我的关注</string>
+    <string name="personal_title_bar">我</string>
+    <string name="error_cellphone_required">请输入手机号</string>
+    <string name="error_verification_code_required">请输入验证码</string>
+    <string name="error_get_verification_code">获取验证码失败!</string>
+    <string name="error_login_in">登录失败!</string>
+    <string name="bottom_seatch_text_tip">左击搜地图 右击发评论</string>
+    <string name="video_share_button_share">分享视频</string>
+    <string name="video_share_button_unshare">取消视频</string>
+    <string name="error_no_any_watching_video">没有视频信息</string>
+    <string name="error_no_open_remote_live_failed">开启远端视频失败</string>
+    <string name="login_action_text_verification">验证</string>
+    <string name="login_action_text_start">开  始</string>
+    <string name="login_action_text_1">点击</string>
+    <string name="login_action_text_2">开始</string>
+    <string name="login_action_text_3">即表示您同意</string>
+    <string name="login_action_text_4">《</string>
+    <string name="login_action_text_5"><u>法律声明及隐私政策</u></string>
+    <string name="login_action_text_6">》</string>
+    <string name="login_action_text_username_hint">手机号</string>
+    <string name="login_action_text_code_hint">验证码</string>
+    <string name="login_error_incorrect_phone_number">手机号不正确</string>
+    <string name="login_bottom_other_account_text">第三方帐号登录</string>
+    <string name="main_search_no_element_found">没有找到相关的信息</string>
+    <string name="empty_image_content_desc"></string>
+    <string name="personal_show_avatar_text">头像</string>
+    <string name="personal_show_nick_name_text">昵称</string>
+    <string name="personal_show_gender_text">性别</string>
+    <string name="personal_region_text">地区</string>
+    <string name="personal_siganture_text">签名</string>
+    <string name="personal_name_text">姓名</string>
+    <string name="personal_code_text">二维码</string>
+    <string name="personal_show_title_text">个人信息</string>
+    <string name="personel_user_list_title_follow">我的关注</string>
+    <string name="personel_user_list_title_fans">我的粉丝</string>
+    <string name="personel_user_list_title_friends">我的朋友</string>
+    <string name="personel_user_list_title_friend_invitation">添加朋友</string>
+    <string name="personal_search_bar_follow_text">请输入关键字</string>
+    <string name="personel_item_user_f_text">关注</string>
+    <string name="personel_item_user_cf_text">取消关注</string>
     
-     <string name="live_video_start_record">开始共享</string>
-     <string name="live_video_stop_recording">停止共享</string>
-     
-     <string name="msg_send_button_text">发送</string>
-     <string name="pos_search_button_text">M</string>
-     
-     
-     <string name="cellphone_numer_hint">手机号</string>
-     <string name="verification_code_hint">验证码</string>
-     <string name="verification_code_text">验证</string>
-     <string name="log_on_btn_text">登录</string>
-     <string name="reg_btn_text">注册</string>
-     <string name="login_reg_btn_text">注册/登录</string>
-     <string name="notification_get_verification_code">验证码已发送!</string>
-     
-     
-     <string name="personal_my_friends">我的朋友</string> 
-     <string name="personal_my_follow">我的关注</string> 
-     <string name="personal_my_fans">我的粉丝</string>
-     <string name="personal_friends_invitation">添加朋友</string>
-     <string name="personal_my_wallet">我的钱包</string>
-     <string name="personal_my_videos">我的视频</string>
-     <string name="personal_my_message">我的消息</string>
-     <string name="personal_my_setting">设置</string>
-     
-     <string name="fans_list_title">我的粉丝</string>
-     <string name="following_list_title">我的关注</string>
-     <string name="personal_title_bar">我</string>
-     
-     <string name="error_cellphone_required">请输入手机号</string>
-     <string name="error_verification_code_required">请输入验证码</string>
-     <string name="error_get_verification_code">获取验证码失败!</string>
-     <string name="error_login_in">登录失败!</string>
-     
-     <string name="bottom_seatch_text_tip">左击搜地图 右击发评论</string>
-     <string name="video_share_button_share">分享视频</string>
-     <string name="video_share_button_unshare">取消视频</string>
-     
-     <string name="error_no_any_watching_video">没有视频信息</string>
-     <string name="error_no_open_remote_live_failed">开启远端视频失败</string>
-     
-     
-     <string name="login_action_text_verification">验证</string>
-     <string name="login_action_text_start">开  始</string>
-     <string name="login_action_text_1">点击</string>
-     <string name="login_action_text_2">开始</string>
-     <string name="login_action_text_3">即表示您同意</string>
-     <string name="login_action_text_4">《</string>
-     <string name="login_action_text_5"><u>法律声明及隐私政策</u></string>
-     <string name="login_action_text_6">》</string>
-     <string name="login_action_text_username_hint">手机号</string>
-     <string name="login_action_text_code_hint">验证码</string>
-     <string name="login_error_incorrect_phone_number">手机号不正确</string>
-     <string name="login_bottom_other_account_text">第三方帐号登录</string>
-     
-     
-     
-     <string name="main_search_no_element_found">没有找到相关的信息</string>
-     
-     <string name="empty_image_content_desc"></string>
-     
-      <string name="personal_show_avatar_text">头像</string>
-      <string name="personal_show_nick_name_text">昵称</string>
-      <string name="personal_show_gender_text">性别</string>
-      <string name="personal_region_text">地区</string>
-      <string name="personal_siganture_text">签名</string>
-      <string name="personal_name_text">姓名</string>
-      <string name="personal_code_text">二维码</string>
-      
-      <string name="personal_show_title_text">个人信息</string>
-      
-      
-      <string name="personel_user_list_title_follow">我的关注</string>
-      <string name="personel_user_list_title_fans">我的粉丝</string>
-      <string name="personel_user_list_title_friends">我的朋友</string>
-      <string name="personel_user_list_title_friend_invitation">添加朋友</string>
-      
-      <string name="personal_search_bar_follow_text">请输入关键字</string>
-      <string name="personel_item_user_f_text">关注</string>
-      <string name="personel_item_user_cf_text">取消关注</string>
-      
-      
-     
+    
+    <string name="personel_setting_account_security_text">帐号安全</string>
+    <string name="personel_setting_privacy_text">隐私</string>
+    <string name="personel_setting_legal_text">法律及其隐私政策</string>
+    <string name="personel_setting_abount_us_text">关于我们</string>
+    <string name="personel_setting_page_rank_text">给个好评</string>
+    <string name="personel_setting_log_out_text">退出</string>
+    <string name="personel_setting_title_bar">设置</string>
+    
+    <string name="personel_video_title_bar">我的视频</string>
+    
+    
+    <string name="personel_wallet_title_bar">我的钱包</string>
+    <string name="personel_wallet_balance_text">余额</string>
+    <string name="personel_wallet_incharge_text">充值</string>
+    <string name="personel_wallet_withdraw_text">提现</string>
+    <string name="personel_wallet_balance_detail">余额明细</string>
+
 </resources>
-
-

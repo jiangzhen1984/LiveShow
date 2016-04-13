@@ -1,9 +1,12 @@
 package com.v2tech.presenter;
 
-import com.v2tech.view.PersonelRelatedUserListActivity;
-
 import android.content.Context;
 import android.content.Intent;
+
+import com.v2tech.view.PersonelRelatedUserListActivity;
+import com.v2tech.view.PersonelVideosActivity;
+import com.v2tech.view.PersonelWalletActivity;
+import com.v2tech.view.SettingActivity;
 
 public class PersonelPresenter extends BasePresenter {
 
@@ -52,8 +55,24 @@ public class PersonelPresenter extends BasePresenter {
 	}
 
 	public void settingBtnClicked() {
-
+		Intent i = new Intent();
+		i.setClass(context, SettingActivity.class);
+		context.startActivity(i);
 	}
+	
+	public void walletBtnClicked() {
+		Intent i = new Intent();
+		i.setClass(context, PersonelWalletActivity.class);
+		context.startActivity(i);
+	}
+	
+	public void videoBtnClicked() {
+		Intent i = new Intent();
+		i.setClass(context, PersonelVideosActivity.class);
+		context.startActivity(i);
+	}
+	
+	
 
 	public void returnBtnClicked() {
 		ui.finishMainUI();

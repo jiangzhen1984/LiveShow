@@ -290,6 +290,7 @@
         </TextView>
 
         <RelativeLayout
+             android:id="@+id/personal_wallet_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -335,6 +336,7 @@
         </TextView>
 
         <RelativeLayout
+             android:id="@+id/personal_video_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
