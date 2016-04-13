@@ -52,6 +52,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	private Queue<LocalBind> waiting;
 
 	private static DeamonWorker instance;
+	private ReconnectThread reconnectThread;
 
 	private DeamonWorker() {
 		stLock = new Object();
@@ -115,13 +116,18 @@ public class DeamonWorker implements Runnable, NetConnector,
 			if (ch != null && !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
 			}
+			if (reconnectThread == null || !reconnectThread.isAlive()) {
+				reconnectThread = new ReconnectThread();
+				reconnectThread.start();
+			}
 		} finally {
 			if (st == WorkerState.REQUEST_STOP) {
 				updateConnectionState(ConnectionState.DISCONNECTED);
-			}
+			} 
 			updateWorkerState(WorkerState.STOPPED);
 			group.shutdownGracefully();
 		}
+		
 	}
 
 	@Override
@@ -320,6 +326,24 @@ public class DeamonWorker implements Runnable, NetConnector,
 	enum ConnectionState {
 		IDLE, CONNECTING, CONNECTED, DISCONNECTED, ERROR,
 
+	}
+	
+	
+	class ReconnectThread extends Thread {
+
+		@Override
+		public void run() {
+			while (cs != ConnectionState.CONNECTED) {
+				Log.i("ReaderChannel", "try to reconnect====>" );
+				connect(host, port);
+				try {
+					wait(30000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 	class LocalChannel extends ChannelInitializer<SocketChannel> {
