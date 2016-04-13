@@ -32,7 +32,8 @@ public class PersonelVideosActivity extends Activity implements
 	private ListView listView;
 	private LayoutInflater infalter;
 	private LocalAdapter adapter;
-
+	private View selectModeLy;
+	
 	private PersonelVideosPresenter presenter;
 
 	@Override
@@ -44,6 +45,8 @@ public class PersonelVideosActivity extends Activity implements
 		returnButton = findViewById(R.id.title_bar_left_btn);
 		mTitleBar = (TextView) findViewById(R.id.title_bar_center_tv);
 		listView = (ListView) findViewById(R.id.personel_vidoes_list_view);
+		selectModeLy  = findViewById(R.id.video_select_mode_ly);
+		
 		adapter = new LocalAdapter();
 		listView.setAdapter(adapter);
 		returnButton.setOnClickListener(this);
@@ -141,6 +144,16 @@ public class PersonelVideosActivity extends Activity implements
 		}
 	}
 
+	
+	public void updateSelectMode(boolean flag) {
+		if (flag) {
+			selectModeLy.setVisibility(View.VISIBLE);
+		} else {
+			selectModeLy.setVisibility(View.GONE);
+		}
+	}
+	
+	
 	// /////////////////////////////////////presenter//////////////
 
 	@Override
@@ -154,6 +167,15 @@ public class PersonelVideosActivity extends Activity implements
 		super.onDestroy();
 		presenter.onUIDestroyed();
 	}
+	
+	
+
+	@Override
+	public void onBackPressed() {
+		presenter.onReturnBtnClicked();
+	}
+
+
 
 	class LocalAdapter extends BaseAdapter {
 

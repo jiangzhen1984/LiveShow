@@ -16,9 +16,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title_bar_ly"
-        android:divider="@null"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="true"
+        android:divider="@null" >
     </ListView>
+
+    <RelativeLayout
+        android:id="@+id/video_select_mode_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:alpha=".4"
+        android:background="#000000" >
+
+        <ImageView
+            android:id="@+id/video_item_share_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:padding="15dp"
+            android:src="@drawable/video_item_delete_btn" />
+
+        <ImageView
+            android:id="@+id/video_item_delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:padding="15dp"
+            android:src="@drawable/video_item_share_btn" />
+    </RelativeLayout>
 
 </RelativeLayout>

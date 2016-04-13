@@ -18,6 +18,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 	List<UserVideo>  videoList;
 	UserService us;
 	Context context;
+	private boolean mode;
 
 	public interface PersonelVideosPresenterUI {
 
@@ -32,6 +33,8 @@ public class PersonelVideosPresenter extends BasePresenter {
 		public void updateItemRightShot(Object obj,  Bitmap screenShot, String time, Object tag);
 		
 		public void updateItemSelected(boolean select, View view);
+		
+		public void updateSelectMode(boolean flag);
 		
 	}
 
@@ -62,6 +65,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 	public void onUICreated() {
 		ui.updateTitle();
 		ui.refreshListView();
+		ui.updateSelectMode(mode);
 	}
 
 	@Override
@@ -71,7 +75,13 @@ public class PersonelVideosPresenter extends BasePresenter {
 	}
 
 	public void returnButtonClicked() {
-		ui.doFinish();
+		if (mode) {
+			mode = false;
+			ui.updateSelectMode(mode);
+			//TODO clear all selected item
+		} else {
+			ui.doFinish();
+		}
 	}
 	
 	
@@ -124,6 +134,10 @@ public class PersonelVideosPresenter extends BasePresenter {
 	
 	
 	public void onVideoItemLongClicked(Object tag, View view) {
+		if (!mode) {
+			mode = true;
+			ui.updateSelectMode(mode);
+		}
 		UserVideo uv = (UserVideo)tag;
 		if (!uv.select) {
 			ui.updateItemSelected(true, view);
