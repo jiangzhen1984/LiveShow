@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 
 import com.V2.jni.AppShareRequest;
@@ -66,6 +67,13 @@ public class MainApplication extends Application {
 		initGloblePath();
 		
 		String path = GlobalConfig.getGlobalPath();
+		File ro = new File(path);
+		if (!ro.exists()) {
+			boolean ret = ro.mkdirs();
+			V2Log.i(" create  dir " + ro.getAbsolutePath() + "  " + ret);
+		}
+		ro.setWritable(true);
+		
 		File pa = new File(GlobalConfig.getGlobalUserAvatarPath());
 		if (!pa.exists()) {
 			boolean res = pa.mkdirs();
@@ -335,6 +343,12 @@ public class MainApplication extends Application {
 				temp.renameTo(target);
 			} else {
 				V2Log.e(TAG, "Create folder that name is 'v2tech' failed! The application can't run!");
+				GlobalConfig.SDCARD_GLOBLE_PATH = 	Environment.getExternalStorageDirectory()
+						.getAbsolutePath();
+				saveData = GlobalConfig.SDCARD_GLOBLE_PATH;
+				target = new File(saveData, GlobalConfig.DATA_SAVE_FILE_NAME);
+				target.mkdirs();
+			
 			}
 		}
 	}
@@ -424,6 +438,27 @@ public class MainApplication extends Application {
 		String contentCFG = "<v2platform><C2SProxy><ipv4 value=''/><tcpport value=''/></C2SProxy></v2platform>";
 
 		OutputStream os1 = null;
+		try {
+			os1 = new FileOutputStream(cfgFile);
+			os1.write(contentCFG.getBytes());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (os1 != null) {
+				try {
+					os1.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		cfgFile = new File(GlobalConfig.getGlobalPath(), GlobalConfig.DEFAULT_CONFIG_FILE);
+		contentCFG = "<v2platform><C2SProxy><ipv4 value=''/><tcpport value=''/></C2SProxy></v2platform>";
+
 		try {
 			os1 = new FileOutputStream(cfgFile);
 			os1.write(contentCFG.getBytes());

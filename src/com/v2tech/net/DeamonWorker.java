@@ -334,7 +334,16 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		public void run() {
 			while (cs != ConnectionState.CONNECTED) {
-				Log.i("ReaderChannel", "try to reconnect====>" );
+				Log.i("ReaderChannel", "try to reconnect====>" + cs);
+				if (st == WorkerState.RUNNING || (deamon != null && deamon.isAlive())) {
+					Log.i("ReaderChannel", "try to disconnect====>" + st +"  "+ deamon);
+					disconnect();
+					try {
+						wait(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				connect(host, port);
 				try {
 					wait(30000);

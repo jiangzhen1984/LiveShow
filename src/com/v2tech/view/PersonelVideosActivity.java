@@ -61,7 +61,7 @@ public class PersonelVideosActivity extends Activity implements
 		int id = v.getId();
 		switch (id) {
 		case R.id.title_bar_left_btn:
-			presenter.returnButtonClicked();
+			presenter.onReturnBtnClicked();
 			break;
 		default:
 			ImageBind ib = (ImageBind) v.getTag();
@@ -90,42 +90,81 @@ public class PersonelVideosActivity extends Activity implements
 
 	public void updateItemLeftShot(Object obj, Bitmap screenShot, String time,
 			Object tag) {
-		((LocalBind) obj).left.setImageBitmap(screenShot);
-		((LocalBind) obj).leftTime.setText(time);
-		((LocalBind) obj).leftly.setTag(new ImageBind(tag));
+		LocalBind lb = (LocalBind) obj;
+		lb.left.setImageBitmap(screenShot);
+		lb.leftTime.setText(time);
+		if (lb.leftly.getTag() != null) {
+			((ImageBind)(lb.leftly.getTag())).tag = tag;
+		} else {
+			
+			lb.leftly.setTag(new ImageBind(tag));
+		}
 	}
 
 	public void updateItemCenterShot(Object obj, Bitmap screenShot,
 			String time, Object tag) {
-		((LocalBind) obj).center.setImageBitmap(screenShot);
-		((LocalBind) obj).centerTime.setText(time);
-		((LocalBind) obj).centerly.setTag(new ImageBind(tag));
+		LocalBind lb = (LocalBind) obj;
+		lb.center.setImageBitmap(screenShot);
+		lb.centerTime.setText(time);
+		if (lb.centerly.getTag() != null) {
+			((ImageBind)(lb.centerly.getTag())).tag = tag;
+		} else {
+			
+			lb.centerly.setTag(new ImageBind(tag));
+		}
 	}
 
 	public void updateItemRightShot(Object obj, Bitmap screenShot, String time,
 			Object tag) {
-		((LocalBind) obj).right.setImageBitmap(screenShot);
-		((LocalBind) obj).rightTime.setText(time);
-		((LocalBind) obj).rightly.setTag(new ImageBind(tag));
+		LocalBind lb = (LocalBind) obj;
+		lb.right.setImageBitmap(screenShot);
+		lb.rightTime.setText(time);
+		if (lb.rightly.getTag() != null) {
+			((ImageBind)(lb.rightly.getTag())).tag = tag;
+		} else {
+			
+			lb.rightly.setTag(new ImageBind(tag));
+		}
 	}
 
 	public void refreshListView() {
 		this.adapter.notifyDataSetChanged();
+	}
+	
+	public void updateItemSelected(boolean select, Object lb, int type) {
+		if (lb instanceof LocalBind) {
+			if (type == PersonelVideosPresenter.ITEM_POS_LEFT) {
+				updateItemSelected(select, ((LocalBind) lb).leftly);
+			} else if (type == PersonelVideosPresenter.ITEM_POS_CENTER) {
+				updateItemSelected(select, ((LocalBind) lb).centerly);
+			} else if (type == PersonelVideosPresenter.ITEM_POS_RIGHT) {
+				updateItemSelected(select, ((LocalBind) lb).rightly);
+			}
+		}
 	}
 
 	public void updateItemSelected(boolean select, View view) {
 		ImageBind ib = (ImageBind) view.getTag();
 		RelativeLayout pr = (RelativeLayout) view;
 		if (select) {
-			ImageView iv = new ImageView(this);
-			iv.setImageResource(R.drawable.video_screen_conver);
-			iv.setAlpha(0.4F);
-			ib.conver = iv;
-			RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			rl.addRule(RelativeLayout.CENTER_IN_PARENT);
-			pr.addView(iv, rl);
+			if (ib.conver != null) {
+				if (ib.conver.isAttachedToWindow()) {
+					return;
+				} else {
+					pr.addView(ib.conver);
+				}
+			} else {
+				ImageView iv = new ImageView(this);
+				iv.setImageResource(R.drawable.video_screen_conver);
+				iv.setAlpha(0.4F);
+				ib.conver = iv;
+				RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				rl.addRule(RelativeLayout.CENTER_IN_PARENT);
+				pr.addView(iv, rl);
+			}
+			
 			
 			ImageView iv1 = new ImageView(this);
 			iv1.setImageResource(R.drawable.video_selected_icon);
@@ -137,10 +176,12 @@ public class PersonelVideosActivity extends Activity implements
 			pr.addView(iv1, rl1);
 
 		} else {
-			pr.removeView(ib.conver);
-			pr.removeView(ib.icon);
-			ib.conver = null;
-			ib.icon = null;
+			if (ib.conver != null) {
+				pr.removeView(ib.conver);
+			}
+			if (ib.icon != null) {
+				pr.removeView(ib.icon);
+			}
 		}
 	}
 

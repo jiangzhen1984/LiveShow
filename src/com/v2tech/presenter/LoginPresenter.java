@@ -135,7 +135,7 @@ public class LoginPresenter extends BasePresenter {
 	}
 	
 	
-	private void handleLoginCallback(RequestLogInResponse resp) {
+	private void handleLoginCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			GlobalHolder.getInstance().getCurrentUser().isNY = false;
 			ui.doLogedIn();
@@ -167,7 +167,7 @@ public class LoginPresenter extends BasePresenter {
 				doGetCodeInBack();
 				break;
 			case LOGIN_CALLBACK:
-				handleLoginCallback((RequestLogInResponse)msg.obj);
+				handleLoginCallback((JNIResponse)msg.obj);
 				break;
 			}
 		}

@@ -15,6 +15,10 @@ import com.v2tech.vo.UserVideo;
 
 public class PersonelVideosPresenter extends BasePresenter {
 	
+	public static final int ITEM_POS_LEFT = 1;
+	public static final int ITEM_POS_CENTER = 2;
+	public static final int ITEM_POS_RIGHT = 3;
+	
 	List<UserVideo>  videoList;
 	UserService us;
 	Context context;
@@ -33,6 +37,8 @@ public class PersonelVideosPresenter extends BasePresenter {
 		public void updateItemRightShot(Object obj,  Bitmap screenShot, String time, Object tag);
 		
 		public void updateItemSelected(boolean select, View view);
+		
+		public void updateItemSelected(boolean select, Object bind, int type);
 		
 		public void updateSelectMode(boolean flag);
 		
@@ -74,17 +80,24 @@ public class PersonelVideosPresenter extends BasePresenter {
 		us.clearCalledBack();
 	}
 
-	public void returnButtonClicked() {
+	
+	
+	@Override
+	public void onReturnBtnClicked() {
 		if (mode) {
 			mode = false;
 			ui.updateSelectMode(mode);
+			//
+			for (UserVideo uv : videoList) {
+				uv.select = false;
+			}
+			ui.refreshListView();
 			//TODO clear all selected item
 		} else {
 			ui.doFinish();
 		}
 	}
-	
-	
+
 	public void doUpdateView(Object obj, int position) {
 		int size = videoList.size();
 		int idx = position * 3;
@@ -95,6 +108,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 			String minuteStr = minute >= 10 ?  minute +"" : "0" + minute;
 			String secondStr = second >= 10 ?  second +"" : "0" + second;
 			ui.updateItemLeftShot(obj, bm, minuteStr +" :" + secondStr,   uv);
+			ui.updateItemSelected(uv.select, obj, ITEM_POS_LEFT);
 		}
 		
 		if ( idx + 1 < size) {
@@ -104,6 +118,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 			String minuteStr = minute >= 10 ?  minute +"" : "0" + minute;
 			String secondStr = second >= 10 ?  second +"" : "0" + second;
 			ui.updateItemCenterShot(obj, bm1,  minuteStr +" :" + secondStr, uv);
+			ui.updateItemSelected(uv.select, obj, ITEM_POS_CENTER);
 		}
 		
 		if ( idx + 2 < size) {
@@ -113,6 +128,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 			String minuteStr = minute >= 10 ?  minute +"" : "0" + minute;
 			String secondStr = second >= 10 ?  second +"" : "0" + second;
 			ui.updateItemRightShot(obj, bm2,  minuteStr +" :" + secondStr, uv);
+			ui.updateItemSelected(uv.select, obj, ITEM_POS_RIGHT);
 		}
 	}
 
