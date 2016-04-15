@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -34,19 +33,14 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
-import com.v2tech.widget.VideoShowFragment;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
-	private static final int REQUEST_LOGIN_ACTIVITY_CODE_FOR_SHARE = 102;
-	private static final int REQUEST_PERSONAL_ACTIVITY = 103;
+	private static final int REQUEST_PERSONAL_ACTIVITY = 102;
 	
-	private static final String BUTTON_TAG_MAP = "map";
-	private static final String BUTTON_TAG_WORD = "word";
-
 
 	private RelativeLayout mBottomLayout;
 	// private BottomButtonLayout mBottomButtonLayout;
@@ -62,17 +56,10 @@ public class MainActivity extends FragmentActivity implements
 	private BaiduMap mBaiduMap;
 	private SurfaceView localSurfaceView;
 	
-	private boolean isSuspended;
-
 	private CameraView cv;
-	private boolean isRecording = false;
-	private boolean isInCameraView = false;
-
-	private DisplayMetrics mDisplay;
 
 
 	private ImageView mPersonalButton;
-	private String phone;
 	Conference currentLive;
 
 	
@@ -90,7 +77,6 @@ public class MainActivity extends FragmentActivity implements
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
-		mDisplay = getResources().getDisplayMetrics();
 
 		initMapviewLayout();
 		initVideoShareLayout();
@@ -138,11 +124,9 @@ public class MainActivity extends FragmentActivity implements
 		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
 
 		View button = findViewById(R.id.map_button);
-		button.setTag(BUTTON_TAG_MAP);
 		button.setOnClickListener(this);
 
 		button = findViewById(R.id.msg_button);
-		button.setTag(BUTTON_TAG_WORD);
 		button.setOnClickListener(this);
 
 		mEditText = (EditText) findViewById(R.id.edit_text);
@@ -199,7 +183,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onStop() {
 		super.onStop();
-		isSuspended = true;
 		presenter.onUIStopped();
 	}
 	
@@ -298,7 +281,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 		
 	};
-	
 	
 	
 	
@@ -427,6 +409,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 
+	
 
 	@Override
 	public boolean getRecommandationButtonState() {
@@ -551,27 +534,30 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	public void queuedMessage(final String msg) {
-		this.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mMapVideoLayout.addNewMessage(msg);
-			}
-			
-		});
-		
+		mMapVideoLayout.addNewMessage(msg);
+	}
+	
+	public void updateBalanceSum(final float num) {
+		mMapVideoLayout.updateBalanceSum(num);
 	}
 	
 	public void updateWatchNum(final int num) {
-		this.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mMapVideoLayout.updateWatcherNum(num);
-			}
-			
-		});
+		mMapVideoLayout.updateWatcherNum(num);
 		
+	}
+	
+	public void updateRendNum(final int num) {
+		mMapVideoLayout.updateRendNum(num);
+	}
+	
+	
+	
+	public void showRedBtm(boolean flag) {
+		mMapVideoLayout.showRedBtm(flag);
+	}
+	
+	public void showIncharBtm(boolean flag) {
+		mMapVideoLayout.showIncharBtm(flag);
 	}
 	
 	/////////////////////////////////////////////////////////////

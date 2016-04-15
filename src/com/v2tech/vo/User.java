@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,6 +77,8 @@ public class User implements Comparable<User> {
 	private Set<Group> mBelongsGroup;
 	private String mAvatarPath;
 	private String abbra;
+	
+	public List<User> fansList;
 
 	// This value indicate this object is dirty, construct locally without any
 	// user information
@@ -499,7 +500,6 @@ public class User implements Comparable<User> {
 
 		InputStream is = null;
 
-		DateFormat dp = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {

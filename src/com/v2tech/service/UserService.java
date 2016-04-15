@@ -3,7 +3,9 @@ package com.v2tech.service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.PropertyInfo;
@@ -68,6 +70,18 @@ public class UserService extends AbstractHandler {
 			LoginRespPacket lrp =(LoginRespPacket)p;
 			User loginUser = new User(0);
 			loginUser.nId = lrp.uid;
+			
+			if (lrp.fansList != null) {
+				List<User> fl = new ArrayList<User>(lrp.fansList.size());
+				for (LoginRespPacket.Fans f : lrp.fansList) {
+					User fUser = new User(f.id);
+					fUser.setName(f.name);
+					fUser.setSignature(f.signText);
+					fl.add(fUser);
+				}
+				loginUser.fansList = fl;
+			}
+			
 			GlobalHolder.getInstance().setCurrentUser(loginUser);
 			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
 			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",  true);

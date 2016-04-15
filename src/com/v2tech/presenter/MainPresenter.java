@@ -1,5 +1,6 @@
 package com.v2tech.presenter;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -54,7 +55,6 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MapVideoLayout;
-import com.v2tech.vo.Conference;
 import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
@@ -80,6 +80,11 @@ public class MainPresenter extends BasePresenter implements
 	private static final int ATTEND_LISTENER = 11;
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
 	private static final int MESSAGE_LISTENER = 13;
+	
+	
+	
+	private static final int UI_HANDLE_UPDATE_VIDEO_SCREEN = 1;
+	private static final int UI_HANDLE_HANDLE_NEW_MESSAGE = 2;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -128,6 +133,9 @@ public class MainPresenter extends BasePresenter implements
 	private LocationClient locationClient;
 	private boolean locating;
 	
+	
+	private Handler uiHandler;
+	
 	/////////////////////////////////////////
 	
 	public MainPresenter(Context context, MainPresenterUI ui) {
@@ -143,6 +151,8 @@ public class MainPresenter extends BasePresenter implements
 
 		currentMapCenter = new LocationWrapper();
 		currentLocation = new LocationWrapper();
+		
+		uiHandler = new UiHandler(this, ui);
 		
 	}
 
@@ -193,6 +203,14 @@ public class MainPresenter extends BasePresenter implements
 		public void queuedMessage(String msg);
 		
 		public void updateWatchNum(int num);
+		
+		public void updateRendNum(int num);
+		
+		public void showRedBtm(boolean flag);
+		
+		public void showIncharBtm(boolean flag);
+		
+		public void updateBalanceSum(final float num);
 	}
 	
 	
@@ -279,18 +297,6 @@ public class MainPresenter extends BasePresenter implements
 		}
 	}
 	
-	public void followButtonClicked() {
-		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
-			//TODO update ui
-			if (currentLive.isFollow()) {
-				ls.cancelfollow(currentLive);
-			} else {
-				ls.follow(currentLive);
-			}
-		} else {
-			ui.showError(2);
-		}
-	}
 	
 	public void liverButtonClicked() {
 		ui.showLiverPersonelUI();
@@ -519,10 +525,13 @@ public class MainPresenter extends BasePresenter implements
 		
 		//join new one
 		Live l = (Live)marker.getExtraInfo().get("live");
-		vs.requestEnterConference(l, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
-		currentLive = l;
-		ui.showDebugMsg(currentLive.getLid()+"");
-		ui.setCurrentLive(l);
+		if (l != null) {
+			vs.requestEnterConference(l, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
+			currentLive = l;
+			ui.showDebugMsg(currentLive.getLid()+"");
+			ui.setCurrentLive(l);
+			updateLiveScreen(l);
+		}
 		return true;
 	}
 	
@@ -652,26 +661,27 @@ public class MainPresenter extends BasePresenter implements
 	
 	////////////////LiverAction
 	@Override
-	public void onFavButtonClicked() {
-		// TODO Auto-generated method stub
+	public void onInchargeButtonClicked() {
 		if (currentLive == null) {
 			return;
 		}
 		
-		if (currentLive.isFollow()) {
-			ls.cancelfollow(currentLive);
-		} else {
-			ls.follow(currentLive);
-		}
-		
+		//TODO add tips call
+		currentLive.isInchr = ! currentLive.isInchr;
+		updateLiveScreen(currentLive);
 		
 	}
 
 
 	@Override
 	public void onRemButtonClicked() {
-		// TODO Auto-generated method stub
-		
+		if (currentLive == null) {
+			return;
+		}
+		ls.recommend(currentLive, currentLive.isRend());
+		currentLive.setRend(!currentLive.isRend());
+		currentLive.rendCount += (currentLive.isRend() ? 1 : -1); 
+		updateLiveScreen(currentLive);
 	}
 
 
@@ -706,10 +716,13 @@ public class MainPresenter extends BasePresenter implements
 			
 			//TODO update tag;
 			
+			
+			//TODO update screen
 		} else {
 			//join new one
 			vs.requestEnterConference(l, new MessageListener(h, WATCHING_REQUEST_CALLBACK, null));
 			currentLive = l;
+			updateLiveScreen(l);
 		}
 		
 	}
@@ -717,6 +730,16 @@ public class MainPresenter extends BasePresenter implements
 	/////////////OnVideoFragmentChangedListener	
 	
 	
+	
+	
+	private void updateLiveScreen(Live l) {
+		
+		ui.updateRendNum(l.rendCount);
+		//ui.updateWatchNum(l.watcherCount);
+		ui.showRedBtm(l.isRend());
+		ui.showIncharBtm(l.isInchr);
+		ui.updateBalanceSum(l.balanceSum);
+	}
 	
 	
 
@@ -852,7 +875,8 @@ public class MainPresenter extends BasePresenter implements
 			} else {
 				this.currentLive.getPublisher().setmUserId((rer.getConf().getCreator()));
 			}
-			ui.updateWatchNum(this.currentLive.watcherCount);
+		
+			Message.obtain(uiHandler, UI_HANDLE_UPDATE_VIDEO_SCREEN, currentLive).sendToTarget();
 			pending = true;
 		} else {
 			pending = false;
@@ -890,11 +914,7 @@ public class MainPresenter extends BasePresenter implements
 		}
 		
 	}
-	
-	
-	private void handleNewMessage(MessageInd mi) {
-		ui.queuedMessage(mi.content);
-	}
+
 	
 	
 	class LocalHandler  extends Handler {
@@ -938,11 +958,46 @@ public class MainPresenter extends BasePresenter implements
 				handleAttendDevice((AsyncResult)msg.obj);
 				break;
 			case MESSAGE_LISTENER:
-				handleNewMessage((MessageInd)(((AsyncResult)msg.obj).getResult()));
+				Message.obtain(uiHandler, UI_HANDLE_HANDLE_NEW_MESSAGE, ((MessageInd)(((AsyncResult)msg.obj).getResult()))).sendToTarget();;
 				break;
 			}
 		}
 		
+	}
+	
+	
+	static class UiHandler  extends Handler {
+		
+		private WeakReference<MainPresenter> pr;
+		private WeakReference<MainPresenterUI> ui;
+		
+		
+		
+		public UiHandler(MainPresenter r,
+				MainPresenterUI i) {
+			super();
+			this.pr = new WeakReference<MainPresenter>(r);
+			this.ui = new WeakReference<MainPresenterUI>(i);
+		}
+
+
+
+		@Override
+		public void handleMessage(Message msg) {
+			int w = msg.what;
+			switch(w) {
+			case UI_HANDLE_UPDATE_VIDEO_SCREEN:
+				if (pr.get() != null) {
+					pr.get().updateLiveScreen((Live)msg.obj);
+				}
+				break;
+			case UI_HANDLE_HANDLE_NEW_MESSAGE:
+				if (ui.get() != null) {
+					ui.get().queuedMessage(((MessageInd)msg.obj).content);
+				}
+				break;
+			}
+		}
 	}
 	
 	

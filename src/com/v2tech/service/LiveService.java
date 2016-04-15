@@ -25,7 +25,6 @@ import com.V2.jni.ind.VideoCommentInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
-import com.v2tech.net.lv.FollowReqPacket;
 import com.v2tech.net.lv.LivePublishReqPacket;
 import com.v2tech.net.lv.LivePublishRespPacket;
 import com.v2tech.net.lv.LiveQueryReqPacket;
@@ -165,17 +164,6 @@ public class LiveService extends AbstractHandler {
 		if (!resp.getHeader().isError()) {
 			l.setNid(((LivePublishRespPacket)resp).nvid);
 		}
-	}
-	
-	
-	public void follow(Live l) {
-		l.setFollow(true);
-		DeamonWorker.getInstance().request(new FollowReqPacket(l.getPublisher().getmUserId()));
-	}
-	
-	public void cancelfollow(Live l) {
-		l.setFollow(false);
-		DeamonWorker.getInstance().request(new FollowReqPacket(l.getPublisher().getmUserId(), false));
 	}
 	
 	

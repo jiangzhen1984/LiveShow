@@ -38,6 +38,7 @@ import com.V2.jni.WBRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
 import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.LogCollectionWorker;
 import com.v2tech.net.lv.PacketTransformer;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
@@ -100,6 +101,13 @@ public class MainApplication extends Application {
 					+ res);
 		}
 
+		File crashPath = new File(GlobalConfig.getGlobalCrashPath());
+		if (!crashPath.exists()) {
+			boolean res = crashPath.mkdirs();
+			V2Log.i(" create crash dir " + crashPath.getAbsolutePath() + "  "
+					+ res);
+		}
+		
 		
 
 		initGloblePath();
@@ -145,61 +153,13 @@ public class MainApplication extends Application {
 		
 		
 		DeamonWorker.getInstance().setPacketTransformer(new PacketTransformer());
-		DeamonWorker.getInstance().connect("115.28.100.110", 9999);
+		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9999);
+		new LogCollectionWorker().start();
+		
+		
 	}
 
 
-	private void initConfFile() {
-		// Initialize global configuration file
-
-		File optionsFile = new File(GlobalConfig.getGlobalPath()
-				+ "/log_options.xml");
-		{
-			String content = "<xml><path>log</path><v2platform><outputdebugstring>0</outputdebugstring><level>5</level><basename>v2platform</basename><path>log</path><size>1024</size></v2platform></xml>";
-			OutputStream os = null;
-			try {
-				os = new FileOutputStream(optionsFile);
-				os.write(content.getBytes());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (os != null) {
-					try {
-						os.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-		{
-			File cfgFile = new File(GlobalConfig.getGlobalPath()
-					+ "/v2platform.cfg");
-			String contentCFG = "<v2platform><C2SProxy><ipv4 value=''/><tcpport value=''/></C2SProxy></v2platform>";
-
-			OutputStream os = null;
-			try {
-				os = new FileOutputStream(cfgFile);
-				os.write(contentCFG.getBytes());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (os != null) {
-					try {
-						os.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-	}
 
 	@Override
 	public void onTerminate() {

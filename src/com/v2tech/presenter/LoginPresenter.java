@@ -9,7 +9,6 @@ import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
-import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.vo.User;
 
 public class LoginPresenter extends BasePresenter {
@@ -120,8 +119,6 @@ public class LoginPresenter extends BasePresenter {
 		String code = ui.getCodeText();
 		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
 		ui.showLogingInProgress();
-		
-	//	handleLoginCallback(new RequestLogInResponse(new User(111), JNIResponse.Result.SUCCESS));
 	}
 	
 	

@@ -72,8 +72,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private Operation mOper = Operation.NONE;
 	private boolean fireFlyingdown = false;
 	private ImageView favButton;
+	private ImageView inchargeButton;
 	private LinearLayout notificationLayout;
-	private TextView watcherView;
+	private TextView inchargeView;
+	private TextView recdCountView;
 	
 	private OnNotificationClickedListener mNotificationClickedListener;
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -161,9 +163,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private void initIcons() {
 		
 		View rightSideLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, null);
-		favButton = (ImageView)rightSideLayout.findViewById(R.id.recommendation_button);
-		
-		 watcherView = (TextView)rightSideLayout.findViewById(R.id.watcher_count_tv);
+		favButton = (ImageView) rightSideLayout
+				.findViewById(R.id.recommendation_button);
+		inchargeButton = (ImageView) rightSideLayout
+				.findViewById(R.id.incharge_button);
+
+		recdCountView = (TextView) rightSideLayout
+				.findViewById(R.id.recommendation_count_tv);
+		inchargeView = (TextView) rightSideLayout
+				.findViewById(R.id.balance_count_tv);
 		
 
 		RelativeLayout.LayoutParams rightSideLayoutParm = new RelativeLayout.LayoutParams(
@@ -186,6 +194,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		mDragLayout.addView(bottomLayout, bottomLayoutParm);
 		
 		favButton.setOnClickListener(this);
+		inchargeButton.setOnClickListener(this);
 		publisherButton.setOnClickListener(this);
 		
 		
@@ -464,8 +473,32 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	}
 	
 	
+	public void updateRendNum(int num) {
+		recdCountView.setText(num+"");
+	}
+	
 	public void updateWatcherNum(int num) {
-		watcherView.setText(num+"");
+		recdCountView.setText(num+"");
+	}
+	
+	public void updateBalanceSum(float num) {
+		inchargeView.setText(num+"");
+	}
+	
+    public void showRedBtm(boolean flag) {
+		if (flag) {
+			favButton.setImageResource(R.drawable.unrecommendation_button);
+		} else {
+			favButton.setImageResource(R.drawable.recommendation_button);
+		}
+	}
+	
+	public void showIncharBtm(boolean flag) {
+		if (flag) {
+			inchargeButton.setImageResource(R.drawable.unfollow_button);
+		} else {
+			inchargeButton.setImageResource(R.drawable.follow_button);
+		}
 	}
 	
 	
@@ -729,6 +762,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 			break;
 		case R.id.recommendation_button:
 			liverAction.onRemButtonClicked();
+			break;
+		case R.id.incharge_button:
+			liverAction.onInchargeButtonClicked();
 			break;
 		}
 		

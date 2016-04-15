@@ -73,6 +73,10 @@ public class GlobalConfig {
 	public static String getGlobalDataBasePath() {
 		return getGlobalPath() + "/Users/" + LOGIN_USER_ID;
 	}
+	
+	public static String getGlobalCrashPath() {
+		return getGlobalPath() + "/cl/";
+	}
 
 	public static long getGlobalServerTime() {
 		return (((System.currentTimeMillis() - GlobalConfig.LOCAL_TIME) / 1000) + GlobalConfig.SERVER_TIME) * 1000;

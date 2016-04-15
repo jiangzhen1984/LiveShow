@@ -17,7 +17,7 @@
             android:id="@+id/recommendation_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123"
+            android:text="0"
             android:textColor="@color/video_right_border_text_color"
             android:textSize="@dimen/video_right_border_text_size" />
 
@@ -42,15 +42,15 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/watcher_count_tv"
+            android:id="@+id/balance_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123"
+            android:text="0"
             android:textColor="@color/video_right_border_text_color"
             android:textSize="@dimen/video_right_border_text_size" />
 
         <ImageView
-            android:id="@+id/follow_button"
+            android:id="@+id/incharge_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

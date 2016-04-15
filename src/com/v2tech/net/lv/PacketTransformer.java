@@ -318,6 +318,32 @@ public class PacketTransformer implements Transformer<Packet, String> {
 				lrp.uid = Long.parseLong(strId);
 			}
 			
+			if (!extraVistorType(str)) {
+				//TODO ADD fans
+				Document doc = XmlAttributeExtractor.buildDocument(str);
+				if (doc != null) {
+					NodeList nl = doc.getElementsByTagName("fans");
+					Element ve;
+					LoginRespPacket.Fans fan;
+					int c = nl.getLength();
+					List<LoginRespPacket.Fans> list = new ArrayList<LoginRespPacket.Fans>(c);
+					for (int i = 0; i < c; i++) {
+						ve = (Element)nl.item(i);
+						fan = lrp.new Fans();
+						fan.id = Long.parseLong(ve.getAttribute("id"));
+						fan.phone = ve.getAttribute("phone");
+						fan.name = ve.getAttribute("name");
+						fan.signText = ve.getAttribute("signText");
+						fan.headurl = ve.getAttribute("headurl");
+						fan.type = ve.getAttribute("type");
+						list.add(fan);
+					}
+					
+					lrp.fansList = list;
+				}
+				
+			}
+			
 		} 
 
 		return lrp;
@@ -440,6 +466,16 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	private boolean extraResult(String str) {
 		Pattern p = Pattern.compile("(type=\"success\")");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean extraVistorType(String str) {
+		Pattern p = Pattern.compile("(type=\"visitor\")");
 		Matcher m = p.matcher(str);
 		if (m.find()) {
 			return true;

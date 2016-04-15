@@ -1,7 +1,6 @@
 package com.v2tech.vo;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import com.V2.jni.util.EscapedcharactersProcessing;
 import com.v2tech.service.GlobalHolder;
@@ -20,22 +19,21 @@ public class Live implements Serializable, Comparable<Live>{
 	
 	private String url;
 	
-	private Set<User> followers;
-	
 	private double lat;
 	
 	private double lng;
 	
 	private boolean canRemove;
 	
-	private boolean isFollow;
-	
 	private boolean rend;
 	
+	public boolean isInchr;
+	
+	public int rendCount;
 	
 	public int watcherCount;
 	
-	
+	public float balanceSum;
 	
 	private long nid;
 	
@@ -138,20 +136,6 @@ public class Live implements Serializable, Comparable<Live>{
 	}
 	
 	
-
-
-
-	public boolean isFollow() {
-		return isFollow;
-	}
-
-
-	public void setFollow(boolean isFollow) {
-		this.isFollow = isFollow;
-	}
-
-	
-	 
 
 	public long getLid() {
 		return lid;
