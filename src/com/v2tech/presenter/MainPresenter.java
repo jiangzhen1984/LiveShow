@@ -97,6 +97,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int BOTTOM_LAYOUT_SHOW = 1 << 8;
 	private static final int KEYBOARD_SHOW = 1 << 9;
 	private static final int MAP_CENTER_UPDATE = 1 << 10;
+	private static final int LIVER_INTERACTION_LAY_SHOW = 1 << 11;
 	
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -211,6 +212,8 @@ public class MainPresenter extends BasePresenter implements
 		public void showIncharBtm(boolean flag);
 		
 		public void updateBalanceSum(final float num);
+		
+		public void showLiverInteractionLayout(boolean flag);
 	}
 	
 	
@@ -687,8 +690,13 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onLiverButtonClicked() {
-		// TODO Auto-generated method stub
-		
+		if ((this.videoScreenState & LIVER_INTERACTION_LAY_SHOW) == LIVER_INTERACTION_LAY_SHOW) {
+			videoScreenState &= ~LIVER_INTERACTION_LAY_SHOW;
+			ui.showLiverInteractionLayout(false);
+		} else {
+			videoScreenState |= LIVER_INTERACTION_LAY_SHOW;
+			ui.showLiverInteractionLayout(true);
+		}
 	}
 	
 	

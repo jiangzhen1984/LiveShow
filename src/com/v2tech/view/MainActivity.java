@@ -500,7 +500,10 @@ public class MainActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		
 	}
-
+	public void showLiverInteractionLayout(boolean flag) {
+		this.mMapVideoLayout.showLiverInteractionLy(flag);
+		showBottomLayout(!flag);
+	}
 	
 
 

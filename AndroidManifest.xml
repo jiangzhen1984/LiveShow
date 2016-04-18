@@ -192,26 +192,32 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        
         <activity
             android:name="com.v2tech.view.SettingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        
-          <activity
+        <activity
             android:name="com.v2tech.view.PersonelWalletActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-<activity
+        <activity
             android:name="com.v2tech.view.PersonelVideosActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        
+         <activity
+            android:name="com.v2tech.view.FansFollowActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+
         <service android:name="com.v2tech.view.JNIService" >
         </service>
         <service

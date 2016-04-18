@@ -16,6 +16,9 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +35,7 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.CircleViewPager;
+import com.v2tech.widget.LiverInteractionLayout;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoShowFragmentAdapter;
@@ -57,7 +61,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private CameraShape mNotificaionShare;
 	private MessageMarqueeLinearLayout mMsgLayout;
 	private RelativeLayout mDragLayout;
-	
+	private LiverInteractionLayout lierInteractionLayout;
 	
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
@@ -136,8 +140,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		
 		mDragLayout = new RelativeLayout(getContext());
 		
+		lierInteractionLayout = new LiverInteractionLayout(getContext());
+		lierInteractionLayout.setVisibility(View.GONE);
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
+		this.addView(lierInteractionLayout);
 		this.addView(mMsgLayout);
 		this.addView(mNotificaionShare);
 		this.addView(mDragLayout);
@@ -502,6 +509,30 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	}
 	
 	
+	public void showLiverInteractionLy(boolean flag) {
+		if (flag && lierInteractionLayout.getVisibility() == View.GONE) {
+			this.mMapView.onPause();
+			lierInteractionLayout.setVisibility(View.VISIBLE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					getContext(), R.animator.liver_interaction_from_down_to_up_in);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			lierInteractionLayout.startAnimation(tabBlockHolderAnimation);
+		} else if (!flag  && lierInteractionLayout.getVisibility() == View.VISIBLE)  {
+			lierInteractionLayout.setVisibility(View.GONE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					getContext(), R.animator.liver_interaction_from_up_to_down_out);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			lierInteractionLayout.startAnimation(tabBlockHolderAnimation);
+			this.mMapView.onResume();
+		}
+	}
+	
+	
+	
 	private void removeLiveNotificaiton(NotificationWrapper wr) {
 		notificationList.remove(wr);
 		updateNotificationLayout(wr.v, 0);
@@ -794,6 +825,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		mMsgLayout.layout(left, realTop, right, realBottom);
 		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		mDragLayout.layout(left, realTop, right, realBottom);
+		lierInteractionLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		
 	}
 
 	@Override

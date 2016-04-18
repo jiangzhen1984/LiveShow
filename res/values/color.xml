@@ -2,6 +2,8 @@
 <resources>
 
     <color name="titlebar_bg">#999999</color>
+    <color name="common_sep_line">#dcdcdc</color>
+    
     <color name="bottom_bg">#1b93c6</color>
     <color name="common_return_button_color">#057aff</color>
     <color name="common_confirm_button_color">#057aff</color>
@@ -27,7 +29,7 @@
 
     
     <color name="login_reg_title_bar_bg">#ffffff</color>
-    <color name="login_reg_layout_bg">#f2f2f2</color>
+    <color name="login_reg_layout_bg">#f0eff5</color>
     
      <color name="bottom_button_text_color">#000000</color>
      <color name="bottom_search_text_color">#b0acab</color>
@@ -48,11 +50,17 @@
      
       <color name="personel_show_text_color">#000000</color>
       <color name="personel_show_text_value_color">#c0c0c0</color>
-      <color name="personel_user_item_line_color">#c0c0c0</color>
+      <color name="personel_user_item_line_color">#dcdcdc</color>
       <color name="personel_user_item_bg">#f2f2f2</color>
       
       
-       <color name="personel_setting_ly_bg">#f2f2f2</color>
+       <color name="personel_setting_ly_bg">#f0eff5</color>
        <color name="personel_setting_text_color">#000000</color>
+       
+       
+       <color name="liver_iteraction_ly_bg">#f0eff5</color>
+       <color name="liver_iteraction_personel_box_bg">#ffffff</color>
+       
+       <color name="fans_follow_activity_layout_bg">#f0eff5</color>
        
 </resources>

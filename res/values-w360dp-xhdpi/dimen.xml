@@ -15,10 +15,11 @@
     <dimen name="login_activity_main_margin_left">25dp</dimen>
     <dimen name="login_activity_main_margin_right">25dp</dimen>
     <dimen name="login_activity_main_margin_top">25dp</dimen>
-    <dimen name="login_text_size">13sp</dimen>
-    <dimen name="login_input_text_size">16sp</dimen>
-    <dimen name="login_text_verfication_code_size">16sp</dimen>
-    <dimen name="login_text_start_button_size">16sp</dimen>
+    <dimen name="login_text_size">14sp</dimen>
+    <dimen name="login_input_text_size">15sp</dimen>
+    <dimen name="login_text_verfication_code_size">15sp</dimen>
+    <dimen name="login_text_start_button_size">15sp</dimen>
+    <dimen name="personel_activity_box_text_size">15sp</dimen>
     <dimen name="personel_root_margin_right">80dp</dimen>
     <dimen name="personel_show_avatar_margin_right">30dp</dimen>
     <dimen name="personel_show_text_size">17sp</dimen>

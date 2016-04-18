@@ -1,43 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/title_bar_bg" >
+    android:layout_height="wrap_content" >
 
-    <ImageView
-        android:id="@+id/title_bar_left_btn"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/action_bar_main_ly"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:padding="10dp"
-        android:src="@drawable/title_bar_return_btn" />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/title_bar_bg" >
 
-    <TextView
-        android:id="@+id/title_bar_center_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/title_bar_left_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/title_bar_left_icon_margin_left"
+            android:layout_marginStart="@dimen/title_bar_left_icon_margin_left"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/title_bar_return_btn" />
+
+        <TextView
+            android:id="@+id/title_bar_center_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="Logo"
+            android:textSize="@dimen/title_bar_text_size" />
+
+        <TextView
+            android:id="@+id/title_bar_right_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:text="Logo"
+            android:textSize="@dimen/title_bar_text_size"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/action_bar_main_ly"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:text="Logo"
-        android:textSize="@dimen/title_bar_text_size" />
-
-    <TextView
-        android:id="@+id/title_bar_right_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp"
-        android:text="Logo"
-        android:textSize="@dimen/title_bar_text_size"
-        android:visibility="invisible" />
+        android:background="@+color/common_sep_line"
+        android:orientation="vertical" >
+    </LinearLayout>
 
 </RelativeLayout>

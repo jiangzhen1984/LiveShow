@@ -13,13 +13,6 @@
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
 
-    <TextView
-        android:id="@+id/title_bar_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/title_bar_ly"
-        android:background="#c0c0c0" >
-    </TextView>
 
     <TextView
         android:id="@+id/title_bar_line1"
@@ -27,7 +20,7 @@
         android:layout_height="1dp"
         android:layout_below="@+id/title_bar_ly"
         android:layout_marginTop="25dp"
-        android:background="#c0c0c0" >
+        android:background="@color/common_sep_line" >
     </TextView>
 
     <RelativeLayout
@@ -45,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
             android:src="@drawable/avatar_female" />
 
         <LinearLayout
@@ -82,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/avatar_layout"
-        android:background="#c0c0c0" >
+        android:background="@color/common_sep_line" >
     </TextView>
 
     <LinearLayout
@@ -97,7 +91,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -146,7 +140,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -194,7 +188,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -240,7 +234,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -286,7 +280,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="30dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -332,7 +326,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -380,7 +374,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -426,14 +420,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="30dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
 
         <RelativeLayout
@@ -479,7 +473,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0" >
+            android:background="@color/common_sep_line" >
         </TextView>
     </LinearLayout>
 

@@ -99,8 +99,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/start_button"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:layout_marginTop="14dp" >
 
                 <TextView
@@ -191,6 +191,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/login_bottom_other_account_text"
+                    android:textSize="@dimen/login_text_size"
                     android:textColor="@color/login_other_account_tip_color" />
 
                 <LinearLayout

@@ -15,11 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.v2tech.presenter.FansFollowingListPresenter;
+import com.v2tech.presenter.FansFollowingListPresenter.FansFollowingListPresenterUI;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
@@ -29,7 +33,7 @@ import com.v2tech.vo.User;
  * @author jiangzhen
  * 
  */
-public class FansFollowingListActivity extends Activity implements OnClickListener {
+public class FansFollowingListActivity extends Activity implements OnClickListener, OnItemClickListener, FansFollowingListPresenterUI {
 
 	private static final int TYPE_FANS = 1;
 	private static final int TYPE_FOLLOWING = 2;
@@ -43,6 +47,8 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 	private ListView mListView;
 	private LocalAdapter mAdapter;
 	private List<User> mList;
+	
+	private FansFollowingListPresenter presenter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +59,11 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 		ht.start();
 
 		
+		presenter = new FansFollowingListPresenter(this, this);
+		
 		mTitle =  (TextView)findViewById(R.id.fans_following_title);
 		mListView = (ListView)findViewById(R.id.fans_following_listview);
+		mListView.setOnItemClickListener(this);
 		
 		findViewById(R.id.return_button).setOnClickListener(this);
 		
@@ -99,9 +108,18 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 	}
 
 
+	
+	
 
 
 	
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		presenter.onItemClicked(position, id);
+	}
+
 
 	@Override
 	public void finish() {
@@ -122,7 +140,7 @@ public class FansFollowingListActivity extends Activity implements OnClickListen
 	
 
 
-
+	//FIXME me
 	private Handler localHandler = new Handler() {
 
 		@Override

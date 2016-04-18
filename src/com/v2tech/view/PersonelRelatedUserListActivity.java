@@ -1,11 +1,13 @@
 package com.v2tech.view;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -83,6 +85,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		lb.btn = (ImageView)view.findViewById(R.id.personel_item_cf_btn);
 		lb.btn.setOnClickListener(this);
 		lb.gender = (ImageView)view.findViewById(R.id.personel_item_gender);
+		view.setOnClickListener(l);
 		return view;
 	}
 
@@ -95,6 +98,17 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	
 	
 	
+	private OnClickListener l = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Intent i = new Intent();
+			i.setClass(PersonelRelatedUserListActivity.this, FansFollowActivity.class);
+			PersonelRelatedUserListActivity.this.startActivity(i);
+			
+		}
+		
+	};
 	
 	
 	public void updateItemAvatar(View parent, Bitmap bm) {
