@@ -171,13 +171,13 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onPause() {
 		super.onPause();
-		mMapView.onPause();
+	//	mMapView.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mMapView.onResume();
+	//	mMapView.onResume();
 	}
 
 	@Override

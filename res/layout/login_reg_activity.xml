@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    tools:context="com.v2tech.view.LoginActivity" >
 
     <include
         android:id="@+id/title_bar_ly"
@@ -78,6 +80,7 @@
 
             <TextView
                 android:id="@+id/start_button"
+                style="@style/mict"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/edt_user_name"
@@ -110,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/login_action_text_1"
-                     android:textColor="#808080"
+                    android:textColor="#808080"
                     android:textSize="@dimen/login_text_size" />
 
                 <TextView
@@ -118,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/login_action_text_2"
-                     android:textColor="#808080"
+                    android:textColor="#808080"
                     android:textSize="@dimen/login_text_size" />
 
                 <TextView

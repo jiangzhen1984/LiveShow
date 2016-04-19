@@ -6,6 +6,7 @@
     -->
     <style name="AppBaseTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
         <!-- API 11 theme customizations can go here. -->
+         <item name="android:fontFamily">fonts/mict.ttf</item>
     </style>
 
 </resources>

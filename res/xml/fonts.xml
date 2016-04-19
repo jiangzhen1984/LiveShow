@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<familyset>
+
+    <!-- Font with all four styles defined -->
+    <family>
+        <nameset>
+            <name>
+mict
+            </name>
+        </nameset>
+
+        <fileset>
+            <file>
+mict.ttf
+            </file>
+        </fileset>
+    </family>
+
+</familyset>

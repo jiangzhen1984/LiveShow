@@ -7,6 +7,7 @@
     -->
     <style name="AppBaseTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <!-- API 14 theme customizations can go here. -->
+         <item name="android:fontFamily">fonts/mict.ttf</item>
     </style>
 
 </resources>

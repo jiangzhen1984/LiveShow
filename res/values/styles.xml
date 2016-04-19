@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -14,11 +14,19 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+        <item name="android:fontFamily">fonts/mict.ttf</item>
+        <item name="android:typeface">normal</item>
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style> 
+    
+     <!-- Application theme. -->
+    <style name="mict" >
+        <item name="android:fontFamily">fonts/mict.ttf</item>
+        <item name="android:typeface">normal</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-    
-    
+
+
     <style name="TitleBarPopupWindowAnim">
         <item name="@android:windowEnterAnimation">@animator/translation_down_to_up_related_self</item>
         <item name="@android:windowExitAnimation">@animator/translation_up_to_down_related_self</item>
