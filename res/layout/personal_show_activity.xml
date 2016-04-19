@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/login_reg_layout_bg" >
+    android:background="@color/personel_show_layout_bg" >
 
     <include
         android:id="@+id/title_bar_ly"
@@ -27,7 +27,8 @@
         android:layout_below="@+id/title_bar_line1"
         android:layout_centerHorizontal="true"
         android:background="#ffffff"
-        android:padding="15dp" >
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp" >
 
         <ImageView
             android:id="@+id/avatar"
@@ -84,7 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <TextView
                 android:id="@+id/textView8"
@@ -119,7 +121,7 @@
                 android:layout_toStartOf="@+id/imageView9"
                 android:text="幸运草的夏天"
                 android:textColor="@color/personel_show_text_value_color"
-                android:textSize="@dimen/personel_show_text_size" />
+                android:textSize="@dimen/personel_show_text_size1" />
         </RelativeLayout>
 
         <TextView
@@ -133,7 +135,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+             android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <TextView
                 android:id="@+id/textView2"
@@ -168,7 +171,7 @@
                 android:layout_toStartOf="@+id/imageView3"
                 android:text="女"
                 android:textColor="@color/personel_show_text_value_color"
-                android:textSize="@dimen/personel_show_text_size" />
+                android:textSize="@dimen/personel_show_text_size1" />
         </RelativeLayout>
 
         <TextView
@@ -182,7 +185,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+             android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <TextView
                 android:id="@+id/textView3"
@@ -217,7 +221,7 @@
                 android:layout_toStartOf="@+id/imageView4"
                 android:text="北京"
                 android:textColor="@color/personel_show_text_value_color"
-                android:textSize="@dimen/personel_show_text_size" />
+                android:textSize="@dimen/personel_show_text_size1" />
         </RelativeLayout>
 
         <TextView
@@ -230,7 +234,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+             android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <TextView
                 android:id="@+id/textView4"
@@ -265,8 +270,13 @@
                 android:layout_toStartOf="@+id/imageView5"
                 android:text="美丽的夏天"
                 android:textColor="@color/personel_show_text_value_color"
-                android:textSize="@dimen/personel_show_text_size" />
+                android:textSize="@dimen/personel_show_text_size1" />
         </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sep_line" >
+        </TextView>
 
         <TextView
             android:layout_width="match_parent"
@@ -279,7 +289,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+             android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <TextView
                 android:id="@+id/textView5"
@@ -314,7 +325,7 @@
                 android:layout_toStartOf="@+id/imageView6"
                 android:text="凌小小"
                 android:textColor="@color/personel_show_text_value_color"
-                android:textSize="@dimen/personel_show_text_size" />
+                android:textSize="@dimen/personel_show_text_size1" />
         </RelativeLayout>
 
         <TextView
@@ -327,7 +338,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_show_item_layout_padding" >
+             android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <TextView
                 android:id="@+id/textView6"

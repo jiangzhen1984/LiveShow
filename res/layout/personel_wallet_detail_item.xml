@@ -40,6 +40,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/personel_wallet_name"
                 android:layout_marginTop="@dimen/personel_wallet_detail_item_text_margin_top1"
+                android:textSize="@dimen/personel_wallet_detail_item_date_text_size"
                 android:text="2016-04-11 13:23:23" />
 
             <TextView
@@ -49,6 +50,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:textSize="@dimen/personel_wallet_detail_item_date_text_size"
                 android:textColor="#000000"
                 android:text="-12.0" />
 
@@ -61,6 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/personel_wallet_item_ly"
-        android:background="@color/personel_user_item_line_color" />
+        android:background="@color/common_sep_line" />
 
 </RelativeLayout>

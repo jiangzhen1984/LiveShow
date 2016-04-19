@@ -12,6 +12,7 @@
         layout="@layout/action_bar" />
 
     <include
+        android:id="@+id/personel_liver_interaction_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar_ly"

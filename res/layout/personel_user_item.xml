@@ -10,8 +10,7 @@
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/personel_user_item_line_color"
-        >
+        android:background="@color/common_sep_line" >
     </TextView>
 
     <RelativeLayout
@@ -40,15 +39,35 @@
             android:layout_toEndOf="@+id/personel_item_avatar"
             android:layout_toRightOf="@+id/personel_item_avatar" >
 
-            <TextView
-                android:id="@+id/personel_item_name"
+            <LinearLayout
+                android:id="@+id/personel_item_name_ly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="凌小小"
-                android:textColor="#000000" />
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/personel_item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="凌小小"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/personel_user_item_name_text_size" />
+
+                <ImageView
+                    android:id="@+id/personel_item_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/personel_item_name"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@+id/personel_item_name"
+                    android:layout_toRightOf="@+id/personel_item_name"
+                    android:src="@drawable/personel_item_gender_male" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/personel_item_sg"
@@ -56,9 +75,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/personel_item_name"
+                android:layout_below="@+id/personel_item_name_ly"
                 android:layout_marginTop="@dimen/personel_user_item_text_margin_top1"
-                android:text="美丽的世界" />
+                android:text="美丽的世界"
+                android:textColor="@color/personel_user_item_text_cr"
+                android:textSize="@dimen/personel_user_item_singature_text_size" />
 
             <TextView
                 android:id="@+id/personel_item_cf_text"
@@ -67,31 +88,22 @@
                 android:layout_alignBottom="@+id/personel_item_sg"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:text="@string/personel_item_user_cf_text" />
+                android:text="@string/personel_item_user_cf_text"
+                android:textColor="@color/personel_user_item_text_cr"
+                android:textSize="@dimen/personel_user_item_btn_text_size" />
 
             <ImageView
                 android:id="@+id/personel_item_cf_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/personel_item_cf_text"
                 android:layout_alignLeft="@+id/personel_item_cf_text"
-                android:layout_alignStart="@+id/personel_item_cf_text"
                 android:layout_alignParentTop="true"
                 android:layout_alignRight="@+id/personel_item_cf_text"
-                android:layout_alignEnd="@+id/personel_item_cf_text"
-                android:paddingRight="3dp"
+                android:layout_alignStart="@+id/personel_item_cf_text"
                 android:paddingEnd="3dp"
+                android:paddingRight="3dp"
                 android:src="@drawable/personel_item_follow_icon" />
-
-            <ImageView
-                android:id="@+id/personel_item_gender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_toRightOf="@+id/personel_item_name"
-                android:layout_toEndOf="@+id/personel_item_name"
-                android:src="@drawable/personel_item_gender_male" />
         </RelativeLayout>
     </RelativeLayout>
 

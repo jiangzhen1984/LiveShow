@@ -34,6 +34,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/personel_wallet_item_margin_top"
             android:text="@string/personel_wallet_balance_text"
+            android:textSize="@dimen/personel_wallet_detail_btn_text_size"
             android:textColor="#000000" />
 
         <TextView
@@ -43,6 +44,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/personel_wallet_balance_item_margin_top"
             android:text="125.5"
+            android:textSize="@dimen/personel_wallet_detail_btn_text_size"
             android:textColor="#ff0000" />
 
         <TextView
@@ -56,6 +58,7 @@
             android:background="@drawable/wallet_incharge_bg"
             android:gravity="center"
             android:text="@string/personel_wallet_incharge_text"
+            android:textSize="@dimen/personel_wallet_detail_btn_text_size"
             android:textColor="#000000" />
 
         <TextView
@@ -69,6 +72,7 @@
             android:background="@drawable/wallet_withdraw_bg"
             android:gravity="center"
             android:text="@string/personel_wallet_withdraw_text"
+            android:textSize="@dimen/personel_wallet_detail_btn_text_size"
             android:textColor="#000000" />
     </LinearLayout>
 
@@ -85,6 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:textSize="@dimen/personel_wallet_detail_tips_text_size"
             android:text="@string/personel_wallet_balance_detail" />
 
         <LinearLayout

@@ -8,6 +8,8 @@ public class FansFollowPresenter extends BasePresenter {
 		public void finishMainUI();
 		
 		public void updateTitleBar();
+		
+		public void showBox();
 	}
 
 	private Context context;
@@ -25,6 +27,7 @@ public class FansFollowPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		ui.updateTitleBar();
+		ui.showBox();
 	}
 
 

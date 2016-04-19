@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.v2tech.presenter.FansFollowPresenter;
 import com.v2tech.presenter.FansFollowPresenter.FansFollowPresenterUI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.LiverInteractionLayout;
 
 /**
  * @author jiangzhen
@@ -23,7 +24,8 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 	private TextView titleBarName;
 
 	private FansFollowPresenter presenter;
-
+	private LiverInteractionLayout personelLayout;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
+		personelLayout = (LiverInteractionLayout)  findViewById(R.id.personel_liver_interaction_layout);
 
 		this.overridePendingTransition(R.animator.left_to_right_in,
 				R.animator.left_to_right_out);
@@ -92,4 +95,8 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		titleBarName.setText(R.string.personal_show_title_text);
 	}
 
+	
+	public void showBox() {
+		personelLayout.showInnerBox(true);
+	}
 }

@@ -13,13 +13,12 @@
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
 
-
     <TextView
         android:id="@+id/title_bar_line1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/title_bar_ly"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/personel_activity_box_margin_top"
         android:background="@color/common_sep_line" >
     </TextView>
 
@@ -69,6 +68,17 @@
                 android:text="153***2321"
                 android:textColor="#000000" />
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/personel_item_right_icon_margin_right"
+            android:layout_marginRight="@dimen/personel_item_right_icon_margin_right"
+            android:contentDescription="@string/empty_image_content_desc"
+            android:src="@drawable/personel_right_arrow_icon" />
     </RelativeLayout>
 
     <TextView
@@ -103,8 +113,8 @@
 
             <ImageView
                 android:id="@+id/imageView8"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -121,8 +131,8 @@
                 android:layout_toEndOf="@+id/imageView8"
                 android:layout_toRightOf="@+id/imageView8"
                 android:text="@string/personal_my_friends"
-                android:textSize="@dimen/personel_activity_box_text_size"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
 
             <ImageView
                 android:id="@+id/imageView9"
@@ -152,8 +162,8 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -170,7 +180,8 @@
                 android:layout_toEndOf="@+id/imageView2"
                 android:layout_toRightOf="@+id/imageView2"
                 android:text="@string/personal_my_follow"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -200,8 +211,8 @@
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -228,7 +239,8 @@
                 android:layout_toEndOf="@+id/imageView4"
                 android:layout_toRightOf="@+id/imageView4"
                 android:text="@string/personal_my_fans"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
         </RelativeLayout>
 
         <TextView
@@ -245,8 +257,8 @@
 
             <ImageView
                 android:id="@+id/imageView15"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -273,8 +285,15 @@
                 android:layout_toEndOf="@+id/imageView15"
                 android:layout_toRightOf="@+id/imageView15"
                 android:text="@string/personal_friends_invitation"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sep_line" >
+        </TextView>
 
         <TextView
             android:layout_width="match_parent"
@@ -284,7 +303,7 @@
         </TextView>
 
         <RelativeLayout
-             android:id="@+id/personal_wallet_btn"
+            android:id="@+id/personal_wallet_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -292,8 +311,8 @@
 
             <ImageView
                 android:id="@+id/imageView5"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -320,7 +339,8 @@
                 android:layout_toEndOf="@+id/imageView5"
                 android:layout_toRightOf="@+id/imageView5"
                 android:text="@string/personal_my_wallet"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
         </RelativeLayout>
 
         <TextView
@@ -330,7 +350,7 @@
         </TextView>
 
         <RelativeLayout
-             android:id="@+id/personal_video_btn"
+            android:id="@+id/personal_video_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -338,8 +358,8 @@
 
             <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -356,7 +376,8 @@
                 android:layout_toEndOf="@+id/imageView6"
                 android:layout_toRightOf="@+id/imageView6"
                 android:text="@string/personal_my_videos"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
 
             <ImageView
                 android:id="@+id/imageView7"
@@ -385,8 +406,8 @@
 
             <ImageView
                 android:id="@+id/imageView14"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -403,7 +424,8 @@
                 android:layout_toEndOf="@+id/imageView14"
                 android:layout_toRightOf="@+id/imageView14"
                 android:text="@string/personal_my_message"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -439,8 +461,8 @@
 
             <ImageView
                 android:id="@+id/imageView11"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personel_item_left_icon_margin_left"
                 android:layout_marginStart="@dimen/personel_item_left_icon_margin_left"
@@ -467,7 +489,8 @@
                 android:layout_toEndOf="@+id/imageView11"
                 android:layout_toRightOf="@+id/imageView11"
                 android:text="@string/personal_my_setting"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="@dimen/personel_activity_box_text_size" />
         </RelativeLayout>
 
         <TextView

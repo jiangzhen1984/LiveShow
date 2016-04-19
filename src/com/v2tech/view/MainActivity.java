@@ -501,7 +501,8 @@ public class MainActivity extends FragmentActivity implements
 		
 	}
 	public void showLiverInteractionLayout(boolean flag) {
-		this.mMapVideoLayout.showLiverInteractionLy(flag);
+		//this.mMapVideoLayout.showLiverInteractionLy(flag);
+		this.mMapVideoLayout.showRequestingConnectionLy(flag);
 		showBottomLayout(!flag);
 	}
 	

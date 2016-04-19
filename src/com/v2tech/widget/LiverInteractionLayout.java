@@ -13,7 +13,6 @@ import com.v2tech.v2liveshow.R;
 
 public class LiverInteractionLayout extends LinearLayout {
 
-	private View root;
 
 	private ImageView avatar;
 	private TextView name;
@@ -47,28 +46,26 @@ public class LiverInteractionLayout extends LinearLayout {
 	}
 
 	private void init() {
-		root = LayoutInflater.from(getContext()).inflate(
-				R.layout.liver_interaction_layout, null);
-		this.addView(root, new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
+//		root = LayoutInflater.from(getContext()).inflate(
+//				R.layout.liver_interaction_layout, null);
+//		this.addView(root, new LinearLayout.LayoutParams(
+//				LinearLayout.LayoutParams.MATCH_PARENT,
+//				LinearLayout.LayoutParams.WRAP_CONTENT));
 
-		avatar = (ImageView) root.findViewById(R.id.liver_interaction_avtar);
-		name = (TextView) root.findViewById(R.id.liver_interaction_name);
-		gender = (ImageView) root.findViewById(R.id.liver_interaction_gender);
-		level = (ImageView) root.findViewById(R.id.liver_interaction_level);
-		signature = (TextView) root
-				.findViewById(R.id.liver_interaction_signature);
-		location = (TextView) root
-				.findViewById(R.id.liver_interaction_location);
-		videos = (TextView) root.findViewById(R.id.liver_interaction_videos);
-		fans = (TextView) root.findViewById(R.id.liver_interaction_fans);
-		follows = (TextView) root.findViewById(R.id.liver_interaction_follows);
-		personelBtn = root.findViewById(R.id.liver_interaction_btn);
-		personelBtn.setOnClickListener(listener);
-		
-		innerBox = root.findViewById(R.id.liver_interaction_box_layout);
-		innerBox.setVisibility(View.GONE);
+//		avatar = (ImageView) findViewById(R.id.liver_interaction_avtar);
+//		name = (TextView) findViewById(R.id.liver_interaction_name);
+//		gender = (ImageView) findViewById(R.id.liver_interaction_gender);
+//		level = (ImageView) findViewById(R.id.liver_interaction_level);
+//		signature = (TextView)findViewById(R.id.liver_interaction_signature);
+//		location = (TextView) findViewById(R.id.liver_interaction_location);
+//		videos = (TextView) findViewById(R.id.liver_interaction_videos);
+//		fans = (TextView) findViewById(R.id.liver_interaction_fans);
+//		follows = (TextView) findViewById(R.id.liver_interaction_follows);
+//		personelBtn = findViewById(R.id.liver_interaction_btn);
+//		personelBtn.setOnClickListener(listener);
+//		
+//		innerBox = findViewById(R.id.liver_interaction_box_layout);
+//		innerBox.setVisibility(View.GONE);
 	}
 
 	public void updateAvatarImg(Bitmap bm) {
@@ -105,6 +102,9 @@ public class LiverInteractionLayout extends LinearLayout {
 
 	
 	public void showInnerBox(boolean flag) {
+		if (innerBox == null) {
+			innerBox = findViewById(R.id.liver_interaction_box_layout);
+		}
 		innerBox.setVisibility(flag? View.VISIBLE : View.GONE);
 	}
 	
