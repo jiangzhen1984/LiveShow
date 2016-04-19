@@ -2,13 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:paddingTop="30dp" >
+     >
+    
+    
+      <ImageView
+        android:id="@+id/message_marquee_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+         android:layout_marginTop="10dp"
+        android:src="@drawable/message_marquee_enable" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/message_marquee_btn"
+        android:layout_alignLeft="@+id/message_marquee_btn"
+        android:layout_alignRight="@+id/message_marquee_btn"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
         android:layout_marginEnd="@dimen/video_right_border_margin_right"
         android:layout_marginRight="@dimen/video_right_border_margin_right"
         android:orientation="vertical" >
@@ -24,7 +38,7 @@
 
         <ImageView
             android:id="@+id/recommendation_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/recommendation_button"
@@ -77,5 +91,7 @@
             android:layout_gravity="center"
             android:src="@drawable/video_share_up" />
     </LinearLayout>
+
+  
 
 </RelativeLayout>
