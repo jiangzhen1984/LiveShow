@@ -386,7 +386,7 @@ public class MainPresenter extends BasePresenter implements
 		vs.clearCalledBack();
 		ls.clearCalledBack();
 		this.h.removeMessages(REPORT_LOCATION);
-		destroyBackendThread();
+		super.onUIDestroyed();
 	}
 
 

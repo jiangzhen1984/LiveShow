@@ -51,13 +51,6 @@ public class PersonelShowPresenter extends BasePresenter {
 	}
 
 
-
-	@Override
-	public void onUIDestroyed() {
-		destroyBackendThread();
-	}
-	
-	
 	
 
 }

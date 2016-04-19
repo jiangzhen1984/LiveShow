@@ -110,6 +110,9 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		
 	};
 	
+	public void refreshDataSet() {
+		listFrag.notifyDatasetChanged();
+	}
 	
 	public void updateItemAvatar(View parent, Bitmap bm) {
 		

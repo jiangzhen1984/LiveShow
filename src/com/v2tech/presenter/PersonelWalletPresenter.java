@@ -57,7 +57,7 @@ public class PersonelWalletPresenter extends BasePresenter {
 
 	@Override
 	public void onUIDestroyed() {
-		super.destroyBackendThread();
+		super.onUIDestroyed();
 		us.clearCalledBack();
 	}
 

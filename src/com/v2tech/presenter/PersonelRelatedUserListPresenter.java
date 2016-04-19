@@ -1,11 +1,24 @@
 package com.v2tech.presenter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.FansQueryReqPacket;
+import com.v2tech.net.lv.FansQueryRespPacket;
+import com.v2tech.net.lv.FollowsQueryReqPacket;
+import com.v2tech.net.lv.FollowsQueryRespPacket;
+import com.v2tech.net.pkt.RequestPacket;
+import com.v2tech.net.pkt.ResponsePacket;
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.vo.User;
 
 public class PersonelRelatedUserListPresenter extends BasePresenter {
@@ -16,10 +29,15 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	public static final int TYPE_FRIEND_INVITATION = 4;
 	
 	
+	private static final int MSG_GET_LIST = 1;
+	
+	
 	private PersonelRelatedUserListPresenterUI ui;
 	private int type;
 	
 	List<User> userList;
+	
+	private LocalBackendHandler local;
 	
 	public interface PersonelRelatedUserListPresenterUI {
 		public void updateItemAvatar(View parent, Bitmap bm);
@@ -35,6 +53,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		public void showFollowTitle();
 		public void showFrinedInvitationTitle();
 		public void doFinish();
+		public void refreshDataSet();
 	}
 	
 	
@@ -43,14 +62,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	public PersonelRelatedUserListPresenter(int type, PersonelRelatedUserListPresenterUI ui) {
 		this.type = type;
 		this.ui = ui;
-		userList = new ArrayList<User>();
-		User u = null;
-		for (int i = 100; i < 150; i++) {
-			u = new  User(i, "凌小小" + i, "", "夏天斯蒂芬就哦巍峨"+ i);
-			u.isMale = i % 2 == 0? true: false;
-			u.follow = i % 2 == 0? true: false;
-			userList.add(u);
-		}
+		local = new LocalBackendHandler(this, backendThread.getLooper());
 	}
 	
 	
@@ -76,7 +88,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	
 	
 	public int getCount() {
-		return userList.size();
+		return userList == null ? 0 : userList.size();
 	}
 
 	public Object getItem(int position) {
@@ -120,8 +132,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 			ui.showFrinedInvitationTitle();
 			break;
 		}
-		//TODO query data from server
-		//And show Progress
+		Message.obtain(local, MSG_GET_LIST).sendToTarget();
 	}
 
 
@@ -133,5 +144,171 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		
 	
 	
+	private void doGetList() {
+		RequestPacket req = null;
+		List<User> tempList = null;
+		ResponsePacket  resp = null;
+		switch (type) {
+		case TYPE_FANS: 
+			if (GlobalHolder.getInstance().mMyFans == null) {
+				req = new FansQueryReqPacket();
+				resp =DeamonWorker.getInstance().request(req);
+			} else {
+				tempList = GlobalHolder.getInstance().mMyFans;
+			}
+			break;
+		case TYPE_FRIENDS:
+			tempList = GlobalHolder.getInstance().mMyFriends;
+			tempList = handleFriendsList();
+			break;
+		case TYPE_FOLLOWS:
+			if (GlobalHolder.getInstance().mMyFollowers == null) {
+				req = new FollowsQueryReqPacket();
+				resp =DeamonWorker.getInstance().request(req);
+			} else {
+				tempList = GlobalHolder.getInstance().mMyFollowers;
+			}
+			break;
+		case TYPE_FRIEND_INVITATION:
+			break;
+		}
+		
+		
+		if (resp != null) {
+			if (!resp.getHeader().isError()) {
+				switch (type) {
+				case TYPE_FANS: 
+					tempList = handleFansList((FansQueryRespPacket)resp);
+					break;
+				case TYPE_FOLLOWS:
+					tempList = handleFollowsList((FollowsQueryRespPacket)resp);
+					break;
+				}
+			} else {
+				//TODO query error
+			}
+			
+		} 
+		
+		userList = tempList;
+		uiHandler.post(new Runnable() {
 
+			@Override
+			public void run() {
+				ui.refreshDataSet();
+			}
+			
+		});
+	}
+	
+	
+	private List<User> handleFriendsList() {
+
+		if (GlobalHolder.getInstance().mMyFans == null) {
+			ResponsePacket resp =DeamonWorker.getInstance().request(new FansQueryReqPacket());
+			if (!resp.getHeader().isError()) {
+				handleFansList((FansQueryRespPacket)resp);
+			}
+		}
+		if (GlobalHolder.getInstance().mMyFollowers == null) {
+			ResponsePacket resp =DeamonWorker.getInstance().request(new FollowsQueryReqPacket());
+			if (!resp.getHeader().isError()) {
+				handleFollowsList((FollowsQueryRespPacket)resp);
+			}
+		}
+		return combineFriends(GlobalHolder.getInstance().mMyFans, GlobalHolder.getInstance().mMyFollowers);
+		
+	}
+	
+	
+	private List<User> combineFriends(List<User> fans, List<User> follows) {
+		int fansSize = fans != null && fans.size() > 0 ? fans.size() : 0;
+		int followSize = follows != null && follows.size() > 0 ?  follows.size() : 0;
+		int size = Math.min(fansSize, followSize);
+		
+		List<User> friends = new ArrayList<User>(size);
+		if (size <= 0) {
+			return friends;
+		}
+		
+		for (User u : fans) {
+			for (User u1 : follows) {
+				if (u1.nId == u.nId) {
+					friends.add(u);
+					break;
+				}
+			}
+		}
+		
+		return friends;
+	}
+	
+	
+	
+	private List<User> handleFansList(FansQueryRespPacket fqrp) {
+		List<User> tmp;
+		if (fqrp.fansList == null || fqrp.fansList.size() <= 0) {
+			tmp = new ArrayList<User>(0);
+			return tmp;
+		}
+		List<User> fans = new ArrayList<User>(fqrp.fansList.size());
+		User u = null;
+		for (Map<String, String> m : fqrp.fansList) {
+			long id = Long.parseLong(m.get("id"));
+			u = new User(id);
+			fans.add(u);
+		}
+		
+		tmp = fans;
+		GlobalHolder.getInstance().mMyFans = tmp;
+		return tmp;
+	}
+	
+	
+	
+	private List<User>  handleFollowsList(FollowsQueryRespPacket fqrp) {
+		List<User> tmp;
+		if (fqrp.follows == null || fqrp.follows.size() <= 0) {
+			tmp = new ArrayList<User>(0);
+			return tmp;
+		}
+		List<User> fans = new ArrayList<User>(fqrp.follows.size());
+		User u = null;
+		for (Map<String, String> m : fqrp.follows) {
+			long id = Long.parseLong(m.get("id"));
+			u = new User(id);
+			fans.add(u);
+		}
+		
+		tmp = fans;
+		GlobalHolder.getInstance().mMyFollowers = tmp;
+		return tmp;
+	}
+	
+	
+	private Handler uiHandler = new Handler();
+	
+	
+	class LocalBackendHandler extends Handler  {
+		
+		private WeakReference<PersonelRelatedUserListPresenter> wf;
+
+		public LocalBackendHandler(PersonelRelatedUserListPresenter pre, Looper looper) {
+			super(looper);
+			wf = new WeakReference<PersonelRelatedUserListPresenter>(pre);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			int what = msg.what;
+			switch (what) {
+			case MSG_GET_LIST:
+				if (wf.get() != null) {
+					wf.get().doGetList();
+				}
+				break;
+			}
+		}
+		
+	}
 }

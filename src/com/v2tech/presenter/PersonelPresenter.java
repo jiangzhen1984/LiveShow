@@ -80,10 +80,7 @@ public class PersonelPresenter extends BasePresenter {
 
 
 
-	@Override
-	public void onUIDestroyed() {
-		destroyBackendThread();
-	}
+
 
 	
 	private void showSubActivity(int type) {

@@ -486,11 +486,6 @@ public class ConferenceService extends DeviceService {
 		public void OnEnterConfCallback(long nConfID, long nTime,
 				String szConfData, int nJoinResult) {
 			V2Log.i("OnEnterConfCallback====>" +szConfData+"   " +nJoinResult+"   =>");
-			ConferenceGroup cache = (ConferenceGroup) GlobalHolder
-					.getInstance().findGroupById(nConfID);
-			if (cache != null) {
-				ConferenceGroup.extraAttrFromXml(cache, szConfData);
-			}
 
 			JNIResponse jniConfCreateRes = new RequestConfCreateResponse(
 					nConfID, 0, RequestConfCreateResponse.Result.SUCCESS);
@@ -577,7 +572,6 @@ public class ConferenceService extends DeviceService {
 				User u = new User(vu.mUserId, vu.name);
 				userList.add(u);
 			}
-			GlobalHolder.getInstance().updateUserList(type, userList);
 		}
 		
 		

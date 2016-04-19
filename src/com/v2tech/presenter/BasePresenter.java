@@ -43,7 +43,7 @@ public abstract class BasePresenter {
 	}
 	
 	public  void onUIDestroyed() {
-		
+		destroyBackendThread();
 	}
 	
 	

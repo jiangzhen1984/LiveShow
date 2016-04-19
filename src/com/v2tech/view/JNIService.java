@@ -289,89 +289,16 @@ public class JNIService extends Service
 				break;
 			case JNI_GROUP_NOTIFY:
 				List<V2Group> gl = (List<V2Group>) msg.obj;
-
-				if (gl != null && gl.size() > 0) {
-					GlobalHolder.getInstance().updateGroupList(msg.arg1, gl);
-					if ((msg.arg1 == V2GlobalEnum.GROUP_TYPE_CROWD || msg.arg1 == V2GlobalEnum.GROUP_TYPE_DEPARTMENT)
-							&& !noNeedBroadcast) {
-						V2Log.d(TAG,
-								"ConversationTabFragment no builed successfully! Need to delay sending , type is ："
-										+ msg.arg1);
-						delayBroadcast.add(msg.arg1);
-					} else {
-						Intent gi = new Intent(JNI_BROADCAST_GROUP_NOTIFICATION);
-						gi.putExtra("gtype", msg.arg1);
-						gi.addCategory(JNI_BROADCAST_CATEGROY);
-						mContext.sendBroadcast(gi);
-					}
-				}
 				break;
 
 			case JNI_GROUP_USER_INFO_NOTIFICATION:
 				GroupUserInfoOrig go = (GroupUserInfoOrig) msg.obj;
-				if (go != null && go.xml != null) {
-					List<User> lu = User.fromXml(go.xml);
-					Group group = GlobalHolder.getInstance().findGroupById(
-							go.gId);
-					for (User tu : lu) {
-						User existU = GlobalHolder.getInstance().putUser(
-								tu.getmUserId(), tu);
-						if (existU.getmUserId() == GlobalHolder.getInstance()
-								.getCurrentUserId()) {
-							// Update logged user object.
-							GlobalHolder.getInstance().setCurrentUser(existU);
-						}
-
-						
-
-						if (group == null) {
-							V2Log.e(" didn't find group information  " + go.gId);
-						} else {
-							group.addUserToGroup(existU);
-						}
-					}
-					V2Log.w("  group:" + go.gId + "  user size:" + lu.size()
-							+ "  " + group);
-					
-					if (!noNeedBroadcast) {
-						V2Log.d(TAG,
-								"ConversationTabFragment no builed successfully! Need to delay sending , type is ："
-										+ msg.arg1);
-						delayUserBroadcast.add(go);
-					} else {
-						Intent i = new Intent(
-								JNI_BROADCAST_GROUP_USER_UPDATED_NOTIFICATION);
-						i.addCategory(JNI_BROADCAST_CATEGROY);
-						i.putExtra("gid", go.gId);
-						i.putExtra("gtype", go.gType);
-						mContext.sendBroadcast(i);
-					}
-				} else {
+				if (go != null && go.xml != null) {} else {
 					V2Log.e("Invalid group user data");
 				}
 				break;
 			case JNI_CONFERENCE_INVITATION:
 				Group g = (Group) msg.obj;
-				Group cache = GlobalHolder.getInstance().getGroupById(
-						GroupType.CONFERENCE.intValue(), g.getmGId());
-				// conference already in cache list
-				if (cache != null && g.getmGId() != 0) {
-					V2Log.i("Current user conference in group:"
-							+ cache.getName() + "  " + cache.getmGId());
-					return;
-				}
-				//TODO confernet 
-//				GroupRequest.getInstance().(
-//						GroupType.CONFERENCE.intValue(), g.getmGId());
-				if (g != null) {
-					GlobalHolder.getInstance().addGroupToList(
-							GroupType.CONFERENCE.intValue(), g);
-					Intent i = new Intent();
-					i.setAction(JNIService.JNI_BROADCAST_CONFERENCE_INVATITION);
-					i.addCategory(JNIService.JNI_BROADCAST_CATEGROY);
-					i.putExtra("gid", g.getmGId());
-					sendBroadcast(i);
-				}
 				break;
 			case JNI_RECEIVED_MESSAGE:
 				VMessage vm = (VMessage) msg.obj;
@@ -559,7 +486,6 @@ public class JNIService extends Service
 			}
 			List<UserDeviceConfig> ll = UserDeviceConfig.parseFromXml(uid,
 					szXmlData);
-			GlobalHolder.getInstance().updateUserDevice(uid, ll);
 		}
 	}
 

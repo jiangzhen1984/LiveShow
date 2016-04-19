@@ -55,12 +55,4 @@ public class FansFollowPresenter extends BasePresenter {
 
 
 
-	@Override
-	public void onUIDestroyed() {
-		destroyBackendThread();
-	}
-	
-	
-	
-
 }

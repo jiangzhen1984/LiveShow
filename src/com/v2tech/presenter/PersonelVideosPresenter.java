@@ -76,7 +76,7 @@ public class PersonelVideosPresenter extends BasePresenter {
 
 	@Override
 	public void onUIDestroyed() {
-		super.destroyBackendThread();
+		super.onUIDestroyed();
 		us.clearCalledBack();
 	}
 
