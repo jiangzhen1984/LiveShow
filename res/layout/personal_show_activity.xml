@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/title_bar_ly"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:background="@color/common_sep_line" >
     </TextView>
 
@@ -34,8 +34,8 @@
             android:id="@+id/avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/personel_show_avatar_margin_right"
-            android:layout_marginRight="@dimen/personel_show_avatar_margin_right"
+             android:layout_marginEnd="@dimen/personel_show_text_margin_left"
+                android:layout_marginRight="@dimen/personel_show_text_margin_left"
             android:layout_toLeftOf="@+id/personel_show_right_arrow"
             android:layout_toStartOf="@+id/personel_show_right_arrow"
             android:src="@drawable/avatar_female" />
@@ -281,7 +281,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:background="@color/common_sep_line" >
         </TextView>
 

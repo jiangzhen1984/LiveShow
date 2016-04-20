@@ -81,6 +81,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private LinearLayout notificationLayout;
 	private TextView inchargeView;
 	private TextView recdCountView;
+	private ImageView marqueeEnableBtn;
 	
 	private OnNotificationClickedListener mNotificationClickedListener;
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -189,6 +190,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 				.findViewById(R.id.recommendation_count_tv);
 		inchargeView = (TextView) rightSideLayout
 				.findViewById(R.id.balance_count_tv);
+		marqueeEnableBtn = (ImageView) rightSideLayout
+				.findViewById(R.id.message_marquee_btn);
+		
 		
 
 		RelativeLayout.LayoutParams rightSideLayoutParm = new RelativeLayout.LayoutParams(
@@ -210,6 +214,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		
 		mDragLayout.addView(bottomLayout, bottomLayoutParm);
 		
+		marqueeEnableBtn.setOnClickListener(this);
 		favButton.setOnClickListener(this);
 		inchargeButton.setOnClickListener(this);
 		publisherButton.setOnClickListener(this);
@@ -566,6 +571,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	
 	
+	public void showMarqueeMessage(boolean flag) {
+		mMsgLayout.setVisibility(flag?View.VISIBLE:View.GONE);
+		marqueeEnableBtn.setImageResource(flag?R.drawable.message_marquee_enable : R.drawable.message_marquee_disable);
+	}
+	
+	
 	private void removeLiveNotificaiton(NotificationWrapper wr) {
 		notificationList.remove(wr);
 		updateNotificationLayout(wr.v, 0);
@@ -829,6 +840,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 			break;
 		case R.id.incharge_button:
 			liverAction.onInchargeButtonClicked();
+			break;
+		case R.id.message_marquee_btn:
+			liverAction.onMarqueeBtnClicked(v);
 			break;
 		}
 		

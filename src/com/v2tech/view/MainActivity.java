@@ -564,6 +564,12 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout.showIncharBtm(flag);
 	}
 	
+	
+	
+	public void showMarqueeMessage(boolean flag) {
+		mMapVideoLayout.showMarqueeMessage(flag);
+	}
+	
 	/////////////////////////////////////////////////////////////
 	
 

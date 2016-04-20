@@ -11,13 +11,21 @@
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
 
+    <TextView
+        android:id="@+id/title_bar_line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_marginTop="@dimen/personel_activity_box_margin_top"
+        android:background="@color/common_sep_line" >
+    </TextView>
+
     <LinearLayout
         android:id="@+id/box_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar_ly"
+        android:layout_below="@+id/title_bar_line1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
         android:orientation="vertical" >
 
         <RelativeLayout
@@ -87,14 +95,31 @@
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/title_bar_line4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/box_1"
+        android:background="@color/common_sep_line" >
+    </TextView>
+    
+    
+
+    <TextView
+        android:id="@+id/title_bar_line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/title_bar_line4"
+        android:layout_marginTop="@dimen/personel_activity_box_margin_top"
+        android:background="@color/common_sep_line" >
+    </TextView>
 
     <LinearLayout
         android:id="@+id/box_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/box_1"
+        android:layout_below="@+id/title_bar_line2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
         android:orientation="vertical" >
 
         <RelativeLayout
@@ -191,14 +216,30 @@
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/title_bar_line5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/box_2"
+        android:background="@color/common_sep_line" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/title_bar_line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/title_bar_line5"
+        android:layout_marginTop="@dimen/personel_activity_box_margin_top"
+        android:background="@color/common_sep_line" >
+    </TextView>
 
     <LinearLayout
         android:id="@+id/personel_setting_quit_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/box_2"
+        android:layout_below="@+id/title_bar_line3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
         android:orientation="vertical" >
 
         <RelativeLayout

@@ -18,6 +18,7 @@ import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
@@ -98,6 +99,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int KEYBOARD_SHOW = 1 << 9;
 	private static final int MAP_CENTER_UPDATE = 1 << 10;
 	private static final int LIVER_INTERACTION_LAY_SHOW = 1 << 11;
+	private static final int MESSAGE_MARQUEE_ENABLE = 1 << 12;
 	
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -147,7 +149,7 @@ public class MainPresenter extends BasePresenter implements
 		lives = new LongSparseArray<Live>();
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
-				| FOLLOW_COUNT_SHOW_FLAG |BOTTOM_LAYOUT_SHOW);
+				| FOLLOW_COUNT_SHOW_FLAG |BOTTOM_LAYOUT_SHOW | MESSAGE_MARQUEE_ENABLE);
 
 
 		currentMapCenter = new LocationWrapper();
@@ -214,6 +216,8 @@ public class MainPresenter extends BasePresenter implements
 		public void updateBalanceSum(final float num);
 		
 		public void showLiverInteractionLayout(boolean flag);
+		
+		public void showMarqueeMessage(boolean flag);
 	}
 	
 	
@@ -696,6 +700,17 @@ public class MainPresenter extends BasePresenter implements
 		} else {
 			videoScreenState |= LIVER_INTERACTION_LAY_SHOW;
 			ui.showLiverInteractionLayout(true);
+		}
+	}
+	
+	@Override
+	public void onMarqueeBtnClicked(View v) {
+		if ((this.videoScreenState & MESSAGE_MARQUEE_ENABLE) == MESSAGE_MARQUEE_ENABLE) {
+			videoScreenState &= ~MESSAGE_MARQUEE_ENABLE;
+			ui.showMarqueeMessage(false);
+		} else {
+			videoScreenState |= MESSAGE_MARQUEE_ENABLE;
+			ui.showMarqueeMessage(true);
 		}
 	}
 	

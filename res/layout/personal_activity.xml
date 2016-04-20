@@ -298,7 +298,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="30dp"
+             android:layout_marginTop="@dimen/personel_activity_box_margin_top"
             android:background="@color/common_sep_line" >
         </TextView>
 
@@ -448,7 +448,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="30dp"
+             android:layout_marginTop="@dimen/personel_activity_box_margin_top"
             android:background="@color/common_sep_line" >
         </TextView>
 

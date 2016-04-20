@@ -19,9 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/title_bar_left_icon_margin_left"
             android:layout_marginStart="@dimen/title_bar_left_icon_margin_left"
-            android:paddingBottom="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="10dp"
             android:src="@drawable/title_bar_return_btn" />
 
         <TextView
@@ -32,8 +30,10 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:textColor="#000000"
+            android:paddingBottom="@dimen/title_bar_padding_top"
+            android:paddingTop="@dimen/title_bar_padding_top"
             android:text="Logo"
+            android:textColor="#000000"
             android:textSize="@dimen/title_bar_text_size" />
 
         <TextView
@@ -49,6 +49,5 @@
             android:textSize="@dimen/title_bar_text_size"
             android:visibility="invisible" />
     </RelativeLayout>
-
 
 </RelativeLayout>

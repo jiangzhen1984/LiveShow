@@ -18,7 +18,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/personel_wallet_detail_item_text_margin_left"
             android:layout_marginStart="@dimen/personel_wallet_detail_item_text_margin_left"
-            android:layout_marginTop="@dimen/personel_wallet_detail_item_text_margin_top"
             
              >
 
@@ -41,6 +40,7 @@
                 android:layout_below="@+id/personel_wallet_name"
                 android:layout_marginTop="@dimen/personel_wallet_detail_item_text_margin_top1"
                 android:textSize="@dimen/personel_wallet_detail_item_date_text_size"
+                 android:textColor="#a0a0a0"
                 android:text="2016-04-11 13:23:23" />
 
             <TextView

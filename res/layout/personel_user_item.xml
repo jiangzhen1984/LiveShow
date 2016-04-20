@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/avatar_female" />
+            android:src="@drawable/user_avatar_female" />
 
         <RelativeLayout
             android:id="@+id/personel_item_rl1"
@@ -64,6 +64,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
+                    android:layout_gravity="center"
                     android:layout_toEndOf="@+id/personel_item_name"
                     android:layout_toRightOf="@+id/personel_item_name"
                     android:src="@drawable/personel_item_gender_male" />
