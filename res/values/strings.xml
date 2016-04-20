@@ -93,5 +93,14 @@
     
     <string name="requesting_connect_video_text">邀请您视频聊天</string>
     <string name="requesting_connect_audio_text">邀请您对讲</string>
+    
+    <string name="video_share_btn_text_wx">微信好友</string>
+    <string name="video_share_btn_text_wx_grp">微信朋友圈</string>
+    <string name="video_share_btn_text_qq">QQ好友</string>
+    <string name="video_share_btn_text_wb">新浪微博</string>
+    <string name="video_share_tips_text">直接分享至</string>
+    <string name="card_scan_scan_text">扫一扫</string>
+    <string name="card_scan_scan_text1">扫描二维码名片</string>
+    
 
 </resources>

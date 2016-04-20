@@ -20,6 +20,7 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	
 	public UserListFragment() {
 		super();
+		adapter = new LocalAdapter();
 	}
 
 	public UserListFragment(UserListFragmentConnector connector) {
@@ -69,6 +70,14 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	
 	
 	
+	public UserListFragmentConnector getConnector() {
+		return connector;
+	}
+
+	public void setConnector(UserListFragmentConnector connector) {
+		this.connector = connector;
+	}
+
 	@Override
 	public void notifyDatasetChanged() {
 		adapter.notifyDataSetChanged();
@@ -80,7 +89,7 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 
 		@Override
 		public int getCount() {
-			return connector.getCount();
+			return connector == null ? 0 :connector.getCount();
 		}
 
 		@Override

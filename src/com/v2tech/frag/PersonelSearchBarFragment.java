@@ -81,6 +81,19 @@ public class PersonelSearchBarFragment extends Fragment implements TextWatcher {
 	
 	
 	
+	
+	public PersonelSearchBarTextListener getListener() {
+		return listener;
+	}
+
+
+	public void setListener(PersonelSearchBarTextListener listener) {
+		this.listener = listener;
+	}
+
+
+
+
 	public interface PersonelSearchBarTextListener {
 		public void onTextChanged(String content);
 	}

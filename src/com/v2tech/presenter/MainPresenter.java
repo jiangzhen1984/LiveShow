@@ -363,7 +363,6 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onUICreated() {
-		V2Log.i("===> " + Process.myPid()+"  ===> uiCreate");
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}

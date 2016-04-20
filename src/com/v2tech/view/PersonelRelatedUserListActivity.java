@@ -1,8 +1,11 @@
 package com.v2tech.view;
 
+import java.util.List;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.v2tech.frag.CardScanFragment;
 import com.v2tech.frag.PersonelSearchBarFragment;
 import com.v2tech.frag.UserListFragment;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter;
@@ -23,6 +27,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 
 	PersonelSearchBarFragment barFrag;
 	UserListFragment listFrag;
+	CardScanFragment csFrag;
 	TextView title;
 	View returnBtn;
 
@@ -37,17 +42,14 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		
 		int type = this.getIntent().getIntExtra("type", -1);
 		presenter = new PersonelRelatedUserListPresenter(type, this);
-		barFrag = new PersonelSearchBarFragment(this);
-		listFrag = new UserListFragment(this);
 
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction();
-
-		transaction.add(R.id.search_fragment, barFrag);
-		transaction.add(R.id.list_fragment, listFrag);
-
-		transaction.commit();
+		barFrag = (PersonelSearchBarFragment)this.getSupportFragmentManager().findFragmentById(R.id.search_fragment);
+		listFrag = (UserListFragment)this.getSupportFragmentManager().findFragmentById(R.id.list_fragment);
+		csFrag = (CardScanFragment)this.getSupportFragmentManager().findFragmentById(R.id.card_scan_fragment);
 		
+
+		barFrag.setListener(this);
+		listFrag.setConnector(this);
 		
 		returnBtn.setOnClickListener(this);
 		presenter.onUICreated();
@@ -156,17 +158,27 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	
 	
 	public void showFansTitle() {
+		removeCardFragment();
 		title.setText(R.string.personel_user_list_title_fans);
 	}
 	
 	public void showFriendsTitle() {
+		removeCardFragment();
 		title.setText(R.string.personel_user_list_title_friends);
 	}
 	public void showFollowTitle() {
+		removeCardFragment();
 		title.setText(R.string.personel_user_list_title_follow);
 	}
 	public void showFrinedInvitationTitle() {
 		title.setText(R.string.personel_user_list_title_friend_invitation);
+		
+	}
+	
+	private void removeCardFragment() {
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		transaction.remove(csFrag);
+		transaction.commit();
 	}
 	
 	

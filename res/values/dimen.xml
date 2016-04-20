@@ -66,6 +66,12 @@
     <dimen name="personel_wallet_detail_balance_text_size">22.5sp</dimen>
     <dimen name="personel_wallet_detail_tips_text_size">12sp</dimen>
     <dimen name="personel_wallet_detail_item_date_text_size">12sp</dimen>
-     <dimen name="personel_wallet_detail_btn_text_size1">13.5sp</dimen>
+    <dimen name="personel_wallet_detail_btn_text_size1">13.5sp</dimen>
+    <dimen name="video_share_btn_text_size">12.5sp</dimen>
+    
+    <dimen name="card_scan_ly_icon_margin_left">15dp</dimen>
+    <dimen name="card_scan_ly_icon_padding_hor">10dp</dimen>
+    <dimen name="card_scan_ly_arrow_margin_right">10dp</dimen>
+    <dimen name="card_scan_ly_text_size">12.5sp</dimen>
 
 </resources>

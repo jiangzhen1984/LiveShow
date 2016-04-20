@@ -19,13 +19,21 @@
         android:layout_below="@+id/title_bar_ly"
         />
     
+    
+    <fragment
+        android:id="@+id/card_scan_fragment"
+        android:name="com.v2tech.frag.CardScanFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_fragment"
+        />
    
     <fragment
         android:id="@+id/list_fragment"
         android:name="com.v2tech.frag.UserListFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/search_fragment"
+        android:layout_below="@+id/card_scan_fragment"
         />
 
 </RelativeLayout>

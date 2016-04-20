@@ -324,13 +324,13 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void showTextKeyboard(boolean flag) {
 		if (flag) {
-			mBottomLayout.setVisibility(View.INVISIBLE);
+		//	mBottomLayout.setVisibility(View.INVISIBLE);
 			Intent i = new Intent();
 			i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
 			startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
 		} else {
-			mBottomLayout.setVisibility(View.VISIBLE);
-			mLocateButton.setVisibility(View.VISIBLE);
+		//	mBottomLayout.setVisibility(View.VISIBLE);
+		//	mLocateButton.setVisibility(View.VISIBLE);
 		}
 		
 	}
@@ -393,9 +393,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void updateVideShareButtonText(boolean publish) {
 		if (publish) {
-			mShareVideoButton.setText(R.string.video_share_button_unshare);
+			mShareVideoButton.setBackgroundResource(R.drawable.video_sharing_button_bg);
 		} else {
-			mShareVideoButton.setText(R.string.video_share_button_share);
+			mShareVideoButton.setBackgroundResource(R.drawable.video_share_button_bg);
 		}
 	}
 

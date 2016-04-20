@@ -46,6 +46,11 @@ public class PersonelPresenter extends BasePresenter {
 		showSubActivity(PersonelRelatedUserListPresenter.TYPE_FRIENDS);
 	}
 
+	public void friendsInvitationBtnClicked() {
+		showSubActivity(PersonelRelatedUserListPresenter.TYPE_FRIEND_INVITATION);
+	}
+
+	
 	public void followBtnClicked() {
 		showSubActivity(PersonelRelatedUserListPresenter.TYPE_FOLLOWS);
 	}

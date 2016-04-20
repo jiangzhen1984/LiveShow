@@ -43,4 +43,17 @@
         android:layout_marginRight="@dimen/video_layout_bottom_layout_margin_right"
         android:src="@drawable/video_full_screen_btn" />
 
+    <LinearLayout
+        android:id="@+id/video_ly_btm_watcher_lineryout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/imageView1"
+        android:layout_toRightOf="@+id/liver_ly"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true" >
+    </LinearLayout>
+
 </RelativeLayout>
