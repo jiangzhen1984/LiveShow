@@ -3,7 +3,6 @@ package com.v2tech.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,9 +24,13 @@ public class LiverInteractionLayout extends LinearLayout {
 	private TextView follows;
 	private View personelBtn;
 	private View innerBox;
+	private View chatRequestBtn;
+	private View showMsgBtn;
 	
 	
 	private InterfactionBtnClickListener outListener;
+	
+	private boolean flag;
 
 	public LiverInteractionLayout(Context context, AttributeSet attrs,
 			int defStyle) {
@@ -108,6 +111,29 @@ public class LiverInteractionLayout extends LinearLayout {
 		innerBox.setVisibility(flag? View.VISIBLE : View.GONE);
 	}
 	
+	private void initView() {
+		avatar = (ImageView) findViewById(R.id.liver_interaction_avtar);
+		name = (TextView) findViewById(R.id.liver_interaction_name);
+		gender = (ImageView) findViewById(R.id.liver_interaction_gender);
+		level = (ImageView) findViewById(R.id.liver_interaction_level);
+		signature = (TextView)findViewById(R.id.liver_interaction_signature);
+		location = (TextView) findViewById(R.id.liver_interaction_location);
+		videos = (TextView) findViewById(R.id.liver_interaction_videos);
+		fans = (TextView) findViewById(R.id.liver_interaction_fans);
+		follows = (TextView) findViewById(R.id.liver_interaction_follows);
+		personelBtn = findViewById(R.id.liver_interaction_btn);
+		personelBtn.setOnClickListener(listener);
+		
+		chatRequestBtn = findViewById(R.id.liver_interaction_chating_btn_iv);
+		chatRequestBtn.setOnClickListener(listener);
+		
+		showMsgBtn = findViewById(R.id.liver_interaction_msg_btn_iv);
+		showMsgBtn.setOnClickListener(listener);
+		
+		innerBox = findViewById(R.id.liver_interaction_box_layout);
+		innerBox.setVisibility(View.GONE);
+	}
+	
 	private OnClickListener listener = new OnClickListener() {
 
 		@Override
@@ -119,12 +145,38 @@ public class LiverInteractionLayout extends LinearLayout {
 					outListener.onPersonelBtnClicked(v);
 				}
 				break;
+			case R.id.liver_interaction_chating_btn_iv:
+				if (outListener != null) {
+					outListener.onChattingBtnClicked(v);
+				}
+				break;
+			case R.id.liver_interaction_msg_btn_iv:
+				if (outListener != null) {
+					outListener.onMsgBtnClicked(v);
+				}
 			}
 		}
 		
 	};
 	
 	
+	
+	
+	public InterfactionBtnClickListener getOutListener() {
+		return outListener;
+	}
+
+	public void setOutListener(InterfactionBtnClickListener outListener) {
+		this.outListener = outListener;
+		if (!flag) {
+			flag = true;
+			initView();
+		}
+	}
+
+
+
+
 	public interface InterfactionBtnClickListener {
 		public void onPersonelBtnClicked(View v);
 		

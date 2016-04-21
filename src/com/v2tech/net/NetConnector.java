@@ -20,4 +20,7 @@ public interface NetConnector {
 	
 	public void setPacketTransformer(Transformer<Packet, String> transformer);
 	
+	
+	public void setNotificationListener(NotificationListener listener);
+	
 }

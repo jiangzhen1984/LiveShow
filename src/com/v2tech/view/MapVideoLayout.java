@@ -35,8 +35,10 @@ import com.v2tech.vo.User;
 import com.v2tech.widget.CameraShape;
 import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiverInteractionLayout;
+import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.RequestConnectLayout;
+import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoShowFragmentAdapter;
 
@@ -571,6 +573,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	
 	
+	public void setRequestConnectLayoutListener(RequestConnectLayoutListener listener)  {
+		this.requestConnectLayout.setListener(listener);
+	}
+	
+	
+	public void setInterfactionBtnClickListener(InterfactionBtnClickListener listener)  {
+		this.lierInteractionLayout.setOutListener(listener);
+	}
+	
 	public void showMarqueeMessage(boolean flag) {
 		mMsgLayout.setVisibility(flag?View.VISIBLE:View.GONE);
 		marqueeEnableBtn.setImageResource(flag?R.drawable.message_marquee_enable : R.drawable.message_marquee_disable);
@@ -872,8 +883,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		mMsgLayout.layout(left, realTop, right, realBottom);
 		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		mDragLayout.layout(left, realTop, right, realBottom);
-		lierInteractionLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
-		requestConnectLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		if (lierInteractionLayout.getVisibility() == View.VISIBLE) {
+			lierInteractionLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		}
+		if (requestConnectLayout.getVisibility() == View.VISIBLE) {
+			requestConnectLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		}
 	}
 
 	@Override

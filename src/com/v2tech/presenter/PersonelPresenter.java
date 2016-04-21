@@ -51,6 +51,11 @@ public class PersonelPresenter extends BasePresenter {
 	}
 
 	
+	public void myMessageBtnClicked() {
+		showSubActivity(PersonelRelatedUserListPresenter.TYPE_MESSAGE);
+	}
+
+	
 	public void followBtnClicked() {
 		showSubActivity(PersonelRelatedUserListPresenter.TYPE_FOLLOWS);
 	}

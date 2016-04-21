@@ -6,6 +6,8 @@ public class MessageInd extends JNIIndication {
 	
 	public long uid;
 	
+	public long lid;
+	
 	public String content;
 
 	public MessageInd(Result res) {

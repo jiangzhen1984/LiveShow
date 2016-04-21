@@ -657,6 +657,7 @@ public class ConferenceService extends DeviceService {
 			if (m.find()) {
 				MessageInd ind = new MessageInd(MessageInd.Result.SUCCESS);
 				ind.uid = nFromUserID;
+				ind.lid = nGroupID;
 				String group = m.group();
 				ind.content = group.substring(6, group.length() - 2);
 				notifyListener(KEY_MESSAGE_LISTENER, 0, 0, ind);

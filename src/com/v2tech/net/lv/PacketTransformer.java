@@ -54,8 +54,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 
 	@Override
 	public Packet unserializeFromStr(String t) {
+		Pattern pushRex = Pattern.compile("(from=\"pushServer\")");
+		Matcher mat = pushRex.matcher(t);
+		boolean ind = mat.find();
 		Pattern regrex = Pattern.compile("(xmlns=\")([a-zA-Z]+)(\")");
-		Matcher mat = regrex.matcher(t);
+		mat = regrex.matcher(t);
 		if (mat.find()) {
 			String sg = mat.group();
 			String type = sg.substring(7, sg.length() - 1);
@@ -66,7 +69,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			} else if ("queryVideoList".equalsIgnoreCase(type)) {
 				return extraLiveQueryResponse(t);
 			} else if ("publicVideo".equalsIgnoreCase(type)) {
-				return extraPublisVideoResponse(t);
+				if (ind) {
+					return extraPublisVideoIndication(t);
+				} else {
+					return extraPublisVideoResponse(t);
+				}
 			} else if ("followUser".equalsIgnoreCase(type)) {
 				return extraCommonResponse(t);
 			} else if ("getSMScode".equalsIgnoreCase(type)) {
@@ -420,7 +427,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	
 	
 	private Packet extraFollowsQueryResponse(String str) {
-		FansQueryRespPacket lrp = new FansQueryRespPacket();
+		FollowsQueryRespPacket lrp = new FollowsQueryRespPacket();
 		lrp.setRequestId(extraRequestId(str));
 		lrp.setErrorFlag(!extraResult(str));
 
@@ -443,7 +450,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			map.put("signText", ve.getAttribute("signText"));
 			list.add(map);
 		}
-		lrp.fansList = list;
+		lrp.follows = list;
 
 		return lrp;
 	}
@@ -469,6 +476,41 @@ public class PacketTransformer implements Transformer<Packet, String> {
 
 		return lrp;
 	}
+	
+	private Packet extraPublisVideoIndication(String str) {
+		LivePublishIndPacket lrp = new LivePublishIndPacket();
+		lrp.setErrorFlag(!extraResult(str));
+		Pattern p = Pattern.compile("(<video)( +)(id=)('|\")([0-9]+)('|\")");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			String gr = m.group();
+			Pattern p1 = Pattern.compile("([0-9]+)");
+			m = p1.matcher(gr);
+			if (m.find()) {
+				lrp.vid = Long.parseLong(m.group());
+			}
+			
+			String mtr = extraRegGroup(str, "(videoNum=)('|\")([0-9]+)('|\")");
+			mtr = extraRegGroup(mtr, "([0-9]+)");
+			lrp.lid = Long.parseLong(mtr);
+			mtr = extraRegGroup(str, "(userId=)('|\")([0-9]+)('|\")");
+			mtr = extraRegGroup(mtr, "([0-9]+)");
+			lrp.uid = Long.parseLong(mtr);
+			
+			mtr = extraRegGroup(str, "(longitude=)('|\")([0-9.]+)('|\")");
+			mtr = extraRegGroup(mtr, "([0-9.]+)");
+			lrp.lng = Double.parseDouble(mtr);
+			mtr = extraRegGroup(str, "(latitude=)('|\")([0-9.]+)('|\")");
+			mtr = extraRegGroup(mtr, "([0-9.]+)");
+			lrp.lat = Double.parseDouble(mtr);
+		} else {
+			V2Log.e("=== extra video id error");
+			lrp.setErrorFlag(true);
+		}
+
+		return lrp;
+	}
+	
 
 	private Packet extraCommonResponse(String str) {
 		ResponsePacket lrp = new ResponsePacket();
@@ -514,6 +556,18 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		gcp.setErrorFlag(!extraResult(str));
 		return gcp;
 	}
+	
+	
+	private String extraRegGroup(String content, String regex) {
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(content);
+		if (m.find()) {
+			return m.group();
+		} else {
+			return null;
+		}
+	}
+	
 
 	private void appendStart(StringBuffer buffer, String id, String from,
 			String to) {

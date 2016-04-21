@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp" >
+
+    <TextView
+        android:id="@+id/p2p_message_layout_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="TextView" />
+
+    <LinearLayout
+         android:id="@+id/p2p_message_left_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+
+        <ImageView
+            android:id="@+id/p2p_message_left_avtar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:src="@drawable/p2p_message_avtar_male" />
+
+        <TextView
+            android:id="@+id/p2p_message_left_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/message_bg_left"
+            android:text="TextViewsdfsdfsdfsdfsdf\nsdfsdf\n" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/p2p_message_right_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/p2p_message_right_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/message_bg_right"
+            android:text="TextViwewerwerwerwerwe\n\nwerwe" />
+
+        <ImageView
+             android:id="@+id/p2p_message_right_avtar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:src="@drawable/p2p_message_avtar_female" />
+    </LinearLayout>
+
+</RelativeLayout>

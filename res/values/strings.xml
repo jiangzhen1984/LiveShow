@@ -60,8 +60,9 @@
     <string name="personel_user_list_title_fans">我的粉丝</string>
     <string name="personel_user_list_title_friends">我的朋友</string>
     <string name="personel_user_list_title_friend_invitation">添加朋友</string>
+    <string name="personel_user_list_title_message">我的消息</string>
     <string name="personal_search_bar_follow_text">请输入关键字</string>
-    <string name="personel_item_user_f_text">关注</string>
+    <string name="personel_item_user_f_text">+关注</string>
     <string name="personel_item_user_cf_text">取消关注</string>
     
     

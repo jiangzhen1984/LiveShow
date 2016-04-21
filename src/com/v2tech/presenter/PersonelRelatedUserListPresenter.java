@@ -27,6 +27,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	public static final int TYPE_FRIENDS = 2;
 	public static final int TYPE_FOLLOWS = 3;
 	public static final int TYPE_FRIEND_INVITATION = 4;
+	public static final int TYPE_MESSAGE = 5;
 	
 	
 	private static final int MSG_GET_LIST = 1;
@@ -52,8 +53,16 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		public void showFriendsTitle();
 		public void showFollowTitle();
 		public void showFrinedInvitationTitle();
+		public void showMessageTitle();
 		public void doFinish();
 		public void refreshDataSet();
+		
+		public void showTimeView(boolean flag);
+		public void showRightBtmView(boolean flag);
+		public void showFansBtnIcon();
+		public void showFollowsBtnIcon();
+		public void showFriendsBtnIcon();
+		
 	}
 	
 	
@@ -103,11 +112,11 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		User u = userList.get(position);
 		ui.updateItemName(convertView, u.getName());
 		ui.updateItemSn(convertView, u.getSignature());
-		if (u.follow) {
-			ui.updateItemBtnCancel(convertView);
-		} else {
-			ui.updateItemBtnFollow(convertView);
-		}
+//		if (u.follow) {
+//			ui.updateItemBtnCancel(convertView);
+//		} else {
+//			ui.updateItemBtnFollow(convertView);
+//		}
 		ui.updateItemBtnTag(convertView, Long.valueOf(u.nId));
 		
 		ui.updateItemGender(convertView, u.isMale);
@@ -118,20 +127,42 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+		boolean timeFlag = false;
+		boolean btnFlag  = false;
 		switch (type) {
 		case  TYPE_FANS:
 			ui.showFansTitle();
+			timeFlag = false;
+			btnFlag = true;
+			ui.showFansBtnIcon();
 			break;
 		case  TYPE_FRIENDS:
 			ui.showFriendsTitle();
+			timeFlag = false;
+			btnFlag = true;
+			ui.showFriendsBtnIcon();
 			break;
 		case  TYPE_FOLLOWS:
 			ui.showFollowTitle();
+			timeFlag = false;
+			btnFlag = true;
+			ui.showFollowsBtnIcon();
 			break;
 		case  TYPE_FRIEND_INVITATION:
 			ui.showFrinedInvitationTitle();
+			timeFlag = false;
+			btnFlag = true;
+			ui.showFansBtnIcon();
+			break;
+		case  TYPE_MESSAGE:
+			ui.showMessageTitle();
+			timeFlag = true;
+			btnFlag = false;
 			break;
 		}
+		ui.showTimeView(timeFlag);
+		ui.showRightBtmView(btnFlag);
+		
 		Message.obtain(local, MSG_GET_LIST).sendToTarget();
 	}
 

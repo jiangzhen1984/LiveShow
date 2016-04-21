@@ -47,6 +47,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	private String host;
 
 	private Transformer<Packet, String> packetTransform;
+	private NotificationListener callback;
 
 	private Queue<LocalBind> pending;
 	private Queue<LocalBind> waiting;
@@ -221,6 +222,11 @@ public class DeamonWorker implements Runnable, NetConnector,
 	public void setPacketTransformer(Transformer<Packet, String> transformer) {
 		this.packetTransform = transformer;
 	}
+	
+	
+	public void setNotificationListener(NotificationListener listener) {
+		this.callback = listener;
+	}
 
 	@Override
 	public void onTimeout(LocalBind bind) {
@@ -339,7 +345,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 					Log.i("ReaderChannel", "try to disconnect====>" + st +"  "+ deamon);
 					disconnect();
 					try {
-						wait(10000);
+						synchronized(this) {
+							wait(10000);
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -396,16 +404,17 @@ public class DeamonWorker implements Runnable, NetConnector,
 					return;
 				}
 				Log.i("ReaderChannel", "transform====>packet" + p);
+				if (p instanceof  IndicationPacket) {
+					if (callback != null) {
+						callback.onNodification((IndicationPacket)p);
+					}
+					return;
+				}
 				LocalBind lb = findRequestBind((ResponsePacket) p);
 				Log.e("ReaderChannel", "local bind:" + lb);
 				if (lb != null) {
 					lb.respontime = System.currentTimeMillis();
 					handleResponseBind(lb, p);
-				} else {
-					if (p instanceof IndicationPacket) {
-						((PacketProxy) p).getListener().onNodification(
-								(IndicationPacket) p);
-					}
 				}
 			}
 		}

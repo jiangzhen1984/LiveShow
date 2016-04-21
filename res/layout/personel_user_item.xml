@@ -62,9 +62,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/personel_item_name"
                     android:layout_alignParentTop="true"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_gravity="center"
                     android:layout_toEndOf="@+id/personel_item_name"
                     android:layout_toRightOf="@+id/personel_item_name"
                     android:src="@drawable/personel_item_gender_male" />
@@ -89,6 +89,7 @@
                 android:layout_alignBottom="@+id/personel_item_sg"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/personel_user_item_text_margin_right"
                 android:text="@string/personel_item_user_cf_text"
                 android:textColor="@color/personel_user_item_text_cr"
                 android:textSize="@dimen/personel_user_item_btn_text_size" />
@@ -105,6 +106,17 @@
                 android:paddingEnd="3dp"
                 android:paddingRight="3dp"
                 android:src="@drawable/personel_item_follow_icon" />
+
+            <TextView
+                android:id="@+id/personel_item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/personel_item_cf_text"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="@dimen/personel_user_item_text_margin_right"
+                android:paddingEnd="3dp"
+                android:text="19:23" />
         </RelativeLayout>
     </RelativeLayout>
 

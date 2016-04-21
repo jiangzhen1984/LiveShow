@@ -1,8 +1,13 @@
 package com.v2tech.presenter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
 
-public class FansFollowPresenter extends BasePresenter {
+import com.v2tech.view.P2PMessageActivity;
+import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+
+public class FansFollowPresenter extends BasePresenter implements InterfactionBtnClickListener {
 
 	public interface FansFollowPresenterUI {
 		public void finishMainUI();
@@ -54,5 +59,45 @@ public class FansFollowPresenter extends BasePresenter {
 	}
 
 
+
+
+	@Override
+	public void onPersonelBtnClicked(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void onChattingBtnClicked(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void onVideoCallBtnClicked(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void onMsgBtnClicked(View v) {
+		Intent i = new Intent();
+		i.setClass(context, P2PMessageActivity.class);
+		context.startActivity(i);
+		
+	}
+
+
+	
+	
 
 }

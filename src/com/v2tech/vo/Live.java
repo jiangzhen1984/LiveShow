@@ -47,6 +47,16 @@ public class Live implements Serializable, Comparable<Live>{
 		this.canRemove = false;
 	}
 	
+	public Live(User publisher, long lid, long nid, double lat, double lng) {
+		super();
+		this.publisher = publisher;
+		this.lid = lid;
+		this.lat = lat;
+		this.lng = lng;
+		this.nid = nid;
+		this.canRemove = false;
+	}
+	
 	
 	public Live(User publisher, String url, double lat, double lng) {
 		super();

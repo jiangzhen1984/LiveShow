@@ -30,6 +30,7 @@ public class PersonalActivity extends Activity implements OnClickListener,
 	private View mWalletBtn;
 	private View mVideoBtn;
 	private View mFriendsInvitationBtn;
+	private View mMyMessageBtn;
 	private TextView titleBarName;
 	private View mPerBtn;
 
@@ -49,6 +50,7 @@ public class PersonalActivity extends Activity implements OnClickListener,
 		mWalletBtn = findViewById(R.id.personal_wallet_btn);
 		mVideoBtn = findViewById(R.id.personal_video_btn);
 		mFriendsInvitationBtn = findViewById(R.id.personal_friends_invitation_btn);
+		mMyMessageBtn = findViewById(R.id.personal_my_message_btn);
 		
 		mPerBtn = findViewById(R.id.avatar_layout);
 		
@@ -60,6 +62,8 @@ public class PersonalActivity extends Activity implements OnClickListener,
 		mMyFansBtn.setOnClickListener(this);
 		mSettingBtn.setOnClickListener(this);
 		mWalletBtn.setOnClickListener(this);
+		mFriendsInvitationBtn.setOnClickListener(this);
+		mMyMessageBtn.setOnClickListener(this);
 
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView)findViewById(R.id.title_bar_center_tv);
@@ -99,6 +103,9 @@ public class PersonalActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.personal_friends_invitation_btn:
 			presenter.friendsInvitationBtnClicked();
+			break;
+		case R.id.personal_my_message_btn:
+			presenter.myMessageBtnClicked();
 			break;
 		default:
 		}

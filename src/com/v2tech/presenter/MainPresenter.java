@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import v2av.VideoPlayer;
 import android.app.Activity;
@@ -13,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Process;
 import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -43,6 +44,11 @@ import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.NotificationListener;
+import com.v2tech.net.lv.LivePublishIndPacket;
+import com.v2tech.net.pkt.IndicationPacket;
+import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.AsyncResult;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
@@ -61,13 +67,18 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
+import com.v2tech.vo.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.VMessageTextItem;
+import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
 
 public class MainPresenter extends BasePresenter implements
 		OnGetGeoCoderResultListener, BDLocationListener,
 		MapVideoLayout.LayoutPositionChangedListener,
-		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener, LiverAction, MapVideoLayout.OnVideoFragmentChangedListener {
+		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener,
+		LiverAction, MapVideoLayout.OnVideoFragmentChangedListener,
+		RequestConnectLayoutListener, InterfactionBtnClickListener {
 	
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -100,6 +111,8 @@ public class MainPresenter extends BasePresenter implements
 	private static final int MAP_CENTER_UPDATE = 1 << 10;
 	private static final int LIVER_INTERACTION_LAY_SHOW = 1 << 11;
 	private static final int MESSAGE_MARQUEE_ENABLE = 1 << 12;
+	private static final int AUDIO_CALL_REQUEST_SHOW = 1 << 13;
+	private static final int VIDEO_CALL_REQUEST_SHOW = 1 << 14;
 	
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -156,6 +169,8 @@ public class MainPresenter extends BasePresenter implements
 		currentLocation = new LocationWrapper();
 		
 		uiHandler = new UiHandler(this, ui);
+		//FIXME just for test 
+		DeamonWorker.getInstance().setNotificationListener(noListener);
 		
 	}
 
@@ -216,6 +231,8 @@ public class MainPresenter extends BasePresenter implements
 		public void updateBalanceSum(final float num);
 		
 		public void showLiverInteractionLayout(boolean flag);
+		
+		public void showConnectRequestLayout(boolean flag);
 		
 		public void showMarqueeMessage(boolean flag);
 	}
@@ -360,6 +377,29 @@ public class MainPresenter extends BasePresenter implements
 		
 	}
 	
+	
+	public void videoCallBtnClicked() {
+		//4 for group type
+		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder
+				.getInstance().getCurrentUser(), new Date(
+				System.currentTimeMillis()));
+		new VMessageAudioVideoRequestItem(vmsg,
+				VMessageAudioVideoRequestItem.TYPE_VIDEO, GlobalHolder
+						.getInstance().getCurrentUser().getmUserId(),
+				currentLive.getLid());
+		vs.sendMessage(vmsg);
+	}
+	
+	public void audioCallBtnClicked() {
+		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder
+				.getInstance().getCurrentUser(), new Date(
+				System.currentTimeMillis()));
+		new VMessageAudioVideoRequestItem(vmsg,
+				VMessageAudioVideoRequestItem.TYPE_AUDIO, GlobalHolder
+						.getInstance().getCurrentUser().getmUserId(),
+				currentLive.getLid());
+		vs.sendMessage(vmsg);
+	}
 	
 	@Override
 	public void onUICreated() {
@@ -752,7 +792,76 @@ public class MainPresenter extends BasePresenter implements
 	/////////////OnVideoFragmentChangedListener	
 	
 	
+	/////////////RequestConnectLayoutListener	
+	@Override
+	public void onLeftBtnClicked(View v) {
+		if (!isState(this.videoScreenState, AUDIO_CALL_REQUEST_SHOW)
+				&& !isState(this.videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
+			return;
+		}
+		ui.showConnectRequestLayout(false);
+		this.videoScreenState |= (~AUDIO_CALL_REQUEST_SHOW);
+		this.videoScreenState |= (~VIDEO_CALL_REQUEST_SHOW);
+		
+	}
+	@Override
+	public void onRightBtnClicked(View v) {
+		if (!isState(this.videoScreenState, AUDIO_CALL_REQUEST_SHOW)
+				&& !isState(this.videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
+			//TODO show UI
+			return;
+		}
+		ui.showConnectRequestLayout(false);
+		//TODO show new UI
+		
+		//TODO update state
+	}
 	
+	/////////////RequestConnectLayoutListener	
+	
+	
+	/////////////InterfactionBtnClickListener	
+	@Override
+	public void onPersonelBtnClicked(View v) {
+		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+			//TODO show incorrect UI
+			return;
+		}
+	}
+
+	@Override
+	public void onChattingBtnClicked(View v) {
+		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+			//TODO show incorrect UI
+			return;
+		}
+		audioCallBtnClicked();
+	}
+
+	@Override
+	public void onVideoCallBtnClicked(View v) {
+		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+			//TODO show incorrect UI
+			return;
+		}
+		videoCallBtnClicked();
+	}
+
+	@Override
+	public void onMsgBtnClicked(View v) {
+		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+			//TODO show incorrect UI
+			return;
+		}
+	}
+
+	/////////////InterfactionBtnClickListener	
+	
+	
+	
+	private boolean isState(int state, int flag) {
+		return (state & flag) == flag;
+	}
 	
 	private void updateLiveScreen(Live l) {
 		
@@ -857,8 +966,7 @@ public class MainPresenter extends BasePresenter implements
 			V2Log.e("===> get search callback ===> No packet");
 			return;
 		}
-		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live);
+		
 		
 		List<String[]> list = p.getPacket().getVideos();
 		for(String[] d : list) {
@@ -873,19 +981,28 @@ public class MainPresenter extends BasePresenter implements
 			double lat = Double.parseDouble(d[3]);
 			Live live = new Live(new User(uid), vid, lat, lng);
 			live.setNid(nid);
+
 			if (d[4] != null && !d[4].isEmpty()) {
 				live.watcherCount = Integer.parseInt(d[4]);
 			}
-			this.lives.append(vid, live);
-			
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("live", live);
-			OverlayOptions oo = new MarkerOptions().icon(online)
-					.position(new LatLng(live.getLat(), live.getLng())).extraInfo(bundle);
-			Overlay ol = this.mapInstance.addOverlay(oo);
+			addLiveMarker(live);
 		}
 		
 	}
+	
+	
+	private void addLiveMarker(Live live) {
+		BitmapDescriptor online = BitmapDescriptorFactory
+				.fromResource(R.drawable.marker_live);
+		this.lives.append(live.getLid(), live);
+		
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("live", live);
+		OverlayOptions oo = new MarkerOptions().icon(online)
+				.position(new LatLng(live.getLat(), live.getLng())).extraInfo(bundle);
+		Overlay ol = this.mapInstance.addOverlay(oo);
+	}
+	
 	
 	boolean pending = true;
 	private void handWatchRequestCallback(JNIResponse resp) {
@@ -938,6 +1055,77 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	
+	public void handleNewMessage(MessageInd ind) {
+		if (currentLive == null) {
+			return;
+		}
+		if (ind.lid != currentLive.getLid()) {
+			return;
+		}
+		
+		String content = ind.content;
+		Pattern p = Pattern.compile("(@)(t[1-2])(l)(\\d+)(u)(\\d+)(@)");
+		Matcher m = p.matcher(content);
+		if (m.find()) {
+			int segIndex = 0;
+			content = m.group();
+			int type = Integer.parseInt(content.substring(2, 3));
+			segIndex = content.indexOf("u");
+			long lid = Long.parseLong(content.substring(4, segIndex));
+			long uid = Long.parseLong(content.substring(segIndex+1, content.length() -1 ));
+			handleAudioVideoRequest(type, lid, uid);
+		} else {
+			ui.queuedMessage(ind.content);
+		}
+	}
+	
+	
+	
+	private void handleAudioVideoRequest(int type, long liveId, long uid) {
+		if ((this.videoScreenState & AUDIO_CALL_REQUEST_SHOW) == AUDIO_CALL_REQUEST_SHOW
+				|| (this.videoScreenState & VIDEO_CALL_REQUEST_SHOW) == VIDEO_CALL_REQUEST_SHOW) {
+			return;
+		}
+		this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW : VIDEO_CALL_REQUEST_SHOW);
+		
+		ui.showConnectRequestLayout(true);
+	}
+	
+	
+	
+	
+	private NotificationListener noListener = new NotificationListener() {
+
+		@Override
+		public void onNodification(IndicationPacket ip) {
+			if (ip instanceof LivePublishIndPacket) {
+				LivePublishIndPacket lpip = (LivePublishIndPacket)ip;
+				Live live = new Live(new User(lpip.uid), lpip.lid, lpip.vid, lpip.lat, lpip.lng);
+				addLiveMarker(live);
+			}
+			
+		}
+
+		@Override
+		public void onResponse(ResponsePacket rp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStateChanged() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTimeout(ResponsePacket rp) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
 	
 	class LocalHandler  extends Handler {
 		
@@ -966,9 +1154,9 @@ public class MainPresenter extends BasePresenter implements
 				createVideoShareInBack();
 				break;
 			case SEARCH_LIVE:
-				ls.scanNear(currentMapCenter.ll.latitude,
-						currentMapCenter.ll.longitude, 500000,
-						new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
+//				ls.scanNear(currentMapCenter.ll.latitude,
+//						currentMapCenter.ll.longitude, 500000,
+//						new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
 				break;
 			case SEARCH_LIVE_CALLBACK:
 				handSearchLiveCallback((SearchLiveResponse)msg.obj);
@@ -1014,8 +1202,8 @@ public class MainPresenter extends BasePresenter implements
 				}
 				break;
 			case UI_HANDLE_HANDLE_NEW_MESSAGE:
-				if (ui.get() != null) {
-					ui.get().queuedMessage(((MessageInd)msg.obj).content);
+				if (pr.get()  != null) {
+					pr.get().handleNewMessage((MessageInd)msg.obj);
 				}
 				break;
 			}

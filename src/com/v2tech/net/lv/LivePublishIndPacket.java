@@ -1,0 +1,39 @@
+package com.v2tech.net.lv;
+
+import com.v2tech.net.pkt.IndicationPacket;
+
+
+public class LivePublishIndPacket extends IndicationPacket {
+	
+	public long vid;
+	public long lid;
+	public long uid;
+	public double lat;
+	public double lng;
+	
+	public LivePublishIndPacket() {
+		super();
+	}
+	
+	
+	public LivePublishIndPacket(long vid, long uid, long lid, double lat, double lng) {
+		super();
+		this.uid = uid;
+		this.lid = lid;
+		this.lat = lat;
+		this.lng = lng;
+	}
+
+	
+
+	
+	
+	
+	
+
+	
+
+	
+	
+
+}

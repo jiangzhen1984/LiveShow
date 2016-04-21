@@ -33,6 +33,8 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -97,6 +99,9 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout.setLiverAction(presenter);
 		mMapVideoLayout.setVideoChangedListener(presenter);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
+		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
+		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
+		
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
 
@@ -501,8 +506,8 @@ public class MainActivity extends FragmentActivity implements
 		
 	}
 	public void showLiverInteractionLayout(boolean flag) {
-		//this.mMapVideoLayout.showLiverInteractionLy(flag);
-		this.mMapVideoLayout.showRequestingConnectionLy(flag);
+		this.mMapVideoLayout.showLiverInteractionLy(flag);
+		//this.mMapVideoLayout.showRequestingConnectionLy(flag);
 		showBottomLayout(!flag);
 	}
 	
@@ -568,6 +573,11 @@ public class MainActivity extends FragmentActivity implements
 	
 	public void showMarqueeMessage(boolean flag) {
 		mMapVideoLayout.showMarqueeMessage(flag);
+	}
+	
+	
+	public void showConnectRequestLayout(boolean flag) {
+		mMapVideoLayout.showRequestingConnectionLy(true);
 	}
 	
 	/////////////////////////////////////////////////////////////

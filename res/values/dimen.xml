@@ -39,6 +39,7 @@
     <dimen name="personel_user_item_text_margin_top">10dp</dimen>
     <dimen name="personel_user_item_text_margin_top1">2dp</dimen>
     <dimen name="personel_user_item_text_margin_left">15dp</dimen>
+    <dimen name="personel_user_item_text_margin_right">10dp</dimen>
     <dimen name="personel_activity_user_padding_ver">10dp</dimen>
     <dimen name="personel_activity_box_margin_top">10dp</dimen>
     <dimen name="personel_setting_text_size">15sp</dimen>
@@ -73,5 +74,8 @@
     <dimen name="card_scan_ly_icon_padding_hor">10dp</dimen>
     <dimen name="card_scan_ly_arrow_margin_right">10dp</dimen>
     <dimen name="card_scan_ly_text_size">12.5sp</dimen>
+    
+    <dimen name="p2p_message_btn_marigin_hor">10dp</dimen>
+    <dimen name="p2p_message_bottom_ly_padding">10dp</dimen>
 
 </resources>

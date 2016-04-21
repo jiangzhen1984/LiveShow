@@ -11,6 +11,7 @@ import com.v2tech.v2liveshow.R;
 
 public class CardScanFragment extends Fragment {
 
+	private View root;
 	
 	public CardScanFragment() {
 		super();
@@ -30,7 +31,7 @@ public class CardScanFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View root = LayoutInflater.from(getActivity()).inflate(R.layout.card_scan_layout, null);
+		root = LayoutInflater.from(getActivity()).inflate(R.layout.card_scan_layout, null);
 		return root;
 	}
 
@@ -50,6 +51,8 @@ public class CardScanFragment extends Fragment {
 	}
 
 
-
+	public void show(boolean flag) {
+		root.setVisibility(flag ? View.VISIBLE : View.GONE);
+	}
 
 }

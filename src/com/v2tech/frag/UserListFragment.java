@@ -26,7 +26,6 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	public UserListFragment(UserListFragmentConnector connector) {
 		super();
 		this.connector = connector;
-		adapter = new LocalAdapter();
 	}
 	
 
@@ -38,6 +37,7 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		adapter = new LocalAdapter();
 	}
 
 	@Override

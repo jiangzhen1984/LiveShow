@@ -18,6 +18,8 @@ public class RequestConnectLayout extends LinearLayout {
 	private TextView text;
 	private TextView name;
 	
+	private RequestConnectLayoutListener listener;
+	
 
 	public RequestConnectLayout(Context context, AttributeSet attrs,
 			int defStyle) {
@@ -85,6 +87,7 @@ public class RequestConnectLayout extends LinearLayout {
 	public View getLeftBtn() {
 		if (leftBtn == null) {
 			leftBtn = (ImageView)findViewById(R.id.request_connect_left_btn);
+			leftBtn.setOnClickListener(click);
 		}
 		return this.leftBtn;
 	}
@@ -92,9 +95,50 @@ public class RequestConnectLayout extends LinearLayout {
 	public View getRightBtn() {
 		if (rightBtn == null) {
 			rightBtn = (ImageView)findViewById(R.id.request_connect_right_btn);
+			rightBtn.setOnClickListener(click);
 		}
 		return this.rightBtn;
 	}
 	
 
+	
+	private OnClickListener click = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (listener == null) {
+				return;
+			}
+			
+			int id = v.getId();
+			switch (id) {
+			case R.id.request_connect_right_btn:
+				listener.onRightBtnClicked(v);
+				break;
+			case R.id.request_connect_left_btn:
+				listener.onLeftBtnClicked(v);
+				break;
+			}
+		}
+		
+	};
+	
+	
+	
+	
+	public RequestConnectLayoutListener getListener() {
+		return listener;
+	}
+
+	public void setListener(RequestConnectLayoutListener listener) {
+		this.listener = listener;
+	}
+
+
+
+
+	public interface RequestConnectLayoutListener {
+		public void onLeftBtnClicked(View v);
+		public void onRightBtnClicked(View v);
+	}
 }

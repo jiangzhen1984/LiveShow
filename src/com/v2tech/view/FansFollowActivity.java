@@ -36,6 +36,7 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 		personelLayout = (LiverInteractionLayout)  findViewById(R.id.personel_liver_interaction_layout);
 
+		personelLayout.setOutListener(presenter);
 		this.overridePendingTransition(R.animator.left_to_right_in,
 				R.animator.left_to_right_out);
 

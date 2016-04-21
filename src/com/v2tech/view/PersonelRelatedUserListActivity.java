@@ -1,13 +1,9 @@
 package com.v2tech.view;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,11 +21,20 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		PersonelSearchBarFragment.PersonelSearchBarTextListener,
 		UserListFragment.UserListFragmentConnector, PersonelRelatedUserListPresenterUI, View.OnClickListener {
 
+	private static final int BTN_TYPE_FANS = 1;
+	private static final int BTN_TYPE_FOLLOWS = 2;
+	private static final int BTN_TYPE_FIRENDS = 3;
+	
+	
 	PersonelSearchBarFragment barFrag;
 	UserListFragment listFrag;
 	CardScanFragment csFrag;
 	TextView title;
 	View returnBtn;
+	
+	private boolean showTimeTV;
+	private boolean showRightBtn;
+	private int btnType = 0;
 
 	private PersonelRelatedUserListPresenter presenter;
 	
@@ -86,7 +91,21 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		lb.text = (TextView)view.findViewById(R.id.personel_item_cf_text);
 		lb.btn = (ImageView)view.findViewById(R.id.personel_item_cf_btn);
 		lb.btn.setOnClickListener(this);
+		if (btnType == BTN_TYPE_FANS) {
+			lb.btn.setImageResource(R.drawable.personel_item_follow_icon);
+			lb.text.setText(R.string.personel_item_user_f_text);
+		} else if (btnType == BTN_TYPE_FOLLOWS) {
+			lb.btn.setImageResource(R.drawable.personel_item_cancel_follow_icon);
+			lb.text.setText(R.string.personel_item_user_cf_text);
+		} else if (btnType == BTN_TYPE_FIRENDS) {
+			lb.btn.setImageResource(R.drawable.personel_item_cancel_follow_icon);
+			lb.text.setText(R.string.personel_item_user_cf_text);
+		}
 		lb.gender = (ImageView)view.findViewById(R.id.personel_item_gender);
+		lb.time =  (TextView)view.findViewById(R.id.personel_item_time);
+		lb.time.setVisibility(showTimeTV?View.VISIBLE : View.GONE);
+		lb.btn.setVisibility(showRightBtn?View.VISIBLE : View.GONE);
+		lb.text.setVisibility(showRightBtn?View.VISIBLE : View.GONE);
 		view.setOnClickListener(l);
 		return view;
 	}
@@ -172,19 +191,43 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	}
 	public void showFrinedInvitationTitle() {
 		title.setText(R.string.personel_user_list_title_friend_invitation);
-		
+	}
+	
+	public void showMessageTitle() {
+		removeCardFragment();
+		title.setText(R.string.personel_user_list_title_message);
+	}
+	
+	public void showTimeView(boolean flag) {
+		showTimeTV = flag;
+	}
+	
+	public void showRightBtmView(boolean flag) {
+		this.showRightBtn = flag;
+	}
+	
+	
+	public void showFansBtnIcon() {
+		btnType = BTN_TYPE_FANS;
+	}
+	
+	public void showFollowsBtnIcon() {
+		btnType = BTN_TYPE_FOLLOWS;
+	}
+	public void showFriendsBtnIcon() {
+		btnType = BTN_TYPE_FIRENDS;
 	}
 	
 	private void removeCardFragment() {
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.remove(csFrag);
-		transaction.commit();
+		csFrag.show(false);
 	}
 	
 	
 	public void doFinish() {
 		finish();
 	}
+	
+	
 	
 	
 	
@@ -217,6 +260,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		TextView text;
 		ImageView btn;
 		ImageView gender;
+		TextView time;
 	}
 	
 	

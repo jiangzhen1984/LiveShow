@@ -48,6 +48,8 @@
     <color name="fans_follow_activity_layout_bg">#f0eff5</color>
     <color name="watcher_requesting_connect_ly_bg">#f0eff5</color>
     <color name="personel_user_item_text_cr">#a0a0a0</color>
-     <color name="video_share_ly_bg">#f0eff5</color>
+    <color name="video_share_ly_bg">#f0eff5</color>
+    <color name="card_scan_ly_bg">#f0eff5</color>
+    <color name="p2p_message_msg_list_bg">#f0eff5</color>
 
 </resources>
