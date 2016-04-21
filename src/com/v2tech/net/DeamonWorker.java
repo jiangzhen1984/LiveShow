@@ -354,7 +354,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 				}
 				connect(host, port);
 				try {
-					wait(30000);
+					synchronized(this) {
+						wait(30000);
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

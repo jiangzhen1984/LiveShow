@@ -13,64 +13,61 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-         android:background="@color/p2p_message_msg_list_bg"
         android:layout_above="@+id/p2p_message_btn_ly"
-        android:layout_below="@+id/title_bar_ly" >
+        android:layout_below="@+id/title_bar_ly"
+        android:background="@color/p2p_message_msg_list_bg" >
 
         <ListView
             android:id="@+id/p2p_message_msg_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" >
+            android:layout_centerVertical="true"
+            android:divider="@null" >
         </ListView>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/p2p_message_btn_ly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/p2p_message_addition_lay"
-        android:background="#ffffff"
-        android:padding="@dimen/p2p_message_bottom_ly_padding" >
-
-        <EditText
-            android:id="@+id/p2p_message_msg_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
-            android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
-            android:background="@drawable/p2p_message_input_text_bg"
-            android:ems="10" >
-        </EditText>
-
-        <ImageView
-            android:id="@+id/p2p_message_emoji_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
-            android:layout_toLeftOf="@+id/p2p_message_plus_btn"
-            android:src="@drawable/p2p_message_emoji_icon_btn" />
-
-        <ImageView
-            android:id="@+id/p2p_message_plus_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/p2p_message_emoji_icon_btn" />
-    </RelativeLayout>
-
     <LinearLayout
-        android:id="@+id/p2p_message_addition_lay"
+        android:id="@+id/p2p_message_btn_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#ffffff"
         android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/p2p_message_bottom_ly_padding" >
+
+            <EditText
+                android:id="@+id/p2p_message_msg_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
+                android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
+                android:background="@drawable/p2p_message_input_text_bg"
+                android:ems="10" >
+            </EditText>
+
+            <ImageView
+                android:id="@+id/p2p_message_emoji_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
+                android:layout_toLeftOf="@+id/p2p_message_plus_btn"
+                android:src="@drawable/p2p_message_emoji_icon_btn" />
+
+            <ImageView
+                android:id="@+id/p2p_message_plus_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/p2p_message_emoji_icon_btn" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/title_bar_line1"
@@ -81,6 +78,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/p2p_message_addition_lay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
