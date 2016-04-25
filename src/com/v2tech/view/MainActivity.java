@@ -13,6 +13,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -33,8 +35,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
-import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
-import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
+import com.v2tech.widget.RequestConnectLayout;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -57,6 +58,7 @@ public class MainActivity extends FragmentActivity implements
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	private SurfaceView localSurfaceView;
+	private RequestConnectLayout requestingLayout;
 	
 	private CameraView cv;
 
@@ -156,6 +158,9 @@ public class MainActivity extends FragmentActivity implements
 		VideoRecorder.VideoPreviewSurfaceHolder = localSurfaceView.getHolder();
 		VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		
+		requestingLayout = (RequestConnectLayout)videoShareLayout.findViewById(R.id.video_share_request_connect);
+		requestingLayout.setVisibility(View.GONE);
+		
 	}
 	
 	
@@ -212,11 +217,12 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		presenter.onReturnBtnClicked();
 	}
 	
 	
-	
+
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -577,8 +583,34 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	public void showConnectRequestLayout(boolean flag) {
-		mMapVideoLayout.showRequestingConnectionLy(true);
+		if (flag && requestingLayout.getVisibility() == View.GONE) {
+			this.mMapView.onPause();
+			requestingLayout.setVisibility(View.VISIBLE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					this, R.animator.liver_interaction_from_down_to_up_in);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			requestingLayout.startAnimation(tabBlockHolderAnimation);
+		} else if (!flag  && requestingLayout.getVisibility() == View.VISIBLE)  {
+			requestingLayout.setVisibility(View.GONE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					this, R.animator.liver_interaction_from_up_to_down_out);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			requestingLayout.startAnimation(tabBlockHolderAnimation);
+			this.mMapView.onResume();
+		}
 	}
+	
+	
+
+	@Override
+	public void doFinish() {
+		finish();
+	}
+
 	
 	/////////////////////////////////////////////////////////////
 	

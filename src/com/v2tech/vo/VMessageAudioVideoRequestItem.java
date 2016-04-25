@@ -8,14 +8,20 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 	public static final int TYPE_AUDIO = 1;
 	
 	public static final int TYPE_VIDEO = 2;
+	
+	public static final int ACTION_REQUEST = 1;
+	public static final int ACTION_ACCEPT = 2;
+	public static final int ACTION_DECLINE = 3;
 
 	private int type;
 	
 	private long uid;
 	
 	private long lid;
+	
+	private int action;
 
-	public VMessageAudioVideoRequestItem(VMessage vm, int type, long uid, long lid) {
+	public VMessageAudioVideoRequestItem(VMessage vm, int type, long uid, long lid, int action) {
 		super(vm);
 		this.type = type;
 		this.type = ITEM_TYPE_TEXT;
@@ -55,8 +61,36 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 
 
 
+	public long getLid() {
+		return lid;
+	}
+
+
+
+
+	public void setLid(long lid) {
+		this.lid = lid;
+	}
+
+
+
+
+	public int getAction() {
+		return action;
+	}
+
+
+
+
+	public void setAction(int action) {
+		this.action = action;
+	}
+
+
+
+
 	public String toXmlItem() {
-		String tmp = new String("@t"+type+"l"+lid+"u"+uid+"@");
+		String tmp = new String("@t"+type+"l"+lid+"u"+uid+"a"+action+"@");
 		tmp = tmp.replaceAll("&", "&amp;");
 		tmp = tmp.replaceAll("<", "&lt;");
 		tmp = tmp.replaceAll(">", "&gt;");

@@ -140,7 +140,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 		while (cs == ConnectionState.CONNECTING) {
 			did = true;
 			try {
-				wait(50);
+				synchronized(this) {
+					wait(50);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

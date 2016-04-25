@@ -235,6 +235,8 @@ public class MainPresenter extends BasePresenter implements
 		public void showConnectRequestLayout(boolean flag);
 		
 		public void showMarqueeMessage(boolean flag);
+		
+		public void doFinish();
 	}
 	
 	
@@ -373,6 +375,20 @@ public class MainPresenter extends BasePresenter implements
 		}
 	}
 	
+	
+	
+	@Override
+	public void onReturnBtnClicked() {
+		if (isState(videoScreenState, AUDIO_CALL_REQUEST_SHOW) || isState(videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
+			videoScreenState &= (~AUDIO_CALL_REQUEST_SHOW);
+			videoScreenState &= (~VIDEO_CALL_REQUEST_SHOW);
+			ui.showConnectRequestLayout(false);
+			return;
+		}
+		ui.doFinish();
+	}
+
+
 	public void onLoginChildUIFinished(int ret,Intent data) {
 		
 	}
@@ -386,7 +402,7 @@ public class MainPresenter extends BasePresenter implements
 		new VMessageAudioVideoRequestItem(vmsg,
 				VMessageAudioVideoRequestItem.TYPE_VIDEO, GlobalHolder
 						.getInstance().getCurrentUser().getmUserId(),
-				currentLive.getLid());
+				currentLive.getLid(), VMessageAudioVideoRequestItem.ACTION_REQUEST);
 		vs.sendMessage(vmsg);
 	}
 	
@@ -397,7 +413,7 @@ public class MainPresenter extends BasePresenter implements
 		new VMessageAudioVideoRequestItem(vmsg,
 				VMessageAudioVideoRequestItem.TYPE_AUDIO, GlobalHolder
 						.getInstance().getCurrentUser().getmUserId(),
-				currentLive.getLid());
+				currentLive.getLid(), VMessageAudioVideoRequestItem.ACTION_REQUEST);
 		vs.sendMessage(vmsg);
 	}
 	
@@ -1064,16 +1080,19 @@ public class MainPresenter extends BasePresenter implements
 		}
 		
 		String content = ind.content;
-		Pattern p = Pattern.compile("(@)(t[1-2])(l)(\\d+)(u)(\\d+)(@)");
+		Pattern p = Pattern.compile("(@)(t[1-2])(l)(\\d+)(u)(\\d+)(a)(\\d)(@)");
 		Matcher m = p.matcher(content);
 		if (m.find()) {
 			int segIndex = 0;
+			int actIndex = 0;
 			content = m.group();
 			int type = Integer.parseInt(content.substring(2, 3));
 			segIndex = content.indexOf("u");
 			long lid = Long.parseLong(content.substring(4, segIndex));
-			long uid = Long.parseLong(content.substring(segIndex+1, content.length() -1 ));
-			handleAudioVideoRequest(type, lid, uid);
+			actIndex =content.indexOf("a");
+			long uid = Long.parseLong(content.substring(segIndex+1, actIndex ));
+			int action =  Integer.parseInt(content.substring(actIndex+1, content.length() -1 ));
+			handleAudioVideoRequest(type, lid, uid, action);
 		} else {
 			ui.queuedMessage(ind.content);
 		}
@@ -1081,14 +1100,16 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	
-	private void handleAudioVideoRequest(int type, long liveId, long uid) {
+	private void handleAudioVideoRequest(int type, long liveId, long uid, int action) {
 		if ((this.videoScreenState & AUDIO_CALL_REQUEST_SHOW) == AUDIO_CALL_REQUEST_SHOW
 				|| (this.videoScreenState & VIDEO_CALL_REQUEST_SHOW) == VIDEO_CALL_REQUEST_SHOW) {
 			return;
 		}
-		this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW : VIDEO_CALL_REQUEST_SHOW);
-		
-		ui.showConnectRequestLayout(true);
+		//action 1 means request
+		if (action == 1) {
+			this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW : VIDEO_CALL_REQUEST_SHOW);
+			ui.showConnectRequestLayout(true);
+		}
 	}
 	
 	

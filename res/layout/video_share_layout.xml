@@ -134,6 +134,13 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:text="@string/video_share_tips_text" />
+
+            <include
+                android:id="@+id/video_share_request_connect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                layout="@layout/requesting_connect_layout" />
         </RelativeLayout>
     </LinearLayout>
 
