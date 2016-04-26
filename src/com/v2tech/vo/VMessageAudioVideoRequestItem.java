@@ -13,7 +13,7 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 	public static final int ACTION_ACCEPT = 2;
 	public static final int ACTION_DECLINE = 3;
 
-	private int type;
+	private int rtype;
 	
 	private long uid;
 	
@@ -23,11 +23,12 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 
 	public VMessageAudioVideoRequestItem(VMessage vm, int type, long uid, long lid, int action) {
 		super(vm);
-		this.type = type;
+		this.rtype = type;
 		this.type = ITEM_TYPE_TEXT;
 		this.uuid = UUID.randomUUID().toString();
 		this.uid = uid;
 		this.lid = lid;
+		this.action = action;
 	}
 
 	
@@ -90,7 +91,7 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 
 
 	public String toXmlItem() {
-		String tmp = new String("@t"+type+"l"+lid+"u"+uid+"a"+action+"@");
+		String tmp = new String("@t"+rtype+"l"+lid+"u"+uid+"a"+action+"@");
 		tmp = tmp.replaceAll("&", "&amp;");
 		tmp = tmp.replaceAll("<", "&lt;");
 		tmp = tmp.replaceAll(">", "&gt;");

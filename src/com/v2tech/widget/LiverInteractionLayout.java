@@ -25,6 +25,7 @@ public class LiverInteractionLayout extends LinearLayout {
 	private View personelBtn;
 	private View innerBox;
 	private View chatRequestBtn;
+	private View videoChatBtn;
 	private View showMsgBtn;
 	
 	
@@ -127,11 +128,16 @@ public class LiverInteractionLayout extends LinearLayout {
 		chatRequestBtn = findViewById(R.id.liver_interaction_chating_btn_iv);
 		chatRequestBtn.setOnClickListener(listener);
 		
+		videoChatBtn = findViewById(R.id.liver_interaction_video_call_btn_iv);
+		videoChatBtn.setOnClickListener(listener);
+		
 		showMsgBtn = findViewById(R.id.liver_interaction_msg_btn_iv);
 		showMsgBtn.setOnClickListener(listener);
 		
 		innerBox = findViewById(R.id.liver_interaction_box_layout);
 		innerBox.setVisibility(View.GONE);
+		
+		chatRequestBtn.setOnClickListener(listener);
 	}
 	
 	private OnClickListener listener = new OnClickListener() {
@@ -153,6 +159,11 @@ public class LiverInteractionLayout extends LinearLayout {
 			case R.id.liver_interaction_msg_btn_iv:
 				if (outListener != null) {
 					outListener.onMsgBtnClicked(v);
+				}
+				break;
+			case R.id.liver_interaction_video_call_btn_iv:
+				if (outListener != null) {
+					outListener.onVideoCallBtnClicked(v);
 				}
 			}
 		}

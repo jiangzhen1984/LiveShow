@@ -17,6 +17,7 @@ public class RequestConnectLayout extends LinearLayout {
 	private ImageView rightBtn;
 	private TextView text;
 	private TextView name;
+	private boolean flag;
 	
 	private RequestConnectLayoutListener listener;
 	
@@ -62,9 +63,7 @@ public class RequestConnectLayout extends LinearLayout {
 	}
 	
 	public void updateLeftBtnIcon(int resId) {
-		if (leftBtn == null) {
-			leftBtn = (ImageView)findViewById(R.id.request_connect_left_btn);
-		}
+		init();
 		if (leftBtn == null) {
 			return;
 		} else {
@@ -73,9 +72,7 @@ public class RequestConnectLayout extends LinearLayout {
 	}
 	
 	public void updateRightBtnIcon(int resId) {
-		if (rightBtn == null) {
-			rightBtn = (ImageView)findViewById(R.id.request_connect_right_btn);
-		}
+		init();
 		if (rightBtn == null) {
 			return;
 		} else {
@@ -85,18 +82,12 @@ public class RequestConnectLayout extends LinearLayout {
 	
 	
 	public View getLeftBtn() {
-		if (leftBtn == null) {
-			leftBtn = (ImageView)findViewById(R.id.request_connect_left_btn);
-			leftBtn.setOnClickListener(click);
-		}
+		init();
 		return this.leftBtn;
 	}
 	
 	public View getRightBtn() {
-		if (rightBtn == null) {
-			rightBtn = (ImageView)findViewById(R.id.request_connect_right_btn);
-			rightBtn.setOnClickListener(click);
-		}
+		init();
 		return this.rightBtn;
 	}
 	
@@ -123,6 +114,23 @@ public class RequestConnectLayout extends LinearLayout {
 		
 	};
 	
+	private void init() {
+		if (flag) {
+			return;
+		}
+		if (rightBtn == null) {
+			rightBtn = (ImageView)findViewById(R.id.request_connect_right_btn);
+			rightBtn.setOnClickListener(click);
+		}
+		
+		if (leftBtn == null) {
+			leftBtn = (ImageView)findViewById(R.id.request_connect_left_btn);
+			leftBtn.setOnClickListener(click);
+		}
+		
+		flag = true;
+	}
+	
 	
 	
 	
@@ -132,6 +140,7 @@ public class RequestConnectLayout extends LinearLayout {
 
 	public void setListener(RequestConnectLayoutListener listener) {
 		this.listener = listener;
+		init();
 	}
 
 

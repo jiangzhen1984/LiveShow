@@ -35,6 +35,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.RequestConnectLayout;
 
 public class MainActivity extends FragmentActivity implements
@@ -52,6 +53,7 @@ public class MainActivity extends FragmentActivity implements
 	private View mLocateButton;
 	private Button mShareVideoButton;
 	private FrameLayout videoShareLayout;
+	
  
 	private VideoControllerAPI mVideoController;
 	private MapVideoLayout mMapVideoLayout;
@@ -59,6 +61,7 @@ public class MainActivity extends FragmentActivity implements
 	private BaiduMap mBaiduMap;
 	private SurfaceView localSurfaceView;
 	private RequestConnectLayout requestingLayout;
+	private P2PVideoMainLayout p2pViewMainLayout;
 	
 	private CameraView cv;
 
@@ -88,6 +91,8 @@ public class MainActivity extends FragmentActivity implements
 		initTitleBarButtonLayout();
 		initResetOrder();
 
+		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
+		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
 		presenter.onUICreated();
 
 	}
@@ -160,6 +165,12 @@ public class MainActivity extends FragmentActivity implements
 		
 		requestingLayout = (RequestConnectLayout)videoShareLayout.findViewById(R.id.video_share_request_connect);
 		requestingLayout.setVisibility(View.GONE);
+		requestingLayout.setListener(presenter);
+		
+		
+		p2pViewMainLayout = (P2PVideoMainLayout)videoShareLayout.findViewById(R.id.p2p_video_main_layout);
+		p2pViewMainLayout.setVisibility(View.GONE);
+		p2pViewMainLayout.setListener(presenter);
 		
 	}
 	
@@ -582,6 +593,17 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
+	public void updateConnectLayoutBtnType(int type) {
+		if (type ==1) {
+			requestingLayout.updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
+			requestingLayout.updateRightBtnIcon(R.drawable.audio_call_accept_btn);
+		} else {
+			requestingLayout.updateLeftBtnIcon(R.drawable.video_call_decline_btn);
+			requestingLayout.updateRightBtnIcon(R.drawable.video_call_accept_btn);
+		}
+	}
+	
+	
 	public void showConnectRequestLayout(boolean flag) {
 		if (flag && requestingLayout.getVisibility() == View.GONE) {
 			this.mMapView.onPause();
@@ -610,10 +632,23 @@ public class MainActivity extends FragmentActivity implements
 	public void doFinish() {
 		finish();
 	}
+	
+	@Override
+	public void showP2PVideoLayout(boolean flag) {
+		p2pViewMainLayout.setVisibility(flag? View.VISIBLE : View.GONE);
+		
+	}
+	
+	
+	public SurfaceView  getP2PMainSurface() {
+		return p2pViewMainLayout.getSurfaceView();
+	}
 
 	
 	/////////////////////////////////////////////////////////////
 	
+
+
 
 
 

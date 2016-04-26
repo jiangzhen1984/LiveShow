@@ -91,6 +91,8 @@ public class User implements Comparable<User> {
 	public boolean isNY;
 	
 	public boolean isMale;
+	
+	public List<UserDeviceConfig> ll ;
 
 	public User(long mUserId) {
 		this(mUserId, null, null, null);

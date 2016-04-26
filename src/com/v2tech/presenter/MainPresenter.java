@@ -3,7 +3,6 @@ package com.v2tech.presenter;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +61,7 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MapVideoLayout;
+import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
@@ -70,6 +70,7 @@ import com.v2tech.vo.VMessage;
 import com.v2tech.vo.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.VMessageTextItem;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
 
@@ -78,7 +79,7 @@ public class MainPresenter extends BasePresenter implements
 		MapVideoLayout.LayoutPositionChangedListener,
 		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener,
 		LiverAction, MapVideoLayout.OnVideoFragmentChangedListener,
-		RequestConnectLayoutListener, InterfactionBtnClickListener {
+		RequestConnectLayoutListener, InterfactionBtnClickListener, P2PVideoMainLayoutListener {
 	
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -92,6 +93,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int ATTEND_LISTENER = 11;
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
 	private static final int MESSAGE_LISTENER = 13;
+	private static final int WATCHER_DEVICE_LISTENER = 14;
 	
 	
 	
@@ -113,6 +115,8 @@ public class MainPresenter extends BasePresenter implements
 	private static final int MESSAGE_MARQUEE_ENABLE = 1 << 12;
 	private static final int AUDIO_CALL_REQUEST_SHOW = 1 << 13;
 	private static final int VIDEO_CALL_REQUEST_SHOW = 1 << 14;
+	private static final int VIDEO_P2P_SHOW = 1 << 15;
+	private static final int AUDIO_P2P_SHOW = 1 << 15;
 	
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -120,8 +124,6 @@ public class MainPresenter extends BasePresenter implements
 	private static final int REQUEST_SELF_LOCATION = 1 << 3;
 	private static final int REQUEST_LIVER_LOCATION = 1 << 4;
 	private static final int REQUEST_RANDOM_LOCATION = 1 << 5;
-	
-	private Random confIdRandom;
 	
 	
 	private Context context;
@@ -158,7 +160,6 @@ public class MainPresenter extends BasePresenter implements
 		super();
 		this.ui = ui;
 		this.context = context;
-		confIdRandom = new Random();
 		lives = new LongSparseArray<Live>();
 		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
 				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
@@ -204,6 +205,8 @@ public class MainPresenter extends BasePresenter implements
 		
 		public SurfaceView  getCurrentSurface();
 		
+		public SurfaceView  getP2PMainSurface();
+		
 		public void showBottomLayout(boolean flag);
 		
 		public void resizeCameraSurfaceSize();
@@ -237,6 +240,13 @@ public class MainPresenter extends BasePresenter implements
 		public void showMarqueeMessage(boolean flag);
 		
 		public void doFinish();
+		
+		//1 for audio 2 for video
+		public void updateConnectLayoutBtnType(int type);
+		
+		public void showP2PVideoLayout(boolean flag);
+		
+		
 	}
 	
 	
@@ -379,9 +389,9 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onReturnBtnClicked() {
-		if (isState(videoScreenState, AUDIO_CALL_REQUEST_SHOW) || isState(videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
-			videoScreenState &= (~AUDIO_CALL_REQUEST_SHOW);
-			videoScreenState &= (~VIDEO_CALL_REQUEST_SHOW);
+		if (isState(AUDIO_CALL_REQUEST_SHOW) || isState(VIDEO_CALL_REQUEST_SHOW)) {
+			this.unsetState(AUDIO_CALL_REQUEST_SHOW);
+			this.unsetState(VIDEO_CALL_REQUEST_SHOW);
 			ui.showConnectRequestLayout(false);
 			return;
 		}
@@ -749,7 +759,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onLiverButtonClicked() {
-		if ((this.videoScreenState & LIVER_INTERACTION_LAY_SHOW) == LIVER_INTERACTION_LAY_SHOW) {
+		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
 			videoScreenState &= ~LIVER_INTERACTION_LAY_SHOW;
 			ui.showLiverInteractionLayout(false);
 		} else {
@@ -760,7 +770,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onMarqueeBtnClicked(View v) {
-		if ((this.videoScreenState & MESSAGE_MARQUEE_ENABLE) == MESSAGE_MARQUEE_ENABLE) {
+		if (isState(MESSAGE_MARQUEE_ENABLE)) {
 			videoScreenState &= ~MESSAGE_MARQUEE_ENABLE;
 			ui.showMarqueeMessage(false);
 		} else {
@@ -811,26 +821,46 @@ public class MainPresenter extends BasePresenter implements
 	/////////////RequestConnectLayoutListener	
 	@Override
 	public void onLeftBtnClicked(View v) {
-		if (!isState(this.videoScreenState, AUDIO_CALL_REQUEST_SHOW)
-				&& !isState(this.videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
+		if (!isState(AUDIO_CALL_REQUEST_SHOW)
+				&& !isState(VIDEO_CALL_REQUEST_SHOW)) {
 			return;
 		}
 		ui.showConnectRequestLayout(false);
-		this.videoScreenState |= (~AUDIO_CALL_REQUEST_SHOW);
-		this.videoScreenState |= (~VIDEO_CALL_REQUEST_SHOW);
 		
+		unsetState(AUDIO_CALL_REQUEST_SHOW);
+		unsetState(VIDEO_CALL_REQUEST_SHOW);
 	}
+	
+	
+	//TODO FIXME add
+	public long requestUid;
+	
 	@Override
 	public void onRightBtnClicked(View v) {
-		if (!isState(this.videoScreenState, AUDIO_CALL_REQUEST_SHOW)
-				&& !isState(this.videoScreenState, VIDEO_CALL_REQUEST_SHOW)) {
+		if (!isState(AUDIO_CALL_REQUEST_SHOW)
+				&& !isState(VIDEO_CALL_REQUEST_SHOW)) {
 			//TODO show UI
 			return;
 		}
 		ui.showConnectRequestLayout(false);
 		//TODO show new UI
-		
-		//TODO update state
+		if (isState(VIDEO_CALL_REQUEST_SHOW)) {
+			setState( VIDEO_P2P_SHOW);
+			ui.showP2PVideoLayout(true);
+			User u = GlobalHolder.getInstance().getUser(requestUid);
+			if (u.ll == null || u.ll.size() <= 0) {
+				return;
+				//TODO
+			}
+			UserDeviceConfig udc = u.ll.iterator().next();
+			VideoPlayer vp = new VideoPlayer();
+			vp.SetSurface(ui.getP2PMainSurface().getHolder());
+			udc.setVp(vp);
+			vs.requestOpenVideoDevice(udc, null);
+			
+		} else if (isState(VIDEO_CALL_REQUEST_SHOW)) {
+			setState( AUDIO_P2P_SHOW);
+		}
 	}
 	
 	/////////////RequestConnectLayoutListener	
@@ -839,7 +869,7 @@ public class MainPresenter extends BasePresenter implements
 	/////////////InterfactionBtnClickListener	
 	@Override
 	public void onPersonelBtnClicked(View v) {
-		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+		if (!isState(WATCHING_FLAG)) {
 			//TODO show incorrect UI
 			return;
 		}
@@ -847,7 +877,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onChattingBtnClicked(View v) {
-		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+		if (!isState(WATCHING_FLAG)) {
 			//TODO show incorrect UI
 			return;
 		}
@@ -856,7 +886,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onVideoCallBtnClicked(View v) {
-		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+		if (!isState(WATCHING_FLAG)) {
 			//TODO show incorrect UI
 			return;
 		}
@@ -865,18 +895,44 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onMsgBtnClicked(View v) {
-		if (!isState(this.videoScreenState, WATCHING_FLAG)) {
+		if (!isState(WATCHING_FLAG)) {
 			//TODO show incorrect UI
 			return;
 		}
 	}
 
 	/////////////InterfactionBtnClickListener	
+
+
+	// ///////////P2PVideoMainLayoutListener
+	@Override
+	public void onP2PVideoMainLeftBtnClicked(View v) {
+		ui.showP2PVideoLayout(false);
+		this.unsetState(VIDEO_P2P_SHOW);
+		//TODO open device
+		
+		
+	}
+
+	@Override
+	public void onP2PVideoMainRightBtnClicked(View v) {
+
+	}
+
+	// ///////////P2PVideoMainLayoutListener
 	
 	
 	
-	private boolean isState(int state, int flag) {
-		return (state & flag) == flag;
+	private void setState(int flag) {
+		this.videoScreenState |= flag;
+	}
+	
+	private void unsetState(int flag) {
+		this.videoScreenState &= (~flag);
+	}
+	
+	private boolean isState(int flag) {
+		return (this.videoScreenState & flag) == flag;
 	}
 	
 	private void updateLiveScreen(Live l) {
@@ -897,6 +953,7 @@ public class MainPresenter extends BasePresenter implements
 		ls = new LiveService();
 		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
 		vs.registerMessageListener(h, MESSAGE_LISTENER, null);
+		vs.registerAttendeeDeviceListener(h, WATCHER_DEVICE_LISTENER, null);
 		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -923,6 +980,7 @@ public class MainPresenter extends BasePresenter implements
 		mapInstance.setOnMapStatusChangeListener(this);
 		mapInstance.setOnMarkerClickListener(this);
 		updateLocateState(locationClient, true);
+		
 		
 	}
 	
@@ -1040,6 +1098,7 @@ public class MainPresenter extends BasePresenter implements
 	}
 	
 	private void handleAttendDevice(AsyncResult ar) {
+		
 		if (pending) {
 			// TODO waiting for chair man device;
 			Object[] devices = (Object[]) ar.getResult();
@@ -1069,6 +1128,7 @@ public class MainPresenter extends BasePresenter implements
 		}
 		
 	}
+
 
 	
 	public void handleNewMessage(MessageInd ind) {
@@ -1107,7 +1167,9 @@ public class MainPresenter extends BasePresenter implements
 		}
 		//action 1 means request
 		if (action == 1) {
+			requestUid = uid;
 			this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW : VIDEO_CALL_REQUEST_SHOW);
+			ui.updateConnectLayoutBtnType(type);
 			ui.showConnectRequestLayout(true);
 		}
 	}
@@ -1190,6 +1252,8 @@ public class MainPresenter extends BasePresenter implements
 				break;
 			case MESSAGE_LISTENER:
 				Message.obtain(uiHandler, UI_HANDLE_HANDLE_NEW_MESSAGE, ((MessageInd)(((AsyncResult)msg.obj).getResult()))).sendToTarget();;
+				break;
+			case WATCHER_DEVICE_LISTENER:
 				break;
 			}
 		}

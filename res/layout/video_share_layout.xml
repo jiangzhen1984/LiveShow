@@ -141,6 +141,14 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 layout="@layout/requesting_connect_layout" />
+            
+            
+              <include
+                android:id="@+id/p2p_video_main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                layout="@layout/p2p_video_main_layout" />
         </RelativeLayout>
     </LinearLayout>
 

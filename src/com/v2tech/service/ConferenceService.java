@@ -34,9 +34,9 @@ import com.v2tech.service.jni.RequestEnterConfResponse;
 import com.v2tech.service.jni.RequestExitedConfResponse;
 import com.v2tech.service.jni.RequestPermissionResponse;
 import com.v2tech.service.jni.RequestUpdateCameraParametersResponse;
+import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.CameraConfiguration;
 import com.v2tech.vo.Conference;
-import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.ConferencePermission;
 import com.v2tech.vo.Group;
 import com.v2tech.vo.Group.GroupType;
@@ -515,7 +515,12 @@ public class ConferenceService extends DeviceService {
 		@Override
 		public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
 				String szUserInfos) {
-			V2Log.i("====>" +nUserID+"   " +nConfID+"   =>"+szUserInfos);
+			User u = GlobalHolder.getInstance().getUser(nUserID);
+			// For quick logged in User.
+			if (u == null) {
+				u = new User(nUserID);
+			}
+			notifyListenerWithPending(KEY_ATTENDEE_STATUS_LISTNER, 0, 0, u);
 		}
 
 		@Override
@@ -587,6 +592,8 @@ public class ConferenceService extends DeviceService {
 			this.mCallbackHandler = mCallbackHandler;
 		}
 
+	//	04-26 17:08:47.564: E/V2TECH(32261): [V2-TECH-ERROR]OnRemoteUserVideoDevice===>2011990   <xml defaultid='2011990:Camera'><video bps='128' camtype='0' comm='0' desc='Camera' fps='15' h='1080' id='2011990:Camera' inuse='1' videotype='1' w='1920'/></xml>
+
 		@Override
 		public void OnRemoteUserVideoDevice(long uid, String szXmlData) {
 			V2Log.e("OnRemoteUserVideoDevice===>"+uid+"   "+szXmlData);
@@ -596,9 +603,19 @@ public class ConferenceService extends DeviceService {
 			}
 			List<UserDeviceConfig> ll = UserDeviceConfig.parseFromXml(uid,
 					szXmlData);
+			
+			AttendDeviceIndication  ind = new AttendDeviceIndication(JNIResponse.Result.SUCCESS);
+			ind.uid = uid;
+			ind.ll = ll;
+			
+			User u = GlobalHolder.getInstance().getUser(uid);
+			// For quick logged in User.
+			if (u == null) {
+				u = new User(uid);
+			}
+			u.ll = ll;
+			notifyListenerWithPending(KEY_ATTENDEE_DEVICE_LISTNER, 0, 0, ind);
 
-			notifyListenerWithPending(KEY_ATTENDEE_DEVICE_LISTNER, 0, 0,
-					new Object[] { Long.valueOf(uid), ll });
 		}
 
 		@Override

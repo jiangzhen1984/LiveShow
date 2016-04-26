@@ -1,6 +1,8 @@
 package com.v2tech.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.V2.jni.util.EscapedcharactersProcessing;
 import com.v2tech.service.GlobalHolder;
@@ -36,6 +38,8 @@ public class Live implements Serializable, Comparable<Live>{
 	public float balanceSum;
 	
 	private long nid;
+	
+	private List<User> watcher;
 	
 	
 	public Live(User publisher, long lid, double lat, double lng) {
@@ -196,6 +200,13 @@ public class Live implements Serializable, Comparable<Live>{
 	}
 	
 	
+	
+	public void addWatcher(User u) {
+		if (this.watcher == null) {
+			this.watcher = new ArrayList<User>();
+		}
+		this.watcher.add(u);
+	}
 	
 
 
