@@ -977,7 +977,7 @@ public class MainPresenter extends BasePresenter implements
 		ls = new LiveService();
 		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
 		vs.registerMessageListener(h, MESSAGE_LISTENER, null);
-		vs.registerAttendeeDeviceListener(h, WATCHER_DEVICE_LISTENER, null);
+		//vs.registerAttendeeDeviceListener(h, WATCHER_DEVICE_LISTENER, null);
 		
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
 			TelephonyManager tl = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -1125,9 +1125,9 @@ public class MainPresenter extends BasePresenter implements
 		
 		if (pending) {
 			// TODO waiting for chair man device;
-			AttendDeviceIndication ind = (AttendDeviceIndication) ar.getResult();
-			long uid = ind.uid;
-			List<UserDeviceConfig> ll = ind.ll;
+			AttendDeviceIndication adi = (AttendDeviceIndication)ar.getResult();
+			long uid = adi.uid;
+			List<UserDeviceConfig> ll = (List<UserDeviceConfig>)adi.ll;
 			if (ll == null || ll.size()< 0) {
 				V2Log.e("===== chair man no device" + uid);
 				pending = false;
