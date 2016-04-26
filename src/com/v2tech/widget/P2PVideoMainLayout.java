@@ -82,10 +82,10 @@ public class P2PVideoMainLayout extends RelativeLayout {
 			int id = v.getId();
 			switch (id) {
 			case R.id.p2p_video_main_left_btn:
-				listener.onP2PVideoMainRightBtnClicked(v);
+				listener.onP2PVideoMainLeftBtnClicked(v);
 				break;
 			case R.id.p2p_video_main_right_btn:
-				listener.onP2PVideoMainLeftBtnClicked(v);
+				listener.onP2PVideoMainRightBtnClicked(v);
 				break;
 			}
 		}

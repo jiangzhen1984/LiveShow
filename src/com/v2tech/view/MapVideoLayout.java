@@ -12,6 +12,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -37,6 +38,7 @@ import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiverInteractionLayout;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
+import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
@@ -89,6 +91,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private OnVideoFragmentChangedListener mVideoChangedListener;
 	private List<NotificationWrapper> notificationList;
 
+	
+	private P2PVideoMainLayout p2pVideoLayout;
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
@@ -152,11 +156,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		requestConnectLayout = (RequestConnectLayout)LayoutInflater.from(getContext()).inflate(R.layout.requesting_connect_layout, null);
 		requestConnectLayout.setVisibility(View.GONE);
 		
+		p2pVideoLayout= (P2PVideoMainLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_video_main_layout, null);
+		p2pVideoLayout.setVisibility(View.GONE);
+		
 		
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(lierInteractionLayout);
 		this.addView(requestConnectLayout);
+		this.addView(p2pVideoLayout);
 		this.addView(mMsgLayout);
 		this.addView(mNotificaionShare);
 		this.addView(mDragLayout);
@@ -572,6 +580,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	}
 	
 	
+	public void showP2PVideoLayout(boolean flag) {
+		p2pVideoLayout.setVisibility(flag ? View.VISIBLE :View.GONE);
+	}
+	
+	public SurfaceView getP2PWatcherSurfaceView() {
+		return p2pVideoLayout.getSurfaceView();
+	}
+	
 	
 	public void setRequestConnectLayoutListener(RequestConnectLayoutListener listener)  {
 		this.requestConnectLayout.setListener(listener);
@@ -889,6 +905,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		if (requestConnectLayout.getVisibility() == View.VISIBLE) {
 			requestConnectLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		}
+		if (p2pVideoLayout.getVisibility() == View.VISIBLE) {
+			p2pVideoLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		}
+		
 	}
 
 	@Override

@@ -12,6 +12,7 @@ public class VMessageAudioVideoRequestItem extends VMessageAbstractItem {
 	public static final int ACTION_REQUEST = 1;
 	public static final int ACTION_ACCEPT = 2;
 	public static final int ACTION_DECLINE = 3;
+	public static final int ACTION_HANG_OFF = 4;
 
 	private int rtype;
 	

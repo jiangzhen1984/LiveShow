@@ -444,6 +444,8 @@ public class MainActivity extends FragmentActivity implements
 	
 	@Override
 	public SurfaceView getCameraSurfaceView() {
+		VideoRecorder.VideoPreviewSurfaceHolder = localSurfaceView.getHolder();
+		VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		return localSurfaceView;
 	}
 
@@ -644,15 +646,33 @@ public class MainActivity extends FragmentActivity implements
 		return p2pViewMainLayout.getSurfaceView();
 	}
 
+
+
+
+
+
+
+
+
+
+	@Override
+	public SurfaceView getP2PMainWatherSurface() {
+		return mMapVideoLayout.getP2PWatcherSurfaceView();
+	}
+
+
+
+	@Override
+	public void showWatcherP2PVideoLayout(boolean flag) {
+		mMapVideoLayout.showP2PVideoLayout(flag);
+	}
+	
+	
+	
+	
 	
 	/////////////////////////////////////////////////////////////
 	
-
-
-
-
-
-
 
 
 

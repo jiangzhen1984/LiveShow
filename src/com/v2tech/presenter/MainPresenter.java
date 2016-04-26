@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import v2av.VideoPlayer;
+import v2av.VideoRecorder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.os.Message;
 import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -63,6 +65,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MapVideoLayout;
 import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.ConferenceGroup;
+import com.v2tech.vo.Group.GroupType;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
@@ -207,6 +210,8 @@ public class MainPresenter extends BasePresenter implements
 		
 		public SurfaceView  getP2PMainSurface();
 		
+		public SurfaceView  getP2PMainWatherSurface();
+		
 		public void showBottomLayout(boolean flag);
 		
 		public void resizeCameraSurfaceSize();
@@ -245,6 +250,8 @@ public class MainPresenter extends BasePresenter implements
 		public void updateConnectLayoutBtnType(int type);
 		
 		public void showP2PVideoLayout(boolean flag);
+		
+		public void showWatcherP2PVideoLayout(boolean flag);
 		
 		
 	}
@@ -405,26 +412,15 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	public void videoCallBtnClicked() {
-		//4 for group type
-		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder
-				.getInstance().getCurrentUser(), new Date(
-				System.currentTimeMillis()));
-		new VMessageAudioVideoRequestItem(vmsg,
-				VMessageAudioVideoRequestItem.TYPE_VIDEO, GlobalHolder
-						.getInstance().getCurrentUser().getmUserId(),
-				currentLive.getLid(), VMessageAudioVideoRequestItem.ACTION_REQUEST);
-		vs.sendMessage(vmsg);
+		requestConnection(this.currentLive.getLid(),
+				VMessageAudioVideoRequestItem.TYPE_VIDEO,
+				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
 	
 	public void audioCallBtnClicked() {
-		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder
-				.getInstance().getCurrentUser(), new Date(
-				System.currentTimeMillis()));
-		new VMessageAudioVideoRequestItem(vmsg,
-				VMessageAudioVideoRequestItem.TYPE_AUDIO, GlobalHolder
-						.getInstance().getCurrentUser().getmUserId(),
-				currentLive.getLid(), VMessageAudioVideoRequestItem.ACTION_REQUEST);
-		vs.sendMessage(vmsg);
+		requestConnection(this.currentLive.getLid(),
+				VMessageAudioVideoRequestItem.TYPE_AUDIO,
+				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
 	
 	@Override
@@ -853,13 +849,20 @@ public class MainPresenter extends BasePresenter implements
 				//TODO
 			}
 			UserDeviceConfig udc = u.ll.iterator().next();
+			udc.setGroupID(this.currentLive.getLid());
+			udc.setGroupType(4);
 			VideoPlayer vp = new VideoPlayer();
 			vp.SetSurface(ui.getP2PMainSurface().getHolder());
 			udc.setVp(vp);
-			vs.requestOpenVideoDevice(udc, null);
+			vs.requestOpenVideoDevice(
+					new ConferenceGroup(this.currentLive.getLid(), "", null,
+							null, null), udc, null);
+			
+			this.requestConnection(this.currentLive.getLid(), VMessageAudioVideoRequestItem.TYPE_VIDEO, VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 			
 		} else if (isState(VIDEO_CALL_REQUEST_SHOW)) {
 			setState( AUDIO_P2P_SHOW);
+			this.requestConnection(this.currentLive.getLid(), VMessageAudioVideoRequestItem.TYPE_AUDIO, VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 		}
 	}
 	
@@ -909,8 +912,14 @@ public class MainPresenter extends BasePresenter implements
 	public void onP2PVideoMainLeftBtnClicked(View v) {
 		ui.showP2PVideoLayout(false);
 		this.unsetState(VIDEO_P2P_SHOW);
-		//TODO open device
-		
+		//TODO close device
+		int type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
+		if (isState(VIDEO_P2P_SHOW)) {
+			type = VMessageAudioVideoRequestItem.TYPE_VIDEO;
+		} else if (isState(AUDIO_P2P_SHOW)) {
+			type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
+		}
+		requestConnection(this.currentLive.getLid(), type , VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
 		
 	}
 
@@ -920,6 +929,21 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	// ///////////P2PVideoMainLayoutListener
+	
+	
+	
+	private void requestConnection(long lid, int type, int action) {
+		long uid = GlobalHolder
+				.getInstance().getCurrentUser().getmUserId();
+		//4 for group type
+		VMessage vmsg = new VMessage(4, lid, GlobalHolder
+				.getInstance().getCurrentUser(), new Date(
+				System.currentTimeMillis()));
+		new VMessageAudioVideoRequestItem(vmsg,
+				type, uid,
+						lid,action);
+		vs.sendMessage(vmsg);
+	}
 	
 	
 	
@@ -1101,9 +1125,9 @@ public class MainPresenter extends BasePresenter implements
 		
 		if (pending) {
 			// TODO waiting for chair man device;
-			Object[] devices = (Object[]) ar.getResult();
-			long uid = Long.parseLong(devices[0].toString());
-			List<UserDeviceConfig> ll = (List<UserDeviceConfig>)devices[1];
+			AttendDeviceIndication ind = (AttendDeviceIndication) ar.getResult();
+			long uid = ind.uid;
+			List<UserDeviceConfig> ll = ind.ll;
 			if (ll == null || ll.size()< 0) {
 				V2Log.e("===== chair man no device" + uid);
 				pending = false;
@@ -1166,11 +1190,29 @@ public class MainPresenter extends BasePresenter implements
 			return;
 		}
 		//action 1 means request
-		if (action == 1) {
+		if (action == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
 			requestUid = uid;
 			this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW : VIDEO_CALL_REQUEST_SHOW);
 			ui.updateConnectLayoutBtnType(type);
 			ui.showConnectRequestLayout(true);
+		} else if (action == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
+			ui.showWatcherP2PVideoLayout(true);
+			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
+			VideoRecorder.VideoPreviewSurfaceHolder = ui.getP2PMainWatherSurface().getHolder();
+			VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			duc.setSVHolder(ui.getP2PMainWatherSurface());
+			vs.requestOpenVideoDevice(duc, null);
+			
+		}else if (action == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
+			ui.showWatcherP2PVideoLayout(false);
+			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
+			VideoRecorder.VideoPreviewSurfaceHolder = ui.getP2PMainWatherSurface().getHolder();
+			VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			duc.setSVHolder(ui.getP2PMainWatherSurface());
+			vs.requestCloseVideoDevice(duc, null);
+			
 		}
 	}
 	
