@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.v2tech.presenter.P2PMessagePresenter;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.emoji.EmojiLayoutWidget;
 
 public class P2PMessageActivity extends Activity implements P2PMessagePresenterUI, OnClickListener {
 
@@ -23,6 +24,7 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	private View addtionalLayout;
 	private View plusBtn;
 	private View emojiBtn;
+	private EmojiLayoutWidget emojiWidget;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 		addtionalLayout = findViewById(R.id.p2p_message_addition_lay);
 		plusBtn = findViewById(R.id.p2p_message_plus_btn);
 		emojiBtn = findViewById(R.id.p2p_message_emoji_btn);
+		emojiWidget= (EmojiLayoutWidget)findViewById(R.id.emoji_layout_root);
+		
 		
 		
 		emojiBtn.setOnClickListener(this);
@@ -119,11 +123,7 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	
 	
 	public void showEmojiLayout(boolean flag) {
-		
-	}
-	
-	public void showPlusLayout(boolean flag) {
-		
+		emojiWidget.setVisibility(flag?View.VISIBLE:View.GONE);
 	}
 	
 	

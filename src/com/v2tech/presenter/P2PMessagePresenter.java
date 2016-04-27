@@ -12,9 +12,8 @@ import android.widget.BaseAdapter;
 public class P2PMessagePresenter extends BasePresenter {
 	
 	
-	private static final int TYPE_SHOW_ADD_LAYOUT = 1;
+	private static final int TYPE_SHOW_ADDITIONAL_LAYOUT = 1;
 	private static final int TYPE_SHOW_EMOJI_LAYOUT = 2;
-	private static final int TYPE_SHOW_PLUS_LAYOUT = 3;
 	
 	private Context context;
 	private P2PMessagePresenterUI ui;
@@ -36,8 +35,6 @@ public class P2PMessagePresenter extends BasePresenter {
 		public void showAdditionLayout(boolean flag);
 		
 		public void showEmojiLayout(boolean flag);
-		
-		public void showPlusLayout(boolean flag);
 		
 		public void finishMainUI();
 	}
@@ -62,45 +59,33 @@ public class P2PMessagePresenter extends BasePresenter {
 		
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
-		ui.showAdditionLayout(false);
+	
 	}
 	
 	
 	public void emojiBtnClicked() {
-		if (!isState(additonState, TYPE_SHOW_ADD_LAYOUT) ) {
-			ui.showAdditionLayout(true);
-			additonState |= TYPE_SHOW_ADD_LAYOUT;
-		}
-		
+		ui.showAdditionLayout(false);
 		if (isState(additonState, TYPE_SHOW_EMOJI_LAYOUT)) {
 			additonState &= (~TYPE_SHOW_EMOJI_LAYOUT);
-			additonState &= (~TYPE_SHOW_ADD_LAYOUT);
-			ui.showAdditionLayout(false);
-			return;
+			additonState &= (~TYPE_SHOW_ADDITIONAL_LAYOUT);
+			ui.showEmojiLayout(false);
 		} else {
 			additonState |= TYPE_SHOW_EMOJI_LAYOUT;
-			additonState &= (~TYPE_SHOW_PLUS_LAYOUT);
-			ui.showPlusLayout(false);
+			additonState &= (~TYPE_SHOW_ADDITIONAL_LAYOUT);
 			ui.showEmojiLayout(true);
 		}
 	}
 	
 	public void plusBtnClicked() {
-		if (!isState(additonState, TYPE_SHOW_ADD_LAYOUT) ) {
-			ui.showAdditionLayout(true);
-			additonState |= TYPE_SHOW_ADD_LAYOUT;
-		}
-		
-		if (isState(additonState, TYPE_SHOW_PLUS_LAYOUT)) {
-			additonState &= (~TYPE_SHOW_PLUS_LAYOUT);
-			additonState &= (~TYPE_SHOW_ADD_LAYOUT);
-			ui.showAdditionLayout(false);
-			return;
-		} else {
-			additonState |= TYPE_SHOW_PLUS_LAYOUT;
+		ui.showEmojiLayout(false);
+		if (isState(additonState, TYPE_SHOW_ADDITIONAL_LAYOUT)) {
 			additonState &= (~TYPE_SHOW_EMOJI_LAYOUT);
-			ui.showPlusLayout(true);
-			ui.showEmojiLayout(false);
+			additonState &= (~TYPE_SHOW_ADDITIONAL_LAYOUT);
+			ui.showAdditionLayout(false);
+		} else {
+			additonState |= TYPE_SHOW_ADDITIONAL_LAYOUT;
+			additonState &= (~TYPE_SHOW_EMOJI_LAYOUT);
+			ui.showAdditionLayout(true);
 		}
 	}
 	
@@ -113,6 +98,16 @@ public class P2PMessagePresenter extends BasePresenter {
 
 
 	
+	
+	
+
+	@Override
+	public void onUICreated() {
+		super.onUICreated();
+		ui.showAdditionLayout(false);
+		ui.showEmojiLayout(false);
+	}
+
 
 	private boolean isState(int st, int flag) {
 		return (st & flag) == flag? true : false;

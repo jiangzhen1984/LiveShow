@@ -94,6 +94,13 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/p2p_message_video_btn" />
         </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/emoji_view_viewpager_height" 
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            layout="@layout/emoji_layout" />
     </LinearLayout>
 
 </RelativeLayout>

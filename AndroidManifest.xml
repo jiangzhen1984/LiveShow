@@ -210,6 +210,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
+            
         </activity>
 
         <service android:name="com.v2tech.view.JNIService" >

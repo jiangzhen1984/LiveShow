@@ -77,5 +77,7 @@
     
     <dimen name="p2p_message_btn_marigin_hor">10dp</dimen>
     <dimen name="p2p_message_bottom_ly_padding">10dp</dimen>
+    
+    <dimen name="emoji_view_viewpager_height">120dp</dimen>
 
 </resources>

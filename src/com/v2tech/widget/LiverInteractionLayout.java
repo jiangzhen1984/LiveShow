@@ -140,6 +140,24 @@ public class LiverInteractionLayout extends LinearLayout {
 		chatRequestBtn.setOnClickListener(listener);
 	}
 	
+	
+	
+	
+	
+	
+	
+
+	@Override
+	public void addView(View child, int index,
+			android.view.ViewGroup.LayoutParams params) {
+		// TODO Auto-generated method stub
+		super.addView(child, index, params);
+	}
+
+
+
+
+
 	private OnClickListener listener = new OnClickListener() {
 
 		@Override
