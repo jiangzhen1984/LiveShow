@@ -678,28 +678,6 @@ public class MainActivity extends FragmentActivity implements
 
 
 
-	private void handleLiveNotification(Message msg) {
-		final LiveNotification ln = (LiveNotification) msg.obj;
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				
-				V2Log.e("handleLiveNotification" + ln.live);
-				if (ln.live != null) {
-					if (ln.type == LiveNotification.TYPE_START) {
-						mMapVideoLayout.addLiveNotificaiton(ln.live);
-					} else if (ln.type == LiveNotification.TYPE_STOPPED) {
-						mMapVideoLayout.removeLiveNotificaiton(ln.live);
-					}
-				}
-
-			}
-
-		});
-			
-	}
-
-
 	
 
 	class LocationItem {

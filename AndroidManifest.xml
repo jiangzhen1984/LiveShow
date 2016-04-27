@@ -173,19 +173,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.v2tech.view.FansFollowingListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-            <intent-filter>
-                <action android:name="com.v2tech.action.FOLLOWING_FANS_ACTIVITY" />
-
-                <category android:name="com.v2tech" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.v2tech.view.PersonelRelatedUserListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"

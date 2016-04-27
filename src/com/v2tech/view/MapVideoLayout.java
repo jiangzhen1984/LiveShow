@@ -477,20 +477,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 //		}
 	}
 	
-	public void addLiveNotificaiton(Live l) {
-		if (l == null || l.getPublisher() == null) {
-			return;
-		}
-		NotificationWrapper nw = new NotificationWrapper();
-		ImageView iv = new ImageView(getContext());
-		iv.setImageResource(R.drawable.publisher);
-		iv.setTag(nw);
-		nw.v = iv;
-		nw.live = l;
-		nw.u = l.getPublisher();
-		notificationList.add(nw);
-		updateNotificationLayout(iv, 1);
-	}
 	
 	public void removeLiveNotificaiton(Live l) {
 		if (l == null || l.getPublisher() == null) {
