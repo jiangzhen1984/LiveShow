@@ -102,6 +102,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	private static final int UI_HANDLE_UPDATE_VIDEO_SCREEN = 1;
 	private static final int UI_HANDLE_HANDLE_NEW_MESSAGE = 2;
+	private static final int UI_HANDLE_AUDIO_CALL_TIMEOUT= 3;
 	
 	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
 	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
@@ -119,7 +120,9 @@ public class MainPresenter extends BasePresenter implements
 	private static final int AUDIO_CALL_REQUEST_SHOW = 1 << 13;
 	private static final int VIDEO_CALL_REQUEST_SHOW = 1 << 14;
 	private static final int VIDEO_P2P_SHOW = 1 << 15;
-	private static final int AUDIO_P2P_SHOW = 1 << 15;
+	private static final int AUDIO_P2P_SHOW = 1 << 16;
+	private static final int PROGRESS_DIALOG_SOWN = 1 << 17;
+	
 	
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -253,7 +256,7 @@ public class MainPresenter extends BasePresenter implements
 		
 		public void showWatcherP2PVideoLayout(boolean flag);
 		
-		
+		public void showProgressDialog(boolean flag, String text);
 	}
 	
 	
@@ -410,19 +413,8 @@ public class MainPresenter extends BasePresenter implements
 		
 	}
 	
-	
-	public void videoCallBtnClicked() {
-		requestConnection(this.currentLive.getLid(),
-				VMessageAudioVideoRequestItem.TYPE_VIDEO,
-				VMessageAudioVideoRequestItem.ACTION_REQUEST);
-	}
-	
-	public void audioCallBtnClicked() {
-		requestConnection(this.currentLive.getLid(),
-				VMessageAudioVideoRequestItem.TYPE_AUDIO,
-				VMessageAudioVideoRequestItem.ACTION_REQUEST);
-	}
-	
+
+
 	@Override
 	public void onUICreated() {
 		h = new LocalHandler(backendThread.getLooper());
@@ -831,6 +823,7 @@ public class MainPresenter extends BasePresenter implements
 	//TODO FIXME add
 	public long requestUid;
 	
+	
 	@Override
 	public void onRightBtnClicked(View v) {
 		if (!isState(AUDIO_CALL_REQUEST_SHOW)
@@ -884,7 +877,19 @@ public class MainPresenter extends BasePresenter implements
 			//TODO show incorrect UI
 			return;
 		}
-		audioCallBtnClicked();
+		
+		if (isState(PROGRESS_DIALOG_SOWN)) {
+			return;
+		}
+		
+		ui.showProgressDialog(true, context.getResources().getString(R.string.audio_call_connecting));
+		Message timout= Message.obtain(uiHandler, UI_HANDLE_AUDIO_CALL_TIMEOUT);
+		uiHandler.sendMessageDelayed(timout, 5000);
+		setState(PROGRESS_DIALOG_SOWN);
+		
+		requestConnection(this.currentLive.getLid(),
+				VMessageAudioVideoRequestItem.TYPE_AUDIO,
+				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
 
 	@Override
@@ -893,7 +898,9 @@ public class MainPresenter extends BasePresenter implements
 			//TODO show incorrect UI
 			return;
 		}
-		videoCallBtnClicked();
+		requestConnection(this.currentLive.getLid(),
+				VMessageAudioVideoRequestItem.TYPE_VIDEO,
+				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
 
 	@Override
@@ -1185,8 +1192,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void handleAudioVideoRequest(int type, long liveId, long uid, int action) {
-		if ((this.videoScreenState & AUDIO_CALL_REQUEST_SHOW) == AUDIO_CALL_REQUEST_SHOW
-				|| (this.videoScreenState & VIDEO_CALL_REQUEST_SHOW) == VIDEO_CALL_REQUEST_SHOW) {
+		if (isState(AUDIO_CALL_REQUEST_SHOW)  ||  isState(VIDEO_CALL_REQUEST_SHOW)) {
 			return;
 		}
 		//action 1 means request
@@ -1196,24 +1202,51 @@ public class MainPresenter extends BasePresenter implements
 			ui.updateConnectLayoutBtnType(type);
 			ui.showConnectRequestLayout(true);
 		} else if (action == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
-			ui.showWatcherP2PVideoLayout(true);
-			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
-			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
-			VideoRecorder.VideoPreviewSurfaceHolder = ui.getP2PMainWatherSurface().getHolder();
-			VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-			duc.setSVHolder(ui.getP2PMainWatherSurface());
-			vs.requestOpenVideoDevice(duc, null);
+			if (type ==  VMessageAudioVideoRequestItem.TYPE_VIDEO) {
+				ui.showWatcherP2PVideoLayout(true);
+				UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+				ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
+				VideoRecorder.VideoPreviewSurfaceHolder = ui.getP2PMainWatherSurface().getHolder();
+				VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+				duc.setSVHolder(ui.getP2PMainWatherSurface());
+				vs.requestOpenVideoDevice(duc, null);
+			} else if (type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
+				
+			}
 			
-		}else if (action == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
-			ui.showWatcherP2PVideoLayout(false);
-			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
-			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
-			VideoRecorder.VideoPreviewSurfaceHolder = ui.getP2PMainWatherSurface().getHolder();
-			VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-			duc.setSVHolder(ui.getP2PMainWatherSurface());
-			vs.requestCloseVideoDevice(duc, null);
+		} else if (action == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
+			if (type ==  VMessageAudioVideoRequestItem.TYPE_VIDEO) {
+				ui.showWatcherP2PVideoLayout(false);
+				if (uid != currentLive.getPublisher().getmUserId()) {
+					//close local device
+					UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder.getInstance().getCurrentUserId(), "", null);
+					duc.setSVHolder(ui.getP2PMainWatherSurface());
+					vs.requestCloseVideoDevice(duc, null);
+				} else {
+					//close remote device 
+					VideoPlayer vp = new VideoPlayer();
+					vp.SetSurface(ui.getP2PMainSurface().getHolder());
+					UserDeviceConfig duc = new UserDeviceConfig(0,
+							this.currentLive.getLid(), uid, GlobalHolder
+									.getInstance().getUser(uid).ll.iterator()
+									.next().getDeviceID(), vp);
+					vs.requestCloseVideoDevice(duc, null);
+					
+				}
+			} else if (type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
+				
+			}
 			
 		}
+		else if (action == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
+			//TODO handle decline
+		}
+	}
+	
+	
+	public void handleRequestTimeOut() {
+		unsetState(PROGRESS_DIALOG_SOWN);
+		ui.showProgressDialog(false, null);
 	}
 	
 	
@@ -1321,17 +1354,20 @@ public class MainPresenter extends BasePresenter implements
 
 		@Override
 		public void handleMessage(Message msg) {
+			if (pr.get() == null) {
+				return;
+			}
+			MainPresenter mp = pr.get();
 			int w = msg.what;
 			switch(w) {
 			case UI_HANDLE_UPDATE_VIDEO_SCREEN:
-				if (pr.get() != null) {
-					pr.get().updateLiveScreen((Live)msg.obj);
-				}
+				mp.updateLiveScreen((Live)msg.obj);
 				break;
 			case UI_HANDLE_HANDLE_NEW_MESSAGE:
-				if (pr.get()  != null) {
-					pr.get().handleNewMessage((MessageInd)msg.obj);
-				}
+				mp.handleNewMessage((MessageInd)msg.obj);
+				break;
+			case UI_HANDLE_AUDIO_CALL_TIMEOUT:
+				mp.handleRequestTimeOut();
 				break;
 			}
 		}

@@ -103,5 +103,7 @@
     <string name="card_scan_scan_text">扫一扫</string>
     <string name="card_scan_scan_text1">扫描二维码名片</string>
     
+    <string name="audio_call_connecting">正在等待对方接受邀请</string>
+    
 
 </resources>

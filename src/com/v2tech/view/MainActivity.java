@@ -1,10 +1,10 @@
 package com.v2tech.view;
 
 import v2av.VideoRecorder;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
@@ -30,7 +30,6 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
-import com.v2tech.service.jni.LiveNotification;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
@@ -668,8 +667,18 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
+	ProgressDialog dialog;
 	
-	
+	public void showProgressDialog(boolean flag, String text) {
+		if (dialog == null && flag) {
+			dialog = ProgressDialog.show(this, "", text);
+			dialog.show();
+		} else {
+			if (dialog != null) {
+				dialog.dismiss();
+			}
+		}
+	} 
 	
 	/////////////////////////////////////////////////////////////
 	
