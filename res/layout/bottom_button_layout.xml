@@ -64,6 +64,7 @@
         android:freezesText="false"
         android:hint="@string/bottom_seatch_text_tip"
         android:textColor="@color/bottom_search_text_color"
+        android:maxLines="1"
         android:textSize="@dimen/bottom_button_text_size" >
     </com.v2tech.widget.FloatEditText>
 

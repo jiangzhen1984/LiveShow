@@ -48,6 +48,7 @@
                 android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
                 android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
                 android:background="@drawable/p2p_message_input_text_bg"
+                android:maxLines="3"
                 android:ems="10" >
             </EditText>
 

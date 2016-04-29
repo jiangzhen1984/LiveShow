@@ -5,15 +5,23 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.v2tech.service.P2PMessageService;
 
 public class P2PMessagePresenter extends BasePresenter {
 	
 	
 	private static final int TYPE_SHOW_ADDITIONAL_LAYOUT = 1;
 	private static final int TYPE_SHOW_EMOJI_LAYOUT = 2;
+	
+	public static final int ITEM_TYPE_DATE = 2;
+	public static final int ITEM_TYPE_SELF = 0;
+	public static final int ITEM_TYPE_OTHERS = 1;
+	
 	
 	private Context context;
 	private P2PMessagePresenterUI ui;
@@ -23,6 +31,9 @@ public class P2PMessagePresenter extends BasePresenter {
 	private LocalAdapter localAdapter;
 	
 	private int additonState;
+	
+	
+	private P2PMessageService messageService;
 	
 	public interface P2PMessagePresenterUI {
 		public void setAdapter(BaseAdapter adapter);
@@ -37,6 +48,10 @@ public class P2PMessagePresenter extends BasePresenter {
 		public void showEmojiLayout(boolean flag);
 		
 		public void finishMainUI();
+		
+		public Editable getEditable();
+		
+		public void scrollTo(int position);
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -44,6 +59,7 @@ public class P2PMessagePresenter extends BasePresenter {
 		this.context = context;
 		this.ui = ui;
 		additonState = 0;
+		messageService = new  P2PMessageService();
 		
 		itemList = new ArrayList<Item>(60);
 		Item item = new Item();
@@ -59,6 +75,8 @@ public class P2PMessagePresenter extends BasePresenter {
 		
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
+		
+		
 	
 	}
 	
@@ -97,7 +115,17 @@ public class P2PMessagePresenter extends BasePresenter {
 	}
 
 
-	
+	public void sendBtnClicked() {
+		Editable et = ui.getEditable();
+		Item i = new Item();
+		i.type = ITEM_TYPE_SELF;
+		i.content = et.toString();
+		itemList.add(i);
+		localAdapter.notifyDataSetChanged();
+		ui.scrollTo(itemList.size());
+		
+		//TODO build message and sent
+	}
 	
 	
 
@@ -106,6 +134,23 @@ public class P2PMessagePresenter extends BasePresenter {
 		super.onUICreated();
 		ui.showAdditionLayout(false);
 		ui.showEmojiLayout(false);
+		
+		//TODO get user information
+	}
+	
+	
+
+
+	@Override
+	public void onUIDestroyed() {
+		super.onUIDestroyed();
+		messageService.clearCalledBack();
+		messageService = null;
+	}
+	
+	
+	public void onReturnBtnClicked() {
+		ui.finishMainUI();
 	}
 
 

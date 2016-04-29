@@ -3,10 +3,12 @@ package com.v2tech.view;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	private View plusBtn;
 	private View emojiBtn;
 	private EmojiLayoutWidget emojiWidget;
+	private EditText messageEt;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 		plusBtn = findViewById(R.id.p2p_message_plus_btn);
 		emojiBtn = findViewById(R.id.p2p_message_emoji_btn);
 		emojiWidget= (EmojiLayoutWidget)findViewById(R.id.emoji_layout_root);
+		messageEt= (EditText)findViewById(R.id.p2p_message_msg_et);
 		
 		
 		
@@ -77,17 +81,17 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	
 	public void updateView(View view, int type, Bitmap bm, String content) {
 		LocalBind lb = (LocalBind)view.getTag();
-		if (type == 2) {
+		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);
 			lb.time.setVisibility(View.VISIBLE);
 			lb.leftLy.setVisibility(View.GONE);
 			lb.rightLy.setVisibility(View.GONE);
-		} else if (type == 0) {
+		} else if (type == P2PMessagePresenter.ITEM_TYPE_SELF) {
 			lb.leftContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.VISIBLE);
 			lb.rightLy.setVisibility(View.GONE);
-		}else if (type == 1) {
+		}else if (type == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
 			lb.rightContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.GONE);
@@ -97,17 +101,17 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	
 	public void updateView(View view, int type, String content) {
 		LocalBind lb = (LocalBind)view.getTag();
-		if (type == 2) {
+		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);
 			lb.time.setVisibility(View.VISIBLE);
 			lb.leftLy.setVisibility(View.GONE);
 			lb.rightLy.setVisibility(View.GONE);
-		} else if (type == 0) {
+		} else if (type == P2PMessagePresenter.ITEM_TYPE_SELF) {
 			lb.leftContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.VISIBLE);
 			lb.rightLy.setVisibility(View.GONE);
-		}else if (type == 1) {
+		}else if (type == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
 			lb.rightContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.GONE);
@@ -130,16 +134,25 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 	@Override
 	public void finishMainUI() {
 		finish();
-		
 	}
 	
+	
+	public Editable getEditable() {
+		return this.messageEt.getEditableText();
+	}
+	
+	
+	public void scrollTo(int position) {
+		listView.setSelection(position);
+	}
 	
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();
 		switch (id) {
 		case R.id.p2p_message_plus_btn:
-			presenter.plusBtnClicked();
+			//presenter.plusBtnClicked();
+			presenter.sendBtnClicked();
 			break;
 		case R.id.p2p_message_emoji_btn:
 			presenter.emojiBtnClicked();
