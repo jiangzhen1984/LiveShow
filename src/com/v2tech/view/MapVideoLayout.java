@@ -43,6 +43,7 @@ import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
+import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoShowFragmentAdapter;
 
@@ -80,6 +81,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private RequestConnectLayout   requestConnectLayout;
 	private P2PVideoMainLayout p2pVideoLayout;
 	private P2PAudioWatcherLayout p2pAudioWatcherLayout;
+	private LiveInformationLayout  liveInformationLayout;
 	
 	
 	private LayoutPositionChangedListener mPosInterface;
@@ -94,12 +96,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private DragType mDragType = DragType.NONE;
 	private Operation mOper = Operation.NONE;
 	private boolean fireFlyingdown = false;
-	private ImageView favButton;
-	private ImageView inchargeButton;
 	private LinearLayout notificationLayout;
 	private TextView inchargeView;
 	private TextView recdCountView;
-	private ImageView marqueeEnableBtn;
 	
 	private OnNotificationClickedListener mNotificationClickedListener;
 	private OnVideoFragmentChangedListener mVideoChangedListener;
@@ -176,6 +175,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, null);
 		p2pAudioWatcherLayout.setVisibility(View.GONE);
 		
+		liveInformationLayout= (LiveInformationLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, null);
+		
 		
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
@@ -183,6 +184,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		this.addView(requestConnectLayout);
 		this.addView(p2pVideoLayout);
 		this.addView(p2pAudioWatcherLayout);
+		this.addView(liveInformationLayout);
 		this.addView(mMsgLayout);
 		this.addView(mNotificaionShare);
 		this.addView(mDragLayout);
@@ -208,28 +210,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	private void initIcons() {
 		
-		View rightSideLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, null);
-		favButton = (ImageView) rightSideLayout
-				.findViewById(R.id.recommendation_button);
-		inchargeButton = (ImageView) rightSideLayout
-				.findViewById(R.id.incharge_button);
 
-		recdCountView = (TextView) rightSideLayout
-				.findViewById(R.id.recommendation_count_tv);
-		inchargeView = (TextView) rightSideLayout
-				.findViewById(R.id.balance_count_tv);
-		marqueeEnableBtn = (ImageView) rightSideLayout
-				.findViewById(R.id.message_marquee_btn);
-		
-		
-
-		RelativeLayout.LayoutParams rightSideLayoutParm = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.MATCH_PARENT);
-		rightSideLayoutParm.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//		
-		mDragLayout.addView(rightSideLayout, rightSideLayoutParm);
-		
 		
 		
 		View bottomLayout = LayoutInflater.from(getContext()).inflate(R.layout.video_layout_bottom_layout, null);
@@ -242,9 +223,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		
 		mDragLayout.addView(bottomLayout, bottomLayoutParm);
 		
-		marqueeEnableBtn.setOnClickListener(this);
-		favButton.setOnClickListener(this);
-		inchargeButton.setOnClickListener(this);
 		publisherButton.setOnClickListener(this);
 		
 	}
@@ -499,19 +477,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	}
 	
     public void showRedBtm(boolean flag) {
-		if (flag) {
-			favButton.setImageResource(R.drawable.unrecommendation_button);
-		} else {
-			favButton.setImageResource(R.drawable.recommendation_button);
-		}
+		//TODO add implments
 	}
 	
 	public void showIncharBtm(boolean flag) {
-		if (flag) {
-			inchargeButton.setImageResource(R.drawable.unfollow_button);
-		} else {
-			inchargeButton.setImageResource(R.drawable.follow_button);
-		}
+		//TODO add implments
 	}
 	
 	
@@ -591,7 +561,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	public void showMarqueeMessage(boolean flag) {
 		mMsgLayout.setVisibility(flag?View.VISIBLE:View.GONE);
-		marqueeEnableBtn.setImageResource(flag?R.drawable.message_marquee_enable : R.drawable.message_marquee_disable);
+		liveInformationLayout.enableLiveMessage(flag);
 	}
 	
 	
@@ -881,6 +851,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		int realTop = top + mOffsetTop;
 		int realBottom = realTop + mVideoShowPager.getMeasuredHeight();
 		mVideoShowPager.layout(left, realTop, right, realBottom);
+		
+		//TODO re measure
+		liveInformationLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.EXACTLY);
+		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);
 		
 		if (mNotificaionShare.getVisibility() == View.VISIBLE) {
 			int dis = (mOffsetTop > CAMEA_SHAPE_HEIGHT?((mOffsetTop - CAMEA_SHAPE_HEIGHT) / 5):0);

@@ -10,11 +10,30 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical" >
 
-        <SurfaceView
-            android:id="@+id/local_camera_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".5" />
+            android:layout_weight=".5" >
+
+            <SurfaceView
+                android:id="@+id/local_camera_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            
+            <include
+                android:id="@+id/video_right_border_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                layout="@layout/video_right_border_layout" />
+            
+               <include
+                android:id="@+id/video_right_border_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                layout="@layout/video_layout_bottom_layout" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -140,16 +159,15 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 layout="@layout/requesting_connect_layout" />
-            
-            
-              <include
+
+            <include
                 android:id="@+id/p2p_video_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 layout="@layout/p2p_video_main_layout" />
-              
-                <include
+
+            <include
                 android:id="@+id/p2p_audio_liver_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

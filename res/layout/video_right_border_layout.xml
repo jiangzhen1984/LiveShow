@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.v2tech.widget.LiveInformationLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -78,4 +78,4 @@
             android:src="@drawable/video_share_up" />
     </LinearLayout>
 
-</LinearLayout>
+</com.v2tech.widget.LiveInformationLayout>
