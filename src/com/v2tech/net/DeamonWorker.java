@@ -397,7 +397,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg)
 				throws Exception {
-			if (msg == null || msg.isEmpty()) {
+			if (msg == null || msg.trim().isEmpty()) {
 				return;
 			}
 			Log.i("ReaderChannel", "Read====>" + msg);
@@ -428,13 +428,11 @@ public class DeamonWorker implements Runnable, NetConnector,
 			Log.e("ReaderChannel", "Exception:" + cause);
 			cause.printStackTrace();
 			ctx.close();
-			// TODO notify restart
 		}
 
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
-			V2Log.d("====>EVENT==>" + evt.getClass());
 			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 				ChannelFuture cf = ctx.channel().writeAndFlush("\r\n");
 				cf.sync();

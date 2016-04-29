@@ -34,6 +34,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.widget.P2PAudioLiverLayout;
 import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.RequestConnectLayout;
 
@@ -61,6 +62,7 @@ public class MainActivity extends FragmentActivity implements
 	private SurfaceView localSurfaceView;
 	private RequestConnectLayout requestingLayout;
 	private P2PVideoMainLayout p2pViewMainLayout;
+	private P2PAudioLiverLayout p2pAudioLiverLayout;
 	
 	private CameraView cv;
 
@@ -170,6 +172,10 @@ public class MainActivity extends FragmentActivity implements
 		p2pViewMainLayout = (P2PVideoMainLayout)videoShareLayout.findViewById(R.id.p2p_video_main_layout);
 		p2pViewMainLayout.setVisibility(View.GONE);
 		p2pViewMainLayout.setListener(presenter);
+		
+		p2pAudioLiverLayout = (P2PAudioLiverLayout)videoShareLayout.findViewById(R.id.p2p_audio_liver_layout);
+		p2pAudioLiverLayout.setVisibility(View.GONE);
+		p2pAudioLiverLayout.setOutListener(presenter);
 		
 	}
 	
@@ -628,6 +634,27 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
+	public void showP2PLiverLayout(boolean flag) {
+		if (flag && p2pAudioLiverLayout.getVisibility() == View.GONE) {
+			p2pAudioLiverLayout.setVisibility(View.VISIBLE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					this, R.animator.liver_interaction_from_down_to_up_in);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			p2pAudioLiverLayout.startAnimation(tabBlockHolderAnimation);
+		} else if (!flag  && p2pAudioLiverLayout.getVisibility() == View.VISIBLE)  {
+			p2pAudioLiverLayout.setVisibility(View.GONE);
+			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
+					this, R.animator.liver_interaction_from_up_to_down_out);
+			tabBlockHolderAnimation.setDuration(1000);
+			tabBlockHolderAnimation.setFillAfter(true);
+			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+			p2pAudioLiverLayout.startAnimation(tabBlockHolderAnimation);
+		}
+	}
+	
+	
 
 	@Override
 	public void doFinish() {
@@ -676,9 +703,16 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			if (dialog != null) {
 				dialog.dismiss();
+				dialog = null;
 			}
 		}
 	} 
+	
+	
+	
+	public void showWatcherP2PAudioLayout(boolean flag) {
+		mMapVideoLayout.showP2PAudioWatcherLy(flag);
+	}
 	
 	/////////////////////////////////////////////////////////////
 	

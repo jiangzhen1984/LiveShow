@@ -38,6 +38,8 @@ import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiverInteractionLayout;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
+import com.v2tech.widget.P2PAudioWatcherLayout;
+import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
@@ -46,6 +48,15 @@ import com.v2tech.widget.VideoShowFragmentAdapter;
 
 public class MapVideoLayout extends FrameLayout implements OnTouchListener,
 CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
+	
+	
+	private static final int ANIMATION_TYPE_IN = 1;
+	private static final int ANIMATION_TYPE_OUT = 2;
+	//from down to up  for in and from up to down for out
+	private static final int ANIMATION_TYPE_CATEGORY = 1;
+	
+	private static final int ANIMATION_DURATION = 1000;
+	
 
 	private static final boolean DEBUG = false;
 	private static final String TAG = "MapVideoLayout";
@@ -67,6 +78,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private RelativeLayout mDragLayout;
 	private LiverInteractionLayout lierInteractionLayout;
 	private RequestConnectLayout   requestConnectLayout;
+	private P2PVideoMainLayout p2pVideoLayout;
+	private P2PAudioWatcherLayout p2pAudioWatcherLayout;
+	
 	
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
@@ -92,7 +106,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	private List<NotificationWrapper> notificationList;
 
 	
-	private P2PVideoMainLayout p2pVideoLayout;
+
 
 	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
 	private boolean mMeasureAllChildren = false;
@@ -159,12 +173,16 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		p2pVideoLayout= (P2PVideoMainLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_video_main_layout, null);
 		p2pVideoLayout.setVisibility(View.GONE);
 		
+		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, null);
+		p2pAudioWatcherLayout.setVisibility(View.GONE);
+		
 		
 		this.addView(mVideoShowPager);
 		this.addView(mMapView);
 		this.addView(lierInteractionLayout);
 		this.addView(requestConnectLayout);
 		this.addView(p2pVideoLayout);
+		this.addView(p2pAudioWatcherLayout);
 		this.addView(mMsgLayout);
 		this.addView(mNotificaionShare);
 		this.addView(mDragLayout);
@@ -229,17 +247,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		inchargeButton.setOnClickListener(this);
 		publisherButton.setOnClickListener(this);
 		
-		
-//		notificationLayout = new LinearLayout(getContext());
-//		RelativeLayout.LayoutParams notificationLayoutParameter = new RelativeLayout.LayoutParams(
-//				RelativeLayout.LayoutParams.MATCH_PARENT,
-//				RelativeLayout.LayoutParams.WRAP_CONTENT);
-//		notificationLayoutParameter.setMargins(10, 0, 10, 0);
-//		notificationLayoutParameter.addRule(RelativeLayout.RIGHT_OF, publisherButton.getId());
-//		notificationLayoutParameter.addRule(RelativeLayout.LEFT_OF, favButton.getId());
-//		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_TOP, favButton.getId());
-//		notificationLayoutParameter.addRule(RelativeLayout.ALIGN_BOTTOM, favButton.getId());
-//		mDragLayout.addView(notificationLayout, notificationLayoutParameter);
 	}
 
 	public BaiduMap getMap() {
@@ -462,19 +469,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	
 	public void pasuseCurrentVideo(boolean flag) {
-//		if (flag) {
-//			if (mViewPagerAdapter.getCount() > mCurrentPage) {
-//				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).pause();
-//			} else {
-//				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
-//			}
-//		} else {
-//			if (mViewPagerAdapter.getCount() > mCurrentPage) {
-//				((VideoOpt) mViewPagerAdapter.getItem(mCurrentPage)).resume();
-//			}else {
-//				V2Log.e(TAG, "page index out of adapter count:" +mViewPagerAdapter.getCount()+"  mCurrentPage:"+mCurrentPage);
-//			}
-//		}
+
 	}
 	
 	
@@ -521,54 +516,60 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 	
 	
 	public void showLiverInteractionLy(boolean flag) {
-		if (flag && lierInteractionLayout.getVisibility() == View.GONE) {
-			this.mMapView.onPause();
-			lierInteractionLayout.setVisibility(View.VISIBLE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					getContext(), R.animator.liver_interaction_from_down_to_up_in);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			lierInteractionLayout.startAnimation(tabBlockHolderAnimation);
-		} else if (!flag  && lierInteractionLayout.getVisibility() == View.VISIBLE)  {
-			lierInteractionLayout.setVisibility(View.GONE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					getContext(), R.animator.liver_interaction_from_up_to_down_out);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			lierInteractionLayout.startAnimation(tabBlockHolderAnimation);
-			this.mMapView.onResume();
-		}
+		showOrHidenViewAnimation(lierInteractionLayout, flag);
 	}
 	
 	
 	public void showRequestingConnectionLy(boolean flag) {
-		if (flag && requestConnectLayout.getVisibility() == View.GONE) {
+		showOrHidenViewAnimation(requestConnectLayout, flag);
+	}
+	
+	
+	public void showP2PAudioWatcherLy(boolean flag) {
+		showOrHidenViewAnimation(p2pAudioWatcherLayout, flag);
+	}
+	
+	public void showP2PVideoLayout(boolean flag) {
+		showOrHidenViewAnimation(p2pVideoLayout, flag);
+	}
+	
+	
+	private void showOrHidenViewAnimation(View view, boolean flag) {
+		if (flag && view.getVisibility() == View.GONE) {
 			this.mMapView.onPause();
-			requestConnectLayout.setVisibility(View.VISIBLE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					getContext(), R.animator.liver_interaction_from_down_to_up_in);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			requestConnectLayout.startAnimation(tabBlockHolderAnimation);
-		} else if (!flag  && requestConnectLayout.getVisibility() == View.VISIBLE)  {
-			requestConnectLayout.setVisibility(View.GONE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					getContext(), R.animator.liver_interaction_from_up_to_down_out);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			requestConnectLayout.startAnimation(tabBlockHolderAnimation);
+			view.setVisibility(View.VISIBLE);
+			view.startAnimation(getBoxAnimation(
+					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
+					ANIMATION_DURATION, true));
+		} else if (!flag  && view.getVisibility() == View.VISIBLE)  {
+			view.setVisibility(View.GONE);
+			view.startAnimation(getBoxAnimation(
+					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
+					ANIMATION_DURATION, true));
 			this.mMapView.onResume();
 		}
 	}
 	
-	
-	public void showP2PVideoLayout(boolean flag) {
-		p2pVideoLayout.setVisibility(flag ? View.VISIBLE :View.GONE);
+	private Animation getBoxAnimation(int cate, int type, int duration, boolean fillAfter) {
+		Animation tabBlockHolderAnimation = null;
+		
+		if (type == ANIMATION_TYPE_OUT) {
+			tabBlockHolderAnimation = AnimationUtils.loadAnimation(getContext(),
+					R.animator.liver_interaction_from_up_to_down_out);
+		} else if (type == ANIMATION_TYPE_IN) {
+			tabBlockHolderAnimation =  AnimationUtils.loadAnimation(getContext(),
+					R.animator.liver_interaction_from_down_to_up_in);
+		}
+		tabBlockHolderAnimation.setDuration(duration);
+		tabBlockHolderAnimation.setFillAfter(fillAfter);
+		tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
+
+		return tabBlockHolderAnimation;
+		
 	}
+	
+	
+	
 	
 	public SurfaceView getP2PWatcherSurfaceView() {
 		return p2pVideoLayout.getSurfaceView();
@@ -579,6 +580,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		this.requestConnectLayout.setListener(listener);
 	}
 	
+	
+	public void setP2PAudioWatcherLayoutListener(P2PAudioWatcherLayoutListener listener)  {
+		this.p2pAudioWatcherLayout.setOutListener(listener);
+	}
 	
 	public void setInterfactionBtnClickListener(InterfactionBtnClickListener listener)  {
 		this.lierInteractionLayout.setOutListener(listener);
@@ -894,6 +899,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI, View.OnClickListener {
 		if (p2pVideoLayout.getVisibility() == View.VISIBLE) {
 			p2pVideoLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		}
+		if (p2pAudioWatcherLayout.getVisibility() == View.VISIBLE) {
+			p2pAudioWatcherLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		}
+		
 		
 	}
 

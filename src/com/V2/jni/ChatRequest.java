@@ -1,5 +1,6 @@
 package com.V2.jni;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +8,13 @@ import com.V2.jni.callback.ChatRequestCallback;
 
 public class ChatRequest {
 	private static ChatRequest mChatRequest;
-	private ChatRequestCallback callback;
+	private List<WeakReference<ChatRequestCallback>> callbacks;
 
 	List<ChatText> ctL = new ArrayList<ChatText>();
 	List<ChatBinary> btL = new ArrayList<ChatBinary>();
 
 	private ChatRequest() {
+		callbacks = new ArrayList<WeakReference<ChatRequestCallback>>();
 	}
 
 	public static synchronized ChatRequest getInstance() {
@@ -21,7 +23,8 @@ public class ChatRequest {
 				if (mChatRequest == null) {
 					mChatRequest = new ChatRequest();
 					if (!mChatRequest.initialize(mChatRequest)) {
-						throw new RuntimeException("can't initilaize ChatRequest");
+						throw new RuntimeException(
+								"can't initilaize ChatRequest");
 					}
 				}
 			}
@@ -34,23 +37,31 @@ public class ChatRequest {
 	 * 
 	 * @param callback
 	 */
-	public void setChatRequestCallback(ChatRequestCallback callback) {
-		this.callback = callback;
-		if (callback == null) {
-			return;
-		}
+	public void addChatRequestCallback(ChatRequestCallback callback) {
+		this.callbacks.add(new WeakReference<ChatRequestCallback>(callback));
 		for (ChatText ct : ctL) {
-			this.callback.OnRecvChatTextCallback(ct.eGroupType, ct.nGroupID, ct.nToUserID, ct.nFromUserID, ct.nTime,
-					ct.szSeqID, ct.szXmlText);
+			callback.OnRecvChatTextCallback(ct.eGroupType, ct.nGroupID,
+					ct.nToUserID, ct.nFromUserID, ct.nTime, ct.szSeqID,
+					ct.szXmlText);
 		}
 
 		for (ChatBinary cb : btL) {
-			this.callback.OnRecvChatBinaryCallback(cb.eGroupType, cb.nGroupID, cb.nFromUserID, cb.nToUserID, cb.nTime,
-					cb.binaryType, cb.messageId, cb.binaryPath);
+			callback.OnRecvChatBinaryCallback(cb.eGroupType, cb.nGroupID,
+					cb.nFromUserID, cb.nToUserID, cb.nTime, cb.binaryType,
+					cb.messageId, cb.binaryPath);
 		}
 		// clear cache.
 		ctL.clear();
 		btL.clear();
+	}
+	
+	
+	public void removeChatRequestCallback(ChatRequestCallback callback) {
+		for (WeakReference<ChatRequestCallback> wf : callbacks) {
+			if (wf.get() == callback) {
+				callbacks.remove(wf);
+			}
+		}
 	}
 
 	public native boolean initialize(ChatRequest request);
@@ -73,8 +84,8 @@ public class ChatRequest {
 	 * @param nTextLen
 	 *            长度
 	 */
-	public native void ChatSendTextMessage(int eGroupType, long nGroupID, long nToUserID, String szTextID,
-			byte[] szTextXml, int nTextLen);
+	public native void ChatSendTextMessage(int eGroupType, long nGroupID,
+			long nToUserID, String szTextID, byte[] szTextXml, int nTextLen);
 
 	/**
 	 * 发送聊天的图片或语音的二进制信息
@@ -92,8 +103,9 @@ public class ChatRequest {
 	 * @param szFileName
 	 *            文件路径
 	 */
-	public native void ChatSendBinaryMessage(int eGroupType, long nGroupID, long nToUserID, int nBinaryType,
-			String szBinaryID, String szFileName);
+	public native void ChatSendBinaryMessage(int eGroupType, long nGroupID,
+			long nToUserID, int nBinaryType, String szBinaryID,
+			String szFileName);
 
 	/**
 	 * 关注传输二进制图片是否超时
@@ -107,7 +119,7 @@ public class ChatRequest {
 
 	/**
 	 * @brief 收到文字聊天消息的回调函数
-	 *
+	 * 
 	 * @param nGroupType
 	 *            组类型
 	 * @param nGroupID
@@ -124,12 +136,20 @@ public class ChatRequest {
 	 *            文字聊天数据
 	 * @return None
 	 */
-	private void OnChatRecvTextMessage(int nGroupType, long nGroupID, long nFromUser, long nToUserID, long nTime,
-			String szMessageID, String szTextXml) {
-		if (callback != null) {
-			callback.OnRecvChatTextCallback(nGroupType, nGroupID, nFromUser, nToUserID, nTime, szMessageID, szTextXml);
+	private void OnChatRecvTextMessage(int nGroupType, long nGroupID,
+			long nFromUser, long nToUserID, long nTime, String szMessageID,
+			String szTextXml) {
+		if (callbacks.size() > 0) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == null) {
+					continue;
+				}
+				wf.get().OnRecvChatTextCallback(nGroupType, nGroupID,
+						nFromUser, nToUserID, nTime, szMessageID, szTextXml);
+			}
 		} else {
-			ctL.add(new ChatText(nGroupType, nGroupID, nFromUser, nToUserID, nTime, szMessageID, szTextXml));
+			ctL.add(new ChatText(nGroupType, nGroupID, nFromUser, nToUserID,
+					nTime, szMessageID, szTextXml));
 		}
 	}
 
@@ -155,14 +175,21 @@ public class ChatRequest {
 	 * 
 	 * @return None
 	 */
-	private void OnChatRecvBinaryMessage(int eGroupType, long nGroupID, long nFromUserID, long nToUserID, long nTime,
-			int nBinaryType, String szBinaryID, String szFileName) {
-		if (callback != null) {
-			callback.OnRecvChatBinaryCallback(eGroupType, nGroupID, nFromUserID, nToUserID, nTime, nBinaryType,
-					szBinaryID, szFileName);
+	private void OnChatRecvBinaryMessage(int eGroupType, long nGroupID,
+			long nFromUserID, long nToUserID, long nTime, int nBinaryType,
+			String szBinaryID, String szFileName) {
+		if (callbacks.size() > 0) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == null) {
+					continue;
+				}
+				wf.get().OnRecvChatBinaryCallback(eGroupType, nGroupID,
+						nFromUserID, nToUserID, nTime, nBinaryType, szBinaryID,
+						szFileName);
+			}
 		} else {
-			btL.add(new ChatBinary(eGroupType, nGroupID, nFromUserID, nToUserID, nTime, nBinaryType, szBinaryID,
-					szFileName));
+			btL.add(new ChatBinary(eGroupType, nGroupID, nFromUserID,
+					nToUserID, nTime, nBinaryType, szBinaryID, szFileName));
 		}
 	}
 
@@ -181,10 +208,16 @@ public class ChatRequest {
 	 * @param nResult
 	 *            结果
 	 */
-	private void OnChatSendTextMessageResult(int eGroupType, long nGroupID, long nFromUserID, long nToUserID,
-			String sSeqID, int nResult) {
-		if (callback != null) {
-			callback.OnSendTextResultCallback(eGroupType, nGroupID, nFromUserID, nToUserID, sSeqID, nResult);
+	private void OnChatSendTextMessageResult(int eGroupType, long nGroupID,
+			long nFromUserID, long nToUserID, String sSeqID, int nResult) {
+		if (callbacks.size() > 0) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == null) {
+					continue;
+				}
+				wf.get().OnSendTextResultCallback(eGroupType, nGroupID,
+						nFromUserID, nToUserID, sSeqID, nResult);
+			}
 		}
 	}
 
@@ -205,17 +238,29 @@ public class ChatRequest {
 	 * @param nResult
 	 *            发送结果
 	 */
-	private void OnChatSendBinaryMessageResult(int eGroupType, long nGroupID, long nFromUserID, long nToUserID,
-			int mediaType, String sSeqID, int nResult) {
-		if (callback != null) {
-			callback.OnSendBinaryResultCallback(eGroupType, nGroupID, nFromUserID, nToUserID, mediaType, sSeqID,
-					nResult);
+	private void OnChatSendBinaryMessageResult(int eGroupType, long nGroupID,
+			long nFromUserID, long nToUserID, int mediaType, String sSeqID,
+			int nResult) {
+		if (callbacks.size() > 0) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == null) {
+					continue;
+				}
+				wf.get().OnSendBinaryResultCallback(eGroupType, nGroupID,
+						nFromUserID, nToUserID, mediaType, sSeqID, nResult);
+			}
 		}
 	}
 
-	private void OnChatMonitorRecvBinaryResult(int eGroupType, String sSeqID, int nResult) {
-		if (callback != null) {
-			callback.OnMonitorRecv(eGroupType, sSeqID, nResult);
+	private void OnChatMonitorRecvBinaryResult(int eGroupType, String sSeqID,
+			int nResult) {
+		if (callbacks.size() > 0) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == null) {
+					continue;
+				}
+				wf.get().OnMonitorRecv(eGroupType, sSeqID, nResult);
+			}
 		}
 	}
 
@@ -228,8 +273,8 @@ public class ChatRequest {
 		String szSeqID;
 		String szXmlText;
 
-		public ChatText(int eGroupType, long nGroupID, long nFromUserID, long nToUserID, long nTime, String szSeqID,
-				String szXmlText) {
+		public ChatText(int eGroupType, long nGroupID, long nFromUserID,
+				long nToUserID, long nTime, String szSeqID, String szXmlText) {
 			super();
 			this.eGroupType = eGroupType;
 			this.nGroupID = nGroupID;
@@ -252,8 +297,9 @@ public class ChatRequest {
 		String messageId;
 		String binaryPath;
 
-		public ChatBinary(int eGroupType, long nGroupID, long nFromUserID, long nToUserID, long nTime, int binaryType,
-				String messageId, String binaryPath) {
+		public ChatBinary(int eGroupType, long nGroupID, long nFromUserID,
+				long nToUserID, long nTime, int binaryType, String messageId,
+				String binaryPath) {
 			super();
 			this.eGroupType = eGroupType;
 			this.nGroupID = nGroupID;

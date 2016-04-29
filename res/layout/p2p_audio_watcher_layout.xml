@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.P2PAudioWatcherLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/p2p_audio_watcher_ly_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/p2p_audio_chat_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/liver_interaction_chatting_btn_margin_top"
+            android:src="@drawable/liver_interaction_chating_btn" />
+
+        <ImageView
+            android:id="@+id/p2p_audio_record_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/liver_interaction_btn_margin_hor"
+            android:layout_marginTop="@dimen/liver_interaction_btn_margin_top"
+            android:layout_toLeftOf="@+id/p2p_audio_chat_btn"
+            android:src="@drawable/p2p_audio_record_btn" />
+
+        <ImageView
+            android:id="@+id/p2p_audio_tips_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/liver_interaction_btn_margin_hor"
+            android:layout_marginTop="@dimen/liver_interaction_btn_margin_top"
+            android:layout_toRightOf="@+id/p2p_audio_chat_btn"
+            android:src="@drawable/p2p_audio_tips_btn" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/liver_interaction_video_call_btn_iv"
+            android:layout_marginTop="10dp"
+            android:text=" " />
+    </RelativeLayout>
+
+</com.v2tech.widget.P2PAudioWatcherLayout>

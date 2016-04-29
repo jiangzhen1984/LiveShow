@@ -51,5 +51,7 @@
     <color name="video_share_ly_bg">#f0eff5</color>
     <color name="card_scan_ly_bg">#f0eff5</color>
     <color name="p2p_message_msg_list_bg">#f0eff5</color>
+    
+    <color name="p2p_audio_watcher_ly_bg">#f0eff5</color>
 
 </resources>

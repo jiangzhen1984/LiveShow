@@ -115,7 +115,7 @@ public class ConferenceService extends DeviceService {
 		mrCallback = new MixerRequestCB(this);
 		VideoMixerRequest.getInstance().addCallbacks(mrCallback);
 		mcrCallback = new ChatRequestCB();
-		ChatRequest.getInstance().setChatRequestCallback(mcrCallback);
+		ChatRequest.getInstance().addChatRequestCallback(mcrCallback);
 		mFlag = flag;
 	}
 
@@ -461,7 +461,7 @@ public class ConferenceService extends DeviceService {
 		ConfRequest.getInstance().removeCallback(confCallback);
 		GroupRequest.getInstance().removeCallback(groupCallback);
 		VideoMixerRequest.getInstance().removeCallback(mrCallback);
-		ChatRequest.getInstance().setChatRequestCallback(null);
+		ChatRequest.getInstance().removeChatRequestCallback(mcrCallback);
 	}
 
 	@Override
