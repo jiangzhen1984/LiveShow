@@ -5,7 +5,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.v2tech.v2liveshow.R;
+
 public class VideoWatcherListLayout extends RelativeLayout {
+	
+	private View publisher;
+	
+	private VideoWatcherListLayoutListener listener;
 
 	public VideoWatcherListLayout(Context context) {
 		super(context);
@@ -24,9 +30,48 @@ public class VideoWatcherListLayout extends RelativeLayout {
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
+		if (child.getId() == R.id.liver_ly) {
+			publisher = child;
+			publisher.setOnClickListener(clickListener);
+		}
 	}
 	
 	
+	private View.OnClickListener clickListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (listener == null) {
+				return;
+			}
+			int id = v.getId();
+			switch (id) {
+			case R.id.liver_ly:
+				listener.onPublisherBtnClicked(v);
+				break;
+			}
+		}
+		
+	};
 	
+	
+	
+	
+	
+	public VideoWatcherListLayoutListener getListener() {
+		return listener;
+	}
+
+	public void setListener(VideoWatcherListLayoutListener listener) {
+		this.listener = listener;
+	}
+
+
+
+
+
+	public interface VideoWatcherListLayoutListener {
+		public void onPublisherBtnClicked(View v);
+	}
 
 }

@@ -58,12 +58,12 @@ public class VideoShowFragment extends Fragment {
 			Bundle savedInstanceState) {
 		RelativeLayout rl = new RelativeLayout(getActivity());
 		mSurfaceView = new SurfaceView(getActivity());
+		mSurfaceView.setZOrderOnTop(false);
 		mSurfaceView.setZOrderMediaOverlay(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		rl.addView(mSurfaceView, new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT));
-		rl.setBackgroundColor(Color.WHITE);
 		return rl;
 	}
 

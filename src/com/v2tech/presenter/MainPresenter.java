@@ -72,19 +72,21 @@ import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
 import com.v2tech.vo.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.VMessageTextItem;
+import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
 import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
+import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
 		OnGetGeoCoderResultListener, BDLocationListener,
 		MapVideoLayout.LayoutPositionChangedListener,
 		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener,
-		LiverAction, MapVideoLayout.OnVideoFragmentChangedListener,
-		RequestConnectLayoutListener, InterfactionBtnClickListener,
+		 MapVideoLayout.OnVideoFragmentChangedListener,LiveInformationLayoutListener, 
+		RequestConnectLayoutListener, InterfactionBtnClickListener, VideoWatcherListLayoutListener, 
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener, P2PAudioLiverLayoutListener {
 
 	private static final int INIT = 1;
@@ -667,40 +669,8 @@ public class MainPresenter extends BasePresenter implements
 
 	// //////////////////BaiduMap.OnMapStatusChangeListener
 
-	// //////////////LiverAction
-	@Override
-	public void onInchargeButtonClicked() {
-		if (currentLive == null) {
-			return;
-		}
+	// //////////////VideoWatcherListLayoutListener
 
-		// TODO add tips call
-		currentLive.isInchr = !currentLive.isInchr;
-		updateLiveScreen(currentLive);
-
-	}
-
-	@Override
-	public void onRemButtonClicked() {
-		if (currentLive == null) {
-			return;
-		}
-		ls.recommend(currentLive, currentLive.isRend());
-		currentLive.setRend(!currentLive.isRend());
-		currentLive.rendCount += (currentLive.isRend() ? 1 : -1);
-		updateLiveScreen(currentLive);
-	}
-
-	@Override
-	public void onLiverButtonClicked() {
-		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
-			videoScreenState &= ~LIVER_INTERACTION_LAY_SHOW;
-			ui.showLiverInteractionLayout(false);
-		} else {
-			videoScreenState |= LIVER_INTERACTION_LAY_SHOW;
-			ui.showLiverInteractionLayout(true);
-		}
-	}
 
 	@Override
 	public void onMarqueeBtnClicked(View v) {
@@ -712,8 +682,52 @@ public class MainPresenter extends BasePresenter implements
 			ui.showMarqueeMessage(true);
 		}
 	}
+	
 
-	// //////////////////LiverAction
+	
+	
+	
+
+	
+	@Override
+	public void onLiveInfoTipsBtnClicked(View v) {
+		if (currentLive == null) {
+			return;
+		}
+
+		// TODO add tips call
+		currentLive.isInchr = !currentLive.isInchr;
+		updateLiveScreen(currentLive);
+	}
+	
+	@Override
+	public void onLiveInfoRecommandBtnClicked(View v) {
+		if (currentLive == null) {
+			return;
+		}
+		ls.recommend(currentLive, currentLive.isRend());
+		currentLive.setRend(!currentLive.isRend());
+		currentLive.rendCount += (currentLive.isRend() ? 1 : -1);
+		updateLiveScreen(currentLive);
+	}
+	
+	// //////////////////LiveInformationLayoutListener
+	
+	
+	
+	// //////////////////VideoWatcherListLayoutListener
+	@Override
+	public void onPublisherBtnClicked(View v) {
+		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
+			videoScreenState &= ~LIVER_INTERACTION_LAY_SHOW;
+			ui.showLiverInteractionLayout(false);
+		} else {
+			videoScreenState |= LIVER_INTERACTION_LAY_SHOW;
+			ui.showLiverInteractionLayout(true);
+		}
+	}
+
+	// //////////////////VideoWatcherListLayoutListener
 
 	// ///////////OnVideoFragmentChangedListener
 

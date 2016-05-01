@@ -13,13 +13,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,11 +104,12 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout = new MapVideoLayout(this);
 
 		mMapVideoLayout.setPosInterface(presenter);
-		mMapVideoLayout.setLiverAction(presenter);
 		mMapVideoLayout.setVideoChangedListener(presenter);
 		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
+		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
+		mMapVideoLayout.setVideoWatcherListLayoutListener(presenter);
 		
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
@@ -474,7 +475,7 @@ public class MainActivity extends FragmentActivity implements
 		int width = localSurfaceView.getWidth();
 		int height = localSurfaceView.getHeight();
 		int r = width % 16;
-		LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)localSurfaceView.getLayoutParams();
+		MarginLayoutParams lp = (MarginLayoutParams)localSurfaceView.getLayoutParams();
 		if (r > 0) {
 			lp.leftMargin = r /2;
 			lp.rightMargin = r /2;

@@ -9,10 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+         android:layout_gravity="center"
         android:src="@drawable/message_marquee_enable" />
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/video_right_border_rd_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -38,7 +39,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+         android:id="@+id/video_right_border_tips_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -46,7 +47,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/balance_count_tv"
+            android:id="@+id/tips_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -55,7 +56,7 @@
             android:textSize="@dimen/video_right_border_text_size" />
 
         <ImageView
-            android:id="@+id/incharge_button"
+            android:id="@+id/tips_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -64,7 +65,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/video_right_border_share_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
