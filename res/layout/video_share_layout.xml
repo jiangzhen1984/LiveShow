@@ -1,179 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.v2tech.view.VideoShareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/video_share_root_layout"
+    <RelativeLayout
+        android:id="@+id/video_share_top_ly"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical" >
+        android:layout_height="0dp"
+        android:layout_weight=".5" >
 
-        <RelativeLayout
+        <SurfaceView
+            android:id="@+id/local_camera_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".5" >
+            android:layout_height="match_parent" />
 
-            <SurfaceView
-                android:id="@+id/local_camera_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            
-            <include
-                android:id="@+id/video_right_border_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                layout="@layout/video_right_border_layout" />
-            
-               <include
-                android:id="@+id/video_right_border_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                layout="@layout/video_layout_bottom_layout" />
-        </RelativeLayout>
+        <include
+            android:id="@+id/video_right_border_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            layout="@layout/video_right_border_layout" />
 
-        <RelativeLayout
+        <include
+            android:id="@+id/video_layout_bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".5"
-            android:background="@color/video_share_ly_bg" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/video_layout_bottom_layout" />
+    </RelativeLayout>
 
-            <Button
-                android:id="@+id/video_share_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="40dp"
-                android:background="@drawable/video_share_button_bg"
-                android:text=""
-                android:textColor="@color/video_share_button_text_color" />
+    <RelativeLayout
+        android:id="@+id/video_share_bottom_ly"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:background="@color/video_share_ly_bg" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp" >
+        <include
+            android:id="@+id/video_share_btn_ly"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            layout="@layout/video_share_btn_layout" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".25"
-                    android:orientation="vertical" >
+        <include
+            android:id="@+id/video_share_request_connect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            layout="@layout/requesting_connect_layout"
+            android:visibility="gone" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/video_share_bottom_btn_wx" />
+        <include
+            android:id="@+id/p2p_video_main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            layout="@layout/p2p_video_main_layout"
+            android:visibility="gone" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/video_share_btn_text_wx"
-                        android:textColor="#000000"
-                        android:textSize="@dimen/video_share_btn_text_size" />
-                </LinearLayout>
+        <include
+            android:id="@+id/p2p_audio_liver_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            layout="@layout/p2p_audio_liver_layout"
+            android:visibility="gone" />
+    </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".25"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/video_share_bottom_btn_wx_grp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/video_share_btn_text_wx_grp"
-                        android:textColor="#000000"
-                        android:textSize="@dimen/video_share_btn_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".25"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/video_share_bottom_btn_qq" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/video_share_btn_text_qq"
-                        android:textColor="#000000"
-                        android:textSize="@dimen/video_share_btn_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".25"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/video_share_bottom_btn_wb" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/video_share_btn_text_wb"
-                        android:textColor="#000000"
-                        android:textSize="@dimen/video_share_btn_text_size" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/video_share_button"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="@string/video_share_tips_text" />
-
-            <include
-                android:id="@+id/video_share_request_connect"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                layout="@layout/requesting_connect_layout" />
-
-            <include
-                android:id="@+id/p2p_video_main_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                layout="@layout/p2p_video_main_layout" />
-
-            <include
-                android:id="@+id/p2p_audio_liver_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                layout="@layout/p2p_audio_liver_layout" />
-        </RelativeLayout>
-    </LinearLayout>
-
-</RelativeLayout>
+</com.v2tech.view.VideoShareLayout>

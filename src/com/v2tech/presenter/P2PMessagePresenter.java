@@ -1,6 +1,7 @@
 package com.v2tech.presenter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -10,7 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.P2PMessageService;
+import com.v2tech.vo.User;
+import com.v2tech.vo.VMessage;
+import com.v2tech.vo.VMessageTextItem;
 
 public class P2PMessagePresenter extends BasePresenter {
 	
@@ -33,6 +38,7 @@ public class P2PMessagePresenter extends BasePresenter {
 	private int additonState;
 	
 	
+	private User chatUser;
 	private P2PMessageService messageService;
 	
 	public interface P2PMessagePresenterUI {
@@ -52,6 +58,9 @@ public class P2PMessagePresenter extends BasePresenter {
 		public Editable getEditable();
 		
 		public void scrollTo(int position);
+		
+		public long getIntentUserId();
+		
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -76,7 +85,7 @@ public class P2PMessagePresenter extends BasePresenter {
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
 		
-		
+		chatUser = new User(ui.getIntentUserId());
 	
 	}
 	
@@ -124,7 +133,10 @@ public class P2PMessagePresenter extends BasePresenter {
 		localAdapter.notifyDataSetChanged();
 		ui.scrollTo(itemList.size());
 		
-		//TODO build message and sent
+		VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+				.getCurrentUser(), chatUser, new Date());
+		new VMessageTextItem(vm, i.content);
+		messageService.sendMessage(vm, chatUser);
 	}
 	
 	

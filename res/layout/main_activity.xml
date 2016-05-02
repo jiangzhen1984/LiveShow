@@ -3,10 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    
-    
-
-
     <include
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
@@ -14,27 +10,19 @@
         android:layout_alignParentBottom="true"
         layout="@layout/bottom_button_layout" />
 
-    
-     <include
+    <include
         android:id="@+id/title_bar_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
-    
-     
-     
-    <FrameLayout
+
+    <include
         android:id="@+id/video_share_ly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-		android:layout_below="@+id/title_bar_ly">
-
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            layout="@layout/video_share_layout" />
-    </FrameLayout>
+        android:layout_below="@+id/title_bar_ly"
+        layout="@layout/video_share_layout" />
 
     <FrameLayout
         android:id="@+id/main"
@@ -42,8 +30,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/title_bar_ly" >
     </FrameLayout>
-     
-    
 
     <ImageView
         android:id="@+id/map_locate_button"

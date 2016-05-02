@@ -728,7 +728,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
         	tap = true;
         }
       
-        if (tap) {
+        if (tap && mAbsDisX < mTouchSlop && mAbsDisY < mTouchSlop) {
         	doVideoScreenTap();
         } else {
 			if (mDragDir == DragDirection.VERTICAL) {

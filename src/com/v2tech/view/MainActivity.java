@@ -1,22 +1,13 @@
 package com.v2tech.view;
 
-import v2av.VideoRecorder;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,19 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
-import com.example.camera.CameraView;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Conference;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
-import com.v2tech.widget.P2PAudioLiverLayout;
-import com.v2tech.widget.P2PVideoMainLayout;
-import com.v2tech.widget.RequestConnectLayout;
 
 public class MainActivity extends FragmentActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -51,20 +37,10 @@ public class MainActivity extends FragmentActivity implements
 	private EditText mEditText;
 	private FrameLayout mMainLayout;
 	private View mLocateButton;
-	private Button mShareVideoButton;
-	private FrameLayout videoShareLayout;
-	
- 
-	private VideoControllerAPI mVideoController;
+	private VideoShareLayout videoShareLayout;
 	private MapVideoLayout mMapVideoLayout;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
-	private SurfaceView localSurfaceView;
-	private RequestConnectLayout requestingLayout;
-	private P2PVideoMainLayout p2pViewMainLayout;
-	private P2PAudioLiverLayout p2pAudioLiverLayout;
-	
-	private CameraView cv;
 
 
 	private ImageView mPersonalButton;
@@ -122,13 +98,10 @@ public class MainActivity extends FragmentActivity implements
 
 		mBaiduMap.setMyLocationEnabled(true);
 		
-		mVideoController = mMapVideoLayout;
 	}
 	
 	
 	private void initTitleBarButtonLayout() {
-//		 View titleBar = findViewById(R.id.title_bar);
-//		 titleBar.bringToFront();
 		 this.mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
 		 this.mPersonalButton.setImageResource(R.drawable.user_icon);
 		 mPersonalButton.setOnClickListener(this);
@@ -159,25 +132,11 @@ public class MainActivity extends FragmentActivity implements
 	
 	private void initVideoShareLayout() {
 		
-		videoShareLayout = (FrameLayout)findViewById(R.id.video_share_ly);
-		mShareVideoButton = (Button)findViewById(R.id.video_share_button);
-		mShareVideoButton.setOnClickListener(this);
-		localSurfaceView = (SurfaceView)videoShareLayout.findViewById(R.id.local_camera_view);
-		VideoRecorder.VideoPreviewSurfaceHolder = localSurfaceView.getHolder();
-		VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		
-		requestingLayout = (RequestConnectLayout)videoShareLayout.findViewById(R.id.video_share_request_connect);
-		requestingLayout.setVisibility(View.GONE);
-		requestingLayout.setListener(presenter);
-		
-		
-		p2pViewMainLayout = (P2PVideoMainLayout)videoShareLayout.findViewById(R.id.p2p_video_main_layout);
-		p2pViewMainLayout.setVisibility(View.GONE);
-		p2pViewMainLayout.setListener(presenter);
-		
-		p2pAudioLiverLayout = (P2PAudioLiverLayout)videoShareLayout.findViewById(R.id.p2p_audio_liver_layout);
-		p2pAudioLiverLayout.setVisibility(View.GONE);
-		p2pAudioLiverLayout.setOutListener(presenter);
+		videoShareLayout = (VideoShareLayout)findViewById(R.id.video_share_ly);
+		videoShareLayout.setVideoShareBtnLayoutListener(presenter);
+		videoShareLayout.setRequestConnectLayoutListener(presenter);
+		videoShareLayout.setP2PVideoMainLayoutListener(presenter);
+		videoShareLayout.setP2PAudioLiverLayoutListener(presenter);
 		
 	}
 	
@@ -256,46 +215,46 @@ public class MainActivity extends FragmentActivity implements
 		super.onConfigurationChanged(newConfig);
 	}
 
-	private void stopCamera() {
-		cv.stopPreView();
-	}
+//	private void stopCamera() {
+//		cv.stopPreView();
+//	}
 
 
-	float initY;
-	float lastY;
-	float offsetY;
-	int mActivePointerId;
-
-	private OnTouchListener dragListener = new OnTouchListener() {
-
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			int action = event.getAction();
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				stopCamera();
-				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
-				initY = MotionEventCompat.getY(event, 0);
-				lastY = initY;
-				mMapVideoLayout.pauseDrawState(true);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				final int pointerIndex = MotionEventCompat.findPointerIndex(
-						event, mActivePointerId);
-				final float y = MotionEventCompat.getY(event, pointerIndex);
-				final float dy = y - lastY;
-				mMapVideoLayout.updateOffset((int) dy);
-				lastY = y;
-				break;
-			case MotionEvent.ACTION_UP:
-				V2Log.d("Start translate");
-				mMapVideoLayout.requestUpFlying();
-				break;
-			}
-			return true;
-		}
-
-	};
+//	float initY;
+//	float lastY;
+//	float offsetY;
+//	int mActivePointerId;
+//
+//	private OnTouchListener dragListener = new OnTouchListener() {
+//
+//		@Override
+//		public boolean onTouch(View v, MotionEvent event) {
+//			int action = event.getAction();
+//			switch (action) {
+//			case MotionEvent.ACTION_DOWN:
+//				stopCamera();
+//				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
+//				initY = MotionEventCompat.getY(event, 0);
+//				lastY = initY;
+//				mMapVideoLayout.pauseDrawState(true);
+//				break;
+//			case MotionEvent.ACTION_MOVE:
+//				final int pointerIndex = MotionEventCompat.findPointerIndex(
+//						event, mActivePointerId);
+//				final float y = MotionEventCompat.getY(event, pointerIndex);
+//				final float dy = y - lastY;
+//				mMapVideoLayout.updateOffset((int) dy);
+//				lastY = y;
+//				break;
+//			case MotionEvent.ACTION_UP:
+//				V2Log.d("Start translate");
+//				mMapVideoLayout.requestUpFlying();
+//				break;
+//			}
+//			return true;
+//		}
+//
+//	};
 
 
 
@@ -344,11 +303,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void resetUIDisplayOrder() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void showTextKeyboard(boolean flag) {
@@ -357,11 +311,7 @@ public class MainActivity extends FragmentActivity implements
 			Intent i = new Intent();
 			i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
 			startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
-		} else {
-		//	mBottomLayout.setVisibility(View.VISIBLE);
-		//	mLocateButton.setVisibility(View.VISIBLE);
 		}
-		
 	}
 
 	@Override
@@ -426,9 +376,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void updateVideShareButtonText(boolean publish) {
 		if (publish) {
-			mShareVideoButton.setBackgroundResource(R.drawable.video_sharing_button_bg);
+			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
 		} else {
-			mShareVideoButton.setBackgroundResource(R.drawable.video_share_button_bg);
+			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_share_button_bg);
 		}
 	}
 
@@ -443,21 +393,9 @@ public class MainActivity extends FragmentActivity implements
 
 
 	
-
-	@Override
-	public boolean getRecommandationButtonState() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
-
-	
 	@Override
 	public SurfaceView getCameraSurfaceView() {
-		VideoRecorder.VideoPreviewSurfaceHolder = localSurfaceView.getHolder();
-		VideoRecorder.VideoPreviewSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		return localSurfaceView;
+		return videoShareLayout.getLocalCameraView();
 	}
 
 	
@@ -477,33 +415,23 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void resizeCameraSurfaceSize() {
-		int width = localSurfaceView.getWidth();
-		int height = localSurfaceView.getHeight();
-		int r = width % 16;
-		MarginLayoutParams lp = (MarginLayoutParams)localSurfaceView.getLayoutParams();
-		if (r > 0) {
-			lp.leftMargin = r /2;
-			lp.rightMargin = r /2;
-		}
-		
-		r = height % 9;
-		if (r > 0) {
-			lp.topMargin = r;
-		}
-		localSurfaceView.setLayoutParams(lp);
+//		int width = localSurfaceView.getWidth();
+//		int height = localSurfaceView.getHeight();
+//		int r = width % 16;
+//		MarginLayoutParams lp = (MarginLayoutParams)localSurfaceView.getLayoutParams();
+//		if (r > 0) {
+//			lp.leftMargin = r /2;
+//			lp.rightMargin = r /2;
+//		}
+//		
+//		r = height % 9;
+//		if (r > 0) {
+//			lp.topMargin = r;
+//		}
+//		localSurfaceView.setLayoutParams(lp);
 	}
 
 	
-	
-	
-
-
-	@Override
-	public void showMessage(String msg) {
-		mVideoController.addNewMessage(msg);
-	}
-
-
 	@Override
 	public void showError(int flag) {
 		if (last != null) {
@@ -526,18 +454,8 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 
-
-
-
-
-	@Override
-	public void showLiverPersonelUI() {
-		// TODO Auto-generated method stub
-		
-	}
 	public void showLiverInteractionLayout(boolean flag) {
 		this.mMapVideoLayout.showLiverInteractionLy(flag);
-		//this.mMapVideoLayout.showRequestingConnectionLy(flag);
 		showBottomLayout(!flag);
 	}
 	
@@ -557,8 +475,6 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
-				
 				((TextView)findViewById(R.id.title_bar_center_tv)).setText(msg);
 			}
 			
@@ -608,58 +524,32 @@ public class MainActivity extends FragmentActivity implements
 	
 	public void updateConnectLayoutBtnType(int type) {
 		if (type ==1) {
-			requestingLayout.updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
-			requestingLayout.updateRightBtnIcon(R.drawable.audio_call_accept_btn);
+			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
+			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.audio_call_accept_btn);
 		} else {
-			requestingLayout.updateLeftBtnIcon(R.drawable.video_call_decline_btn);
-			requestingLayout.updateRightBtnIcon(R.drawable.video_call_accept_btn);
+			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.video_call_decline_btn);
+			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.video_call_accept_btn);
 		}
 	}
 	
 	
 	public void showConnectRequestLayout(boolean flag) {
-		if (flag && requestingLayout.getVisibility() == View.GONE) {
-			this.mMapView.onPause();
-			requestingLayout.setVisibility(View.VISIBLE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					this, R.animator.liver_interaction_from_down_to_up_in);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			requestingLayout.startAnimation(tabBlockHolderAnimation);
-		} else if (!flag  && requestingLayout.getVisibility() == View.VISIBLE)  {
-			requestingLayout.setVisibility(View.GONE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					this, R.animator.liver_interaction_from_up_to_down_out);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			requestingLayout.startAnimation(tabBlockHolderAnimation);
-			this.mMapView.onResume();
-		}
+		videoShareLayout.showRequestConnectionLayout(flag);
 	}
 	
 	
 	public void showP2PLiverLayout(boolean flag) {
-		if (flag && p2pAudioLiverLayout.getVisibility() == View.GONE) {
-			p2pAudioLiverLayout.setVisibility(View.VISIBLE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					this, R.animator.liver_interaction_from_down_to_up_in);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			p2pAudioLiverLayout.startAnimation(tabBlockHolderAnimation);
-		} else if (!flag  && p2pAudioLiverLayout.getVisibility() == View.VISIBLE)  {
-			p2pAudioLiverLayout.setVisibility(View.GONE);
-			final Animation tabBlockHolderAnimation = AnimationUtils.loadAnimation(
-					this, R.animator.liver_interaction_from_up_to_down_out);
-			tabBlockHolderAnimation.setDuration(1000);
-			tabBlockHolderAnimation.setFillAfter(true);
-			tabBlockHolderAnimation.setZAdjustment(Animation.ZORDER_TOP);
-			p2pAudioLiverLayout.startAnimation(tabBlockHolderAnimation);
-		}
+		videoShareLayout.showP2PLiverLayout(flag);
 	}
 	
+	
+	public void mapVideoLayoutFlyingIn() {
+		mMapVideoLayout.requestUpFlying();
+	}
+	
+	public void updateVideoLayoutOffset(int dy) {
+		mMapVideoLayout.updateOffset(dy);
+	}
 	
 
 	@Override
@@ -669,13 +559,13 @@ public class MainActivity extends FragmentActivity implements
 	
 	@Override
 	public void showP2PVideoLayout(boolean flag) {
-		p2pViewMainLayout.setVisibility(flag? View.VISIBLE : View.GONE);
+		videoShareLayout.showP2PVideoLayout(flag);
 		
 	}
 	
 	
 	public SurfaceView  getP2PMainSurface() {
-		return p2pViewMainLayout.getSurfaceView();
+		return videoShareLayout.getP2PMainSurface();
 	}
 
 

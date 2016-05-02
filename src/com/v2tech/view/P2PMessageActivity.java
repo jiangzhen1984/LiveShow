@@ -146,6 +146,11 @@ public class P2PMessageActivity extends Activity implements P2PMessagePresenterU
 		listView.setSelection(position);
 	}
 	
+	
+	public long getIntentUserId() {
+		return this.getIntent().getLongExtra("chatuserid", -1);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();

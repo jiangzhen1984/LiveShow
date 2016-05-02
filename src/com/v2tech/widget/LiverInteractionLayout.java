@@ -36,72 +36,51 @@ public class LiverInteractionLayout extends LinearLayout {
 	public LiverInteractionLayout(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
-		init();
 	}
 
 	public LiverInteractionLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
 	}
 
 	public LiverInteractionLayout(Context context) {
 		super(context);
-		init();
 	}
 
-	private void init() {
-//		root = LayoutInflater.from(getContext()).inflate(
-//				R.layout.liver_interaction_layout, null);
-//		this.addView(root, new LinearLayout.LayoutParams(
-//				LinearLayout.LayoutParams.MATCH_PARENT,
-//				LinearLayout.LayoutParams.WRAP_CONTENT));
-
-//		avatar = (ImageView) findViewById(R.id.liver_interaction_avtar);
-//		name = (TextView) findViewById(R.id.liver_interaction_name);
-//		gender = (ImageView) findViewById(R.id.liver_interaction_gender);
-//		level = (ImageView) findViewById(R.id.liver_interaction_level);
-//		signature = (TextView)findViewById(R.id.liver_interaction_signature);
-//		location = (TextView) findViewById(R.id.liver_interaction_location);
-//		videos = (TextView) findViewById(R.id.liver_interaction_videos);
-//		fans = (TextView) findViewById(R.id.liver_interaction_fans);
-//		follows = (TextView) findViewById(R.id.liver_interaction_follows);
-//		personelBtn = findViewById(R.id.liver_interaction_btn);
-//		personelBtn.setOnClickListener(listener);
-//		
-//		innerBox = findViewById(R.id.liver_interaction_box_layout);
-//		innerBox.setVisibility(View.GONE);
-	}
 
 	public void updateAvatarImg(Bitmap bm) {
-
+		avatar.setImageBitmap(bm);
 	}
 
 	public void updateGenderImg(int res) {
-
+		gender.setImageResource(res);
 	}
 
 	public void updateLevelImg(int res) {
-
+		level.setImageResource(res);
 	}
 
 	public void updateNameText(String str) {
-
+		name.setText(str);
+	}
+	
+	public void updateSignature(String text) {
+		signature.setText(text);
 	}
 
 	public void updateLocationText(String str) {
-
+		location.setText(str);
 	}
 
 	public void updateVidoesText(String str) {
-
+		videos.setText(str);
 	}
 	
 	public void updateFansText(String str) {
-
+		fans.setText(str);
 	}
 	
 	public void updateFollowsText(String str) {
-
+		follows.setText(str);
 	}
 
 	
@@ -150,7 +129,6 @@ public class LiverInteractionLayout extends LinearLayout {
 	@Override
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
-		// TODO Auto-generated method stub
 		super.addView(child, index, params);
 	}
 

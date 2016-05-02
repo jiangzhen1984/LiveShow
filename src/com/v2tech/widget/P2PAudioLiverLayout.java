@@ -16,7 +16,7 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 	private LinearLayout mapViewLayout;
 	private MapView mMapView;
 
-	private P2PAudioLiverLayoutListener outListener;
+	private P2PAudioLiverLayoutListener listener;
 
 	public P2PAudioLiverLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -48,35 +48,33 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 		super.addView(child, index, params);
 		if (child.getId() == R.id.p2p_audio_liver_decline_btn) {
 			declineBtn = child;
-			declineBtn.setOnClickListener(listener);
+			declineBtn.setOnClickListener(clickListener);
 		} else if (child.getId() == R.id.p2p_audio_liver_map_ly) {
 			mapViewLayout = (LinearLayout) child;
 		}
 	}
 
-	private OnClickListener listener = new OnClickListener() {
+	private OnClickListener clickListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			if (outListener == null) {
+			if (listener == null) {
 				return;
 			}
 			int id = v.getId();
 			switch (id) {
 			case R.id.p2p_audio_liver_decline_btn:
-				outListener.onDeclineBtn(v);
+				listener.onDeclineBtn(v);
 				break;
 			}
 		}
 
 	};
 
-	public P2PAudioLiverLayoutListener getOutListener() {
-		return outListener;
-	}
+	
 
-	public void setOutListener(P2PAudioLiverLayoutListener outListener) {
-		this.outListener = outListener;
+	public void setListener(P2PAudioLiverLayoutListener listener) {
+		this.listener = listener;
 	}
 
 	public interface P2PAudioLiverLayoutListener {
