@@ -110,6 +110,7 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
 		mMapVideoLayout.setVideoWatcherListLayoutListener(presenter);
+		mMapVideoLayout.setP2PVideoMainLayoutListener(presenter);
 		
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
@@ -365,7 +366,11 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void showVideoScreentItem(int tag, boolean showFlag) {
-		// TODO Auto-generated method stub
+		if (tag == MainPresenter.VIDEO_SCREEN_BTN_FLAG) {
+			this.mMapVideoLayout.showVideoBtnLy(showFlag);
+		} else if(tag == MainPresenter.VIDEO_BOTTOM_LY_FLAG) {
+			this.mMapVideoLayout.showVideoWatcherListLy(showFlag);
+		}
 		
 	}
 

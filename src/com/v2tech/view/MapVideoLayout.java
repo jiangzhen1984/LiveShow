@@ -40,6 +40,7 @@ import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.P2PAudioWatcherLayout;
 import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
+import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShowFragment;
@@ -67,6 +68,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private int mDefaultVelocity = 40;
 	private int mTouchSlop;
 	private int mCameraShapeSLop;
+	private int mTouchTapTimeout;
 	private static final int CAMEA_SHAPE_HEIGHT = 300;
 	
 
@@ -178,20 +180,21 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		this.addView(mVideoShowPager, 0, generateDefaultLayoutParams());
 		this.addView(mDragLayout, 1, generateDefaultLayoutParams());
 		this.addView(mMapView, 2, generateDefaultLayoutParams());
-		this.addView(requestConnectLayout, 3, generateDefaultLayoutParams());
+		this.addView(lierInteractionLayout, 3, generateDefaultLayoutParams());
 		this.addView(p2pVideoLayout, 4, generateDefaultLayoutParams());
 		this.addView(p2pAudioWatcherLayout, 5, generateDefaultLayoutParams());
 		this.addView(mMsgLayout, 6, generateDefaultLayoutParams());
 		this.addView(mNotificaionShare, 7, generateDefaultLayoutParams());
 		this.addView(liveInformationLayout, 8,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 		this.addView(liveWatcherLayout, 9,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		this.addView(lierInteractionLayout, 10, generateDefaultLayoutParams());
+		this.addView(requestConnectLayout, 10, generateDefaultLayoutParams());
 		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
 		mTouchSlop = configuration.getScaledTouchSlop();
+		mTouchTapTimeout = ViewConfiguration.getTapTimeout();
 		mCameraShapeSLop = mTouchSlop * 3;
 
 
@@ -338,6 +341,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		public void onFlyingOut();
 		
 		public void onDrag();
+		
+		public void onVideoScreenClick();
 	}
 
 	
@@ -461,6 +466,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		//TODO add implments
 	}
 	
+	public void showVideoBtnLy(boolean flag) {
+		liveInformationLayout.setVisibility(flag? View.VISIBLE:View.GONE);
+	}
+	public void showVideoWatcherListLy(boolean flag) {
+		liveWatcherLayout.setVisibility(flag? View.VISIBLE:View.GONE);
+	}
+	
+	
 	
 	public void showLiverInteractionLy(boolean flag) {
 		showOrHidenViewAnimation(lierInteractionLayout, flag);
@@ -478,6 +491,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	public void showP2PVideoLayout(boolean flag) {
 		showOrHidenViewAnimation(p2pVideoLayout, flag);
+		p2pVideoLayout.bringToFront();
 	}
 	
 	
@@ -489,10 +503,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
 					ANIMATION_DURATION, true));
 		} else if (!flag  && view.getVisibility() == View.VISIBLE)  {
-			view.setVisibility(View.GONE);
 			view.startAnimation(getBoxAnimation(
 					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
 					ANIMATION_DURATION, true));
+			view.setVisibility(View.GONE);
 			this.mMapView.onResume();
 		}
 	}
@@ -534,6 +548,10 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	public void setInterfactionBtnClickListener(InterfactionBtnClickListener listener)  {
 		this.lierInteractionLayout.setOutListener(listener);
+	}
+	
+	public void setP2PVideoMainLayoutListener(P2PVideoMainLayoutListener listener) {
+		this.p2pVideoLayout.setListener(listener);
 	}
 	
 	public void showMarqueeMessage(boolean flag) {
@@ -681,8 +699,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			}
 			if (mNotificaionShare.getVisibility() == View.GONE 
 					&& Math.abs(offsetY) > mCameraShapeSLop) {
-				mNotificaionShare.setVisibility(View.VISIBLE);
-				mNotificaionShare.bringToFront();
+//				mNotificaionShare.setVisibility(View.VISIBLE);
+//				mNotificaionShare.bringToFront();
 			}
 			
 			
@@ -705,32 +723,46 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
         final int pointerId = ev.getPointerId(0);
         velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
         final float velocityX = velocityTracker.getXVelocity(pointerId);
-
+        boolean tap = false;
+        if (mTouchTapTimeout > (ev.getEventTime() - ev.getDownTime())) {
+        	tap = true;
+        }
       
-		if (mDragDir == DragDirection.VERTICAL) {
-			if (mDragType == DragType.SHARE) {
-				Flying fl = new Flying();
-				if (fireFlyingdown) {
-					if (mPosInterface != null) {
-						mPosInterface.onPreparedFlyingOut();
+        if (tap) {
+        	doVideoScreenTap();
+        } else {
+			if (mDragDir == DragDirection.VERTICAL) {
+				if (mDragType == DragType.SHARE) {
+					Flying fl = new Flying();
+					if (fireFlyingdown) {
+						if (mPosInterface != null) {
+							mPosInterface.onPreparedFlyingOut();
+						}
+						fl.startFlying(mDefaultVelocity);
+					} else {
+						fl.startFlying(-mDefaultVelocity);
 					}
-					fl.startFlying(mDefaultVelocity);
-				} else {
-					fl.startFlying(-mDefaultVelocity);
+					
+				} else if (mDragType == DragType.REMOVE) {
+					mVideoShowPager.endFakeDrag();
 				}
-				
-			} else if (mDragType == DragType.REMOVE) {
+			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				mVideoShowPager.endFakeDrag();
+			} else {
+				pasuseCurrentVideo(false);
 			}
-		} else if (mDragDir == DragDirection.HORIZONTAL) {
-			mVideoShowPager.endFakeDrag();
-		} else {
-			pasuseCurrentVideo(false);
-		}
+        }
 		
 		mDragDir = DragDirection.NONE;
 		
 		mVelocityTracker.clear();
+	}
+	
+	
+	private void doVideoScreenTap() {
+		if (mPosInterface != null) {
+			mPosInterface.onVideoScreenClick();
+		}
 	}
 	
 	

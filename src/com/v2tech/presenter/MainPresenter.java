@@ -107,11 +107,10 @@ public class MainPresenter extends BasePresenter implements
 	private static final int UI_HANDLE_HANDLE_NEW_MESSAGE = 2;
 	private static final int UI_HANDLE_AUDIO_CALL_TIMEOUT = 3;
 
-	private static final int RECOMMENDATION_BUTTON_SHOW_FLAG = 1;
-	private static final int RECOMMENDATION_COUNT_SHOW_FLAG = 1 << 1;
-	private static final int FOLLOW_BUTTON_SHOW_FLAG = 1 << 2;
-	private static final int FOLLOW_COUNT_SHOW_FLAG = 1 << 3;
-	private static final int LIVER_SHOW_FLAG = 1 << 4;
+	public static final int VIDEO_SCREEN_BTN_FLAG = 1;
+	public static final int VIDEO_BOTTOM_LY_FLAG = 1 << 2;
+	public static final int FOLLOW_COUNT_SHOW_FLAG = 1 << 3;
+	public static final int LIVER_SHOW_FLAG = 1 << 4;
 	private static final int PUBLISHING_FLAG = 1 << 5;
 	private static final int WATCHING_FLAG = 1 << 6;
 	private static final int LOCAL_CAMERA_OPENING = 1 << 7;
@@ -166,8 +165,8 @@ public class MainPresenter extends BasePresenter implements
 		this.ui = ui;
 		this.context = context;
 		lives = new LongSparseArray<Live>();
-		videoScreenState = (RECOMMENDATION_BUTTON_SHOW_FLAG
-				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
+		videoScreenState = (VIDEO_SCREEN_BTN_FLAG
+				 | VIDEO_BOTTOM_LY_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG | BOTTOM_LAYOUT_SHOW | MESSAGE_MARQUEE_ENABLE);
 
 		currentMapCenter = new LocationWrapper();
@@ -294,26 +293,18 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	public void videoScreenClicked() {
-		videoScreenState &= ~(RECOMMENDATION_BUTTON_SHOW_FLAG
-				| RECOMMENDATION_COUNT_SHOW_FLAG | FOLLOW_BUTTON_SHOW_FLAG
-				| FOLLOW_COUNT_SHOW_FLAG | LIVER_SHOW_FLAG);
 
-		if ((videoScreenState & RECOMMENDATION_BUTTON_SHOW_FLAG) == RECOMMENDATION_BUTTON_SHOW_FLAG) {
-			ui.showVideoScreentItem(RECOMMENDATION_BUTTON_SHOW_FLAG, true);
+		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
+			ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG, true);
 		} else {
-			ui.showVideoScreentItem(RECOMMENDATION_BUTTON_SHOW_FLAG, false);
+			ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG, false);
 		}
 
-		if ((videoScreenState & RECOMMENDATION_COUNT_SHOW_FLAG) == RECOMMENDATION_COUNT_SHOW_FLAG) {
-			ui.showVideoScreentItem(RECOMMENDATION_COUNT_SHOW_FLAG, true);
-		} else {
-			ui.showVideoScreentItem(RECOMMENDATION_COUNT_SHOW_FLAG, false);
-		}
 
-		if ((videoScreenState & FOLLOW_BUTTON_SHOW_FLAG) == FOLLOW_BUTTON_SHOW_FLAG) {
-			ui.showVideoScreentItem(FOLLOW_BUTTON_SHOW_FLAG, true);
+		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
+			ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG, true);
 		} else {
-			ui.showVideoScreentItem(FOLLOW_BUTTON_SHOW_FLAG, false);
+			ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG, false);
 		}
 
 		if ((videoScreenState & FOLLOW_COUNT_SHOW_FLAG) == FOLLOW_COUNT_SHOW_FLAG) {
@@ -466,22 +457,22 @@ public class MainPresenter extends BasePresenter implements
 			return false;
 		}
 
-		if ((this.videoScreenState & MAP_CENTER_UPDATE) == MAP_CENTER_UPDATE) {
+		if (isState(MAP_CENTER_UPDATE)) {
 			return false;
 		}
 		return true;
 	}
 
 	private boolean isOpenedLiveScreen() {
-		return (videoScreenState & LIVER_SHOW_FLAG) == LIVER_SHOW_FLAG;
+		return isState(LIVER_SHOW_FLAG);
 	}
 
 	private boolean isPublishing() {
-		return (videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG;
+		return isState(PUBLISHING_FLAG);
 	}
 
 	private boolean isWatchingLive() {
-		return (videoScreenState & WATCHING_FLAG) == WATCHING_FLAG;
+		return isState(WATCHING_FLAG);
 	}
 
 	private void updateMapCenter(LocationWrapper lw, float level) {
@@ -492,8 +483,8 @@ public class MainPresenter extends BasePresenter implements
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(lw.ll, level);
 		this.ui.getMapInstance().animateMapStatus(u);
 
-		if ((this.videoScreenState & MAP_CENTER_UPDATE) != MAP_CENTER_UPDATE) {
-			this.videoScreenState |= MAP_CENTER_UPDATE;
+		if (isState(MAP_CENTER_UPDATE)) {
+			setState(MAP_CENTER_UPDATE);
 		}
 	}
 
@@ -539,11 +530,11 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		if ((this.videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
+		if (isState(PUBLISHING_FLAG)) {
 			// TODO illegal state
 			return false;
 		}
-		if ((this.videoScreenState & WATCHING_FLAG) == WATCHING_FLAG) {
+		if (isState(WATCHING_FLAG)) {
 			// TODO check window count
 
 			// quit from old
@@ -574,8 +565,8 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onFlyingIn() {
-		if ((this.videoScreenState & LOCAL_CAMERA_OPENING) == LOCAL_CAMERA_OPENING) {
-			this.videoScreenState &= (~LOCAL_CAMERA_OPENING);
+		if (isState(LOCAL_CAMERA_OPENING)) {
+			this.unsetState(LOCAL_CAMERA_OPENING);
 			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
 					.getInstance().getCurrentUserId(), "", null);
 			duc.setSVHolder(ui.getCameraSurfaceView());
@@ -583,12 +574,11 @@ public class MainPresenter extends BasePresenter implements
 
 		}
 
-		if ((this.videoScreenState & BOTTOM_LAYOUT_SHOW) != BOTTOM_LAYOUT_SHOW) {
+		if (isState(BOTTOM_LAYOUT_SHOW)) {
 			ui.showBottomLayout(true);
-			this.videoScreenState |= BOTTOM_LAYOUT_SHOW;
+			this.setState(BOTTOM_LAYOUT_SHOW);
 		}
-
-		this.videoScreenState |= LIVER_SHOW_FLAG;
+		this.setState(LIVER_SHOW_FLAG);
 	}
 
 	@Override
@@ -597,7 +587,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onFlyingOut() {
-		this.videoScreenState &= (~LIVER_SHOW_FLAG);
+		this.unsetState(LIVER_SHOW_FLAG);
 	}
 
 	@Override
@@ -606,22 +596,42 @@ public class MainPresenter extends BasePresenter implements
 			cameraSurfaceViewMeasure = true;
 			ui.resizeCameraSurfaceSize();
 		}
-		if ((this.videoScreenState & LOCAL_CAMERA_OPENING) != LOCAL_CAMERA_OPENING) {
+		if (!isState(LOCAL_CAMERA_OPENING)) {
 
 			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
 					.getInstance().getCurrentUserId(), "", null);
 			duc.setSVHolder(ui.getCameraSurfaceView());
 			vs.requestOpenVideoDevice(duc, null);
 			ui.showBottomLayout(false);
-			this.videoScreenState |= LOCAL_CAMERA_OPENING;
-			this.videoScreenState &= (~BOTTOM_LAYOUT_SHOW);
+			this.setState(LOCAL_CAMERA_OPENING);
+			this.unsetState(BOTTOM_LAYOUT_SHOW);
 		}
 
 	}
+	
+	@Override
+	public void onVideoScreenClick() {
+		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
+			unsetState(VIDEO_SCREEN_BTN_FLAG);
+		} else {
+			setState(VIDEO_SCREEN_BTN_FLAG);
+		}
+		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
+			unsetState(VIDEO_BOTTOM_LY_FLAG);
+		} else {
+			setState(VIDEO_BOTTOM_LY_FLAG);
+		}
+		
+		videoScreenClicked();
+		
+	}
+
+	
 
 	// ////////////////////////////////LayoutPositionChangedListener/////////////////
 
 	// /////////////////////BaiduMap.OnMapStatusChangeListener
+
 
 	@Override
 	public void onMapStatusChange(MapStatus status) {
@@ -629,8 +639,8 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onMapStatusChangeFinish(MapStatus status) {
-		if ((this.videoScreenState & MAP_CENTER_UPDATE) != MAP_CENTER_UPDATE) {
-			this.videoScreenState |= MAP_CENTER_UPDATE;
+		if (!isState(MAP_CENTER_UPDATE)) {
+			this.setState(MAP_CENTER_UPDATE);
 		}
 
 		if ((this.locationStatus & REQUEST_SELF_LOCATION) == REQUEST_SELF_LOCATION) {
@@ -675,10 +685,10 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onMarqueeBtnClicked(View v) {
 		if (isState(MESSAGE_MARQUEE_ENABLE)) {
-			videoScreenState &= ~MESSAGE_MARQUEE_ENABLE;
+			this.unsetState(MESSAGE_MARQUEE_ENABLE);
 			ui.showMarqueeMessage(false);
 		} else {
-			videoScreenState |= MESSAGE_MARQUEE_ENABLE;
+			this.setState(MESSAGE_MARQUEE_ENABLE);
 			ui.showMarqueeMessage(true);
 		}
 	}
@@ -719,12 +729,13 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onPublisherBtnClicked(View v) {
 		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
-			videoScreenState &= ~LIVER_INTERACTION_LAY_SHOW;
+			this.unsetState(LIVER_INTERACTION_LAY_SHOW);
 			ui.showLiverInteractionLayout(false);
 		} else {
-			videoScreenState |= LIVER_INTERACTION_LAY_SHOW;
+			this.setState(LIVER_INTERACTION_LAY_SHOW);
 			ui.showLiverInteractionLayout(true);
 		}
+		
 	}
 
 	// //////////////////VideoWatcherListLayoutListener
@@ -882,9 +893,11 @@ public class MainPresenter extends BasePresenter implements
 	// ///////////P2PVideoMainLayoutListener
 	@Override
 	public void onP2PVideoMainLeftBtnClicked(View v) {
-		ui.showP2PVideoLayout(false);
 		this.unsetState(VIDEO_P2P_SHOW);
-		// TODO close device
+		ui.showP2PVideoLayout(false);
+		ui.showWatcherP2PVideoLayout(false);
+		// If liver is not self, than close local camera device
+
 		int type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
 		if (isState(VIDEO_P2P_SHOW)) {
 			type = VMessageAudioVideoRequestItem.TYPE_VIDEO;
@@ -893,6 +906,16 @@ public class MainPresenter extends BasePresenter implements
 		}
 		requestConnection(this.currentLive.getLid(), type,
 				VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+		if (currentLive.getPublisher().getmUserId() != GlobalHolder
+				.getInstance().getCurrentUserId()) {
+
+			UserDeviceConfig duc = new UserDeviceConfig(4,
+					this.currentLive.getLid(), GlobalHolder.getInstance()
+							.getCurrentUserId(), "", null);
+			vs.requestCloseVideoDevice(duc, null);
+		} else {
+			//TODO close remote device
+		}
 
 	}
 
@@ -1199,22 +1222,25 @@ public class MainPresenter extends BasePresenter implements
 			ui.showConnectRequestLayout(true);
 		} else if (action == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
 			if (type == VMessageAudioVideoRequestItem.TYPE_VIDEO) {
+				ui.showLiverInteractionLayout(false);
 				ui.showWatcherP2PVideoLayout(true);
-				UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+				UserDeviceConfig duc = new UserDeviceConfig(4, this.currentLive.getLid(), GlobalHolder
 						.getInstance().getCurrentUserId(), "", null);
+				ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
 				ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
 				VideoRecorder.VideoPreviewSurfaceHolder = ui
 						.getP2PMainWatherSurface().getHolder();
 				VideoRecorder.VideoPreviewSurfaceHolder
 						.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-				duc.setSVHolder(ui.getP2PMainWatherSurface());
+				
+				ui.showBottomLayout(false);
+				unsetState(BOTTOM_LAYOUT_SHOW);
 				vs.requestOpenVideoDevice(duc, null);
 			} else if (type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
 				uiHandler.removeMessages(UI_HANDLE_AUDIO_CALL_TIMEOUT);
 				ui.showProgressDialog(false, null);
+				ui.showLiverInteractionLayout(false);
 				ui.showWatcherP2PAudioLayout(true);
-				ui.showConnectRequestLayout(false);
-			
 			}
 
 		} else if (action == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
@@ -1222,10 +1248,9 @@ public class MainPresenter extends BasePresenter implements
 				ui.showWatcherP2PVideoLayout(false);
 				if (uid != currentLive.getPublisher().getmUserId()) {
 					// close local device
-					UserDeviceConfig duc = new UserDeviceConfig(0, 0,
+					UserDeviceConfig duc = new UserDeviceConfig(4, this.currentLive.getLid(),
 							GlobalHolder.getInstance().getCurrentUserId(), "",
 							null);
-					duc.setSVHolder(ui.getP2PMainWatherSurface());
 					vs.requestCloseVideoDevice(duc, null);
 				} else {
 					// close remote device

@@ -17,8 +17,6 @@ public class P2PVideoMainLayout extends RelativeLayout {
 	
 	private SurfaceView surfaceView;
 	
-	private boolean init;
-	
 	private P2PVideoMainLayoutListener listener;
 	
 
@@ -33,40 +31,37 @@ public class P2PVideoMainLayout extends RelativeLayout {
 	public P2PVideoMainLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
+	
+	
+	
 
 	
-	public void init() {
-		if (init) {
-			return;
+	@Override
+	public void addView(View child, int index,
+			android.view.ViewGroup.LayoutParams params) {
+		super.addView(child, index, params);
+		if (child.getId() == R.id.p2p_video_main_surfaceview) {
+			surfaceView = (SurfaceView)child;
+		} else if (child.getId() == R.id.p2p_video_main_btn_ly) {
+			leftBtn = child.findViewById(R.id.p2p_video_main_left_btn);
+			rightBtn = child.findViewById(R.id.p2p_video_main_right_btn);
+			leftBtn.setOnClickListener(click);
+			rightBtn.setOnClickListener(click);
+			this.bringChildToFront(child);
 		}
-		if (leftBtn == null) {
-			leftBtn = findViewById(R.id.p2p_video_main_left_btn);
-		}
-		if (rightBtn == null) {
-			rightBtn = findViewById(R.id.p2p_video_main_right_btn);
-		}
-		
-		if (surfaceView == null) {
-			surfaceView = (SurfaceView)findViewById(R.id.p2p_video_main_surfaceview);
-		}
-		
-		leftBtn.setOnClickListener(click);
-		rightBtn.setOnClickListener(click);
-		init = true;
 	}
+
+
 	
 	public View getLeftBtn() {
-		init();
 		return leftBtn;
 	}
 
 	public View getRightBtn() {
-		init();
 		return rightBtn;
 	}
 
 	public SurfaceView getSurfaceView() {
-		init();
 		return surfaceView;
 	}
 	
