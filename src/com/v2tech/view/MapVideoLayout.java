@@ -530,6 +530,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 	
+	public void updateFollowBtnImageResource(int res) {
+		lierInteractionLayout.updateFollowBtnImageResource(res);
+	}
+
+	public void updateFollowBtnTextResource(int res) {
+		lierInteractionLayout.updateFollowBtnTextResource(res);
+	}
+
+	
 	
 	
 	public SurfaceView getP2PWatcherSurfaceView() {

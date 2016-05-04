@@ -220,16 +220,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 			}
 			
 		} 
-		tempList = new ArrayList<User>(35);
-		for (int i = 0; i <35; i++) {
-			User u = new User(i + 20);
-			u.setName("夏天" + i);
-			u.setSignature("美丽夏天的测试");
-			tempList.add(u);
-		}
-		
-		
-		userList = tempList;
+
 		uiHandler.post(new Runnable() {
 
 			@Override

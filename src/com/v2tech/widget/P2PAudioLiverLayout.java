@@ -15,6 +15,7 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 	private View declineBtn;
 	private LinearLayout mapViewLayout;
 	private MapView mMapView;
+	private View mapReturnBtn;
 
 	private P2PAudioLiverLayoutListener listener;
 
@@ -51,6 +52,9 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 			declineBtn.setOnClickListener(clickListener);
 		} else if (child.getId() == R.id.p2p_audio_liver_map_ly) {
 			mapViewLayout = (LinearLayout) child;
+		} else if (child.getId() == R.id.p2p_map_return_btn) {
+			this.mapReturnBtn = child;
+			this.mapReturnBtn.setOnClickListener(clickListener);
 		}
 	}
 
@@ -66,6 +70,9 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 			case R.id.p2p_audio_liver_decline_btn:
 				listener.onDeclineBtn(v);
 				break;
+			case R.id.p2p_map_return_btn:
+				listener.onMapReturnBtn(v);
+				break;
 			}
 		}
 
@@ -79,6 +86,7 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 
 	public interface P2PAudioLiverLayoutListener {
 		public void onDeclineBtn(View view);
+		public void onMapReturnBtn(View view);
 
 	}
 
@@ -104,3 +112,4 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 	
 
 }
+

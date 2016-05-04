@@ -16,6 +16,8 @@ public class VideoShareBtnLayout extends RelativeLayout {
 	private Button shareBtn;
 
 	private View dragView;
+	
+	private View mapBtn;
 
 	private VideoShareBtnLayoutListener listener;
 
@@ -41,6 +43,9 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		} else if (child.getId() == R.id.video_share_drag_view) {
 			dragView = child;
 			dragView.setOnTouchListener(touchListener);
+		} else if (child.getId() == R.id.video_share_map_btn) {
+			mapBtn = child;
+			mapBtn.setOnClickListener(clickListener);
 		}
 	}
 
@@ -99,6 +104,9 @@ public class VideoShareBtnLayout extends RelativeLayout {
 			case R.id.video_share_button:
 				listener.onVideoSharedBtnClicked(v);
 				break;
+			case  R.id.video_share_map_btn:
+				listener.onMapBtnClicked(v);
+				break;
 			}
 
 		}
@@ -129,5 +137,7 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		public void requestUpdateOffset(int dy);
 		
 		public void requestFlyingOut();
+		
+		public void onMapBtnClicked(View v);
 	}
 }

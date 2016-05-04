@@ -264,6 +264,11 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		appendAttrText(buffer, "xmlns", "getFollowList");
 		appendTagStartEnd(buffer, true);
 
+		appendTagStart(buffer, "row", false);
+		appendAttrText(buffer, "from", p.start+"");
+		appendAttrText(buffer, "to", p.count+"");
+		appendTagStartEnd(buffer, true);
+		
 		appendTagEnd(buffer, "iq");
 		buffer.append("\r\n");
 		return buffer.toString();

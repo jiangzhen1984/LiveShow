@@ -571,7 +571,9 @@ public class MainActivity extends FragmentActivity implements
 
 
 
-
+	public void showVideoshareBtnLayout(boolean flag) {
+		videoShareLayout.showVideoShareBtnLy(flag);
+	}
 
 
 
@@ -608,6 +610,18 @@ public class MainActivity extends FragmentActivity implements
 	
 	public void showWatcherP2PAudioLayout(boolean flag) {
 		mMapVideoLayout.showP2PAudioWatcherLy(flag);
+	}
+	
+	
+	
+	public void updateInterfactionFollowBtn(boolean followed) {
+		if (followed) {
+			mMapVideoLayout.updateFollowBtnImageResource(R.drawable.liver_interaction_cancel_follow_friend);
+			mMapVideoLayout.updateFollowBtnTextResource(R.string.personel_item_user_cf_text);
+		} else {
+			mMapVideoLayout.updateFollowBtnImageResource(R.drawable.liver_interaction_follow);
+			mMapVideoLayout.updateFollowBtnTextResource(R.string.personel_item_user_f_text);
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////

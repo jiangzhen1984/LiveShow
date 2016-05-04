@@ -62,15 +62,6 @@ public class FansFollowPresenter extends BasePresenter implements InterfactionBt
 
 
 	@Override
-	public void onPersonelBtnClicked(View v) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	@Override
 	public void onChattingBtnClicked(View v) {
 		// TODO Auto-generated method stub
 		
@@ -97,7 +88,9 @@ public class FansFollowPresenter extends BasePresenter implements InterfactionBt
 	}
 
 
-	
+	public void onFollowBtnClick(View v) {
+		
+	}
 	
 
 }

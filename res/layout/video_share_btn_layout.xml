@@ -2,17 +2,15 @@
 <com.v2tech.widget.VideoShareBtnLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
-    
-    
+
     <LinearLayout
         android:id="@+id/video_share_drag_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignTop="@+id/video_share_button"
         android:layout_alignBottom="@+id/video_share_outer_btn_ly"
-         >
-        </LinearLayout>
+        android:layout_alignTop="@+id/video_share_button"
+        android:orientation="vertical" >
+    </LinearLayout>
 
     <Button
         android:id="@+id/video_share_button"
@@ -40,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/video_share_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" 
-        android:layout_marginBottom="20dp" >
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp" >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -127,5 +125,14 @@
                 android:textSize="@dimen/video_share_btn_text_size" />
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/video_share_map_btn"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/video_share_map_btn" />
 
 </com.v2tech.widget.VideoShareBtnLayout>

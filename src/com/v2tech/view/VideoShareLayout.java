@@ -121,51 +121,53 @@ public class VideoShareLayout extends LinearLayout {
 	
 	
 	
+	
+	public void showVideoShareBtnLy(boolean flag) {
+		if (flag && videoShareBtnLayout.getVisibility() == View.GONE) {
+			layoutAnimationIn(videoShareBtnLayout);
+		} else if (!flag  && videoShareBtnLayout.getVisibility() == View.VISIBLE)  {
+			layoutAnimationOut(videoShareBtnLayout);
+		}
+	}
+	
 	public void showRequestConnectionLayout(boolean flag) {
 		if (flag && connectionRequestLayout.getVisibility() == View.GONE) {
-			connectionRequestLayout.setVisibility(View.VISIBLE);
-			connectionRequestLayout.startAnimation(getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
-					ANIMATION_DURATION, true));
+			layoutAnimationIn(connectionRequestLayout);
 		} else if (!flag  && connectionRequestLayout.getVisibility() == View.VISIBLE)  {
-			connectionRequestLayout.setVisibility(View.GONE);
-			connectionRequestLayout.startAnimation(getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
-					ANIMATION_DURATION, true));
+			layoutAnimationOut(connectionRequestLayout);
 		}
 	}
 	
 	
 	public void showP2PLiverLayout(boolean flag) {
-		Animation ani = null;
-		if (flag && connectionRequestLayout.getVisibility() == View.GONE) {
-			connectionRequestLayout.setVisibility(View.VISIBLE);
-			ani = getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
-					ANIMATION_DURATION, true);
-		}else if (!flag  && connectionRequestLayout.getVisibility() == View.VISIBLE)  {
-			connectionRequestLayout.setVisibility(View.GONE);
-			ani = getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
-					ANIMATION_DURATION, true);
+		if (flag && p2pAudioLiverLayout.getVisibility() == View.GONE) {
+			layoutAnimationIn(p2pAudioLiverLayout);
+		}else if (!flag  && p2pAudioLiverLayout.getVisibility() == View.VISIBLE)  {
+			layoutAnimationOut(p2pAudioLiverLayout);
 		}
-		
-		p2pAudioLiverLayout.startAnimation(ani);
 	}
 	
 	
 	public void showP2PVideoLayout(boolean flag) {
 		if (flag && p2pVideoMainLayout.getVisibility() == View.GONE) {
-			p2pVideoMainLayout.setVisibility(View.VISIBLE);
-			p2pVideoMainLayout.startAnimation(getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
-					ANIMATION_DURATION, true));
+			layoutAnimationIn(p2pVideoMainLayout);
 		} else if (!flag  && p2pVideoMainLayout.getVisibility() == View.VISIBLE)  {
-			p2pVideoMainLayout.setVisibility(View.GONE);
-			p2pVideoMainLayout.startAnimation(getBoxAnimation(
-					ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
-					ANIMATION_DURATION, true));
+			layoutAnimationOut(p2pVideoMainLayout);
 		}
+	}
+	
+	
+	private void layoutAnimationOut(View v) {
+		v.setVisibility(View.GONE);
+		v.startAnimation(getBoxAnimation(
+				ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_OUT,
+				ANIMATION_DURATION, true));
+	}
+	private void layoutAnimationIn(View v) {
+		v.setVisibility(View.VISIBLE);
+		v.startAnimation(getBoxAnimation(
+				ANIMATION_TYPE_CATEGORY, ANIMATION_TYPE_IN,
+				ANIMATION_DURATION, true));
 	}
 	
 	

@@ -18,6 +18,7 @@ public class LivePublishIndPacket extends IndicationPacket {
 	
 	public LivePublishIndPacket(long vid, long uid, long lid, double lat, double lng) {
 		super();
+		this.vid = vid;
 		this.uid = uid;
 		this.lid = lid;
 		this.lat = lat;

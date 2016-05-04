@@ -22,11 +22,14 @@ public class LiverInteractionLayout extends LinearLayout {
 	private TextView videos;
 	private TextView fans;
 	private TextView follows;
-	private View personelBtn;
 	private View innerBox;
 	private View chatRequestBtn;
 	private View videoChatBtn;
 	private View showMsgBtn;
+	
+	private View followBtn;
+	private ImageView followBtnIV;
+	private TextView  followBtnTV; 
 	
 	
 	private InterfactionBtnClickListener outListener;
@@ -101,8 +104,6 @@ public class LiverInteractionLayout extends LinearLayout {
 		videos = (TextView) findViewById(R.id.liver_interaction_videos);
 		fans = (TextView) findViewById(R.id.liver_interaction_fans);
 		follows = (TextView) findViewById(R.id.liver_interaction_follows);
-		personelBtn = findViewById(R.id.liver_interaction_btn);
-		personelBtn.setOnClickListener(listener);
 		
 		chatRequestBtn = findViewById(R.id.liver_interaction_chating_btn_iv);
 		chatRequestBtn.setOnClickListener(listener);
@@ -115,6 +116,12 @@ public class LiverInteractionLayout extends LinearLayout {
 		
 		innerBox = findViewById(R.id.liver_interaction_box_layout);
 		innerBox.setVisibility(View.GONE);
+		
+		followBtn = findViewById(R.id.liver_interaction_btn_ly);
+		followBtn.setOnClickListener(listener);
+		
+		followBtnIV = (ImageView)findViewById(R.id.liver_interaction_btn);
+		followBtnTV = (TextView)findViewById(R.id.liver_interaction_text);
 		
 		chatRequestBtn.setOnClickListener(listener);
 	}
@@ -132,35 +139,37 @@ public class LiverInteractionLayout extends LinearLayout {
 		super.addView(child, index, params);
 	}
 
+	
+	public void updateFollowBtnImageResource(int res) {
+		followBtnIV.setImageResource(res);
+	}
 
-
+	public void updateFollowBtnTextResource(int res) {
+		followBtnTV.setText(res);
+	}
 
 
 	private OnClickListener listener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
+			if (outListener == null) {
+				return;
+			}
 			int id = v.getId();
 			switch (id) {
-			case R.id.liver_interaction_btn:
-				if (outListener != null) {
-					outListener.onPersonelBtnClicked(v);
-				}
-				break;
 			case R.id.liver_interaction_chating_btn_iv:
-				if (outListener != null) {
-					outListener.onChattingBtnClicked(v);
-				}
+				outListener.onChattingBtnClicked(v);
 				break;
 			case R.id.liver_interaction_msg_btn_iv:
-				if (outListener != null) {
-					outListener.onMsgBtnClicked(v);
-				}
+				outListener.onMsgBtnClicked(v);
 				break;
 			case R.id.liver_interaction_video_call_btn_iv:
-				if (outListener != null) {
-					outListener.onVideoCallBtnClicked(v);
-				}
+				outListener.onVideoCallBtnClicked(v);
+				break;
+			case R.id.liver_interaction_btn_ly:
+				outListener.onFollowBtnClick(v);
+				break;
 			}
 		}
 		
@@ -185,13 +194,14 @@ public class LiverInteractionLayout extends LinearLayout {
 
 
 	public interface InterfactionBtnClickListener {
-		public void onPersonelBtnClicked(View v);
 		
 		public void onChattingBtnClicked(View v);
 		
 		public void onVideoCallBtnClicked(View v);
 		
 		public void onMsgBtnClicked(View v);
+		
+		public void onFollowBtnClick(View v);
 	}
 
 }

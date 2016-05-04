@@ -1,18 +1,9 @@
 package com.v2tech.service;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.PropertyInfo;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
 
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +14,7 @@ import com.V2.jni.V2ClientType;
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
+import com.v2tech.net.lv.FollowReqPacket;
 import com.v2tech.net.lv.GetCodeReqPacket;
 import com.v2tech.net.lv.LoginReqPacket;
 import com.v2tech.net.lv.LoginRespPacket;
@@ -33,7 +25,6 @@ import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.RequestLogInResponse;
 import com.v2tech.service.jni.RequestUserUpdateResponse;
 import com.v2tech.util.GlobalConfig;
-import com.v2tech.view.Constants;
 import com.v2tech.vo.User;
 
 public class UserService extends AbstractHandler {
@@ -178,81 +169,11 @@ public class UserService extends AbstractHandler {
 		return null;
 	}
 	
-	public static String getMD5(String val) throws NoSuchAlgorithmException {
-		MessageDigest md5 = MessageDigest.getInstance("MD5");
-		md5.update(val.getBytes());
-		byte[] m = md5.digest();// 加密
-		StringBuilder hex = new StringBuilder(m.length * 2);  
-	    for (byte b : m) {  
-	        if ((b & 0xFF) < 0x10)  
-	            hex.append("0");  
-	        hex.append(Integer.toHexString(b & 0xFF));  
-	    }  
-		return hex.toString();
+	
+	public void followUser(User user, boolean follow) {
+		DeamonWorker.getInstance().requestAsync(new PacketProxy(new FollowReqPacket(user.nId, follow), null));
 	}
-
-	public void register(String phoneNumber, String code,MessageListener caller) {
-		JNIResponse resp = null;
-		
-		SoapObject request = new SoapObject(Constants.NAME_SPACE,
-				"PhoneUserRegister");
-
-		PropertyInfo propInfo = new PropertyInfo();
-		propInfo.name = "phonenumber";
-		propInfo.type = PropertyInfo.STRING_CLASS;
-		propInfo.setValue(phoneNumber);
-		
-		PropertyInfo codeInfo = new PropertyInfo();
-		codeInfo.name = "code";
-		codeInfo.type = PropertyInfo.STRING_CLASS;
-		try {
-			codeInfo.setValue(getMD5(code).toUpperCase());
-		} catch (NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-			resp = new JNIResponse(JNIResponse.Result.FAILED);
-			Message msg = Message.obtain();
-			msg.what = caller.what;
-			msg.obj = resp;
-			caller.refH.get().sendMessage(msg);
-			return;
-		}
-
-		request.addProperty(propInfo);
-		request.addProperty(codeInfo);
-
-		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-				SoapEnvelope.VER11);
-
-		envelope.setOutputSoapObject(request);
-		HttpTransportSE androidHttpTransport = new HttpTransportSE(Constants.URL);
-
-		try {
-			androidHttpTransport.call("urn:PhoneUserRegister", envelope);
-
-			SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope
-					.getResponse();
-			String retVale = resultsRequestSOAP.getValue().toString();
-			
-			
-			if ("0".equals(retVale)) {
-				resp = new JNIResponse(JNIResponse.Result.SUCCESS);
-				resp.callerObject = caller.userObj;
-			} else {
-				resp = new JNIResponse(JNIResponse.Result.FAILED);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			resp = new JNIResponse(JNIResponse.Result.FAILED);
-		}
-
-		
-		
-		Message msg = Message.obtain();
-		msg.what = caller.what;
-		msg.obj = resp;
-		caller.refH.get().sendMessage(msg);
-	}
+	
 
 	@Override
 	public void clearCalledBack() {

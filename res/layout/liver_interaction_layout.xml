@@ -38,7 +38,7 @@
                 android:src="@drawable/liver_interaction_cancel_follow_friend" />
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/liver_interaction_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
