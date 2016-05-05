@@ -624,6 +624,12 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 	
+	
+	
+	public BaiduMap getWatcherMapInstance() {
+		return this.videoShareLayout.getWatcherMapInstance();
+	}
+	
 	/////////////////////////////////////////////////////////////
 	
 

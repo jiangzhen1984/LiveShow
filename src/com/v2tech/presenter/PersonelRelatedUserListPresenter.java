@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +21,9 @@ import com.v2tech.net.lv.FollowsQueryRespPacket;
 import com.v2tech.net.pkt.RequestPacket;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.UserService;
+import com.v2tech.v2liveshow.R;
+import com.v2tech.view.FansFollowActivity;
 import com.v2tech.vo.User;
 
 public class PersonelRelatedUserListPresenter extends BasePresenter {
@@ -32,6 +37,8 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	
 	private static final int MSG_GET_LIST = 1;
 	
+	private Context context;
+	private UserService us;
 	
 	private PersonelRelatedUserListPresenterUI ui;
 	private int type;
@@ -41,6 +48,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	private LocalBackendHandler local;
 	
 	public interface PersonelRelatedUserListPresenterUI {
+		public void updateSearchBarHint(String text);
 		public void updateItemAvatar(View parent, Bitmap bm);
 		public void updateItemName(View parent, String name);
 		public void updateItemText(View parent, String txt);
@@ -49,6 +57,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		public void updateItemBtnFollow(View parent);
 		public void updateItemBtnTag(View parent, Object tag);
 		public void updateItemGender(View parent, boolean male);
+		public void updateItemUserTag(View parent, Object tag);
 		public void showFansTitle();
 		public void showFriendsTitle();
 		public void showFollowTitle();
@@ -68,10 +77,12 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	
 	
 	
-	public PersonelRelatedUserListPresenter(int type, PersonelRelatedUserListPresenterUI ui) {
+	public PersonelRelatedUserListPresenter(Context context, int type, PersonelRelatedUserListPresenterUI ui) {
 		this.type = type;
 		this.ui = ui;
+		this.context = context;
 		local = new LocalBackendHandler(this, backendThread.getLooper());
+		us = new UserService();
 	}
 	
 	
@@ -80,8 +91,11 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	}
 	
 	
-	public void onListItemClicked() {
-		
+	public void onListItemClicked(Object tag) {
+		User u = (User)tag;
+		Intent i = new Intent();
+		i.setClass(context, FansFollowActivity.class);
+		context.startActivity(i);
 	}
 	
 	
@@ -89,10 +103,20 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		Long id = (Long) tag;
 		for (User u : userList) {
 			if (u.nId == id) {
-				//TODO 
+				if (type == TYPE_FOLLOWS) {
+				  us.followUser(u, false);
+				  userList.remove(u);
+				} else if (type == TYPE_FANS) {
+					us.followUser(u, true);
+					if (GlobalHolder.getInstance().mMyFollowers != null) {
+						GlobalHolder.getInstance().mMyFollowers.add(u);
+					}
+					
+				}
 				break;
 			}
 		}
+		ui.refreshDataSet();
 	}
 	
 	
@@ -120,6 +144,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		ui.updateItemBtnTag(convertView, Long.valueOf(u.nId));
 		
 		ui.updateItemGender(convertView, u.isMale);
+		ui.updateItemUserTag(convertView, u);
 	}
 
 
@@ -162,8 +187,20 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		}
 		ui.showTimeView(timeFlag);
 		ui.showRightBtmView(btnFlag);
+		if (type == TYPE_FRIEND_INVITATION) {
+			ui.updateSearchBarHint(context.getString(R.string.personal_friends_invitation_search_tips));
+		}
 		
 		Message.obtain(local, MSG_GET_LIST).sendToTarget();
+	}
+
+	
+	
+
+	@Override
+	public void onUIDestroyed() {
+		super.onUIDestroyed();
+		us.clearCalledBack();
 	}
 
 
@@ -219,7 +256,10 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 				//TODO query error
 			}
 			
-		} 
+		}
+		
+		userList = tempList;
+		
 
 		uiHandler.post(new Runnable() {
 
@@ -285,7 +325,8 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		User u = null;
 		for (Map<String, String> m : fqrp.fansList) {
 			long id = Long.parseLong(m.get("id"));
-			u = new User(id);
+			u = new User(-1);
+			u.nId = id;
 			fans.add(u);
 		}
 		
@@ -306,7 +347,8 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		User u = null;
 		for (Map<String, String> m : fqrp.follows) {
 			long id = Long.parseLong(m.get("id"));
-			u = new User(id);
+			u = new User(-1);
+			u.nId = id;
 			fans.add(u);
 		}
 		

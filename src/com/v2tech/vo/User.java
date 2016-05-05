@@ -69,7 +69,6 @@ public class User implements Comparable<User> {
 
 	// custom fields
 	private boolean isCurrentLoggedInUser;
-	private NetworkStateCode mResult;
 	private DeviceType mType;
 	private Status mStatus;
 	private String mName;
@@ -102,10 +101,7 @@ public class User implements Comparable<User> {
 		this(mUserId, name, null, null);
 	}
 
-	public User(long mUserId, String name, NetworkStateCode mResult) {
-		this(mUserId, name, null, null);
-		this.mResult = mResult;
-	}
+
 
 	public User(long mUserId, String name, String email, String signature) {
 		this.mUserId = mUserId;
@@ -145,14 +141,6 @@ public class User implements Comparable<User> {
 
 	public String getmCommentname() {
 		return this.mCommentname;
-	}
-
-	public NetworkStateCode getmResult() {
-		return mResult;
-	}
-
-	public void setmResult(NetworkStateCode mResult) {
-		this.mResult = mResult;
 	}
 
 	public String getName() {

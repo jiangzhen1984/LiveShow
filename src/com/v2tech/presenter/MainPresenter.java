@@ -72,6 +72,7 @@ import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.VMessage;
 import com.v2tech.vo.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.VMessageTextItem;
+import com.v2tech.vo.Watcher;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
@@ -104,6 +105,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
 	private static final int MESSAGE_LISTENER = 13;
 	private static final int WATCHER_DEVICE_LISTENER = 14;
+	private static final int WATCHER_LIST = 15;
 
 	private static final int UI_HANDLE_UPDATE_VIDEO_SCREEN = 1;
 	private static final int UI_HANDLE_HANDLE_NEW_MESSAGE = 2;
@@ -194,6 +196,8 @@ public class MainPresenter extends BasePresenter implements
 		public void showPersonelUI();
 
 		public BaiduMap getMapInstance();
+		
+		
 
 		public void showSearchErrorToast();
 
@@ -261,6 +265,9 @@ public class MainPresenter extends BasePresenter implements
 		public void updateVideoLayoutOffset(int x);
 
 		public void updateInterfactionFollowBtn(boolean followed);
+		
+		
+		public BaiduMap getWatcherMapInstance();
 	}
 
 	public void mapLocationButtonClicked() {
@@ -323,14 +330,14 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	public void videoShareButtonClicked() {
-		if ((videoScreenState & PUBLISHING_FLAG) == PUBLISHING_FLAG) {
-			videoScreenState &= (~PUBLISHING_FLAG);
+		if (isState(PUBLISHING_FLAG)) {
+			unsetState(PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
 			ui.videoShareLayoutFlyout();
 			vs.quitConference(currentLive, new MessageListener(h,
 					CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
-			videoScreenState |= PUBLISHING_FLAG;
+			setState(PUBLISHING_FLAG);
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
 			ui.updateVideShareButtonText(true);
 		}
@@ -849,6 +856,9 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onFollowBtnClick(View v) {
+		if (currentLive == null) {
+			return;
+		}
 		// TODO check friend status
 		us.followUser(currentLive.getPublisher(), true);
 		ui.updateInterfactionFollowBtn(true);
@@ -960,6 +970,7 @@ public class MainPresenter extends BasePresenter implements
 			ui.showP2PLiverLayout(true);
 			
 			//TODO add watcher list marker to map
+			ls.getWatcherList(currentLive, new MessageListener(h, WATCHER_LIST, currentLive));
 		}
 	}
 
@@ -1115,7 +1126,19 @@ public class MainPresenter extends BasePresenter implements
 		OverlayOptions oo = new MarkerOptions().icon(online)
 				.position(new LatLng(live.getLat(), live.getLng()))
 				.extraInfo(bundle);
-		Overlay ol = this.mapInstance.addOverlay(oo);
+		this.mapInstance.addOverlay(oo);
+	}
+	
+	
+	private void addWatcherMarker(Watcher watcher) {
+		BitmapDescriptor online = BitmapDescriptorFactory
+				.fromResource(R.drawable.watcher_location);
+
+		Bundle bundle = new Bundle();
+		OverlayOptions oo = new MarkerOptions().icon(online)
+				.position(new LatLng(watcher.lat, watcher.lng))
+				.extraInfo(bundle);
+		ui.getWatcherMapInstance().addOverlay(oo);
 	}
 
 	boolean pending = true;
@@ -1269,6 +1292,18 @@ public class MainPresenter extends BasePresenter implements
 			// TODO handle decline
 		}
 	}
+	
+	
+	private void  handleWatcherListRespone(AsyncResult ar) {
+		if (ar.getUserObject() != currentLive) {
+			V2Log.e("==== liver changed state " + currentLive+"====> origin" + ar.getUserObject());
+			return;
+		}
+		List<Watcher> watcherList = (List<Watcher>)ar.getResult();
+		for (Watcher w : watcherList) {
+			addWatcherMarker(w);
+		}
+	}
 
 	public void handleRequestTimeOut() {
 		unsetState(PROGRESS_DIALOG_SOWN);
@@ -1352,6 +1387,9 @@ public class MainPresenter extends BasePresenter implements
 				;
 				break;
 			case WATCHER_DEVICE_LISTENER:
+				break;
+			case WATCHER_LIST:
+				handleWatcherListRespone((AsyncResult)msg.obj);
 				break;
 			}
 		}

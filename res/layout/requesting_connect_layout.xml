@@ -20,6 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:text="夏天"
+        android:textSize="@dimen/request_connect_ly_name_text_size"
         android:textColor="#000000" />
 
     <TextView
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
+        android:textSize="@dimen/request_connect_ly_tips_text_size"
         android:text="@string/requesting_connect_video_text" />
 
     <LinearLayout

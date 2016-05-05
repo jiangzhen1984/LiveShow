@@ -34,7 +34,7 @@
     <dimen name="personel_setting_text_size">15sp</dimen>
     <dimen name="personel_setting_layout_padding">10dp</dimen>
      <dimen name="personel_wallet_item_margin_top">10dp</dimen>
-     <dimen name="personel_wallet_balance_item_margin_top">3dp</dimen>
+     <dimen name="personel_wallet_balance_item_margin_top">15dp</dimen>
      <dimen name="personel_wallet_btn_margin_hor">20dp</dimen>
      <dimen name="personel_wallet_detail_item_text_margin_top">10dp</dimen>
     <dimen name="personel_wallet_detail_item_text_margin_top1">2dp</dimen>

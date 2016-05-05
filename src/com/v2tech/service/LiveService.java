@@ -1,5 +1,10 @@
 package com.v2tech.service;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -13,6 +18,8 @@ import com.v2tech.net.lv.LiveQueryReqPacket;
 import com.v2tech.net.lv.LiveQueryRespPacket;
 import com.v2tech.net.lv.LiveRecommendReqPacket;
 import com.v2tech.net.lv.LocationReportReqPacket;
+import com.v2tech.net.lv.WatcherListQueryReqPacket;
+import com.v2tech.net.lv.WatcherListQueryRespPacket;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
@@ -20,6 +27,7 @@ import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.vo.Live;
+import com.v2tech.vo.Watcher;
 
 public class LiveService extends AbstractHandler {
 	
@@ -135,6 +143,14 @@ public class LiveService extends AbstractHandler {
 	}
 	
 	
+	public void getWatcherList(Live l, MessageListener caller) {
+		DeamonWorker.getInstance().requestAsync(
+				new PacketProxy(
+						new WatcherListQueryReqPacket(l.getNid(), 1, 50),
+						new LocalNotificationListener(caller)));
+	}
+	
+	
 	public void recommend(Live l, boolean rend) {
 		if (l == null) {
 			return;
@@ -149,6 +165,60 @@ public class LiveService extends AbstractHandler {
 	}
 
 
+	
+	class LocalNotificationListener implements NotificationListener {
+		
+		private WeakReference<MessageListener> listener;
+		
+		public LocalNotificationListener(MessageListener listener) {
+			this.listener = new WeakReference<MessageListener> (listener);
+		}
+
+		@Override
+		public void onNodification(IndicationPacket ip) {
+			
+		}
+
+		@Override
+		public void onResponse(ResponsePacket rp) {
+			if (listener.get() == null) {
+				V2Log.e("===> no reference for handle " + rp);
+			}
+			if (rp instanceof WatcherListQueryRespPacket) {
+				handleWatcherListQueryRespPacket((WatcherListQueryRespPacket)rp);
+			}
+		}
+
+		@Override
+		public void onStateChanged() {
+			
+		}
+
+		@Override
+		public void onTimeout(ResponsePacket rp) {
+			
+		}
+		
+		
+		private void handleWatcherListQueryRespPacket(WatcherListQueryRespPacket resp) {
+			MessageListener ml = listener.get();
+			if (resp.getHeader().isError()) {
+				Message.obtain(ml.getHandler(), ml.what, new AsyncResult(ml.userObj, null)).sendToTarget();
+				return;
+			}
+			List<Watcher> l = new ArrayList<Watcher>(resp.watcherList.size());
+			for (Map<String, String> mu : resp.watcherList) {
+				Watcher w = new Watcher(-1);
+				w.nId = Long.parseLong(mu.get("id"));
+				w.setName(mu.get("name"));
+				w.lat = Double.parseDouble(mu.get("latitude"));
+				w.lng= Double.parseDouble(mu.get("longitude"));
+				l.add(w);
+			}
+			Message.obtain(ml.getHandler(), ml.what, new AsyncResult(ml.userObj, l)).sendToTarget();
+		}
+		
+	}
 }
 
 

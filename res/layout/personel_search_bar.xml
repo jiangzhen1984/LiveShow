@@ -17,6 +17,7 @@
         android:background="@drawable/personel_search_input_text"
         android:ems="10"
         android:gravity="center"
+        android:textColor="#a0a0a0"
         android:hint="@string/personal_search_bar_follow_text"
         android:textSize="14sp" >
     </EditText>

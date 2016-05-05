@@ -17,7 +17,8 @@
             android:id="@+id/video_list_item_left_ly"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"
+            android:layout_weight=".33"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal" >
 
             <ImageView
@@ -32,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/video_list_item_left_video_screen"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp" >
 
@@ -62,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_weight=".3" >
+            android:layout_weight=".33" >
 
             <ImageView
                 android:id="@+id/video_list_item_middle_video_screen"
@@ -75,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/video_list_item_middle_video_screen"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp" >
 
@@ -103,8 +104,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight=".3" >
+            android:layout_marginRight="10dp"
+            android:layout_weight=".33" >
 
             <ImageView
                 android:id="@+id/video_list_item_right_video_screen"
@@ -118,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/video_list_item_right_video_screen"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp" >
 

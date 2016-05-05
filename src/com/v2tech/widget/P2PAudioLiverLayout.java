@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.v2liveshow.R;
@@ -58,27 +59,11 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 		}
 	}
 
-	private OnClickListener clickListener = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			if (listener == null) {
-				return;
-			}
-			int id = v.getId();
-			switch (id) {
-			case R.id.p2p_audio_liver_decline_btn:
-				listener.onDeclineBtn(v);
-				break;
-			case R.id.p2p_map_return_btn:
-				listener.onMapReturnBtn(v);
-				break;
-			}
-		}
 
-	};
-
-	
+	public BaiduMap getWatcherMapInstance() {
+		return mMapView.getMap();
+	}
 
 	public void setListener(P2PAudioLiverLayoutListener listener) {
 		this.listener = listener;
@@ -89,6 +74,9 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 		public void onMapReturnBtn(View view);
 
 	}
+	
+	
+	
 
 	@Override
 	public void setVisibility(int visibility) {
@@ -109,6 +97,26 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 	}
 	
 	
+	
+	private OnClickListener clickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (listener == null) {
+				return;
+			}
+			int id = v.getId();
+			switch (id) {
+			case R.id.p2p_audio_liver_decline_btn:
+				listener.onDeclineBtn(v);
+				break;
+			case R.id.p2p_map_return_btn:
+				listener.onMapReturnBtn(v);
+				break;
+			}
+		}
+
+	};
 	
 
 }

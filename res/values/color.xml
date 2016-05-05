@@ -53,5 +53,6 @@
     <color name="p2p_message_msg_list_bg">#f0eff5</color>
     
     <color name="p2p_audio_watcher_ly_bg">#f0eff5</color>
+    <color name="liver_iteraction_personel_text_color">#a0a0a0</color>
 
 </resources>

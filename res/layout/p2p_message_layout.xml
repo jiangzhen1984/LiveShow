@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:padding="5dp"
      >
 
     <TextView
@@ -13,12 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:textColor="#a0a0a0"
+        android:textSize="@dimen/p2p_message_time_text_size"
         android:text="TextView" />
 
     <LinearLayout
          android:id="@+id/p2p_message_left_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/p2p_message_body_margin_hor"
         android:layout_alignParentTop="true" >
 
         <ImageView
@@ -42,6 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/p2p_message_body_margin_hor"
         android:layout_alignParentTop="true" >
 
         <TextView

@@ -52,9 +52,9 @@
     <string name="personal_show_nick_name_text">昵称</string>
     <string name="personal_show_gender_text">性别</string>
     <string name="personal_region_text">地区</string>
-    <string name="personal_siganture_text">签名</string>
+    <string name="personal_siganture_text">个性签名</string>
     <string name="personal_name_text">姓名</string>
-    <string name="personal_code_text">二维码</string>
+    <string name="personal_code_text">我的二维码</string>
     <string name="personal_show_title_text">个人信息</string>
     <string name="personel_user_list_title_follow">我的关注</string>
     <string name="personel_user_list_title_fans">我的粉丝</string>
@@ -99,9 +99,10 @@
     <string name="video_share_btn_text_wx_grp">微信朋友圈</string>
     <string name="video_share_btn_text_qq">QQ好友</string>
     <string name="video_share_btn_text_wb">新浪微博</string>
-    <string name="video_share_tips_text">直接分享至</string>
+    <string name="video_share_tips_text">直播分享至</string>
     <string name="card_scan_scan_text">扫一扫</string>
     <string name="card_scan_scan_text1">扫描二维码名片</string>
+    <string name="personal_friends_invitation_search_tips">昵称/手机号</string>
     
     <string name="audio_call_connecting">正在等待对方接受邀请</string>
     

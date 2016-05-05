@@ -17,7 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/personel_item_line"
-        android:padding="@dimen/personel_user_item_padding" >
+        android:paddingLeft="@dimen/personel_user_item_padding"
+        android:paddingTop="@dimen/personel_user_item_padding"
+        android:paddingBottom="@dimen/personel_user_item_padding" >
 
         <ImageView
             android:id="@+id/personel_item_avatar"
@@ -103,6 +105,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignRight="@+id/personel_item_cf_text"
                 android:layout_alignStart="@+id/personel_item_cf_text"
+                android:layout_alignBottom="@+id/personel_item_name_ly"
                 android:paddingEnd="3dp"
                 android:paddingRight="3dp"
                 android:src="@drawable/personel_item_follow_icon" />
@@ -115,7 +118,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="@dimen/personel_user_item_text_margin_right"
-                android:paddingEnd="3dp"
+                android:layout_alignBottom="@+id/personel_item_name_ly"
+                android:paddingEnd="@dimen/personel_user_item_text_margin_right"
                 android:text="19:23" />
         </RelativeLayout>
     </RelativeLayout>

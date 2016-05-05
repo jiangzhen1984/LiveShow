@@ -79,6 +79,10 @@ public class PersonelSearchBarFragment extends Fragment implements TextWatcher {
 		listener.onTextChanged(s.toString());
 	}
 	
+	public void updateSearchBarHint(String text) {
+		et.setHint(text);
+	}
+	
 	
 	
 	

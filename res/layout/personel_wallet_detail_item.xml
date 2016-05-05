@@ -8,7 +8,8 @@
         android:id="@+id/personel_wallet_item_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/personel_user_item_padding" >
+        android:paddingTop="@dimen/personel_user_item_padding"
+        android:paddingBottom="@dimen/personel_user_item_padding" >
 
 
         <RelativeLayout
@@ -17,6 +18,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/personel_wallet_detail_item_text_margin_left"
+            android:layout_marginRight="@dimen/personel_wallet_detail_item_text_margin_left"
             android:layout_marginStart="@dimen/personel_wallet_detail_item_text_margin_left"
             
              >

@@ -1,6 +1,5 @@
 package com.v2tech.view;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +15,7 @@ import com.v2tech.frag.UserListFragment;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter.PersonelRelatedUserListPresenterUI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.User;
 
 public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		PersonelSearchBarFragment.PersonelSearchBarTextListener,
@@ -46,7 +46,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		returnBtn = findViewById(R.id.title_bar_left_btn);
 		
 		int type = this.getIntent().getIntExtra("type", -1);
-		presenter = new PersonelRelatedUserListPresenter(type, this);
+		presenter = new PersonelRelatedUserListPresenter(this, type, this);
 
 		barFrag = (PersonelSearchBarFragment)this.getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 		listFrag = (UserListFragment)this.getSupportFragmentManager().findFragmentById(R.id.list_fragment);
@@ -116,16 +116,16 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	}
 	
 	
-	
+	public void updateSearchBarHint(String text) {
+		barFrag.updateSearchBarHint(text);
+	}
 	
 	
 	private OnClickListener l = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			Intent i = new Intent();
-			i.setClass(PersonelRelatedUserListActivity.this, FansFollowActivity.class);
-			PersonelRelatedUserListActivity.this.startActivity(i);
+			presenter.onListItemClicked(((LocalBind)v.getTag()).cu);
 			
 		}
 		
@@ -133,6 +133,11 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	
 	public void refreshDataSet() {
 		listFrag.notifyDatasetChanged();
+	}
+	
+	public void updateItemUserTag(View parent, Object tag) {
+		LocalBind lb = (LocalBind)parent.getTag();
+		lb.cu = tag;
 	}
 	
 	public void updateItemAvatar(View parent, Bitmap bm) {
@@ -261,6 +266,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		ImageView btn;
 		ImageView gender;
 		TextView time;
+		Object cu;
 	}
 	
 	

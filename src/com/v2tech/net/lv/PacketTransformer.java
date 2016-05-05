@@ -44,7 +44,9 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			return serializeFollowsQueryRequest((FollowsQueryReqPacket) f);
 		} else if (f instanceof LiveRecommendReqPacket) {
 			return serializeLiveRecommendRequest((LiveRecommendReqPacket) f);
-		} else if (f instanceof PacketProxy) {
+		} else if (f instanceof WatcherListQueryReqPacket) {
+			return serializeWacherListQueryRequest((WatcherListQueryReqPacket) f);
+		}else if (f instanceof PacketProxy) {
 			return serialize(((PacketProxy) f).getPacket());
 		} else {
 			throw new RuntimeException("packet is not support : " + f);
@@ -88,7 +90,9 @@ public class PacketTransformer implements Transformer<Packet, String> {
 				return extraCommonResponse(t);
 			} else if ("getFansList".equalsIgnoreCase(type)) {
 				return extraFansQueryResponse(t);
-			}else if ("getFollowList".equalsIgnoreCase(type)) {
+			} else if ("getUserInVideo".equalsIgnoreCase(type)) {
+				return extraWatcherListQueryResponse(t);
+			} else if ("getFollowList".equalsIgnoreCase(type)) {
 				return extraFollowsQueryResponse(t);
 			}
 
@@ -310,6 +314,27 @@ public class PacketTransformer implements Transformer<Packet, String> {
 		return buffer.toString();
 	}
 
+	private String serializeWacherListQueryRequest(WatcherListQueryReqPacket p) {
+		StringBuffer buffer = new StringBuffer();
+		appendStart(buffer, p.getId() + "",  "", "");
+
+		appendTagStart(buffer, "query", false);
+		appendAttrText(buffer, "xmlns", "getUserInVideo");
+		appendTagStartEnd(buffer, true);
+
+		appendTagText(buffer, "videoId", p.lid+"");
+
+		appendTagStart(buffer, "row", false);
+		appendAttrText(buffer, "from", p.start+"");
+		appendAttrText(buffer, "to", p.count+"");
+		appendTagStartEnd(buffer, true);
+		
+		appendTagEnd(buffer, "iq");
+		buffer.append("\r\n");
+		return buffer.toString();
+	}
+	
+	
 	private Packet extraLoginResponse(String str) {
 		LoginRespPacket lrp = new LoginRespPacket();
 		lrp.setRequestId(extraRequestId(str));
@@ -357,18 +382,6 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	}
 
 	private Packet extraLiveQueryResponse(String str) {
-
-		// str
-		// +="<video id ='1' videoNum='1514600988896'  userId='1' longitude='116.4373200000' latitude='39.9704230000' sum='12'/>"
-		// +
-		// "<video  id ='5' videoNum='1514600988896' userId='2' longitude='116.3229120000' latitude='39.9668840000' sum='21'/>"
-		// +
-		// "<video id ='2'  videoNum='1514600826995' userId='3' longitude='116.3321100000' latitude='39.8903080000' sum='232'/>"
-		// +
-		// "<video id ='3' videoNum='1514600988896' userId='4' longitude='116.4562920000' latitude='39.9040360000' sum='2455'/>"
-		// +
-		// "<video  id ='4' videoNum='1514600826995' userId='5' longitude='116.4223720000' latitude='39.9496290000' sum='6562'/>";
-		// String root ="<test>" + str +"</test>";
 		LiveQueryRespPacket lrp = new LiveQueryRespPacket();
 		lrp.setErrorFlag(!extraResult(str));
 
@@ -425,6 +438,44 @@ public class PacketTransformer implements Transformer<Packet, String> {
 			list.add(map);
 		}
 		lrp.fansList = list;
+
+		return lrp;
+	}
+	
+	
+	
+	private Packet extraWatcherListQueryResponse(String str) {
+		WatcherListQueryRespPacket lrp = new WatcherListQueryRespPacket();
+		lrp.setRequestId(extraRequestId(str));
+		lrp.setErrorFlag(!extraResult(str));
+
+		if (lrp.getHeader().isError()) {
+			return lrp;
+		}
+		
+		Document doc = XmlAttributeExtractor.buildDocument(str);
+		if (doc == null) {
+			lrp.setErrorFlag(true);
+			return lrp;
+		}
+
+		NodeList nl = doc.getElementsByTagName("user");
+		Element ve;
+		int c = nl.getLength();
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>(c);
+		for (int i = 0; i < c; i++) {
+			Map<String, String> map = new HashMap<String, String>();
+			ve = (Element) nl.item(i);
+			map.put("id", ve.getAttribute("id"));
+			map.put("phone", ve.getAttribute("phone"));
+			map.put("name", ve.getAttribute("name"));
+			map.put("headurl", ve.getAttribute("headurl"));
+			map.put("signText", ve.getAttribute("signText"));
+			map.put("longitude", ve.getAttribute("longitude"));
+			map.put("latitude", ve.getAttribute("latitude"));
+			list.add(map);
+		}
+		lrp.watcherList = list;
 
 		return lrp;
 	}

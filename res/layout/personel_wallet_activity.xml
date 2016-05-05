@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/personel_wallet_balance_item_margin_top"
-            android:text="125.5"
+            android:text="￥125.5"
             android:textSize="@dimen/personel_wallet_detail_balance_text_size"
             android:textColor="#ff0000" />
 

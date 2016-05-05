@@ -52,13 +52,35 @@
             android:layout_toRightOf="@+id/avatar"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/personal_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight=".5"
-                android:text="Lily"
-                android:textColor="#000000" />
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/personal_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Lily"
+                    android:textColor="#000000" />
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/gender_female" />
+                
+                  <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/level_1" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/personel_username"
@@ -109,7 +131,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+            android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding"  >
 
             <ImageView
                 android:id="@+id/imageView8"
@@ -158,7 +183,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -207,7 +235,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -250,11 +281,14 @@
         </TextView>
 
         <RelativeLayout
-             android:id="@+id/personal_friends_invitation_btn"
+            android:id="@+id/personal_friends_invitation_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView15"
@@ -299,7 +333,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-             android:layout_marginTop="@dimen/personel_activity_box_margin_top"
+            android:layout_marginTop="@dimen/personel_activity_box_margin_top"
             android:background="@color/common_sep_line" >
         </TextView>
 
@@ -308,7 +342,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -355,7 +392,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView6"
@@ -400,11 +440,14 @@
         </TextView>
 
         <RelativeLayout
-             android:id="@+id/personal_my_message_btn"
+            android:id="@+id/personal_my_message_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView14"
@@ -450,7 +493,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-             android:layout_marginTop="@dimen/personel_activity_box_margin_top"
+            android:layout_marginTop="@dimen/personel_activity_box_margin_top"
             android:background="@color/common_sep_line" >
         </TextView>
 
@@ -459,7 +502,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:padding="@dimen/personel_item_layout_padding" >
+             android:paddingLeft="@dimen/personel_item_layout_padding"
+            android:paddingRight="@dimen/personel_item_layout_padding"
+            android:paddingTop="@dimen/personel_show_item_layout_padding"
+            android:paddingBottom="@dimen/personel_show_item_layout_padding" >
 
             <ImageView
                 android:id="@+id/imageView11"

@@ -8,6 +8,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
+import com.baidu.mapapi.map.BaiduMap;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
@@ -156,6 +157,11 @@ public class VideoShareLayout extends LinearLayout {
 		}
 	}
 	
+	
+	
+	public BaiduMap getWatcherMapInstance() {
+		return p2pAudioLiverLayout.getWatcherMapInstance();
+	}
 	
 	private void layoutAnimationOut(View v) {
 		v.setVisibility(View.GONE);
