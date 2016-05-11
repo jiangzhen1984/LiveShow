@@ -19,6 +19,7 @@
         android:gravity="center"
         android:textColor="#a0a0a0"
         android:hint="@string/personal_search_bar_follow_text"
+        android:drawableLeft="@drawable/personel_search_bar_icon"
         android:textSize="14sp" >
     </EditText>
 

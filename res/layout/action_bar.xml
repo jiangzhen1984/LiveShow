@@ -20,6 +20,8 @@
             android:layout_marginLeft="@dimen/title_bar_left_icon_margin_left"
             android:layout_marginStart="@dimen/title_bar_left_icon_margin_left"
             android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:src="@drawable/title_bar_return_btn" />
 
         <TextView
