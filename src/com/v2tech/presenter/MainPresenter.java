@@ -978,7 +978,9 @@ public class MainPresenter extends BasePresenter implements
 			ui.showP2PLiverLayout(true);
 			
 			//TODO add watcher list marker to map
-			ls.getWatcherList(currentLive, new MessageListener(h, WATCHER_LIST, currentLive));
+			if (currentLive != null) {
+				ls.getWatcherList(currentLive, new MessageListener(h, WATCHER_LIST, currentLive));
+			}
 		}
 	}
 
