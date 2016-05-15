@@ -11,7 +11,7 @@ import com.v2tech.v2liveshow.R;
 
 public class LiveInformationLayout extends LinearLayout {
 
-	private ImageView marqueeEnableBtn;
+	private ImageView videoCloseBtn;
 
 	private TextView recommandCountTV;
 	private TextView tipsCountTV;
@@ -38,9 +38,9 @@ public class LiveInformationLayout extends LinearLayout {
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
 		int id = child.getId();
-		if (id == R.id.message_marquee_btn) {
-			marqueeEnableBtn = (ImageView) child;
-			marqueeEnableBtn.setOnClickListener(clickListener);
+		if (id == R.id.video_close_btn) {
+			videoCloseBtn = (ImageView) child;
+			videoCloseBtn.setOnClickListener(clickListener);
 		} else if (id == R.id.video_right_border_rd_ly) {
 			recommandCountTV = (TextView) child
 					.findViewById(R.id.recommendation_count_tv);
@@ -68,8 +68,8 @@ public class LiveInformationLayout extends LinearLayout {
 			case R.id.tips_button:
 				listener.onLiveInfoTipsBtnClicked(v);
 				break;
-			case R.id.message_marquee_btn:
-				listener.onMarqueeBtnClicked(v);
+			case R.id.video_close_btn:
+				listener.onCloseBtnClicked(v);
 				break;
 			}
 
@@ -77,11 +77,6 @@ public class LiveInformationLayout extends LinearLayout {
 
 	};
 
-	public void enableLiveMessage(boolean flag) {
-		marqueeEnableBtn
-				.setImageResource(flag ? R.drawable.message_marquee_enable
-						: R.drawable.message_marquee_disable);
-	}
 
 	public void updateTips(String text) {
 		if (tipsCountTV == null) {
@@ -110,7 +105,7 @@ public class LiveInformationLayout extends LinearLayout {
 
 		public void onLiveInfoRecommandBtnClicked(View v);
 
-		public void onMarqueeBtnClicked(View v);
+		public void onCloseBtnClicked(View v);
 	}
 
 }

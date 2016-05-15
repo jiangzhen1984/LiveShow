@@ -36,7 +36,6 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -75,6 +74,7 @@ import com.v2tech.vo.VMessageTextItem;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
 import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
@@ -91,7 +91,7 @@ public class MainPresenter extends BasePresenter implements
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
-		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener {
+		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener, MessageMarqueeLayoutListener {
 
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -129,6 +129,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int VIDEO_P2P_SHOW = 1 << 15;
 	private static final int AUDIO_P2P_SHOW = 1 << 16;
 	private static final int PROGRESS_DIALOG_SOWN = 1 << 17;
+	public static final int MESSAGE_MARQUEE_LY_SHOW = 1 << 18;
 
 	private static final int SELF_LOCATION = 1;
 	private static final int LIVER_LOCATION = 1 << 1;
@@ -172,7 +173,7 @@ public class MainPresenter extends BasePresenter implements
 		lives = new LongSparseArray<Live>();
 		videoScreenState = (VIDEO_SCREEN_BTN_FLAG | VIDEO_BOTTOM_LY_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG | BOTTOM_LAYOUT_SHOW
-				| MESSAGE_MARQUEE_ENABLE | VIDEO_SHARE_BTN_SHOW);
+				| MESSAGE_MARQUEE_ENABLE | VIDEO_SHARE_BTN_SHOW | MESSAGE_MARQUEE_LY_SHOW);
 
 		currentMapCenter = new LocationWrapper();
 		currentLocation = new LocationWrapper();
@@ -242,6 +243,8 @@ public class MainPresenter extends BasePresenter implements
 		public void showConnectRequestLayout(boolean flag);
 
 		public void showMarqueeMessage(boolean flag);
+		
+		public void closeVideo(boolean flag);
 
 		public void doFinish();
 
@@ -302,32 +305,6 @@ public class MainPresenter extends BasePresenter implements
 		searchMap(text);
 	}
 
-	public void videoScreenClicked() {
-
-		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
-			ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG, true);
-		} else {
-			ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG, false);
-		}
-
-		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
-			ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG, true);
-		} else {
-			ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG, false);
-		}
-
-		if ((videoScreenState & FOLLOW_COUNT_SHOW_FLAG) == FOLLOW_COUNT_SHOW_FLAG) {
-			ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG, true);
-		} else {
-			ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG, false);
-		}
-
-		if ((videoScreenState & LIVER_SHOW_FLAG) == LIVER_SHOW_FLAG) {
-			ui.showVideoScreentItem(LIVER_SHOW_FLAG, true);
-		} else {
-			ui.showVideoScreentItem(LIVER_SHOW_FLAG, false);
-		}
-	}
 
 	public void videoShareButtonClicked() {
 		if (isState(PUBLISHING_FLAG)) {
@@ -606,8 +583,27 @@ public class MainPresenter extends BasePresenter implements
 		} else {
 			setState(VIDEO_BOTTOM_LY_FLAG);
 		}
-
-		videoScreenClicked();
+		if (isState(FOLLOW_COUNT_SHOW_FLAG)) {
+			unsetState(FOLLOW_COUNT_SHOW_FLAG);
+		} else {
+			setState(FOLLOW_COUNT_SHOW_FLAG);
+		}
+		
+		if (isState(LIVER_SHOW_FLAG)) {
+			unsetState(LIVER_SHOW_FLAG);
+		} else {
+			setState(LIVER_SHOW_FLAG);
+		}
+		if (isState(MESSAGE_MARQUEE_LY_SHOW)) {
+			unsetState(MESSAGE_MARQUEE_LY_SHOW);
+		} else {
+			setState(MESSAGE_MARQUEE_LY_SHOW);
+		}
+		ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG, isState(VIDEO_SCREEN_BTN_FLAG));
+		ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG, isState(VIDEO_BOTTOM_LY_FLAG));
+		ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG, isState(FOLLOW_COUNT_SHOW_FLAG));
+		ui.showVideoScreentItem(LIVER_SHOW_FLAG, isState(LIVER_SHOW_FLAG));
+		ui.showVideoScreentItem(MESSAGE_MARQUEE_LY_SHOW, isState(MESSAGE_MARQUEE_LY_SHOW));
 
 	}
 
@@ -664,15 +660,11 @@ public class MainPresenter extends BasePresenter implements
 	// //////////////VideoWatcherListLayoutListener
 
 	@Override
-	public void onMarqueeBtnClicked(View v) {
-		if (isState(MESSAGE_MARQUEE_ENABLE)) {
-			this.unsetState(MESSAGE_MARQUEE_ENABLE);
-			ui.showMarqueeMessage(false);
-		} else {
-			this.setState(MESSAGE_MARQUEE_ENABLE);
-			ui.showMarqueeMessage(true);
-		}
+	public void onCloseBtnClicked(View v) {
+		ui.closeVideo(true);
+		//FIXME close video btn
 	}
+	
 
 	@Override
 	public void onLiveInfoTipsBtnClicked(View v) {
@@ -698,7 +690,23 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	// //////////////////LiveInformationLayoutListener
-
+	
+	
+	// //////////////////MessageMarqueeLayoutListener
+	@Override
+	public void onMessageSettingBtnClicked(View v) {
+		if (isState(MESSAGE_MARQUEE_ENABLE)) {
+			this.unsetState(MESSAGE_MARQUEE_ENABLE);
+			ui.showMarqueeMessage(false);
+		} else {
+			this.setState(MESSAGE_MARQUEE_ENABLE);
+			ui.showMarqueeMessage(true);
+		}
+	}
+	// //////////////////MessageMarqueeLayoutListener
+	
+	
+	
 	// //////////////////VideoWatcherListLayoutListener
 	@Override
 	public void onPublisherBtnClicked(View v) {

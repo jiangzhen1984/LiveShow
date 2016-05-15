@@ -5,38 +5,57 @@ import java.util.Queue;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.v2tech.v2liveshow.R;
 
 public class MessageMarqueeLinearLayout extends LinearLayout {
 
 	private static final String IDLE = "IDLE";
-	
+
 	private static final String BUSY = "BUSY";
+
+	private ImageView settingBtn;
+	private LinearLayout messagePoll;
 
 	private int mMaxLines = 1;
 
 	private TextView[] messagesText = new TextView[3];
 	private Animation[] anmations = new Animation[3];
-	private Queue<String> pendingMsgQueue = new LinkedList<String>(); 
+	private Queue<String> pendingMsgQueue = new LinkedList<String>();
+
+	private MessageMarqueeLayoutListener listener;
 
 	public MessageMarqueeLinearLayout(Context context) {
 		super(context);
-		init();
 	}
 
 	public MessageMarqueeLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
 	}
 
 	public MessageMarqueeLinearLayout(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+	}
+
+	@Override
+	public void addView(View child, int index,
+			android.view.ViewGroup.LayoutParams params) {
+		super.addView(child, index, params);
+		if (child.getId() == R.id.message_marquee_setting_btn) {
+			settingBtn = (ImageView) child;
+			settingBtn.setOnClickListener(clickListener);
+		} else if (child.getId() == R.id.message_pool) {
+			messagePoll = (LinearLayout) child;
+			init();
+		}
 	}
 
 	private void init() {
@@ -44,22 +63,19 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 		LinearLayout.LayoutParams ll0 = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
-		ll0.topMargin = 35;
-		this.addView(messagesText[0], ll0);
+		messagePoll.addView(messagesText[0], ll0);
 
 		messagesText[1] = new TextView(getContext());
 		LinearLayout.LayoutParams ll1 = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
-		ll1.topMargin = 15;
-		this.addView(messagesText[1], ll1);
+		messagePoll.addView(messagesText[1], ll1);
 
 		messagesText[2] = new TextView(getContext());
 		LinearLayout.LayoutParams ll2 = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
-		ll2.topMargin = 15;
-		this.addView(messagesText[2], ll2);
+		messagePoll.addView(messagesText[2], ll2);
 
 	}
 
@@ -75,6 +91,12 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 		}
 
 		pendingMsgQueue.add(msg);
+	}
+
+	public void updateMessageShow(boolean flag) {
+		settingBtn.setImageResource(flag ? R.drawable.message_marquee_enable
+				: R.drawable.message_marquee_disable);
+		messagePoll.setVisibility(flag ? View.VISIBLE : View.GONE);
 	}
 
 	private void startMessageAni(final int index) {
@@ -106,20 +128,13 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 				}
 
 			});
-			
+
 			anmations[index] = ani;
 
 		}
 		messagesText[index].startAnimation(ani);
 	}
 
-	@Override
-	public boolean performClick() {
-		return false;
-	}
-	
-	
-	
 	private boolean firePendingMsg() {
 		String pendingMsg = pendingMsgQueue.poll();
 		if (pendingMsg == null) {
@@ -135,23 +150,52 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 			}
 		}
 
-		
 		return false;
 	}
-	
-	
-	
+
 	public void clearPendingMsg() {
 		pendingMsgQueue.clear();
-		
+
 		for (int i = 0; i < mMaxLines; i++) {
 			if (anmations[i] != null) {
 				anmations[i].cancel();
 			}
-			
+
 		}
 
 	}
 	
+	
+
+	public MessageMarqueeLayoutListener getListener() {
+		return listener;
+	}
+
+	public void setListener(MessageMarqueeLayoutListener listener) {
+		this.listener = listener;
+	}
+
+
+
+	private View.OnClickListener clickListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (listener == null) {
+				return;
+			}
+			switch (v.getId()) {
+			case R.id.message_marquee_setting_btn:
+				listener.onMessageSettingBtnClicked(v);
+				break;
+			}
+
+		}
+
+	};
+
+	public interface MessageMarqueeLayoutListener {
+		public void onMessageSettingBtnClicked(View v);
+	}
 
 }

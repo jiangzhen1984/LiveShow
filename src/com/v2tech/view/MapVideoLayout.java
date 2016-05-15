@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
@@ -37,6 +36,7 @@ import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
+import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
 import com.v2tech.widget.P2PAudioWatcherLayout;
 import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
@@ -146,9 +146,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 
 		mBaiduMap = mMapView.getMap();
 
-		mMsgLayout = new MessageMarqueeLinearLayout(getContext());
-		mMsgLayout.setOrientation(LinearLayout.VERTICAL);
-		mMsgLayout.setBackgroundColor(Color.TRANSPARENT);
+		
+		mMsgLayout = (MessageMarqueeLinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.message_marquee_layout, null);
 		
 		
 		mNotificaionShare = new CameraShape(getContext());
@@ -183,7 +182,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		this.addView(lierInteractionLayout, 3, generateDefaultLayoutParams());
 		this.addView(p2pVideoLayout, 4, generateDefaultLayoutParams());
 		this.addView(p2pAudioWatcherLayout, 5, generateDefaultLayoutParams());
-		this.addView(mMsgLayout, 6, generateDefaultLayoutParams());
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		lp.topMargin = 10;
+		this.addView(mMsgLayout, 6, lp);
 		this.addView(mNotificaionShare, 7, generateDefaultLayoutParams());
 		this.addView(liveInformationLayout, 8,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 		this.addView(liveWatcherLayout, 9,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -563,9 +564,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		this.p2pVideoLayout.setListener(listener);
 	}
 	
+	public void setMessageMarqueeLayoutListener(MessageMarqueeLayoutListener listener) {
+		this.mMsgLayout.setListener(listener);
+	}
+	
+	public void showMarqueeMessageLayout(boolean flag) {
+		mMsgLayout.setVisibility(flag? View.VISIBLE : View.GONE);
+	}
 	public void showMarqueeMessage(boolean flag) {
-		mMsgLayout.setVisibility(flag?View.VISIBLE:View.GONE);
-		liveInformationLayout.enableLiveMessage(flag);
+		mMsgLayout.updateMessageShow(flag);
 	}
 	
 	
@@ -726,6 +733,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 	private void doTouchUp(MotionEvent ev) {
+		mLastX = ev.getRawX();
+		mLastY = ev.getRawY();
+		
+		mAbsDisX = mLastX- mInitX;
+		mAbsDisY = mLastY- mInitY;
+		
 		mOper = Operation.NONE;
         // A fling must travel the minimum tap distance
         final VelocityTracker velocityTracker = mVelocityTracker;
@@ -737,8 +750,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
         	tap = true;
         }
       
-        if (tap && mAbsDisX < mTouchSlop && mAbsDisY < mTouchSlop) {
-        	doVideoScreenTap();
+        if (tap && Math.abs(mAbsDisX) < mTouchSlop && Math.abs(mAbsDisY) < mTouchSlop) {
+        		doVideoScreenTap();
         } else {
 			if (mDragDir == DragDirection.VERTICAL) {
 				if (mDragType == DragType.SHARE) {
@@ -852,7 +865,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			mNotificaionShare.layout(left, mTouchSlop + dis, right, CAMEA_SHAPE_HEIGHT + dis);
 		}
 
-		mMsgLayout.layout(left, realTop, right, realBottom);
+		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
+		mMsgLayout.layout(left, realTop + lp.topMargin, right, realTop + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		mDragLayout.layout(left, realTop, right, realBottom);
 		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);

@@ -87,6 +87,7 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
 		mMapVideoLayout.setVideoWatcherListLayoutListener(presenter);
 		mMapVideoLayout.setP2PVideoMainLayoutListener(presenter);
+		mMapVideoLayout.setMessageMarqueeLayoutListener(presenter);
 		
 		mBaiduMap = mMapVideoLayout.getMap();
 		mMapView = mMapVideoLayout.getMapView();
@@ -320,6 +321,8 @@ public class MainActivity extends FragmentActivity implements
 			this.mMapVideoLayout.showVideoBtnLy(showFlag);
 		} else if(tag == MainPresenter.VIDEO_BOTTOM_LY_FLAG) {
 			this.mMapVideoLayout.showVideoWatcherListLy(showFlag);
+		} else if (tag == MainPresenter.MESSAGE_MARQUEE_LY_SHOW) {
+			this.mMapVideoLayout.showMarqueeMessageLayout(showFlag);
 		}
 		
 	}
@@ -628,6 +631,11 @@ public class MainActivity extends FragmentActivity implements
 	
 	public BaiduMap getWatcherMapInstance() {
 		return this.videoShareLayout.getWatcherMapInstance();
+	}
+	
+	//FIXME close BTN
+	public void closeVideo(boolean flag) {
+		
 	}
 	
 	/////////////////////////////////////////////////////////////
