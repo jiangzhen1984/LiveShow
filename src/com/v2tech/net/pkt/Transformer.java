@@ -4,7 +4,7 @@ public interface Transformer<F, T> {
 
 	public T serialize(F f);
 
-	public F unserializeFromStr(T t);
+	public F unserialize(T t);
 	
 	
 }

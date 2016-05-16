@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.PagerAdapter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -75,7 +76,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private MapView mMapView;
 	private BaiduMap mBaiduMap;
 	private CircleViewPager mVideoShowPager;
-	private VideoShowFragmentAdapter mViewPagerAdapter;
+	private PagerAdapter mViewPagerAdapter;
 	private CameraShape mNotificaionShare;
 	private MessageMarqueeLinearLayout mMsgLayout;
 	private RelativeLayout mDragLayout;
@@ -224,25 +225,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	public VideoOpt addNewVideoWindow(final Live l) {
-		final VideoShowFragment videoFragment = (VideoShowFragment)mViewPagerAdapter.createFragment();
-		videoFragment.setStateListener(new VideoShowFragment.VideoFragmentStateListener() {
-
-			@Override
-			public void onInited() {
-				//videoFragment.play(l);
-				
-			}
-
-			@Override
-			public void onUnInited() {
-				
-			}
-			
-		});
-		
-		mViewPagerAdapter.notifyDataSetChanged();
-		mVideoShowPager.setCurrentItem(mViewPagerAdapter.getCount() - 1 , false);
-
 		return null;
 	}
 	
@@ -264,9 +246,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			V2Log.i(TAG, " change new position:" + position);
 		}
 		if (mVideoChangedListener != null) {
-			mVideoChangedListener
-					.onChanged((VideoShowFragment) mViewPagerAdapter
-							.getItem(position));
+//			mVideoChangedListener
+//					.onChanged((VideoShowFragment) mViewPagerAdapter
+//							.getItem(position));
 		}
 	}
 
@@ -285,14 +267,14 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		}
 		//reset mOffsetTop for layout. because baidu map always request layout
 		mOffsetTop = 0;
-		mViewPagerAdapter.removeItem(item);
+	//	mViewPagerAdapter.removeItem(item);
 		mViewPagerAdapter.notifyDataSetChanged();
 		
 //		//Notify parent to update item
 		if (mVideoChangedListener != null) {
-			mVideoChangedListener
-					.onChanged((VideoShowFragment) mViewPagerAdapter
-							.getItem(mVideoShowPager.getCurrentItem()));
+//			mVideoChangedListener
+//					.onChanged((VideoShowFragment) mViewPagerAdapter
+//							.getItem(mVideoShowPager.getCurrentItem()));
 		}
 	}
 
@@ -310,8 +292,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 
 	public VideoShowFragment getCurrentVideoFragment() {
-		return (VideoShowFragment) mViewPagerAdapter
-				.getItem(this.mVideoShowPager.getCurrentItem());
+//		return (VideoShowFragment) mViewPagerAdapter
+//				.getItem(this.mVideoShowPager.getCurrentItem());
+		return null;
 	}
 
 	@Override
@@ -354,12 +337,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	
-	private float mInitX;
-	private float mInitY;
-	private float mLastY;
-	private float mLastX;
-	private float mAbsDisX;
-	private float mAbsDisY;
+	private int mInitX;
+	private int mInitY;
+	private int mLastY;
+	private int mLastX;
+	private int mAbsDisX;
+	private int mAbsDisY;
 
 	public void requestUpFlying() {
 		mDragType = DragType.RESTORE;
@@ -652,8 +635,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mVideoShowPager.beginFakeDrag();
 		mCurrentPage = mVideoShowPager.getCurrentItem();
 
-		mInitX = ev.getRawX();
-		mInitY = ev.getRawY();
+		mInitX = (int)ev.getRawX();
+		mInitY = (int)ev.getRawY();
 		mLastX = mInitX;
 		mLastY = mInitY;
 		
@@ -662,12 +645,13 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 	private void doTouchMove(MotionEvent ev) {
-		mMapView.clearFocus();
 		mOper = Operation.DRAGING;
-		float offsetX = ev.getRawX() - mInitX;
-		float offsetY = ev.getRawY() - mInitY;
-		float dy =  ev.getRawY() - mLastY;
-		float dx =  ev.getRawX() - mLastX;
+		int rawX = (int)ev.getRawX();
+		int rawY = (int)ev.getRawY();
+		int offsetX = rawX - mInitX;
+		int offsetY = rawY - mInitY;
+		int dy =  rawY - mLastY;
+		int dx =  rawX - mLastX;
 		
 		
 		if (mDragDir == DragDirection.NONE) {
@@ -724,8 +708,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			mVideoShowPager.fakeDragBy(dx);
 		}
 
-		mLastX = ev.getRawX();
-		mLastY = ev.getRawY();
+		mLastX = rawX;
+		mLastY = rawY;
 		
 		mAbsDisX = mLastX- mInitX;
 		mAbsDisY = mLastY- mInitY;
@@ -733,8 +717,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 	private void doTouchUp(MotionEvent ev) {
-		mLastX = ev.getRawX();
-		mLastY = ev.getRawY();
+		mLastX = (int)ev.getRawX();
+		mLastY = (int)ev.getRawY();
 		
 		mAbsDisX = mLastX- mInitX;
 		mAbsDisY = mLastY- mInitY;
@@ -756,14 +740,11 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			if (mDragDir == DragDirection.VERTICAL) {
 				if (mDragType == DragType.SHARE) {
 					Flying fl = new Flying();
-					if (fireFlyingdown) {
-						if (mPosInterface != null) {
-							mPosInterface.onPreparedFlyingOut();
-						}
-						fl.startFlying(mDefaultVelocity);
-					} else {
-						fl.startFlying(-mDefaultVelocity);
-					}
+					if (fireFlyingdown && mPosInterface != null) {
+						mPosInterface.onPreparedFlyingOut();
+					} 
+					
+					fl.startFlying(fireFlyingdown ? mDefaultVelocity : -mDefaultVelocity);
 					
 				} else if (mDragType == DragType.REMOVE) {
 					mVideoShowPager.endFakeDrag();

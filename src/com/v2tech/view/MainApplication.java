@@ -39,7 +39,7 @@ import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.LogCollectionWorker;
-import com.v2tech.net.lv.PacketTransformer;
+import com.v2tech.net.lv.WebPacketTransform;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
 
@@ -152,8 +152,8 @@ public class MainApplication extends Application {
 		new ConfigRequest().setServerAddress(Constants.SERVER, 5123);
 		
 		
-		DeamonWorker.getInstance().setPacketTransformer(new PacketTransformer());
-		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9999);
+		DeamonWorker.getInstance().setPacketTransformer(new WebPacketTransform());
+		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9996);
 		new LogCollectionWorker().start();
 		
 		

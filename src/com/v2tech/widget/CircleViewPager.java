@@ -332,10 +332,17 @@ public class CircleViewPager extends ViewGroup {
 
 	}
 
+	long t1 = 0;
+	long t2 = 0;
 	public void fakeDragBy(float xOffset) {
 		if (!mDraging) {
 			throw new RuntimeException(" call beginFakeDrag first");
 		}
+		if (t1 > 0) {
+			V2Log.e("===> cost1 :" + (System.currentTimeMillis() - t1));
+		} 
+		t1 = System.currentTimeMillis();
+		 
 		mLastMotionX += xOffset;
 		// Synthesize an event for the VelocityTracker.
 		final long time = SystemClock.uptimeMillis();
@@ -347,6 +354,8 @@ public class CircleViewPager extends ViewGroup {
 		mMoveOffset += xOffset;
 		// requestLayout();
 		doDrag((int) xOffset);
+		t2 = System.currentTimeMillis();
+		V2Log.e("===> cost2 :" + (t2 - t1));
 	}
 
 	public void endFakeDrag() {

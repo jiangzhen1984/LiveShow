@@ -150,7 +150,6 @@ public class VideoShowFragment extends Fragment {
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
 			surface = holder.getSurface();
-			V2Log.d(mIndex+"--->"+"   +"+surface);
 			if (mStateListener != null) {
 				mStateListener.onInited();
 			}
@@ -159,8 +158,6 @@ public class VideoShowFragment extends Fragment {
 		@Override
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
-			surface = holder.getSurface();
-			V2Log.d(mIndex+"--->"+"changed:"   + surface);
 		}
 
 		@Override

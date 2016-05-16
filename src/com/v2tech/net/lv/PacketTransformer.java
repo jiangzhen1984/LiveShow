@@ -55,7 +55,7 @@ public class PacketTransformer implements Transformer<Packet, String> {
 	}
 
 	@Override
-	public Packet unserializeFromStr(String t) {
+	public Packet unserialize(String t) {
 		Pattern pushRex = Pattern.compile("(from=\"pushServer\")");
 		Matcher mat = pushRex.matcher(t);
 		boolean ind = mat.find();

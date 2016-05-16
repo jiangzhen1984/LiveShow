@@ -10,8 +10,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import android.util.Log;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.lv.WebPackage;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
@@ -46,7 +49,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	private int port;
 	private String host;
 
-	private Transformer<Packet, String> packetTransform;
+	private Transformer<Packet, WebPackage.Packet> packetTransform;
 	private NotificationListener callback;
 
 	private Queue<LocalBind> pending;
@@ -92,7 +95,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
-					String data = packetTransform.serialize(lb.req);
+					WebPackage.Packet data = packetTransform.serialize(lb.req);
 					Log.e("DeamonWorker", "write==>" + data);
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
@@ -124,11 +127,11 @@ public class DeamonWorker implements Runnable, NetConnector,
 		} finally {
 			if (st == WorkerState.REQUEST_STOP) {
 				updateConnectionState(ConnectionState.DISCONNECTED);
-			} 
+			}
 			updateWorkerState(WorkerState.STOPPED);
 			group.shutdownGracefully();
 		}
-		
+
 	}
 
 	@Override
@@ -140,7 +143,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		while (cs == ConnectionState.CONNECTING) {
 			did = true;
 			try {
-				synchronized(this) {
+				synchronized (this) {
 					wait(50);
 				}
 			} catch (InterruptedException e) {
@@ -183,9 +186,11 @@ public class DeamonWorker implements Runnable, NetConnector,
 		notifyWorker();
 		synchronized (ll) {
 			try {
-				Log.e("ReaderChannel", Thread.currentThread()+"==>" +ll + "  to wait");
+				Log.e("ReaderChannel", Thread.currentThread() + "==>" + ll
+						+ "  to wait");
 				ll.wait();
-				Log.e("ReaderChannel", Thread.currentThread()+"==>" +ll + "  restore ");
+				Log.e("ReaderChannel", Thread.currentThread() + "==>" + ll
+						+ "  restore ");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -220,12 +225,10 @@ public class DeamonWorker implements Runnable, NetConnector,
 		return cs == ConnectionState.CONNECTED;
 	}
 
-	@Override
-	public void setPacketTransformer(Transformer<Packet, String> transformer) {
+	public void setPacketTransformer(Transformer<Packet, WebPackage.Packet> transformer) {
 		this.packetTransform = transformer;
 	}
-	
-	
+
 	public void setNotificationListener(NotificationListener listener) {
 		this.callback = listener;
 	}
@@ -335,19 +338,20 @@ public class DeamonWorker implements Runnable, NetConnector,
 		IDLE, CONNECTING, CONNECTED, DISCONNECTED, ERROR,
 
 	}
-	
-	
+
 	class ReconnectThread extends Thread {
 
 		@Override
 		public void run() {
 			while (cs != ConnectionState.CONNECTED) {
 				Log.i("ReaderChannel", "try to reconnect====>" + cs);
-				if (st == WorkerState.RUNNING || (deamon != null && deamon.isAlive())) {
-					Log.i("ReaderChannel", "try to disconnect====>" + st +"  "+ deamon);
+				if (st == WorkerState.RUNNING
+						|| (deamon != null && deamon.isAlive())) {
+					Log.i("ReaderChannel", "try to disconnect====>" + st + "  "
+							+ deamon);
 					disconnect();
 					try {
-						synchronized(this) {
+						synchronized (this) {
 							wait(10000);
 						}
 					} catch (InterruptedException e) {
@@ -356,7 +360,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 				}
 				connect(host, port);
 				try {
-					synchronized(this) {
+					synchronized (this) {
 						wait(30000);
 					}
 				} catch (InterruptedException e) {
@@ -364,7 +368,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 				}
 			}
 		}
-		
+
 	}
 
 	class LocalChannel extends ChannelInitializer<SocketChannel> {
@@ -376,41 +380,49 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 		@Override
 		public void initChannel(SocketChannel ch) {
-			ChannelPipeline pipeline = ch.pipeline();
+			ChannelPipeline p = ch.pipeline();
 
-			// Add the text line codec combination first,
-			pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters
-					.lineDelimiter()));
-			pipeline.addLast(DECODER);
-			pipeline.addLast(ENCODER);
-			pipeline.addLast("ping", new IdleStateHandler(0, 10, 0,
-					TimeUnit.SECONDS));
-			// and then business logic.
-			pipeline.addLast(new ReaderChannel());
+			// // Add the text line codec combination first,
+			// pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters
+			// .lineDelimiter()));
+			// pipeline.addLast(DECODER);
+			// pipeline.addLast(ENCODER);
+			// pipeline.addLast("ping", new IdleStateHandler(0, 10, 0,
+			// TimeUnit.SECONDS));
+			// // and then business logic.
+			// pipeline.addLast(new ReaderChannel());
+
+			p.addLast(new ProtobufVarint32FrameDecoder());
+			p.addLast(new ProtobufDecoder(WebPackage.Packet
+					.getDefaultInstance()));
+			p.addLast(new ProtobufVarint32LengthFieldPrepender());
+			p.addLast("ping", new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+
+			p.addLast(new ProtobufEncoder());
+			p.addLast(new ReaderChannel());
 
 		}
 
 	}
 
-	class ReaderChannel extends SimpleChannelInboundHandler<String> {
+	class ReaderChannel extends SimpleChannelInboundHandler<WebPackage.Packet> {
 
 		@Override
-		protected void channelRead0(ChannelHandlerContext ctx, String msg)
+		protected void channelRead0(ChannelHandlerContext ctx, WebPackage.Packet pack)
 				throws Exception {
-			if (msg == null || msg.trim().isEmpty()) {
+			if (pack == null) {
 				return;
 			}
-			Log.i("ReaderChannel", "Read====>" + msg);
 			if (packetTransform != null) {
-				Packet p = packetTransform.unserializeFromStr(msg);
+				Packet p = packetTransform.unserialize(pack);
 				if (p == null) {
 					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
 				Log.i("ReaderChannel", "transform====>packet" + p);
-				if (p instanceof  IndicationPacket) {
+				if (p instanceof IndicationPacket) {
 					if (callback != null) {
-						callback.onNodification((IndicationPacket)p);
+						callback.onNodification((IndicationPacket) p);
 					}
 					return;
 				}
@@ -434,7 +446,12 @@ public class DeamonWorker implements Runnable, NetConnector,
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
 			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
-				ChannelFuture cf = ctx.channel().writeAndFlush("\r\n");
+
+				WebPackage.Packet.Builder packet = WebPackage.Packet
+						.newBuilder();
+				packet.setPacketType(WebPackage.Packet.type.beat);
+
+				ChannelFuture cf = ctx.channel().writeAndFlush(packet.build());
 				cf.sync();
 			}
 		}
