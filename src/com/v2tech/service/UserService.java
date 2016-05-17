@@ -122,8 +122,8 @@ public class UserService extends AbstractHandler {
 	
 	
 	
-	public void logout( MessageListener caller) {
-		DeamonWorker.getInstance().requestAsync(new PacketProxy(new LogoutReqPacket(), null));
+	public void logout(MessageListener caller, boolean forlogin) {
+		DeamonWorker.getInstance().requestAsync(new PacketProxy(new LogoutReqPacket(forlogin), null));
 		ImRequest.getInstance().ImLogout();
 		if (caller != null && caller.getHandler() != null) {
 			Message.obtain(caller.getHandler(), caller.getWhat(), new AsyncResult(caller.getObject(), null)).sendToTarget();

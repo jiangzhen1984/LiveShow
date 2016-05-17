@@ -153,7 +153,7 @@ public class MainApplication extends Application {
 		
 		
 		DeamonWorker.getInstance().setPacketTransformer(new WebPacketTransform());
-		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9996);
+		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9997);
 		new LogCollectionWorker().start();
 		
 		

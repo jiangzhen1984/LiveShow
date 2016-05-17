@@ -112,7 +112,7 @@ public class LoginPresenter extends BasePresenter {
 	private void doLoginInBack() {
 		User u = GlobalHolder.getInstance().getCurrentUser();
 		if (u!= null && u.isNY) {
-			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null));
+			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null), true);
 		}
 		String username = ui.getUserNameText();
 		String code = ui.getCodeText();

@@ -39,7 +39,7 @@ public class SettingPresenter extends BasePresenter {
 	}
 	
 	public void signOutBtnClicked() {
-		us.logout(null);
+		us.logout(null, false);
 		ui.doFinish();
 		//TODO application logout
 	}

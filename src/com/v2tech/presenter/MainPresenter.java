@@ -442,7 +442,7 @@ public class MainPresenter extends BasePresenter implements
 		}
 
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(lw.ll, level);
-		this.ui.getMapInstance().animateMapStatus(u);
+		//this.ui.getMapInstance().animateMapStatus(u);
 
 		if (isState(MAP_CENTER_UPDATE)) {
 			setState(MAP_CENTER_UPDATE);
@@ -1072,10 +1072,10 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void reportLocation() {
-		if (currentLocation != null) {
-			ls.updateGps(currentLocation.ll.latitude,
-					currentLocation.ll.longitude);
-		}
+//		if (currentLocation != null) {
+//			ls.updateGps(currentLocation.ll.latitude,
+//					currentLocation.ll.longitude);
+//		}
 	}
 
 	private void createVideoShareInBack() {

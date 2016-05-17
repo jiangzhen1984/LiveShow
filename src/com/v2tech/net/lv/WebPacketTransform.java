@@ -55,7 +55,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         if("pushServer".equals(from)){
             ind = true;
         }
-        String type = webPackage.getOperateType();
+        String type = webPackage.getMethod();
         if ("login".equalsIgnoreCase(type)) {
             return extraLoginResponse(webPackage);
         } else if ("logout".equalsIgnoreCase(type)) {

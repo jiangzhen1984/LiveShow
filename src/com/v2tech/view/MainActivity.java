@@ -97,7 +97,7 @@ public class MainActivity extends FragmentActivity implements
 				FrameLayout.LayoutParams.MATCH_PARENT);
 		mMainLayout.addView(mMapVideoLayout, fl);
 
-		mBaiduMap.setMyLocationEnabled(true);
+		//mBaiduMap.setMyLocationEnabled(true);
 		
 	}
 	
