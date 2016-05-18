@@ -40,6 +40,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.LogCollectionWorker;
 import com.v2tech.net.lv.WebPacketTransform;
+import com.v2tech.presenter.GlobalActivityManager;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
 
@@ -52,6 +53,7 @@ public class MainApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		this.registerActivityLifecycleCallbacks(GlobalActivityManager.getInstance());
 	}
 
 	
@@ -147,6 +149,11 @@ public class MainApplication extends Application {
 		getApplicationContext().startService(
 				new Intent(getApplicationContext(), JNIService.class));
 
+		
+		// Start deamon service
+				getApplicationContext().startService(
+						new Intent(getApplicationContext(), NotificationService.class));
+
 		initGlobalConfiguration();
 		
 		new ConfigRequest().setServerAddress(Constants.SERVER, 5123);
@@ -175,21 +182,11 @@ public class MainApplication extends Application {
 		this.getApplicationContext().stopService(
 				new Intent(this.getApplicationContext(), JNIService.class));
 		V2Log.d(" terminated");
+		this.unregisterActivityLifecycleCallbacks(GlobalActivityManager.getInstance());
 
 	}
 
-	@Override
-	public void onLowMemory() {
-		super.onLowMemory();
-		V2Log.i("=================== low memeory :");
-	}
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	@Override
-	public void onTrimMemory(int level) {
-		super.onTrimMemory(level);
-		V2Log.i("=================== trim memeory :" + level);
-	}
 
 	private void initGlobalConfiguration() {
 		Configuration conf = getResources().getConfiguration();
@@ -202,13 +199,7 @@ public class MainApplication extends Application {
 	}
 
 	public void requestQuit() {
-		for (int i = 0; i < list.size(); i++) {
-			WeakReference<Activity> w = list.get(i);
-			Object obj = w.get();
-			if (obj != null) {
-				((Activity) obj).finish();
-			}
-		}
+		GlobalActivityManager.getInstance().finishAllActivities();
 
 		Handler h = new Handler();
 		h.postDelayed(new Runnable() {

@@ -59,6 +59,7 @@ public class LoginPresenter extends BasePresenter {
 	
 	@Override
 	public void onUICreated() {
+		super.onUICreated();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 		ui.showKeyboard();
@@ -68,6 +69,7 @@ public class LoginPresenter extends BasePresenter {
 
 	@Override
 	public void onUIDestroyed() {
+		super.onUIDestroyed();
 		us.clearCalledBack();
 		
 	}

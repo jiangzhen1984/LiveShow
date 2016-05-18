@@ -45,10 +45,11 @@ public class SurfaceViewAdapter extends PagerAdapter {
 
 	private SurfaceView createSurfaceView(int index) {
 		SurfaceView mSurfaceView = new SurfaceView(ctx);
-		mSurfaceView.setZOrderOnTop(true);
-	//	mSurfaceView.setZOrderMediaOverlay(true);
+//		mSurfaceView.setZOrderOnTop(true);
+//	//	mSurfaceView.setZOrderMediaOverlay(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
-		mSurfaceView.setTag(index);
+//		mSurfaceView.setTag(index);
+//		mSurfaceView.setWillNotDraw(true);
 		return mSurfaceView;
 	}
 	

@@ -32,6 +32,7 @@ public class PersonelPresenter extends BasePresenter {
 
 	@Override
 	public void onUICreated() {
+		super.onUICreated();
 		ui.updateTitleBar();
 	}
 

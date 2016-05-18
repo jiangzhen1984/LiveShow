@@ -21,7 +21,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class PersonelWalletActivity extends Activity implements OnClickListener, PersonelWalletPresenterUI {
+public class PersonelWalletActivity extends BaseActivity implements OnClickListener, PersonelWalletPresenterUI {
 
 
 

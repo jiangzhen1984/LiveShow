@@ -52,6 +52,7 @@ public class PersonelWalletPresenter extends BasePresenter {
 
 	@Override
 	public void onUICreated() {
+		super.onUICreated();
 		ui.updateTitle();
 	}
 

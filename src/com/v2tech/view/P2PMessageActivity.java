@@ -18,7 +18,7 @@ import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.emoji.EmojiLayoutWidget;
 
-public class P2PMessageActivity extends Activity implements P2PMessagePresenterUI, OnClickListener {
+public class P2PMessageActivity extends BaseActivity implements P2PMessagePresenterUI, OnClickListener {
 
 	private P2PMessagePresenter presenter;
 	

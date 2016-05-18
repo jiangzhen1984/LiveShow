@@ -19,7 +19,10 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +53,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	private String host;
 
 	private Transformer<Packet, WebPackage.Packet> packetTransform;
-	private NotificationListener callback;
+	private List<WeakReference<NotificationListener>> callbacks;
 
 	private Queue<LocalBind> pending;
 	private Queue<LocalBind> waiting;
@@ -69,6 +72,8 @@ public class DeamonWorker implements Runnable, NetConnector,
 		pending = new PriorityBlockingQueue<LocalBind>();
 		waiting = new PriorityBlockingQueue<LocalBind>();
 		tiemoutWatchDog = new TimeoutNotificator(this, waiting);
+		
+		callbacks = new ArrayList<WeakReference<NotificationListener>>(10);
 	}
 
 	public static synchronized DeamonWorker getInstance() {
@@ -229,8 +234,23 @@ public class DeamonWorker implements Runnable, NetConnector,
 		this.packetTransform = transformer;
 	}
 
-	public void setNotificationListener(NotificationListener listener) {
-		this.callback = listener;
+	@Override
+	public void addNotificationListener(NotificationListener listener) {
+		if (listener == null) {
+			throw new RuntimeException(" try to add null listener");
+		}
+		callbacks.add(new WeakReference<NotificationListener>(listener));
+	}
+	
+	@Override
+	public void removeNotificationListener(NotificationListener listener) {
+		int size = callbacks.size();
+		for (int i = 0; i < size; i++) {
+			if (callbacks.get(i).get() == listener) {
+				callbacks.remove(i);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -329,6 +349,17 @@ public class DeamonWorker implements Runnable, NetConnector,
 					(ResponsePacket) req.resp);
 		}
 	}
+	
+	
+	private void sendNotificaiton(IndicationPacket p) {
+		int size = callbacks.size();
+		for (int i = 0; i < size; i++) {
+			NotificationListener listener = callbacks.get(i).get();
+			if (listener != null) {
+				listener.onNodification(p);
+			}
+		}
+	}
 
 	enum WorkerState {
 		NONE, INITIALIZED, RUNNING, REQUEST_STOP, STOPPED;
@@ -421,9 +452,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 				}
 				Log.i("ReaderChannel", "transform====>packet" + p);
 				if (p instanceof IndicationPacket) {
-					if (callback != null) {
-						callback.onNodification((IndicationPacket) p);
-					}
+					sendNotificaiton((IndicationPacket) p);
 					return;
 				}
 				LocalBind lb = findRequestBind((ResponsePacket) p);

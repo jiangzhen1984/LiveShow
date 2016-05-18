@@ -17,6 +17,8 @@ public interface NetConnector {
 	
 	public boolean isConnected();
 	
-	public void setNotificationListener(NotificationListener listener);
+	public void addNotificationListener(NotificationListener listener);
+	
+	public void removeNotificationListener(NotificationListener listener);
 	
 }

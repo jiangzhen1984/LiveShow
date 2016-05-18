@@ -105,35 +105,34 @@ public class CircleViewPager extends ViewGroup {
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		if (mDraging) {
-			return;
-		}
-		int width = r - l;
-		int height = b - t;
+		long l1 = System.currentTimeMillis();
+		V2Log.e("====start onLayout ");
 		int paddingLeft = getPaddingLeft();
 		int paddingTop = getPaddingTop();
-		int paddingRight = getPaddingRight();
-		int paddingBottom = getPaddingBottom();
 		int offsetLeft = paddingLeft;
 		t = 0;
 
+		int cmd = 0;
+		int cpl = 0; 
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
+			cpl = child.getPaddingLeft();
+			cmd = child.getMeasuredWidth();
 			// TODO add layout margin left
-			offsetLeft = child.getPaddingLeft() + (i - mCurrItem)
-					* child.getMeasuredWidth() + mMoveOffset;
+			offsetLeft = cpl + (i - mCurrItem)
+					* cmd + mMoveOffset;
 
 			if (count > 2) {
 				if (mCurrItem == 0) {
 					if (i == count - 1) {
-						offsetLeft = child.getPaddingLeft()
-								+ -child.getMeasuredWidth() + mMoveOffset;
+						offsetLeft = cpl
+								+ -cmd + mMoveOffset;
 					}
 				} else if (mCurrItem == count - 1) {
 					if (i == 0) {
-						offsetLeft = child.getPaddingLeft() + (i + 1)
-								* child.getMeasuredWidth() + mMoveOffset;
+						offsetLeft = cpl + (i + 1)
+								* cmd + mMoveOffset;
 					}
 				}
 			}
@@ -141,16 +140,19 @@ public class CircleViewPager extends ViewGroup {
 			if (DEBUG) {
 				V2Log.d(TAG, "mCurrItem:" + mCurrItem + "   i:" + i
 						+ "  offsetLeft:" + offsetLeft + "   mMoveOffset:"
-						+ mMoveOffset + "  width" + child.getMeasuredWidth()
-						+ "  padding:left:" + child.getPaddingLeft());
+						+ mMoveOffset + "  width" + cmd
+						+ "  padding:left:" + cpl);
 			}
 
 			// TODO fix offsetLeft;
 			child.layout(offsetLeft, t + paddingTop,
-					offsetLeft + child.getMeasuredWidth(), t + paddingTop
+					offsetLeft + cmd, t + paddingTop
 							+ child.getMeasuredHeight());
 
 		}
+		
+		long l2 = System.currentTimeMillis();
+		V2Log.e("====end onLayout " +(l2-l1));
 
 	}
 
@@ -173,7 +175,7 @@ public class CircleViewPager extends ViewGroup {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
+		V2Log.e("====start onMeasure");
 		// For simple implementation, our internal size is always 0.
 		// We depend on the container to specify the layout size of
 		// our view. We can't really know what it is since we will be
@@ -312,7 +314,7 @@ public class CircleViewPager extends ViewGroup {
 
 	public void fakeDragUpBy(int offsetY) {
 		mLastMotionY += offsetY;
-		// Synthesize an event for the VelocityTracker.
+//		// Synthesize an event for the VelocityTracker.
 		final long time = SystemClock.uptimeMillis();
 		final MotionEvent ev = MotionEvent.obtain(mFakeDragBeginTime, time,
 				MotionEvent.ACTION_MOVE, 0, mLastMotionY, 0);
@@ -334,13 +336,10 @@ public class CircleViewPager extends ViewGroup {
 
 	long t1 = 0;
 	long t2 = 0;
-	public void fakeDragBy(float xOffset) {
+	public void fakeDragBy(int xOffset) {
 		if (!mDraging) {
 			throw new RuntimeException(" call beginFakeDrag first");
 		}
-		if (t1 > 0) {
-			V2Log.e("===> cost1 :" + (System.currentTimeMillis() - t1));
-		} 
 		t1 = System.currentTimeMillis();
 		 
 		mLastMotionX += xOffset;
@@ -353,9 +352,9 @@ public class CircleViewPager extends ViewGroup {
 
 		mMoveOffset += xOffset;
 		// requestLayout();
-		doDrag((int) xOffset);
+		doDrag(xOffset);
 		t2 = System.currentTimeMillis();
-		V2Log.e("===> cost2 :" + (t2 - t1));
+		V2Log.e("===> fake drag by cost :" + (t2 - t1));
 	}
 
 	public void endFakeDrag() {
@@ -392,16 +391,16 @@ public class CircleViewPager extends ViewGroup {
 				velocityTracker, 0);
 		View currentView = getChildAt(this.mCurrItem);
 
-		float topPos = currentView.getTop();
+		int topPos = currentView.getTop();
 		float cent = Math.abs(topPos) / (float) getHeight();
 		boolean opposite = false;
 		boolean restore = false;
 		if (cent > 0.15F) {
-			dis = getHeight() - (int) Math.abs(topPos);
+			dis = getHeight() - Math.abs(topPos);
 			opposite = true;
 			restore = false;
 		} else {
-			dis = (int) topPos;
+			dis =  topPos;
 			opposite = false;
 			restore = true;
 		}
@@ -475,10 +474,10 @@ public class CircleViewPager extends ViewGroup {
 	private void endDrag() {
 		mMoveOffset = 0;
 		mLastMotionX = 0;
-		if (mVelocityTracker != null) {
-			mVelocityTracker.recycle();
-			mVelocityTracker = null;
-		}
+//		if (mVelocityTracker != null) {
+//			mVelocityTracker.recycle();
+//			mVelocityTracker = null;
+//		}
 	}
 
 	private void datasetChanged() {

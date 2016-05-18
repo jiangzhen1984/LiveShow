@@ -44,8 +44,8 @@ import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
+import com.v2tech.widget.SurfaceViewAdapter;
 import com.v2tech.widget.VideoShowFragment;
-import com.v2tech.widget.VideoShowFragmentAdapter;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
@@ -131,8 +131,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mVideoShowPager = new CircleViewPager(getContext());
 		mVideoShowPager.setId(0x10000001);
 		mVideoShowPager.setOnPageChangeListener(this);
-		mViewPagerAdapter = new VideoShowFragmentAdapter(
-				((FragmentActivity) getContext()).getSupportFragmentManager(),
+		mViewPagerAdapter = new SurfaceViewAdapter(
+				getContext(),
 				6);
 		mVideoShowPager.setOffscreenPageLimit(6);
 		mVideoShowPager.setAdapter(mViewPagerAdapter);
@@ -144,9 +144,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mapOptions.zoomControlsEnabled(false);
 		mapOptions.rotateGesturesEnabled(true);
 		mMapView = new MapView(getContext(), mapOptions);
-
+//
 		mBaiduMap = mMapView.getMap();
-
 		
 		mMsgLayout = (MessageMarqueeLinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.message_marquee_layout, null);
 		
@@ -190,7 +189,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		this.addView(liveInformationLayout, 8,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 		this.addView(liveWatcherLayout, 9,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(requestConnectLayout, 10, generateDefaultLayoutParams());
-		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -357,7 +355,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	public DragType determinteDragType(int disY, int offsetY, DragDirection dir) {
-		int ret = (int)mAbsDisY + offsetY;
+		int ret = mAbsDisY + offsetY;
 		if (ret < 0) {
 			return DragType.REMOVE;
 		}  else {
@@ -613,19 +611,27 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mVelocityTracker.addMovement(ev);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+			long l1 = System.currentTimeMillis();
 			doTouchDown(ev);
+			long l2 = System.currentTimeMillis();
+			V2Log.e("====> down cost:" + (l2 -l1));
 			break;
 		case MotionEvent.ACTION_MOVE:
+			long l3 = System.currentTimeMillis();
 			doTouchMove(ev);
+			long l4 = System.currentTimeMillis();
+			V2Log.e("====> move cost:" + (l4 -l3));
 			break;
 		case MotionEvent.ACTION_UP:
+			long l5 = System.currentTimeMillis();
 			doTouchUp(ev);
+			long l6 = System.currentTimeMillis();
+			V2Log.e("====> up cost:" + (l6 -l5));
 			break;
 		}
 
 		return true;
 	}
-	
 	
 	
 	private void doTouchDown(MotionEvent ev) {
@@ -652,53 +658,55 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		int offsetY = rawY - mInitY;
 		int dy =  rawY - mLastY;
 		int dx =  rawX - mLastX;
+		int absOffsetY = Math.abs(offsetY);
+		int absDy = Math.abs(dy);
 		
 		
 		if (mDragDir == DragDirection.NONE) {
-			if (Math.abs(dx) > Math.abs(dy) && Math.abs(offsetX) > mTouchSlop) {
+			if (Math.abs(dx) > absDy && Math.abs(offsetX) > mTouchSlop) {
 				mDragDir = DragDirection.HORIZONTAL;
-			} else if (Math.abs(offsetY) > mTouchSlop){
+			} else if (absOffsetY > mTouchSlop){
 				mDragDir = DragDirection.VERTICAL;
 			}
 		}
 
 		if (mDragDir == DragDirection.VERTICAL) {
 			
-			DragType newType = determinteDragType((int)offsetY, (int)dy, mDragDir);
+			DragType newType = determinteDragType(offsetY, dy, mDragDir);
 			if (DEBUG) {
 				V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop);
 			}
 			if (mDragType == DragType.NONE) {
 				mDragType = newType;
-				updateOffset((int) dy);
+				updateOffset(dy);
 			} else if (mDragType != newType) {
 				if (mDragType == DragType.REMOVE) {
-					int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
+					int dis1 = (int)(absDy - absOffsetY);
 					//restore removed offset
 					updateOffset(-removedOffset);
 					mDragType = newType;
 					//update new offset for share
-					updateOffset((int)Math.abs(offsetY) - dis1);
+					updateOffset((int)absOffsetY - dis1);
 					if (DEBUG) {
-						V2Log.d("old remove  dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
+						V2Log.d("old remove  dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
 					}
 				} else if (mDragType == DragType.SHARE) {
-					int dis1 = (int)(Math.abs(dy) - Math.abs(offsetY));
+					int dis1 = (absDy - absOffsetY);
 					updateOffset(-mOffsetTop);
 					mDragType = newType;
-					updateOffset(-(int)Math.abs(offsetY) - dis1);
+					updateOffset(-absOffsetY - dis1);
 					if (DEBUG) {
-						V2Log.d("old share dis1:" + dis1+"   "+-(Math.abs(offsetY) - dis1)+"   abs offset:" +Math.abs(offsetY));
+						V2Log.d("old share dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
 					}
 				}
 			} else {
-				updateOffset((int) dy);
+				updateOffset(dy);
 			}
 			if (mPosInterface != null && mDragType == DragType.SHARE) {
 				mPosInterface.onDrag();
 			}
 			if (mNotificaionShare.getVisibility() == View.GONE 
-					&& Math.abs(offsetY) > mCameraShapeSLop) {
+					&& absOffsetY > mCameraShapeSLop) {
 //				mNotificaionShare.setVisibility(View.VISIBLE);
 //				mNotificaionShare.bringToFront();
 			}

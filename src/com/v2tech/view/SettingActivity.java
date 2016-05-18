@@ -17,7 +17,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class SettingActivity extends Activity implements OnClickListener, SettingPresenterUI {
+public class SettingActivity extends BaseActivity implements OnClickListener, SettingPresenterUI {
 
 
 

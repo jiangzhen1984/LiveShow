@@ -3,19 +3,15 @@ package com.v2tech.presenter;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import v2av.VideoPlayer;
 import v2av.VideoRecorder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.util.LongSparseArray;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
@@ -24,35 +20,17 @@ import android.view.View;
 
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeOption;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.v2tech.net.DeamonWorker;
-import com.v2tech.net.NotificationListener;
-import com.v2tech.net.lv.LivePublishIndPacket;
-import com.v2tech.net.pkt.IndicationPacket;
-import com.v2tech.net.pkt.ResponsePacket;
+import com.v2tech.map.LocationParameter;
+import com.v2tech.map.MapAPI;
+import com.v2tech.map.MapLocation;
+import com.v2tech.map.Marker;
+import com.v2tech.map.MarkerListener;
 import com.v2tech.service.AsyncResult;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.LiveService;
+import com.v2tech.service.LiveStatusHandler;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
@@ -84,14 +62,15 @@ import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
-		OnGetGeoCoderResultListener, BDLocationListener,
+		
 		MapVideoLayout.LayoutPositionChangedListener,
-		BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener,
+		MarkerListener, 
 		MapVideoLayout.OnVideoFragmentChangedListener,
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
-		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener, MessageMarqueeLayoutListener {
+		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,
+		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler {
 
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -103,12 +82,10 @@ public class MainPresenter extends BasePresenter implements
 	private static final int WATCHING_REQUEST_CALLBACK = 9;
 	private static final int ATTEND_LISTENER = 11;
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
-	private static final int MESSAGE_LISTENER = 13;
 	private static final int WATCHER_DEVICE_LISTENER = 14;
 	private static final int WATCHER_LIST = 15;
 
 	private static final int UI_HANDLE_UPDATE_VIDEO_SCREEN = 1;
-	private static final int UI_HANDLE_HANDLE_NEW_MESSAGE = 2;
 	private static final int UI_HANDLE_AUDIO_CALL_TIMEOUT = 3;
 
 	public static final int VIDEO_SCREEN_BTN_FLAG = 1;
@@ -131,12 +108,6 @@ public class MainPresenter extends BasePresenter implements
 	private static final int PROGRESS_DIALOG_SOWN = 1 << 17;
 	public static final int MESSAGE_MARQUEE_LY_SHOW = 1 << 18;
 
-	private static final int SELF_LOCATION = 1;
-	private static final int LIVER_LOCATION = 1 << 1;
-	private static final int RANDOM_LOCATION = 1 << 2;
-	private static final int REQUEST_SELF_LOCATION = 1 << 3;
-	private static final int REQUEST_LIVER_LOCATION = 1 << 4;
-	private static final int REQUEST_RANDOM_LOCATION = 1 << 5;
 
 	private Context context;
 	private MainPresenterUI ui;
@@ -145,22 +116,15 @@ public class MainPresenter extends BasePresenter implements
 	private LiveService ls;
 	private Handler h;
 	private Live currentLive;
-	private LongSparseArray<Live> lives;
 
 	private int videoScreenState;
-	private int locationStatus;
 	private boolean cameraSurfaceViewMeasure = false;
 
-	private LocationWrapper currentLocation;
-	private LocationWrapper currentMapCenter;
-	private LocationWrapper currentLiveLocation;
-	private static float mCurrentZoomLevel = 12F;
+	private MapLocation currentLocation;
 
 	// ///////////////////////////////
-	private GeoCoder mSearch;
-	private BaiduMap mapInstance;
-	private LocationClient locationClient;
-	private boolean locating;
+	private MapAPI mapInstance;
+	
 
 	private Handler uiHandler;
 
@@ -170,35 +134,24 @@ public class MainPresenter extends BasePresenter implements
 		super();
 		this.ui = ui;
 		this.context = context;
-		lives = new LongSparseArray<Live>();
 		videoScreenState = (VIDEO_SCREEN_BTN_FLAG | VIDEO_BOTTOM_LY_FLAG
 				| FOLLOW_COUNT_SHOW_FLAG | BOTTOM_LAYOUT_SHOW
 				| MESSAGE_MARQUEE_ENABLE | VIDEO_SHARE_BTN_SHOW | MESSAGE_MARQUEE_LY_SHOW);
 
-		currentMapCenter = new LocationWrapper();
-		currentLocation = new LocationWrapper();
-
 		uiHandler = new UiHandler(this, ui);
-		// FIXME just for test
-		DeamonWorker.getInstance().setNotificationListener(noListener);
-
 	}
 
 	public interface MainPresenterUI {
+		
+		public MapAPI getMainMap();
 
 		public void showTextKeyboard(boolean flag);
 
 		public void showVideoScreentItem(int tag, boolean showFlag);
 
-		public void resetMapCenter(double lat, double lng, int zoom);
-
 		public void showLoginUI();
 
 		public void showPersonelUI();
-
-		public BaiduMap getMapInstance();
-		
-		
 
 		public void showSearchErrorToast();
 
@@ -223,8 +176,6 @@ public class MainPresenter extends BasePresenter implements
 		public void showError(int flag);
 
 		public void showDebugMsg(String msg);
-
-		public void setCurrentLive(Live l);
 
 		public void queuedMessage(String msg);
 
@@ -270,23 +221,10 @@ public class MainPresenter extends BasePresenter implements
 		public void updateInterfactionFollowBtn(boolean followed);
 		
 		
-		public BaiduMap getWatcherMapInstance();
+		public MapAPI getWatcherMapInstance();
 	}
 
 	public void mapLocationButtonClicked() {
-
-		if ((this.locationStatus & SELF_LOCATION) == SELF_LOCATION) {
-			this.updateMapCenter(this.currentLiveLocation, mCurrentZoomLevel);
-			this.locationStatus |= REQUEST_SELF_LOCATION;
-		} else if ((this.locationStatus & LIVER_LOCATION) == LIVER_LOCATION) {
-			this.updateMapCenter(this.currentLocation, mCurrentZoomLevel);
-			this.locationStatus |= REQUEST_LIVER_LOCATION;
-		} else if ((this.locationStatus & RANDOM_LOCATION) == RANDOM_LOCATION) {
-			this.updateMapCenter(this.currentLocation, mCurrentZoomLevel);
-			this.locationStatus |= REQUEST_SELF_LOCATION;
-		}
-		V2Log.i("===> map location clicked:" + this.locationStatus + "   "
-				+ currentLocation.ll + "  " + currentLiveLocation);
 	}
 
 	public void sendMessageButtonClicked() {
@@ -302,6 +240,7 @@ public class MainPresenter extends BasePresenter implements
 		if (TextUtils.isEmpty(text)) {
 			return;
 		}
+		mapInstance.animationSearch(text);
 		searchMap(text);
 	}
 
@@ -369,20 +308,19 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onUICreated() {
+		super.onUICreated();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}
 
 	@Override
 	public void onUIStarted() {
-		locationClient = startLocationScan();
-		updateLocateState(locationClient, true);
+		startLocationScan();
 	}
 
 	@Override
 	public void onUIStopped() {
-		updateLocateState(locationClient, false);
-		locationClient = null;
+		stopLocate();
 	}
 
 	@Override
@@ -397,100 +335,49 @@ public class MainPresenter extends BasePresenter implements
 	// /////////////////////////////////////////////////////////////////////////////////////////
 
 	private void searchMap(String text) {
-		// FIXME do not use hard code
-		mSearch.geocode(new GeoCodeOption().city("北京").address(text));
+		mapInstance.animationSearch(text);
 	}
 
-	private LocationClient startLocationScan() {
-		LocationClient lc = new LocationClient(context);
-		lc.registerLocationListener(this);
-		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true);// 打开gps
-		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(15000);
-		lc.setLocOption(option);
-		return lc;
-	}
+	private void startLocationScan() {
+		if (mapInstance == null) {
+			h.postDelayed(new Runnable() {
 
-	private void updateLocateState(LocationClient lc, boolean enable) {
-		if (lc == null) {
+				@Override
+				public void run() {
+					mapInstance.startLocate(mapInstance.buildParameter(context));
+					
+				}
+				
+			}, 500);
 			return;
+		} else {
+			mapInstance.startLocate(mapInstance.buildParameter(context));
 		}
-		if (enable && !locating) {
-			locating = true;
-			lc.start();
-		} else if (!enable && locating) {
-			locating = false;
-			lc.stop();
-		}
+		
 	}
 
-	private boolean prepreUpdateMap() {
-		if (isState(LIVER_SHOW_FLAG) || isState(PUBLISHING_FLAG)) {
-			return false;
-		}
-
-		if (isState(MAP_CENTER_UPDATE)) {
-			return false;
-		}
-		return true;
+	private void stopLocate() {
+		mapInstance.stopLocate(null);
 	}
 
-	private void updateMapCenter(LocationWrapper lw, float level) {
+	private void updateMapCenter(MapLocation lw, LocationParameter param) {
 		if (lw == null) {
 			return;
 		}
 
-		MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(lw.ll, level);
-		//this.ui.getMapInstance().animateMapStatus(u);
+		this.mapInstance.updateMap(mapInstance.buildUpater(lw));
 
 		if (isState(MAP_CENTER_UPDATE)) {
 			setState(MAP_CENTER_UPDATE);
 		}
 	}
 
-	// ////////////////////// OnGetGeoCoderResultListener
-	@Override
-	public void onGetGeoCodeResult(GeoCodeResult result) {
-		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-			ui.showSearchErrorToast();
-			return;
-		}
-		mapInstance.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-				.getLocation()));
 
-		if (prepreUpdateMap()) {
-			this.videoScreenState |= REQUEST_RANDOM_LOCATION;
-			updateMapCenter(new LocationWrapper(result.getLocation()),
-					mCurrentZoomLevel);
-		}
 
-	}
+	// /////////////////MarkerListener
 
 	@Override
-	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult res) {
-
-	}
-
-	// /////////////////BDLocationListener
-	@Override
-	public void onReceiveLocation(BDLocation location) {
-		LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-
-		currentLocation.ll = ll;
-		if (prepreUpdateMap()) {
-			this.locationStatus |= REQUEST_SELF_LOCATION;
-			updateMapCenter(new LocationWrapper(ll), mCurrentZoomLevel);
-		}
-
-		Message.obtain(h, REPORT_LOCATION).sendToTarget();
-
-	}
-
-	// /////////////////BaiduMap.OnMarkerClickListener
-
-	@Override
-	public boolean onMarkerClick(Marker marker) {
+	public boolean onMarkerClickedListener(Marker m) {
 		if (isState(PUBLISHING_FLAG)) {
 			// TODO illegal state
 			return false;
@@ -500,22 +387,28 @@ public class MainPresenter extends BasePresenter implements
 
 			// quit from old
 			vs.requestExitConference(currentLive, null);
+			unsetState(WATCHING_FLAG);
 		}
 
 		// join new one
-		Live l = (Live) marker.getExtraInfo().get("live");
+		Live l = (Live)m.getLive();
 		if (l != null) {
 			vs.requestEnterConference(l, new MessageListener(h,
 					WATCHING_REQUEST_CALLBACK, null));
 			currentLive = l;
 			ui.showDebugMsg(currentLive.getLid() + "");
-			ui.setCurrentLive(l);
 			updateLiveScreen(l);
 		}
 		return true;
 	}
+	
+	@Override
+	public void onLocated(MapLocation lo) {
+		this.updateMapCenter(lo, lo.getParameter());
+	}
 
-	// /////////////BaiduMap.OnMarkerClickListener
+
+	// /////////////MarkerListener
 
 	// //////////////////////////////////LayoutPositionChangedListener////////////////////////
 
@@ -609,53 +502,6 @@ public class MainPresenter extends BasePresenter implements
 
 	// ////////////////////////////////LayoutPositionChangedListener/////////////////
 
-	// /////////////////////BaiduMap.OnMapStatusChangeListener
-
-	@Override
-	public void onMapStatusChange(MapStatus status) {
-	}
-
-	@Override
-	public void onMapStatusChangeFinish(MapStatus status) {
-		if (!isState(MAP_CENTER_UPDATE)) {
-			this.setState(MAP_CENTER_UPDATE);
-		}
-
-		if ((this.locationStatus & REQUEST_SELF_LOCATION) == REQUEST_SELF_LOCATION) {
-			this.locationStatus = 0;
-			this.locationStatus |= SELF_LOCATION;
-		} else if ((this.locationStatus & REQUEST_LIVER_LOCATION) == REQUEST_LIVER_LOCATION) {
-			this.locationStatus = 0;
-			this.locationStatus |= LIVER_LOCATION;
-		} else if ((this.locationStatus & REQUEST_RANDOM_LOCATION) == REQUEST_RANDOM_LOCATION) {
-			this.locationStatus = 0;
-			this.locationStatus |= RANDOM_LOCATION;
-		}
-
-		currentMapCenter.ll = status.target;
-		V2Log.i("new map location status : " + this.locationStatus
-				+ "  center:" + this.currentMapCenter.ll);
-		if (!h.hasMessages(SEARCH_LIVE)) {
-			V2Log.i("send delay message for search live ");
-			Message m = Message.obtain(h, SEARCH_LIVE);
-			h.sendMessageDelayed(m, 200);
-		}
-
-	}
-
-	@Override
-	public void onMapStatusChangeStart(MapStatus status) {
-		if ((this.locationStatus & REQUEST_SELF_LOCATION) == REQUEST_SELF_LOCATION) {
-			return;
-		} else if ((this.locationStatus & REQUEST_LIVER_LOCATION) == REQUEST_LIVER_LOCATION) {
-			return;
-		} else {
-			// For handle when user drag map directly
-			this.locationStatus |= REQUEST_RANDOM_LOCATION;
-		}
-	}
-
-	// //////////////////BaiduMap.OnMapStatusChangeListener
 
 	// //////////////VideoWatcherListLayoutListener
 
@@ -784,8 +630,8 @@ public class MainPresenter extends BasePresenter implements
 			ui.showP2PVideoLayout(true);
 			User u = GlobalHolder.getInstance().getUser(requestUid);
 			if (u.ll == null || u.ll.size() <= 0) {
-				return;
 				// TODO
+				return;
 			}
 			UserDeviceConfig udc = u.ll.iterator().next();
 			udc.setGroupID(this.currentLive.getLid());
@@ -942,13 +788,14 @@ public class MainPresenter extends BasePresenter implements
 		if (!isState(VIDEO_SHARE_BTN_SHOW)) {
 			ui.showVideoshareBtnLayout(true);
 			setState(VIDEO_SHARE_BTN_SHOW);
-			// show map videw
+			// show map view
 			ui.showP2PLiverLayout(false);
 		}
 	}
 
 	// ///////////P2PAudioLiverLayoutListener///////////////////////////////////////////////////
 
+	
 	
 	
 	// ///////////VideoShareBtnLayoutListener///////////////////////////////////////////////////
@@ -974,7 +821,7 @@ public class MainPresenter extends BasePresenter implements
 		if (isState(VIDEO_SHARE_BTN_SHOW)) {
 			ui.showVideoshareBtnLayout(false);
 			unsetState(VIDEO_SHARE_BTN_SHOW);
-			// show map videw
+			// show map view
 			ui.showP2PLiverLayout(true);
 			
 			//TODO add watcher list marker to map
@@ -985,6 +832,116 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	// ///////////VideoShareBtnLayoutListener///////////////////////////////////////////////////
+	
+	
+	
+	// ///////////LiveStatusHandler///////////////////////////////////////////////////
+	
+	public void handleNewLivePushlishment(Live l) {
+		addLiveMarker(l);
+	}
+	
+	
+	public void handleLiveFinished(Live l) {
+		
+	}
+	
+	// ///////////LiveStatusHandler///////////////////////////////////////////////////
+	
+	
+	
+	// ///////////LiveMessageHandler///////////////////////////////////////////////////
+	
+    public void onAudioMessage(long liveId, long uid, int opt) {
+    	if (isState(AUDIO_CALL_REQUEST_SHOW)
+				|| isState(VIDEO_CALL_REQUEST_SHOW)) {
+			return;
+		}
+    	
+    	if (opt == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
+			requestUid = uid;
+			this.videoScreenState |= AUDIO_CALL_REQUEST_SHOW;
+			ui.updateConnectLayoutBtnType(AUDIO_CALL_REQUEST_SHOW);
+			ui.showConnectRequestLayout(true);
+		}  else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
+			uiHandler.removeMessages(UI_HANDLE_AUDIO_CALL_TIMEOUT);
+			ui.showProgressDialog(false, null);
+			ui.showWatcherP2PAudioLayout(true);
+		} else if (opt == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
+			ui.showWatcherP2PAudioLayout(false);
+		} else if (opt == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
+			
+		}
+			
+    }
+	
+	
+	public void onVdideoMessage(long liveId, long uid, int opt) {
+		if (isState(AUDIO_CALL_REQUEST_SHOW)
+				|| isState(VIDEO_CALL_REQUEST_SHOW)) {
+			return;
+		}
+		if (opt == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
+			requestUid = uid;
+			this.videoScreenState |= VIDEO_CALL_REQUEST_SHOW;
+			ui.updateConnectLayoutBtnType(VIDEO_CALL_REQUEST_SHOW);
+			ui.showConnectRequestLayout(true);
+		} else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
+			ui.showWatcherP2PVideoLayout(true);
+			UserDeviceConfig duc = new UserDeviceConfig(4,
+					this.currentLive.getLid(), GlobalHolder.getInstance()
+							.getCurrentUserId(), "", null);
+			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
+			VideoRecorder.VideoPreviewSurfaceHolder = ui
+					.getP2PMainWatherSurface().getHolder();
+			VideoRecorder.VideoPreviewSurfaceHolder
+					.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+			ui.showBottomLayout(false);
+			unsetState(BOTTOM_LAYOUT_SHOW);
+			vs.requestOpenVideoDevice(duc, null);
+		} else if (opt == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
+			ui.showWatcherP2PVideoLayout(false);
+			if (uid != currentLive.getPublisher().getmUserId()) {
+				// close local device
+				UserDeviceConfig duc = new UserDeviceConfig(4,
+						this.currentLive.getLid(), GlobalHolder
+								.getInstance().getCurrentUserId(), "", null);
+				vs.requestCloseVideoDevice(duc, null);
+			} else {
+				// close remote device
+				VideoPlayer vp = new VideoPlayer();
+				vp.SetSurface(ui.getP2PMainSurface().getHolder());
+				UserDeviceConfig duc = new UserDeviceConfig(0,
+						this.currentLive.getLid(), uid, GlobalHolder
+								.getInstance().getUser(uid).ll.iterator()
+								.next().getDeviceID(), vp);
+				vs.requestCloseVideoDevice(duc, null);
+
+			}
+		} else if (opt == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
+			
+		}
+	}
+	
+	
+	public void onLiveMessage(long liveId, long uid, MessageInd ind) {
+		if (!isState(WATCHING_FLAG) && liveId != currentLive.getLid()) {
+			return;
+		}
+		ui.queuedMessage(ind.content);
+	}
+	
+	
+	public void onP2PMessage(long uid, MessageInd ind) {
+		
+	}
+	
+	
+	// ///////////LiveMessageHandler///////////////////////////////////////////////////
+	
+	
+	
 
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();
@@ -1021,7 +978,6 @@ public class MainPresenter extends BasePresenter implements
 		us = new UserService();
 		ls = new LiveService();
 		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
-		vs.registerMessageListener(h, MESSAGE_LISTENER, null);
 		// vs.registerAttendeeDeviceListener(h, WATCHER_DEVICE_LISTENER, null);
 
 		if (GlobalHolder.getInstance().getCurrentUser() == null) {
@@ -1043,14 +999,9 @@ public class MainPresenter extends BasePresenter implements
 					+ GlobalHolder.getInstance().getCurrentUser());
 		}
 
-		mSearch = GeoCoder.newInstance();
-		mSearch.setOnGetGeoCodeResultListener(this);
 
-		mapInstance = ui.getMapInstance();
-		mapInstance.setOnMarkerClickListener(this);
-		mapInstance.setOnMapStatusChangeListener(this);
-		mapInstance.setOnMarkerClickListener(this);
-		updateLocateState(locationClient, true);
+		mapInstance = ui.getMainMap();
+		mapInstance.registerMakerListener(this);
 
 	}
 
@@ -1072,15 +1023,16 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void reportLocation() {
-//		if (currentLocation != null) {
-//			ls.updateGps(currentLocation.ll.latitude,
-//					currentLocation.ll.longitude);
-//		}
+		if (currentLocation != null) {
+			ls.updateGps(currentLocation.getLat(),
+					currentLocation.getLng());
+		}
 	}
 
 	private void createVideoShareInBack() {
+		//TODO if no location how to?
 		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 0,
-				currentLocation.ll.latitude, currentLocation.ll.longitude);
+				currentLocation.getLat(), currentLocation.getLng());
 		vs.createConference(currentLive, new MessageListener(h,
 				CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
@@ -1127,35 +1079,20 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void addLiveMarker(Live live) {
-		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.marker_live);
-		this.lives.append(live.getLid(), live);
-
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("live", live);
-		OverlayOptions oo = new MarkerOptions().icon(online)
-				.position(new LatLng(live.getLat(), live.getLng()))
-				.extraInfo(bundle);
-		this.mapInstance.addOverlay(oo);
+		mapInstance.addMarker(mapInstance.buildMarker(live));
 	}
 	
 	
 	private void addWatcherMarker(Watcher watcher) {
-		BitmapDescriptor online = BitmapDescriptorFactory
-				.fromResource(R.drawable.watcher_location);
-
-		Bundle bundle = new Bundle();
-		OverlayOptions oo = new MarkerOptions().icon(online)
-				.position(new LatLng(watcher.lat, watcher.lng))
-				.extraInfo(bundle);
-		ui.getWatcherMapInstance().addOverlay(oo);
+		mapInstance.addMarker(mapInstance.buildMarker(watcher));
 	}
 
-	boolean pending = true;
+	//waiting for chair man device information
+	private boolean pending = true;
 
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			videoScreenState |= WATCHING_FLAG;
+			setState(WATCHING_FLAG);
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
 			if (this.currentLive.getPublisher() == null) {
 				this.currentLive.setPublisher(new User(rer.getConf()
@@ -1177,7 +1114,6 @@ public class MainPresenter extends BasePresenter implements
 	private void handleAttendDevice(AsyncResult ar) {
 
 		if (pending) {
-			// TODO waiting for chair man device;
 			AttendDeviceIndication adi = (AttendDeviceIndication) ar
 					.getResult();
 			long uid = adi.uid;
@@ -1207,101 +1143,8 @@ public class MainPresenter extends BasePresenter implements
 
 	}
 
-	public void handleNewMessage(MessageInd ind) {
-		if (currentLive == null) {
-			return;
-		}
-		if (ind.lid != currentLive.getLid()) {
-			return;
-		}
 
-		String content = ind.content;
-		Pattern p = Pattern.compile("(@)(t[1-2])(l)(\\d+)(u)(\\d+)(a)(\\d)(@)");
-		Matcher m = p.matcher(content);
-		if (m.find()) {
-			int segIndex = 0;
-			int actIndex = 0;
-			content = m.group();
-			int type = Integer.parseInt(content.substring(2, 3));
-			segIndex = content.indexOf("u");
-			long lid = Long.parseLong(content.substring(4, segIndex));
-			actIndex = content.indexOf("a");
-			long uid = Long
-					.parseLong(content.substring(segIndex + 1, actIndex));
-			int action = Integer.parseInt(content.substring(actIndex + 1,
-					content.length() - 1));
-			handleAudioVideoRequest(type, lid, uid, action);
-		} else {
-			ui.queuedMessage(ind.content);
-		}
-	}
 
-	private void handleAudioVideoRequest(int type, long liveId, long uid,
-			int action) {
-		if (isState(AUDIO_CALL_REQUEST_SHOW)
-				|| isState(VIDEO_CALL_REQUEST_SHOW)) {
-			return;
-		}
-		// action 1 means request
-		if (action == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
-			requestUid = uid;
-			this.videoScreenState |= (type == 1 ? AUDIO_CALL_REQUEST_SHOW
-					: VIDEO_CALL_REQUEST_SHOW);
-			ui.updateConnectLayoutBtnType(type);
-			ui.showConnectRequestLayout(true);
-		} else if (action == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
-			unsetState(LIVER_INTERACTION_LAY_SHOW);
-			ui.showLiverInteractionLayout(false);
-			if (type == VMessageAudioVideoRequestItem.TYPE_VIDEO) {
-
-				ui.showWatcherP2PVideoLayout(true);
-				UserDeviceConfig duc = new UserDeviceConfig(4,
-						this.currentLive.getLid(), GlobalHolder.getInstance()
-								.getCurrentUserId(), "", null);
-				ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
-				VideoRecorder.VideoPreviewSurfaceHolder = ui
-						.getP2PMainWatherSurface().getHolder();
-				VideoRecorder.VideoPreviewSurfaceHolder
-						.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-				ui.showBottomLayout(false);
-				unsetState(BOTTOM_LAYOUT_SHOW);
-				vs.requestOpenVideoDevice(duc, null);
-			} else if (type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
-				uiHandler.removeMessages(UI_HANDLE_AUDIO_CALL_TIMEOUT);
-				ui.showProgressDialog(false, null);
-				ui.showWatcherP2PAudioLayout(true);
-			}
-
-		} else if (action == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
-			if (type == VMessageAudioVideoRequestItem.TYPE_VIDEO) {
-				ui.showWatcherP2PVideoLayout(false);
-				if (uid != currentLive.getPublisher().getmUserId()) {
-					// close local device
-					UserDeviceConfig duc = new UserDeviceConfig(4,
-							this.currentLive.getLid(), GlobalHolder
-									.getInstance().getCurrentUserId(), "", null);
-					vs.requestCloseVideoDevice(duc, null);
-				} else {
-					// close remote device
-					VideoPlayer vp = new VideoPlayer();
-					vp.SetSurface(ui.getP2PMainSurface().getHolder());
-					UserDeviceConfig duc = new UserDeviceConfig(0,
-							this.currentLive.getLid(), uid, GlobalHolder
-									.getInstance().getUser(uid).ll.iterator()
-									.next().getDeviceID(), vp);
-					vs.requestCloseVideoDevice(duc, null);
-
-				}
-			} else if (type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
-				// TODO if need to check liver or watcher?
-				ui.showWatcherP2PAudioLayout(false);
-			}
-
-		} else if (action == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
-			// TODO handle decline
-		}
-	}
 	
 	
 	private void  handleWatcherListRespone(AsyncResult ar) {
@@ -1320,36 +1163,6 @@ public class MainPresenter extends BasePresenter implements
 		ui.showProgressDialog(false, null);
 	}
 
-	private NotificationListener noListener = new NotificationListener() {
-
-		@Override
-		public void onNodification(IndicationPacket ip) {
-			if (ip instanceof LivePublishIndPacket) {
-				LivePublishIndPacket lpip = (LivePublishIndPacket) ip;
-				Live live = new Live(new User(0), lpip.lid, lpip.vid, lpip.lat,
-						lpip.lng);
-				live.getPublisher().nId = lpip.uid;
-				addLiveMarker(live);
-			}
-
-		}
-
-		@Override
-		public void onResponse(ResponsePacket rp) {
-
-		}
-
-		@Override
-		public void onStateChanged() {
-
-		}
-
-		@Override
-		public void onTimeout(ResponsePacket rp) {
-
-		}
-
-	};
 
 	class LocalHandler extends Handler {
 
@@ -1390,12 +1203,6 @@ public class MainPresenter extends BasePresenter implements
 			case ATTEND_LISTENER:
 				handleAttendDevice((AsyncResult) msg.obj);
 				break;
-			case MESSAGE_LISTENER:
-				Message.obtain(uiHandler, UI_HANDLE_HANDLE_NEW_MESSAGE,
-						((MessageInd) (((AsyncResult) msg.obj).getResult())))
-						.sendToTarget();
-				;
-				break;
 			case WATCHER_DEVICE_LISTENER:
 				break;
 			case WATCHER_LIST:
@@ -1409,12 +1216,10 @@ public class MainPresenter extends BasePresenter implements
 	static class UiHandler extends Handler {
 
 		private WeakReference<MainPresenter> pr;
-		private WeakReference<MainPresenterUI> ui;
 
 		public UiHandler(MainPresenter r, MainPresenterUI i) {
 			super();
 			this.pr = new WeakReference<MainPresenter>(r);
-			this.ui = new WeakReference<MainPresenterUI>(i);
 		}
 
 		@Override
@@ -1428,33 +1233,11 @@ public class MainPresenter extends BasePresenter implements
 			case UI_HANDLE_UPDATE_VIDEO_SCREEN:
 				mp.updateLiveScreen((Live) msg.obj);
 				break;
-			case UI_HANDLE_HANDLE_NEW_MESSAGE:
-				mp.handleNewMessage((MessageInd) msg.obj);
-				break;
 			case UI_HANDLE_AUDIO_CALL_TIMEOUT:
 				mp.handleRequestTimeOut();
 				break;
 			}
 		}
-	}
-
-	final class LocationWrapper {
-		LatLng ll;
-
-		public LocationWrapper() {
-			super();
-		}
-
-		public LocationWrapper(LatLng ll) {
-			super();
-			this.ll = ll;
-		}
-
-		public LocationWrapper(LocationWrapper lw) {
-			super();
-			this.ll = lw.ll;
-		}
-
 	}
 
 }

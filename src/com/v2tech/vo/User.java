@@ -3,6 +3,7 @@ package com.v2tech.vo;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import com.v2tech.service.GlobalHolder;
  * 
  */
 
-public class User implements Comparable<User> {
+public class User implements Serializable, Comparable<User> {
 
 	
 	public long nId;

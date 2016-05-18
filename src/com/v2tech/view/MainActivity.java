@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.view.SurfaceView;
 import android.view.View;
@@ -16,15 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.model.LatLng;
+import com.v2tech.map.MapAPI;
+import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.vo.Conference;
-import com.v2tech.vo.Live;
-import com.v2tech.vo.User;
 
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends BaseActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
@@ -39,12 +35,9 @@ public class MainActivity extends FragmentActivity implements
 	private View mLocateButton;
 	private VideoShareLayout videoShareLayout;
 	private MapVideoLayout mMapVideoLayout;
-	private MapView mMapView;
-	private BaiduMap mBaiduMap;
 
 
 	private ImageView mPersonalButton;
-	Conference currentLive;
 
 	
 	MainPresenter presenter;
@@ -81,7 +74,7 @@ public class MainActivity extends FragmentActivity implements
 
 		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setVideoChangedListener(presenter);
-		mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
+		//mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
@@ -89,8 +82,6 @@ public class MainActivity extends FragmentActivity implements
 		mMapVideoLayout.setP2PVideoMainLayoutListener(presenter);
 		mMapVideoLayout.setMessageMarqueeLayoutListener(presenter);
 		
-		mBaiduMap = mMapVideoLayout.getMap();
-		mMapView = mMapVideoLayout.getMapView();
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 				FrameLayout.LayoutParams.MATCH_PARENT,
@@ -180,15 +171,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	//	mLocalHandler.removeMessages(MARKER_ANIMATION);
-		// 退出时销毁定位
-		// 关闭定位图层
-		mBaiduMap.setMyLocationEnabled(false);
-		// activity 销毁时同时销毁地图控件
-		mMapView.onDestroy();
-
 		presenter.onUIDestroyed();
-		
 		((MainApplication)this.getApplication()).requestQuit();
 		
 	}
@@ -216,64 +199,6 @@ public class MainActivity extends FragmentActivity implements
 		super.onConfigurationChanged(newConfig);
 	}
 
-//	private void stopCamera() {
-//		cv.stopPreView();
-//	}
-
-
-//	float initY;
-//	float lastY;
-//	float offsetY;
-//	int mActivePointerId;
-//
-//	private OnTouchListener dragListener = new OnTouchListener() {
-//
-//		@Override
-//		public boolean onTouch(View v, MotionEvent event) {
-//			int action = event.getAction();
-//			switch (action) {
-//			case MotionEvent.ACTION_DOWN:
-//				stopCamera();
-//				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
-//				initY = MotionEventCompat.getY(event, 0);
-//				lastY = initY;
-//				mMapVideoLayout.pauseDrawState(true);
-//				break;
-//			case MotionEvent.ACTION_MOVE:
-//				final int pointerIndex = MotionEventCompat.findPointerIndex(
-//						event, mActivePointerId);
-//				final float y = MotionEventCompat.getY(event, pointerIndex);
-//				final float dy = y - lastY;
-//				mMapVideoLayout.updateOffset((int) dy);
-//				lastY = y;
-//				break;
-//			case MotionEvent.ACTION_UP:
-//				V2Log.d("Start translate");
-//				mMapVideoLayout.requestUpFlying();
-//				break;
-//			}
-//			return true;
-//		}
-//
-//	};
-
-
-
-
-	
-	
-	private MapVideoLayout.OnNotificationClickedListener mOnNotificationClicked = new MapVideoLayout.OnNotificationClickedListener() {
-
-		@Override
-		public void onNotificationClicked(View v, Live live, User u) {
-			mMapVideoLayout.removeLiveNotificaiton(live);
-		}
-		
-	};
-	
-	
-	
-	
 	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,12 +251,12 @@ public class MainActivity extends FragmentActivity implements
 		}
 		
 	}
-
-	@Override
-	public void resetMapCenter(double lat, double lng, int zoom) {
-		// TODO Auto-generated method stub
-		
+	
+	
+	public MapAPI getMainMap() {
+		return new BaiduMapImpl(mMapVideoLayout.getMap());
 	}
+
 
 	@Override
 	public void showLoginUI() {
@@ -354,10 +279,6 @@ public class MainActivity extends FragmentActivity implements
 		return mEditText.getEditableText().toString();
 	}
 
-	@Override
-	public BaiduMap getMapInstance() {
-		return this.mBaiduMap;
-	}
 
 	private Toast last;
 	@Override
@@ -486,9 +407,9 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	
-	public void setCurrentLive(Live l) {
-		mMapVideoLayout.getCurrentVideoFragment().setTag1(l);
-	}
+//	public void setCurrentLive(Live l) {
+//		mMapVideoLayout.getCurrentVideoFragment().setTag1(l);
+//	}
 	
 	
 	public void queuedMessage(final String msg) {
@@ -629,8 +550,8 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	
-	public BaiduMap getWatcherMapInstance() {
-		return this.videoShareLayout.getWatcherMapInstance();
+	public MapAPI getWatcherMapInstance() {
+		return new BaiduMapImpl(this.videoShareLayout.getWatcherMapInstance());
 	}
 	
 	//FIXME close BTN
@@ -642,42 +563,4 @@ public class MainActivity extends FragmentActivity implements
 	
 
 
-
-
-
-	
-
-	class LocationItem {
-		LocationItemType type;
-		LatLng ll;
-
-		public LocationItem(LocationItemType type, LatLng ll) {
-			super();
-			this.type = type;
-			this.ll = ll;
-		}
-
-	}
-
-	class VideoItem {
-		VideoOpt videoOpt;
-		Live live;
-
-		public VideoItem(VideoOpt videoOpt) {
-			this.videoOpt = videoOpt;
-		}
-
-	}
-
-	enum LocationItemType {
-		VIDEO, SELF
-	}
-
-	enum LocalState {
-		DONING, DONE;
-	}
-
-	enum DragDirection {
-		NONE, VERTICAL, HORIZONTAL;
-	}
 }

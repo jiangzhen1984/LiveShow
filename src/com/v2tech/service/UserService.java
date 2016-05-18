@@ -19,6 +19,7 @@ import com.v2tech.net.lv.GetCodeReqPacket;
 import com.v2tech.net.lv.LoginReqPacket;
 import com.v2tech.net.lv.LoginRespPacket;
 import com.v2tech.net.lv.LogoutReqPacket;
+import com.v2tech.net.lv.V2UserIdReportReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse;
@@ -213,6 +214,10 @@ public class UserService extends AbstractHandler {
 			Message m = Message.obtain(handler, JNI_REQUEST_LOG_IN,
 					new RequestLogInResponse(u, res));
 			handler.dispatchMessage(m);
+			//report to user server
+			DeamonWorker.getInstance().requestAsync(
+					new PacketProxy(new V2UserIdReportReqPacket(GlobalHolder
+							.getInstance().getCurrentUserId()), null));
 		}
 
 

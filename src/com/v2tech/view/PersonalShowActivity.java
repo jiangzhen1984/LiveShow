@@ -17,7 +17,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class PersonalShowActivity extends Activity implements OnClickListener,
+public class PersonalShowActivity extends BaseActivity implements OnClickListener,
 		PersonelShowPresenterUI {
 
 	private TextView titleBarName;

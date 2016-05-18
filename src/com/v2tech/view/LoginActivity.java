@@ -20,7 +20,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class LoginActivity extends Activity implements OnClickListener, LoginPresenterUI {
+public class LoginActivity extends BaseActivity implements OnClickListener, LoginPresenterUI {
 
 
 

@@ -215,11 +215,30 @@
 
         <service android:name="com.v2tech.view.JNIService" >
         </service>
+         <service android:name="com.v2tech.view.NotificationService" >
+        </service>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":location" >
         </service>
+        
+        
+        <receiver android:name="com.v2tech.view.ReceiverLiveMessage" >
+            <intent-filter>
+                <action android:name="com.v2tech.notification_action" />
+                <category android:name="com.v2tech" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        
+         <receiver android:name="com.v2tech.view.ReceiverLiveStatus" >
+            <intent-filter>
+                <action android:name="com.v2tech.notification_action" />
+                <category android:name="com.v2tech" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

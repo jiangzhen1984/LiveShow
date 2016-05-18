@@ -22,7 +22,7 @@ public abstract class BasePresenter {
 	}
 
 	public void onUICreated() {
-		
+		GlobalPresenterManager.getInstance().onPresenterCreated(this);
 	}
 	
 	
@@ -44,6 +44,7 @@ public abstract class BasePresenter {
 	
 	public  void onUIDestroyed() {
 		destroyBackendThread();
+		GlobalPresenterManager.getInstance().onPresenterDestroyed(this);
 	}
 	
 	

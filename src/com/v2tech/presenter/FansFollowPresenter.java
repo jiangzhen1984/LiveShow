@@ -31,6 +31,7 @@ public class FansFollowPresenter extends BasePresenter implements InterfactionBt
 
 	@Override
 	public void onUICreated() {
+		super.onUICreated();
 		ui.updateTitleBar();
 		ui.showBox();
 	}

@@ -24,7 +24,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class PersonelVideosActivity extends Activity implements
+public class PersonelVideosActivity extends BaseActivity implements
 		OnClickListener, PersonelVideosPresenterUI, View.OnLongClickListener {
 
 	private TextView mTitleBar;

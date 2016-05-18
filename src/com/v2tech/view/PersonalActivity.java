@@ -18,7 +18,7 @@ import com.v2tech.v2liveshow.R;
  * @author jiangzhen
  * 
  */
-public class PersonalActivity extends Activity implements OnClickListener,
+public class PersonalActivity extends BaseActivity implements OnClickListener,
 		PersonelPresenterUI {
 
 
