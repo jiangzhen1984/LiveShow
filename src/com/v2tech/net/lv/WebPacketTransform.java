@@ -131,6 +131,12 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         lrp.setErrorFlag(!webPackage.getResult().getResult());
 
         if (!lrp.getHeader().isError()) {
+        	if (webPackage.getData().getUserCount() <= 0) {
+        		lrp.getHeader().setError(true);
+        		lrp.getHeader().setErrorCode(-1);
+        		return lrp;
+        	}
+        	
             WebPackage.User userPacket = webPackage.getData().getUser(0);
             lrp.uid = userPacket.getId();
 

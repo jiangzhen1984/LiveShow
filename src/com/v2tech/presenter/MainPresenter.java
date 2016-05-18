@@ -357,7 +357,9 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void stopLocate() {
-		mapInstance.stopLocate(null);
+		if (mapInstance != null) {
+			mapInstance.stopLocate(null);
+		}
 	}
 
 	private void updateMapCenter(MapLocation lw, LocationParameter param) {
@@ -404,7 +406,9 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onLocated(MapLocation lo) {
+		this.currentLocation = lo;
 		this.updateMapCenter(lo, lo.getParameter());
+		reportLocation();
 	}
 
 

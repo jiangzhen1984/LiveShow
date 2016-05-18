@@ -46,7 +46,7 @@ public class LiveService extends AbstractHandler {
 			V2Log.e("Can not update gps, not login yet");
 			return;
 		}
-		DeamonWorker.getInstance().request(
+		DeamonWorker.getInstance().requestAsync(
 				new PacketProxy(new LocationReportReqPacket(GlobalHolder
 						.getInstance().getCurrentUser().nId, lat, lng), null));
 	}
