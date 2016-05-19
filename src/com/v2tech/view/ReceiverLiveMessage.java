@@ -12,7 +12,7 @@ import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.presenter.GlobalPresenterManager;
 import com.v2tech.service.LiveMessageHandler;
-import com.v2tech.vo.VMessageAudioVideoRequestItem;
+import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
 
 public class ReceiverLiveMessage extends BroadcastReceiver {
 

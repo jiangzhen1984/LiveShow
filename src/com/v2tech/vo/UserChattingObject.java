@@ -1,5 +1,7 @@
 package com.v2tech.vo;
 
+import com.v2tech.vo.shape.V2GlobalConstants;
+
 import v2av.VideoPlayer;
 
 public class UserChattingObject {

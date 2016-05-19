@@ -10,8 +10,8 @@ import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestOpenUserVideoDeviceResponse;
 import com.v2tech.service.jni.RequestUpdateCameraParametersResponse;
 import com.v2tech.vo.CameraConfiguration;
-import com.v2tech.vo.Group;
 import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.group.Group;
 
 /**
  * Device function class.

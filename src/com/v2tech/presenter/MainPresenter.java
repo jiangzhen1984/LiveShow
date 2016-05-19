@@ -42,14 +42,15 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MapVideoLayout;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.vo.AttendDeviceIndication;
-import com.v2tech.vo.ConferenceGroup;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
-import com.v2tech.vo.VMessage;
-import com.v2tech.vo.VMessageAudioVideoRequestItem;
-import com.v2tech.vo.VMessageTextItem;
 import com.v2tech.vo.Watcher;
+import com.v2tech.vo.conference.ConferenceGroup;
+import com.v2tech.vo.msg.VMessage;
+import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
+import com.v2tech.vo.msg.VMessageTextItem;
+import com.v2tech.widget.BottomButtonLayout.BottomButtonLayoutListener;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
@@ -64,7 +65,7 @@ import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 public class MainPresenter extends BasePresenter implements
 		
 		MapVideoLayout.LayoutPositionChangedListener,
-		MarkerListener, 
+		MarkerListener, BottomButtonLayoutListener, 
 		MapVideoLayout.OnVideoFragmentChangedListener,
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
@@ -224,26 +225,6 @@ public class MainPresenter extends BasePresenter implements
 		public MapAPI getWatcherMapInstance();
 	}
 
-	public void mapLocationButtonClicked() {
-	}
-
-	public void sendMessageButtonClicked() {
-		String txt = ui.getTextString();
-		if (TextUtils.isEmpty(txt)) {
-			return;
-		}
-		sendMessage(txt);
-	}
-
-	public void mapSearchButtonClicked() {
-		String text = ui.getTextString();
-		if (TextUtils.isEmpty(text)) {
-			return;
-		}
-		mapInstance.animationSearch(text);
-		searchMap(text);
-	}
-
 
 	public void videoShareButtonClicked() {
 		if (isState(PUBLISHING_FLAG)) {
@@ -268,10 +249,6 @@ public class MainPresenter extends BasePresenter implements
 		}
 	}
 
-	public void textClicked() {
-		this.videoScreenState |= KEYBOARD_SHOW;
-		ui.showTextKeyboard(true);
-	}
 
 	public void onKeyboardChildUIFinished(int ret, Intent data) {
 		this.videoScreenState &= (~KEYBOARD_SHOW);
@@ -721,6 +698,8 @@ public class MainPresenter extends BasePresenter implements
 		us.followUser(currentLive.getPublisher(), true);
 		ui.updateInterfactionFollowBtn(true);
 	}
+	
+	
 
 	// ///////////InterfactionBtnClickListener
 
@@ -821,7 +800,7 @@ public class MainPresenter extends BasePresenter implements
 		ui.mapVideoLayoutFlyingIn();
 	}
 
-	public void onMapBtnClicked(View v) {
+	public void onMapShareBtnClicked(View v) {
 		if (isState(VIDEO_SHARE_BTN_SHOW)) {
 			ui.showVideoshareBtnLayout(false);
 			unsetState(VIDEO_SHARE_BTN_SHOW);
@@ -945,7 +924,33 @@ public class MainPresenter extends BasePresenter implements
 	// ///////////LiveMessageHandler///////////////////////////////////////////////////
 	
 	
+	// ///////////BottomButtonLayoutListener///////////////////////////////////////////////////
 	
+	public void onMapSearchBtnClicked(View v) {
+		String text = ui.getTextString();
+		if (TextUtils.isEmpty(text)) {
+			return;
+		}
+		mapInstance.animationSearch(text);
+		searchMap(text);
+	}
+	
+	public void onMessageSendBtnClicked(View v) {
+		String txt = ui.getTextString();
+		if (TextUtils.isEmpty(txt)) {
+			return;
+		}
+		sendMessage(txt);
+	}
+	public void onEditTextClicked(View v) {
+		this.videoScreenState |= KEYBOARD_SHOW;
+		ui.showTextKeyboard(true);
+	}
+	public void onLocationBtnClicked(View v) {
+		
+	}
+	
+	// ///////////BottomButtonLayoutListener///////////////////////////////////////////////////
 
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();

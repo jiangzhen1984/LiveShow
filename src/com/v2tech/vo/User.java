@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import com.V2.jni.util.EscapedcharactersProcessing;
 import com.V2.jni.util.V2Log;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.vo.group.Group;
 
 /**
  * User information

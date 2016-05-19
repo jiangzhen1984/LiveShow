@@ -4,21 +4,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.map.BaiduMap;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.BottomButtonLayout;
 
 public class MainActivity extends BaseActivity implements
 		View.OnClickListener, MainPresenter.MainPresenterUI {
@@ -28,14 +25,11 @@ public class MainActivity extends BaseActivity implements
 	private static final int REQUEST_PERSONAL_ACTIVITY = 102;
 	
 
-	private RelativeLayout mBottomLayout;
 	// private BottomButtonLayout mBottomButtonLayout;
-	private EditText mEditText;
 	private FrameLayout mMainLayout;
-	private View mLocateButton;
 	private VideoShareLayout videoShareLayout;
 	private MapVideoLayout mMapVideoLayout;
-
+	private BottomButtonLayout bottomButtonLayout;
 
 	private ImageView mPersonalButton;
 
@@ -74,7 +68,6 @@ public class MainActivity extends BaseActivity implements
 
 		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setVideoChangedListener(presenter);
-		//mMapVideoLayout.setNotificationClickedListener(mOnNotificationClicked);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
@@ -87,9 +80,6 @@ public class MainActivity extends BaseActivity implements
 				FrameLayout.LayoutParams.MATCH_PARENT,
 				FrameLayout.LayoutParams.MATCH_PARENT);
 		mMainLayout.addView(mMapVideoLayout, fl);
-
-		//mBaiduMap.setMyLocationEnabled(true);
-		
 	}
 	
 	
@@ -101,23 +91,8 @@ public class MainActivity extends BaseActivity implements
 	}
 
 	private void initBottomButtonLayout() {
-		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
-
-		View button = findViewById(R.id.map_button);
-		button.setOnClickListener(this);
-
-		button = findViewById(R.id.msg_button);
-		button.setOnClickListener(this);
-
-		mEditText = (EditText) findViewById(R.id.edit_text);
-		mEditText.setInputType(InputType.TYPE_NULL);
-		mEditText.setFocusable(true);
-		mEditText.setOnClickListener(this);
-
-		mLocateButton = findViewById(R.id.map_locate_button);
-		mLocateButton.setOnClickListener(this);
-		
-
+		bottomButtonLayout = (BottomButtonLayout)findViewById(R.id.bottom_layout);
+		bottomButtonLayout.setListener(presenter);
 	}
 
 	
@@ -134,9 +109,7 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	private void initResetOrder() {
-		mBottomLayout.bringToFront();
 		mPersonalButton.bringToFront();
-		mLocateButton.bringToFront();
 	}
 
 
@@ -212,20 +185,9 @@ public class MainActivity extends BaseActivity implements
 		case R.id.video_share_button:
 			presenter.videoShareButtonClicked();
 			break;
-		case R.id.edit_text:
-			presenter.textClicked();
-			break;
-		case R.id.map_button:
-			presenter.mapSearchButtonClicked();
-			break;
-		case R.id.msg_button:
-			presenter.sendMessageButtonClicked();
-			break;
 		case R.id.title_bar_left_btn:
 			presenter.personelButtonClicked();
 			break;
-		case R.id.map_locate_button:
-			presenter.mapLocationButtonClicked();
 		}
 	}
 
@@ -233,9 +195,8 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	public void showTextKeyboard(boolean flag) {
 		if (flag) {
-		//	mBottomLayout.setVisibility(View.INVISIBLE);
 			Intent i = new Intent();
-			i.setClass(mEditText.getContext(), BottomButtonLayoutActivity.class);
+			i.setClass(getBaseContext(), BottomButtonLayoutActivity.class);
 			startActivityForResult(i, REQUEST_KEYBOARD_ACTIVITY);
 		}
 	}
@@ -254,7 +215,7 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	public MapAPI getMainMap() {
-		return new BaiduMapImpl(mMapVideoLayout.getMap());
+		return mMapVideoLayout.getMap();
 	}
 
 
@@ -276,7 +237,7 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public String getTextString() {
-		return mEditText.getEditableText().toString();
+		return bottomButtonLayout.getEditText().toString();
 	}
 
 
@@ -327,10 +288,7 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public void showBottomLayout(boolean flag) {
-		int vv = flag ? View.VISIBLE : View.GONE;
-		mBottomLayout.setVisibility(vv);
-		mLocateButton.setVisibility(vv);
-		
+		bottomButtonLayout.setVisibility(flag ? View.VISIBLE: View.GONE);
 	}
 
 	

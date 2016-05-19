@@ -36,15 +36,15 @@ import com.v2tech.service.jni.RequestPermissionResponse;
 import com.v2tech.service.jni.RequestUpdateCameraParametersResponse;
 import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.CameraConfiguration;
-import com.v2tech.vo.Conference;
-import com.v2tech.vo.ConferencePermission;
-import com.v2tech.vo.Group;
-import com.v2tech.vo.Group.GroupType;
+import com.v2tech.vo.conference.Conference;
+import com.v2tech.vo.conference.ConferencePermission;
+import com.v2tech.vo.group.Group;
+import com.v2tech.vo.group.Group.GroupType;
+import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.MixVideo;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
-import com.v2tech.vo.VMessage;
 
 /**
  * <ul>

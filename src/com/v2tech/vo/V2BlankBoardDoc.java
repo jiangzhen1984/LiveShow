@@ -1,5 +1,8 @@
 package com.v2tech.vo;
 
+import com.v2tech.vo.group.Group;
+import com.v2tech.vo.shape.V2Doc;
+
 
 public class V2BlankBoardDoc extends V2Doc {
 

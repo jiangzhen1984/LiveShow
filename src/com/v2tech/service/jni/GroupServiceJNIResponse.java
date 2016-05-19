@@ -1,6 +1,6 @@
 package com.v2tech.service.jni;
 
-import com.v2tech.vo.Group;
+import com.v2tech.vo.group.Group;
 
 /**
  * JNI call back data wrapper

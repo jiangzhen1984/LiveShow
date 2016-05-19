@@ -30,11 +30,11 @@ import com.V2.jni.ind.V2User;
 import com.V2.jni.util.V2Log;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.jni.JNIResponse;
-import com.v2tech.vo.Group;
 import com.v2tech.vo.NetworkStateCode;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
-import com.v2tech.vo.VMessage;
+import com.v2tech.vo.group.Group;
+import com.v2tech.vo.msg.VMessage;
 
 /**
  * This service is used to wrap JNI call.<br>

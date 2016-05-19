@@ -105,7 +105,7 @@ public class VideoShareBtnLayout extends RelativeLayout {
 				listener.onVideoSharedBtnClicked(v);
 				break;
 			case  R.id.video_share_map_btn:
-				listener.onMapBtnClicked(v);
+				listener.onMapShareBtnClicked(v);
 				break;
 			}
 
@@ -138,6 +138,6 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		
 		public void requestFlyingOut();
 		
-		public void onMapBtnClicked(View v);
+		public void onMapShareBtnClicked(View v);
 	}
 }

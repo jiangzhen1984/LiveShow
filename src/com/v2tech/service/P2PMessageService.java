@@ -7,7 +7,7 @@ import java.util.Map;
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
 import com.v2tech.vo.User;
-import com.v2tech.vo.VMessage;
+import com.v2tech.vo.msg.VMessage;
 
 public class P2PMessageService extends AbstractHandler {
 	

@@ -1,5 +1,7 @@
 package com.v2tech.vo;
 
+import com.v2tech.vo.conference.ConferencePermission;
+
 /**
  * It's enumeration definition.
  * 

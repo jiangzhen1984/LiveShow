@@ -2,6 +2,8 @@ package com.v2tech.vo;
 
 import java.util.Date;
 
+import com.v2tech.vo.group.CrowdGroup;
+
 public class VCrowdFile extends VFile {
 
 	private CrowdGroup crowd;

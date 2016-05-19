@@ -1,6 +1,6 @@
 package com.v2tech.service.jni;
 
-import com.v2tech.vo.Conference;
+import com.v2tech.vo.conference.Conference;
 
 /**
  * Used to wrap response data from JNI when receive call from JNI

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.v2tech.widget.BottomButtonLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content" >
+    
+    
+    <ImageView
+        android:id="@+id/map_locate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/map_button_bg"
+        android:src="@drawable/map_locate_button" />
 
     <ImageView
         android:id="@+id/map_button_bg"
@@ -9,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/map_locate_button"
         android:layout_marginBottom="@dimen/bottom_button_layout_margin"
         android:layout_marginLeft="@dimen/bottom_button_layout_margin"
         android:layout_marginStart="@dimen/bottom_button_layout_margin"
@@ -21,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/map_locate_button"
         android:layout_marginBottom="@dimen/bottom_button_layout_margin"
         android:layout_marginLeft="@dimen/bottom_button_layout_margin"
         android:layout_marginStart="@dimen/bottom_button_layout_margin"
@@ -31,9 +41,9 @@
         android:id="@+id/msg_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/map_button"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/bottom_button_layout_margin"
         android:layout_marginRight="@dimen/bottom_button_layout_margin"
         android:background="@drawable/search_bg"
@@ -53,10 +63,9 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_toEndOf="@+id/map_button"
+        android:layout_alignBottom="@+id/map_button"
         android:layout_toLeftOf="@+id/msg_button"
         android:layout_toRightOf="@+id/map_button"
-        android:layout_toStartOf="@+id/msg_button"
         android:background="@drawable/seach_text_bg"
         android:ems="10"
         android:focusable="true"
@@ -67,5 +76,7 @@
         android:maxLines="1"
         android:textSize="@dimen/bottom_button_text_size" >
     </com.v2tech.widget.FloatEditText>
+    
 
-</RelativeLayout>
+
+</com.v2tech.widget.BottomButtonLayout>

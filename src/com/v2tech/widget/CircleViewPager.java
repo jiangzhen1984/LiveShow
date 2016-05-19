@@ -105,8 +105,6 @@ public class CircleViewPager extends ViewGroup {
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		long l1 = System.currentTimeMillis();
-		V2Log.e("====start onLayout ");
 		int paddingLeft = getPaddingLeft();
 		int paddingTop = getPaddingTop();
 		int offsetLeft = paddingLeft;
@@ -151,9 +149,6 @@ public class CircleViewPager extends ViewGroup {
 
 		}
 		
-		long l2 = System.currentTimeMillis();
-		V2Log.e("====end onLayout " +(l2-l1));
-
 	}
 
 	@Override
@@ -175,7 +170,6 @@ public class CircleViewPager extends ViewGroup {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		V2Log.e("====start onMeasure");
 		// For simple implementation, our internal size is always 0.
 		// We depend on the container to specify the layout size of
 		// our view. We can't really know what it is since we will be

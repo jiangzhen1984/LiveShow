@@ -1,5 +1,7 @@
 package com.v2tech.vo;
 
+import com.v2tech.vo.group.Group;
+
 
 public class FriendGroup extends Group {
 	public FriendGroup(long mGId, String mName) {

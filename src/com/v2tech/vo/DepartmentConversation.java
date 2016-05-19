@@ -5,7 +5,8 @@ import com.v2tech.util.DateUtil;
 import java.util.Date;
 
 import com.V2.jni.V2GlobalEnum;
-import com.v2tech.vo.Group.GroupType;
+import com.v2tech.vo.group.Group;
+import com.v2tech.vo.group.Group.GroupType;
 
 public class DepartmentConversation extends Conversation {
 

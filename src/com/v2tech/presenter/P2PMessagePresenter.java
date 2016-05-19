@@ -14,8 +14,8 @@ import android.widget.BaseAdapter;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.vo.User;
-import com.v2tech.vo.VMessage;
-import com.v2tech.vo.VMessageTextItem;
+import com.v2tech.vo.msg.VMessage;
+import com.v2tech.vo.msg.VMessageTextItem;
 
 public class P2PMessagePresenter extends BasePresenter {
 	

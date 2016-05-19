@@ -1,7 +1,7 @@
 package com.v2tech.service.jni;
 
-import com.v2tech.vo.Conference;
 import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.conference.Conference;
 
 public class OpenVideoRequest extends JNIRequest {
 	
