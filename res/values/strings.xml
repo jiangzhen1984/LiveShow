@@ -106,5 +106,7 @@
     
     <string name="audio_call_connecting">正在等待对方接受邀请</string>
     
+    <string name="bounty_title_text">想看看这里</string>
+    
 
 </resources>

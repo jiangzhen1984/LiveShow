@@ -29,6 +29,7 @@ import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.widget.BountyMarkerWidget;
 import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
@@ -80,6 +81,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private P2PAudioWatcherLayout p2pAudioWatcherLayout;
 	private LiveInformationLayout  liveInformationLayout;
 	private VideoWatcherListLayout liveWatcherLayout;
+	
+	private BountyMarkerWidget bountyMarker;
 	
 	private LayoutPositionChangedListener mPosInterface;
 	private VelocityTracker mVelocityTracker;
@@ -160,6 +163,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		liveInformationLayout = (LiveInformationLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, (ViewGroup)null);
 		liveWatcherLayout	 = (VideoWatcherListLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_layout_bottom_layout, (ViewGroup)null);
 		
+		bountyMarker = (BountyMarkerWidget)LayoutInflater.from(getContext()).inflate(R.layout.bounty_marker_layout, (ViewGroup)null);
+		
 		this.addView(mVideoShowPager, -1, generateDefaultLayoutParams());
 		this.addView(mDragLayout, -1, generateDefaultLayoutParams());
 		this.addView(mMapView, -1, generateDefaultLayoutParams());
@@ -172,6 +177,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		this.addView(liveInformationLayout, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 		this.addView(liveWatcherLayout, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(requestConnectLayout, -1, generateDefaultLayoutParams());
+		this.addView(bountyMarker, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
@@ -596,8 +603,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				updateOffset(dy);
 			} else if (mDragType != newType) {
 				if (mDragType == DragType.REMOVE) {
-					layoutOffsetY = offsetY;
-					requestLayout();
+//					layoutOffsetY = offsetY;
+//					requestLayout();
 					
 					
 //					int dis1 = (int)(absDy - absOffsetY);
@@ -620,8 +627,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				}
 			} else {
 				if (mDragType == DragType.REMOVE) {
-					layoutOffsetY = offsetY;
-					requestLayout();
+//					layoutOffsetY = offsetY;
+//					requestLayout();
 				} else {
 					updateOffset(dy);
 				}
@@ -768,6 +775,15 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
 		mMsgLayout.layout(left, realTop + lp.topMargin, right, realTop + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop -  + layoutOffsetY);
+		
+		int bw = bountyMarker.getMeasuredWidth();
+		int bh = bountyMarker.getMeasuredHeight();
+		int bl = left + (right - left - bw) / 2;
+		int br = bl + bw;
+		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() - bh) /2;
+		int btm = bto + bh;
+		bountyMarker.layout(bl, bto, br, btm);
+		
 		mDragLayout.layout(left, realTop, right, realBottom);
 		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);
 		liveWatcherLayout.layout(left, realBottom - liveWatcherLayout.getMeasuredHeight() , right, realBottom);

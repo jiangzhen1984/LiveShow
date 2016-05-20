@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.BountyMarkerWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <com.v2tech.widget.wheel.WheelView
+        android:id="@+id/bounty_wheel_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/bounty_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/bounty_wheel_view"
+        android:background="@drawable/bounty_title_bg"
+        android:gravity="center"
+        android:text="@string/bounty_title_text" />
+
+    <ImageView
+        android:id="@+id/bounty_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bounty_text_view"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bounty_title_bottom" />
+
+</com.v2tech.widget.BountyMarkerWidget>
