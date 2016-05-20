@@ -1,11 +1,14 @@
 package com.v2tech.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.wheel.NumericWheelAdapter;
+import com.v2tech.widget.wheel.WheelView;
 
 public class P2PAudioWatcherLayout extends LinearLayout {
 
@@ -14,6 +17,8 @@ public class P2PAudioWatcherLayout extends LinearLayout {
 	private View recordBtn;
 	private View chatBtn;
 	private View tipsBtn;
+	
+	private WheelView wheelView;
 	
 	
 	private P2PAudioWatcherLayoutListener outListener;
@@ -49,15 +54,23 @@ public class P2PAudioWatcherLayout extends LinearLayout {
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
-		if (child.getId() == R.id.p2p_audio_record_btn) {
-			recordBtn = child;
-			recordBtn.setOnClickListener(listener);
-		} else if (child.getId() == R.id.p2p_audio_chat_btn) {
-			chatBtn = child;
-			chatBtn.setOnClickListener(listener);
-		}else if (child.getId() == R.id.p2p_audio_tips_btn) {
-			tipsBtn = child;
-			tipsBtn.setOnClickListener(listener);
+		if (child.getId() == R.id.p2p_audio_watcher_root_layout) {
+				recordBtn = child.findViewById(R.id.p2p_audio_record_btn);
+				recordBtn.setOnClickListener(listener);
+				
+				chatBtn = child.findViewById(R.id.p2p_audio_chat_btn);
+				chatBtn.setOnClickListener(listener);
+				
+				tipsBtn =  child.findViewById(R.id.p2p_audio_tips_btn);
+				tipsBtn.setOnClickListener(listener);
+				
+				wheelView = (WheelView)child.findViewById(R.id.tips_wheel_view);
+				NumericWheelAdapter nwa = new NumericWheelAdapter(getContext(), 1, 5, "¥%1d");
+				nwa.setTextColor(Color.GRAY);
+				nwa.setTextSize(12);
+				wheelView.setViewAdapter(nwa);
+				wheelView.setCurrentItem(10);
+				wheelView.setCyclic(true);
 		}
 	}
 

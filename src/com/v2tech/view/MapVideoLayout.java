@@ -59,7 +59,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private static final int ANIMATION_DURATION = 1000;
 	
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMaximumFlingVelocity;
@@ -343,7 +343,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			}
 		} else if (mDragType == DragType.REMOVE) {
 			removedOffset += offset;
-			mVideoShowPager.fakeDragUpBy(offset);
+			//mVideoShowPager.fakeDragUpBy(offset);
 		} else if (mDragType == DragType.NONE) {
 			return;
 		}
@@ -549,6 +549,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	private void doTouchDown(MotionEvent ev) {
+		layoutOffsetY = 0;
 		removedOffset = 0;
 		mOffsetTop = 0;
 		mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
@@ -562,6 +563,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		
 		pasuseCurrentVideo(true);
 	}
+	
+	int layoutOffsetY = 0;
 	
 	private void doTouchMove(MotionEvent ev) {
 		int rawX = (int)ev.getRawX();
@@ -586,22 +589,26 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 			
 			DragType newType = determinteDragType(offsetY, dy, mDragDir);
 			if (DEBUG) {
-				V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop);
+				V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop +"  layoutOffsetY:"+ layoutOffsetY);
 			}
 			if (mDragType == DragType.NONE) {
 				mDragType = newType;
 				updateOffset(dy);
 			} else if (mDragType != newType) {
 				if (mDragType == DragType.REMOVE) {
-					int dis1 = (int)(absDy - absOffsetY);
-					//restore removed offset
-					updateOffset(-removedOffset);
-					mDragType = newType;
-					//update new offset for share
-					updateOffset((int)absOffsetY - dis1);
-					if (DEBUG) {
-						V2Log.d("old remove  dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
-					}
+					layoutOffsetY = offsetY;
+					requestLayout();
+					
+					
+//					int dis1 = (int)(absDy - absOffsetY);
+//					//restore removed offset
+//					//updateOffset(-removedOffset);
+//					mDragType = newType;
+//					//update new offset for share
+//					updateOffset((int)absOffsetY - dis1);
+//					if (DEBUG) {
+//						V2Log.d("old remove  dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
+//					}
 				} else if (mDragType == DragType.SHARE) {
 					int dis1 = (absDy - absOffsetY);
 					updateOffset(-mOffsetTop);
@@ -612,7 +619,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 					}
 				}
 			} else {
-				updateOffset(dy);
+				if (mDragType == DragType.REMOVE) {
+					layoutOffsetY = offsetY;
+					requestLayout();
+				} else {
+					updateOffset(dy);
+				}
 			}
 			if (mPosInterface != null && mDragType == DragType.SHARE) {
 				mPosInterface.onDrag();
@@ -740,20 +752,22 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 
+		
+		int realTop = top + mOffsetTop  + layoutOffsetY;
+		int realBottom = realTop + mVideoShowPager.getMeasuredHeight();
+		mVideoShowPager.layout(left, realTop, right, realBottom);
+		
 		if (DEBUG) {
 			V2Log.d(TAG, "changed:" + changed + "  bottom:" + bottom + "  "
 					+ mVideoShowPager.getMeasuredHeight() + "  "
-					+ mVideoShowPager.getMeasuredWidth() + "  top:" + top
-					+ "   mOffsetTop:" + mOffsetTop);
+					+ mVideoShowPager.getMeasuredWidth() + "  realTop:" + realTop
+					+ "   realBottom:" + realBottom +"  layoutOffsetY:"+layoutOffsetY);
 		}
-		int realTop = top + mOffsetTop;
-		int realBottom = realTop + mVideoShowPager.getMeasuredHeight();
-		mVideoShowPager.layout(left, realTop, right, realBottom);
 
 
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
 		mMsgLayout.layout(left, realTop + lp.topMargin, right, realTop + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
-		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
+		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop -  + layoutOffsetY);
 		mDragLayout.layout(left, realTop, right, realBottom);
 		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);
 		liveWatcherLayout.layout(left, realBottom - liveWatcherLayout.getMeasuredHeight() , right, realBottom);
