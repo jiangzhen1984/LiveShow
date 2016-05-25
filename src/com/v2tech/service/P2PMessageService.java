@@ -25,13 +25,13 @@ public class P2PMessageService extends AbstractHandler {
 
 	public void sendMessage(VMessage vm, User user) {
 		byte[] buf = vm.toXml().getBytes();
-		ChatRequest.getInstance().ChatSendTextMessage(0, 0, user.getmUserId(), vm.getUUID(), buf, buf.length);
+		ChatRequest.getInstance().ChatSendTextMessage(vm.getMsgCode(), vm.getGroupId(), user.getmUserId(), vm.getUUID(), buf, buf.length);
 	}
 	
 	public void sendMessage(VMessage vm, User user, MessageListener listener) {
 		pendingListener.put(vm.getUUID(), new WeakReference<MessageListener>(listener));
 		byte[] buf = vm.toXml().getBytes();
-		ChatRequest.getInstance().ChatSendTextMessage(0, 0, user.getmUserId(), vm.getUUID(), buf, buf.length);
+		ChatRequest.getInstance().ChatSendTextMessage(vm.getMsgCode(), vm.getGroupId(), user.getmUserId(), vm.getUUID(), buf, buf.length);
 	}
 
 	@Override

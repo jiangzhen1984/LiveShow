@@ -57,9 +57,11 @@ public class ChatRequest {
 	
 	
 	public void removeChatRequestCallback(ChatRequestCallback callback) {
-		for (WeakReference<ChatRequestCallback> wf : callbacks) {
-			if (wf.get() == callback) {
-				callbacks.remove(wf);
+		synchronized (callbacks) {
+			for (WeakReference<ChatRequestCallback> wf : callbacks) {
+				if (wf.get() == callback) {
+					callbacks.remove(wf);
+				}
 			}
 		}
 	}

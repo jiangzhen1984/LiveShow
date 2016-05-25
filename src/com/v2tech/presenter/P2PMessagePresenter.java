@@ -11,13 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.V2.jni.ind.MessageInd;
+import com.V2.jni.util.V2Log;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageTextItem;
 
-public class P2PMessagePresenter extends BasePresenter {
+public class P2PMessagePresenter extends BasePresenter implements LiveMessageHandler {
 	
 	
 	private static final int TYPE_SHOW_ADDITIONAL_LAYOUT = 1;
@@ -86,7 +89,7 @@ public class P2PMessagePresenter extends BasePresenter {
 		ui.setAdapter(localAdapter);
 		
 		chatUser = new User(ui.getIntentUserId());
-	
+	    V2Log.i("====> " + ui.getIntentUserId());
 	}
 	
 	
@@ -132,8 +135,8 @@ public class P2PMessagePresenter extends BasePresenter {
 		itemList.add(i);
 		localAdapter.notifyDataSetChanged();
 		ui.scrollTo(itemList.size());
-		
-		VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+		//2 for p2p
+		VMessage vm = new VMessage(2, 0, GlobalHolder.getInstance()
 				.getCurrentUser(), chatUser, new Date());
 		new VMessageTextItem(vm, i.content);
 		messageService.sendMessage(vm, chatUser);
@@ -171,6 +174,41 @@ public class P2PMessagePresenter extends BasePresenter {
 	}
 	
 	
+	
+	
+	
+	@Override
+	public void onAudioMessage(long liveId, long uid, int opt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onVdideoMessage(long liveId, long uid, int opt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onLiveMessage(long liveId, long uid, MessageInd ind) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onP2PMessage(VMessage vm) {
+		Item i = new Item();
+		i.content =  vm.getAllTextContent();
+		itemList.add(i);
+	}
+
+
+
+
+
 	class LocalAdapter extends BaseAdapter {
 
 		@Override

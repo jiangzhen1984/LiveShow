@@ -537,14 +537,14 @@ public class MainPresenter extends BasePresenter implements
 	// //////////////////VideoWatcherListLayoutListener
 	@Override
 	public void onPublisherBtnClicked(View v) {
-		ui.showWatcherP2PAudioLayout(true);
-//		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
-//			this.unsetState(LIVER_INTERACTION_LAY_SHOW);
-//			ui.showLiverInteractionLayout(false);
-//		} else {
-//			this.setState(LIVER_INTERACTION_LAY_SHOW);
-//			ui.showLiverInteractionLayout(true);
-//		}
+		//ui.showWatcherP2PAudioLayout(true);
+		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
+			this.unsetState(LIVER_INTERACTION_LAY_SHOW);
+			ui.showLiverInteractionLayout(false);
+		} else {
+			this.setState(LIVER_INTERACTION_LAY_SHOW);
+			ui.showLiverInteractionLayout(true);
+		}
 
 	}
 
@@ -686,6 +686,7 @@ public class MainPresenter extends BasePresenter implements
 		}
 
 		Intent i = new Intent();
+		i.putExtra("chatuserid", this.currentLive.getPublisher().getmUserId());
 		i.setClass(context, P2PMessageActivity.class);
 		context.startActivity(i);
 	}
@@ -917,7 +918,7 @@ public class MainPresenter extends BasePresenter implements
 	}
 	
 	
-	public void onP2PMessage(long uid, MessageInd ind) {
+	public void onP2PMessage(VMessage vm) {
 		
 	}
 	

@@ -55,6 +55,12 @@ public class SurfaceViewAdapter extends PagerAdapter {
 	
 	
 	
+	
+	public Object getItem(int index) {
+		return surs[index];
+	}
+	
+	
 	private SurfaceHolder.Callback mHolderCallback = new SurfaceHolder.Callback() {
 
 		@Override

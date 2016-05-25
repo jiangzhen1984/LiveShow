@@ -346,7 +346,7 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public SurfaceView getCurrentSurface() {
-		return mMapVideoLayout.getCurrentVideoFragment().getSurfaceView();
+		return (SurfaceView)mMapVideoLayout.getCurrentVideoController().getVideoView();
 	}
 	
 	

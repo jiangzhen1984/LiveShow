@@ -316,6 +316,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         WebPackage.Position position = video.getPosition();
         lrp.lng = position.getLongitude();
         lrp.lat = position.getLatitude();
+        lrp.v2uid = webPackage.getData().getUser(0).getId();
         return lrp;
     }
 

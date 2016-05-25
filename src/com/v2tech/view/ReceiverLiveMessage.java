@@ -1,5 +1,6 @@
 package com.v2tech.view;
 
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +13,10 @@ import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.presenter.GlobalPresenterManager;
 import com.v2tech.service.LiveMessageHandler;
+import com.v2tech.vo.User;
+import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
+import com.v2tech.vo.msg.VMessageTextItem;
 
 public class ReceiverLiveMessage extends BroadcastReceiver {
 
@@ -37,7 +41,10 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 					if (meta.lid > 0) {
 						h.onLiveMessage(meta.lid, meta.uid, ind);
 					} else {
-						h.onP2PMessage(meta.uid, ind);
+						V2Log.d("====> " + ind.content);
+						VMessage vm = new VMessage(2, ind.lid, new User(ind.uid), new Date());
+						vm.addItem(new VMessageTextItem(vm, ind.content));
+						h.onP2PMessage(vm);
 					}
 				} else if (meta.mt == MetaType.AUDIO_VIDEO_CTL) {
 					if (meta.type == VMessageAudioVideoRequestItem.TYPE_VIDEO) {

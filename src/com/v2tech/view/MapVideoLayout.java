@@ -27,6 +27,7 @@ import com.baidu.mapapi.map.MapView;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.video.VideoController;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.widget.BountyMarkerWidget;
@@ -272,10 +273,18 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 
-	public VideoShowFragment getCurrentVideoFragment() {
+	public VideoController getCurrentVideoController() {
+		return new VideoController() {
+
+			@Override
+			public View getVideoView() {
+				return (SurfaceView)((SurfaceViewAdapter)mViewPagerAdapter).getItem(mVideoShowPager.getCurrentItem() -1);
+			}
+			
+		};
+	
 //		return (VideoShowFragment) mViewPagerAdapter
 //				.getItem(this.mVideoShowPager.getCurrentItem());
-		return null;
 	}
 
 	@Override
@@ -782,7 +791,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		int br = bl + bw;
 		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() - bh) /2;
 		int btm = bto + bh;
-		bountyMarker.layout(bl, bto, br, btm);
+		//bountyMarker.layout(bl, bto, br, btm);
 		
 		mDragLayout.layout(left, realTop, right, realBottom);
 		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);

@@ -10,6 +10,7 @@ public class LivePublishIndPacket extends IndicationPacket {
 	public long uid;
 	public double lat;
 	public double lng;
+	public long v2uid;
 	
 	public LivePublishIndPacket() {
 		super();
