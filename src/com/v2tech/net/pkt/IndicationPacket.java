@@ -7,6 +7,6 @@ public class IndicationPacket extends Packet {
 	
 	@Override
 	public String toString() {
-		return "ResponsePacket [type=" + this.getClass().getName() + "]";
+		return "IndicationPacket [type=" + this.getClass().getName() + "]";
 	}
 }

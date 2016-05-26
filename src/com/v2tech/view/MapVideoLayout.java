@@ -278,7 +278,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 
 			@Override
 			public View getVideoView() {
-				return (SurfaceView)((SurfaceViewAdapter)mViewPagerAdapter).getItem(mVideoShowPager.getCurrentItem() -1);
+				return (SurfaceView)((SurfaceViewAdapter)mViewPagerAdapter).getItem(mVideoShowPager.getCurrentItem());
 			}
 			
 		};

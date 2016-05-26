@@ -33,6 +33,12 @@ public class ReceiverLiveStatus extends BroadcastReceiver {
 			for (LiveStatusHandler h : handlers) {
 				h.handleNewLivePushlishment(l);
 			}
+		} else if ("com.v2tech.live_publish".equals(i.getAction())) {
+			List<LiveStatusHandler> handlers = GlobalPresenterManager.getInstance().getLiveStatusHandler();
+			Live l = (Live)i.getSerializableExtra("obj");
+			for (LiveStatusHandler h : handlers) {
+				h.handleLiveFinished(l);
+			}
 		}
 	}
 

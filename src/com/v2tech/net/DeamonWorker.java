@@ -450,8 +450,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 					Log.e("ReaderChannel", " Parser error");
 					return;
 				}
-				Log.i("ReaderChannel", "transform====>packet" + p);
+				Log.i("ReaderChannel", "transform====>" + p);
 				if (p instanceof IndicationPacket) {
+					Log.i("ReaderChannel", "notification====>" + p);
 					sendNotificaiton((IndicationPacket) p);
 					return;
 				}

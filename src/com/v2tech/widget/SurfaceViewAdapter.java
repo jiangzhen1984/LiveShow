@@ -33,7 +33,7 @@ public class SurfaceViewAdapter extends PagerAdapter {
 		if (surs[position] == null) {
 			surs[position] = createSurfaceView(position + 1);
 		}
-		container.addView(surs[position], 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		container.addView(surs[position], new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		return surs[position];
 	}
 	
@@ -45,8 +45,8 @@ public class SurfaceViewAdapter extends PagerAdapter {
 
 	private SurfaceView createSurfaceView(int index) {
 		SurfaceView mSurfaceView = new SurfaceView(ctx);
-//		mSurfaceView.setZOrderOnTop(true);
-//	//	mSurfaceView.setZOrderMediaOverlay(true);
+		mSurfaceView.setZOrderOnTop(true);
+		mSurfaceView.setZOrderMediaOverlay(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 //		mSurfaceView.setTag(index);
 //		mSurfaceView.setWillNotDraw(true);
@@ -56,6 +56,11 @@ public class SurfaceViewAdapter extends PagerAdapter {
 	
 	
 	
+	@Override
+	public void destroyItem(ViewGroup container, int position, Object object) {
+		container.removeView(surs[position]);
+	}
+
 	public Object getItem(int index) {
 		return surs[index];
 	}

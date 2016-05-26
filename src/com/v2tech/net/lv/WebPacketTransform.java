@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.lv.WebPackage.Video;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
@@ -75,7 +76,11 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         } else if ("getSMScode".equalsIgnoreCase(type)) {
             return extraGetSMSResponse(webPackage);
         } else if ("watchVideo".equalsIgnoreCase(type)) {
-            return extraCommonResponse(webPackage);
+        	if (ind) {
+                return extraWatchVideoIndication(webPackage);
+            } else {
+                return extraCommonResponse(webPackage);
+            }
         } else if ("mapPosition".equalsIgnoreCase(type)) {
             return extraLoginResponse(webPackage);
         } else if ("getFollowMe".equalsIgnoreCase(type)) {
@@ -265,7 +270,10 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             packetBuilder.setOperateType("leave");
         }
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
-        data.setNormal(String.valueOf(p.nid));
+        data.setNormal(String.valueOf(p.type));
+        WebPackage.Video.Builder video = WebPackage.Video.newBuilder();
+        video.setVideoNum(String.valueOf(p.nid));
+        data.setVideo(0 , video);
         packetBuilder.setData(data);
         return packetBuilder.build();
     }
@@ -318,6 +326,16 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         lrp.lat = position.getLatitude();
         lrp.v2uid = webPackage.getData().getUser(0).getId();
         return lrp;
+    }
+    
+    
+    private Packet extraWatchVideoIndication(WebPackage.Packet webPackage) {
+        long uid = webPackage.getData().getUser(0).getId();
+        long lid = webPackage.getData().getVideo(0).getId();
+        int type = Integer.parseInt(webPackage.getData().getNormal());
+        LiveWatchingIndPacket lrp = new LiveWatchingIndPacket(uid, lid, type);    
+        lrp.setErrorFlag(!webPackage.getResult().getResult());
+    	return lrp;
     }
 
     private Packet extraPublisVideoResponse(WebPackage.Packet webPackage) {

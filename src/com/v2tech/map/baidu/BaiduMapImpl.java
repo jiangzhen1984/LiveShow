@@ -14,7 +14,10 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -34,13 +37,13 @@ import com.v2tech.vo.Watcher;
 
 public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
-		OnGetGeoCoderResultListener,BaiduMap.OnMarkerClickListener {
+		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
 
 	public BaiduMap mapImpl;
 
 	private LocationClient locationClient;
 	private GeoCoder mSearchAPI;
-	
+
 	// ///listener///
 	private MarkerListener markerListener;
 
@@ -49,8 +52,6 @@ public class BaiduMapImpl implements MapAPI,
 		this.mapImpl = mapImpl;
 		mSearchAPI = GeoCoder.newInstance();
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
-		
-		
 	}
 
 	public BaiduMap getMapImpl() {
@@ -126,29 +127,28 @@ public class BaiduMapImpl implements MapAPI,
 			throw new RuntimeException(" obj is not latlng instance");
 		}
 	}
-	
-	
 
 	@Override
 	public void animationSearch(String text) {
-		//FIXME update city first
+		// FIXME update city first
 		mSearchAPI.geocode(new GeoCodeOption().city("北京").address(text));
 	}
-	
-	
-	
-	
 
 	@Override
 	public void startLocate(LocationParameter parameter) {
 		if (!(parameter instanceof BaiduLocationParameter)) {
-			throw new RuntimeException(" parameter is not BaiduLocationParameter instance");
+			throw new RuntimeException(
+					" parameter is not BaiduLocationParameter instance");
 		}
 		if (locationClient != null && locationClient.isStarted()) {
 			return;
 		}
-		BaiduLocationParameter bp = (BaiduLocationParameter)parameter;
+		BaiduLocationParameter bp = (BaiduLocationParameter) parameter;
 		mapImpl.setMyLocationEnabled(bp.isEnableSelfLocation());
+		if (mapImpl.isMyLocationEnabled()) {
+			mapImpl.setMyLocationConfigeration(new MyLocationConfiguration(
+					LocationMode.NORMAL, true, null));
+		}
 		locationClient = new LocationClient(bp.getContext());
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(bp.isEnableGps());
@@ -158,17 +158,18 @@ public class BaiduMapImpl implements MapAPI,
 		locationClient.registerLocationListener(this);
 		locationClient.start();
 	}
-	
-	
+
 	public void stopLocate(LocationParameter parameter) {
 		if (locationClient != null) {
 			locationClient.stop();
+			locationClient.unRegisterLocationListener(this);
 		}
+		mapImpl.setMyLocationEnabled(false);
 	}
-	
+
 	public LocationParameter buildParameter(Object obj) {
 		if (obj instanceof Context) {
-			return new BaiduLocationParameter((Context)obj);
+			return new BaiduLocationParameter((Context) obj);
 		} else {
 			return new BaiduLocationParameter();
 		}
@@ -206,62 +207,33 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onMapStatusChangeFinish(MapStatus status) {
-		// if (!isState(MAP_CENTER_UPDATE)) {
-		// this.setState(MAP_CENTER_UPDATE);
-		// }
-		//
-		// if ((this.locationStatus & REQUEST_SELF_LOCATION) ==
-		// REQUEST_SELF_LOCATION) {
-		// this.locationStatus = 0;
-		// this.locationStatus |= SELF_LOCATION;
-		// } else if ((this.locationStatus & REQUEST_LIVER_LOCATION) ==
-		// REQUEST_LIVER_LOCATION) {
-		// this.locationStatus = 0;
-		// this.locationStatus |= LIVER_LOCATION;
-		// } else if ((this.locationStatus & REQUEST_RANDOM_LOCATION) ==
-		// REQUEST_RANDOM_LOCATION) {
-		// this.locationStatus = 0;
-		// this.locationStatus |= RANDOM_LOCATION;
-		// }
-		//
-		// currentMapCenter.ll = status.target;
-		// V2Log.i("new map location status : " + this.locationStatus
-		// + "  center:" + this.currentMapCenter.ll);
-		// if (!h.hasMessages(SEARCH_LIVE)) {
-		// V2Log.i("send delay message for search live ");
-		// Message m = Message.obtain(h, SEARCH_LIVE);
-		// h.sendMessageDelayed(m, 200);
-		// }
-
 	}
 
 	@Override
 	public void onMapStatusChangeStart(MapStatus status) {
-		// if ((this.locationStatus & REQUEST_SELF_LOCATION) ==
-		// REQUEST_SELF_LOCATION) {
-		// return;
-		// } else if ((this.locationStatus & REQUEST_LIVER_LOCATION) ==
-		// REQUEST_LIVER_LOCATION) {
-		// return;
-		// } else {
-		// // For handle when user drag map directly
-		// this.locationStatus |= REQUEST_RANDOM_LOCATION;
-		// }
 	}
 
 	// //////////////////BaiduMap.OnMapStatusChangeListener
 
-	
 	// /////////////////BDLocationListener
 	@Override
 	public void onReceiveLocation(BDLocation location) {
 		if (markerListener != null) {
-			LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+			LatLng ll = new LatLng(location.getLatitude(),
+					location.getLongitude());
 			markerListener.onLocated(new BaiduLocation(ll));
+			if(mapImpl.isMyLocationEnabled()) {
+				MyLocationData locData = new MyLocationData.Builder()
+				.accuracy(location.getRadius())
+				// 此处设置开发者获取到的方向信息，顺时针0-360
+				.direction(100).latitude(location.getLatitude())
+				.longitude(location.getLongitude()).build();
+				mapImpl.setMyLocationData(locData);
+			}
 		}
 	}
+
 	// /////////////////BDLocationListener
-	
 
 	// ////////////////////// OnGetGeoCoderResultListener
 	@Override
@@ -269,7 +241,8 @@ public class BaiduMapImpl implements MapAPI,
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 			return;
 		}
-		mapImpl.animateMapStatus(MapStatusUpdateFactory.newLatLng(result.getLocation()));
+		mapImpl.animateMapStatus(MapStatusUpdateFactory.newLatLng(result
+				.getLocation()));
 	}
 
 	@Override
@@ -277,9 +250,5 @@ public class BaiduMapImpl implements MapAPI,
 
 	}
 	// ////////////////////// OnGetGeoCoderResultListener
-	
-	
-	
-	
-	
+
 }

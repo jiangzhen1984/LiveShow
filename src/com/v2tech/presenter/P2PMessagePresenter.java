@@ -135,8 +135,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		itemList.add(i);
 		localAdapter.notifyDataSetChanged();
 		ui.scrollTo(itemList.size());
-		//2 for p2p
-		VMessage vm = new VMessage(2, 0, GlobalHolder.getInstance()
+		//0 for p2p
+		VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
 				.getCurrentUser(), chatUser, new Date());
 		new VMessageTextItem(vm, i.content);
 		messageService.sendMessage(vm, chatUser);
