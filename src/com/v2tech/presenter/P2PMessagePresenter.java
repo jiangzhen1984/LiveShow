@@ -6,10 +6,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
@@ -19,8 +19,10 @@ import com.v2tech.service.P2PMessageService;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageTextItem;
+import com.v2tech.widget.RichEditText;
+import com.v2tech.widget.emoji.EmojiLayoutWidget.EmojiLayoutWidgetListener;
 
-public class P2PMessagePresenter extends BasePresenter implements LiveMessageHandler {
+public class P2PMessagePresenter extends BasePresenter implements LiveMessageHandler, EmojiLayoutWidgetListener {
 	
 	
 	private static final int TYPE_SHOW_ADDITIONAL_LAYOUT = 1;
@@ -58,7 +60,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		
 		public void finishMainUI();
 		
-		public Editable getEditable();
+		public RichEditText getEditable();
 		
 		public void scrollTo(int position);
 		
@@ -128,7 +130,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 
 	public void sendBtnClicked() {
-		Editable et = ui.getEditable();
+		RichEditText et = ui.getEditable();
 		Item i = new Item();
 		i.type = ITEM_TYPE_SELF;
 		i.content = et.toString();
@@ -204,6 +206,21 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		i.content =  vm.getAllTextContent();
 		itemList.add(i);
 	}
+
+
+	
+	
+	
+
+
+
+	@Override
+	public void onEmojiClicked(View v) {
+		ui.getEditable().appendEmoji(((ImageView)v).getDrawable());
+	}
+
+
+
 
 
 

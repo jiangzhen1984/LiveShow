@@ -47,7 +47,6 @@ import com.v2tech.util.StorageUtil;
 public class MainApplication extends Application {
 
 	private static final String TAG = MainApplication.class.getSimpleName();
-	private Vector<WeakReference<Activity>> list = new Vector<WeakReference<Activity>>();
 
 	private boolean init = false;
 	@Override

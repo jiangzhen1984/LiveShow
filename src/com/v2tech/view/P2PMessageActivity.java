@@ -1,14 +1,11 @@
 package com.v2tech.view;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +13,7 @@ import android.widget.TextView;
 import com.v2tech.presenter.P2PMessagePresenter;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.RichEditText;
 import com.v2tech.widget.emoji.EmojiLayoutWidget;
 
 public class P2PMessageActivity extends BaseActivity implements P2PMessagePresenterUI, OnClickListener {
@@ -27,7 +25,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private View plusBtn;
 	private View emojiBtn;
 	private EmojiLayoutWidget emojiWidget;
-	private EditText messageEt;
+	private RichEditText messageEt;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +35,21 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		addtionalLayout = findViewById(R.id.p2p_message_addition_lay);
 		plusBtn = findViewById(R.id.p2p_message_plus_btn);
 		emojiBtn = findViewById(R.id.p2p_message_emoji_btn);
-		emojiWidget= (EmojiLayoutWidget)findViewById(R.id.emoji_layout_root);
-		messageEt= (EditText)findViewById(R.id.p2p_message_msg_et);
+		emojiWidget= (EmojiLayoutWidget)findViewById(R.id.emoji_widget);
+		messageEt= (RichEditText)findViewById(R.id.p2p_message_msg_et);
 		
-		
-		
+		messageEt.appendEmoji(R.drawable.emo_01);
+		messageEt.appendEmoji(R.drawable.emo_02);
+		messageEt.appendEmoji(R.drawable.emo_03);
 		emojiBtn.setOnClickListener(this);
 		plusBtn.setOnClickListener(this);
+		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		
 		presenter = new P2PMessagePresenter(this, this);
 		
 		presenter.onUICreated();
+		emojiWidget.setListener(presenter);
 	}
 
 	@Override
@@ -137,8 +138,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
-	public Editable getEditable() {
-		return this.messageEt.getEditableText();
+	public RichEditText getEditable() {
+		return this.messageEt;
 	}
 	
 	

@@ -485,7 +485,7 @@ public class ConferenceService extends DeviceService {
 		@Override
 		public void OnEnterConfCallback(long nConfID, long nTime,
 				String szConfData, int nJoinResult) {
-			V2Log.i("OnEnterConfCallback====>" +szConfData+"   " +nJoinResult+"   =>");
+			V2Log.i("OnEnterConfCallback====>config ID : "+nConfID+"  data==>" +szConfData+"   " +nJoinResult+"   =>");
 
 			JNIResponse jniConfCreateRes = new RequestConfCreateResponse(
 					nConfID, 0, RequestConfCreateResponse.Result.SUCCESS);

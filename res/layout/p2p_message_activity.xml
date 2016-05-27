@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/p2p_message_bottom_ly_padding" >
 
-            <EditText
+            <com.v2tech.widget.RichEditText
                 android:id="@+id/p2p_message_msg_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 android:background="@drawable/p2p_message_input_text_bg"
                 android:maxLines="3"
                 android:ems="10" >
-            </EditText>
+            </com.v2tech.widget.RichEditText>
 
             <ImageView
                 android:id="@+id/p2p_message_emoji_btn"
@@ -97,6 +97,7 @@
         </LinearLayout>
 
         <include
+            android:id="@+id/emoji_widget"
             android:layout_width="match_parent"
             android:layout_height="@dimen/emoji_view_viewpager_height" 
             android:layout_marginLeft="10dp"

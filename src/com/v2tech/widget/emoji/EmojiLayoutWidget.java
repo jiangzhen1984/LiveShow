@@ -1,7 +1,5 @@
 package com.v2tech.widget.emoji;
 
-import com.v2tech.v2liveshow.R;
-
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.v2tech.v2liveshow.R;
+import com.v2tech.widget.emoji.EmojiView.EmojiViewListener;
 
 public class EmojiLayoutWidget extends LinearLayout {
 	
@@ -31,6 +32,8 @@ public class EmojiLayoutWidget extends LinearLayout {
 	private LocalAdapter adapter;
 	private LocalObject[] objs;
 	
+	
+	private EmojiLayoutWidgetListener listener;
 
 	public EmojiLayoutWidget(Context context) {
 		super(context);
@@ -73,7 +76,7 @@ public class EmojiLayoutWidget extends LinearLayout {
 
 
 
-
+	private 
 
 
 	class LocalAdapter extends PagerAdapter {
@@ -95,20 +98,34 @@ public class EmojiLayoutWidget extends LinearLayout {
 			EmojiView ev = (EmojiView)flater.inflate(R.layout.emoji_view_layout, null, false);
 			ev.initEmojis(lo.start, lo.end, EMOJI_RES_TABLE);
 			lo.view = ev;
+			ev.setListener(evListener);
 			container.addView(ev, position, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 			return lo;
 		}
 
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
-			
+			container.removeView(objs[position].view);
 		}
 		
 		
 		
 		
-		
 	}
+	
+	
+	private EmojiViewListener evListener = new EmojiViewListener() {
+
+		@Override
+		public void onEmojiClicked(View v) {
+			if (listener == null) {
+				return;
+			}
+			listener.onEmojiClicked(v);
+			
+		}
+		
+	};
 	
 	
 	class LocalObject {
@@ -121,6 +138,18 @@ public class EmojiLayoutWidget extends LinearLayout {
 
 	
 	
-	
+	public EmojiLayoutWidgetListener getListener() {
+		return listener;
+	}
+
+	public void setListener(EmojiLayoutWidgetListener listener) {
+		this.listener = listener;
+	}
+
+
+
+	public interface EmojiLayoutWidgetListener {
+		public void onEmojiClicked(View v);
+	}
 
 }
