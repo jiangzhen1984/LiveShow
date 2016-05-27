@@ -27,6 +27,9 @@ public class ServerRecordRequest {
 		}
 		return mServerRecordRequest;
 	}
+	
+	
+	public native boolean initialize(ServerRecordRequest intance);
 
 	/**
 	 * 添加自定义的回调，监听接收到的服务信令
@@ -63,6 +66,9 @@ public class ServerRecordRequest {
 	public native void delServerRecord(long nGroupID, String sRecordID);
 
 	public native void downConfVodSnapshot(long nGroupID, String sVodID, String sVodSnapshotUrl);
+	
+	
+	public native void startServerRecord(boolean b1, String sRecordID);
 
 	public native void startLive(String sRecordID, String sRecordName);
 

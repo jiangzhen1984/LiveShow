@@ -252,6 +252,9 @@ public class GroupRequest {
 	 */
 	public native void WBoardCreateDocShare(int nGroupType, long nGroupID, String sFileName,
 			boolean bStorePersonalSpace);
+	
+	
+	public native void WBoardCreateDocShare(int dockId, long groupId, String name, boolean b1, boolean b2);
 
 	/**
 	 * 组中应用程序共享

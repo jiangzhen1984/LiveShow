@@ -68,6 +68,10 @@ public class ImRequest {
 	 * 反注册jni回调对象
 	 */
 	public native void unInitialize();
+	
+	
+	
+	public native void ImRegisterGuest(String guest);
 
 	/**
 	 * @brief 登录IM
@@ -224,6 +228,10 @@ public class ImRequest {
 	// public native void searchCrowd(String szUnsharpName, int nStartNum, int
 	// nSearchNum);
 
+	
+	private void OnImRegisterGuest(String na1, String na2, int fl) {
+		
+	}
 	/**
 	 * @brief 登录IM回调函数
 	 *
