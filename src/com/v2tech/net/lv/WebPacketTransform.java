@@ -273,7 +273,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         data.setNormal(String.valueOf(p.type));
         WebPackage.Video.Builder video = WebPackage.Video.newBuilder();
         video.setVideoNum(String.valueOf(p.nid));
-        data.setVideo(0 , video);
+        data.addVideo(video);
         packetBuilder.setData(data);
         return packetBuilder.build();
     }

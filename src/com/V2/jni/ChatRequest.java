@@ -38,29 +38,32 @@ public class ChatRequest {
 	 * @param callback
 	 */
 	public void addChatRequestCallback(ChatRequestCallback callback) {
-		this.callbacks.add(new WeakReference<ChatRequestCallback>(callback));
-		for (ChatText ct : ctL) {
-			callback.OnRecvChatTextCallback(ct.eGroupType, ct.nGroupID,
-					ct.nToUserID, ct.nFromUserID, ct.nTime, ct.szSeqID,
-					ct.szXmlText);
-		}
+		synchronized (callbacks) {
+			this.callbacks
+					.add(new WeakReference<ChatRequestCallback>(callback));
+			for (ChatText ct : ctL) {
+				callback.OnRecvChatTextCallback(ct.eGroupType, ct.nGroupID,
+						ct.nToUserID, ct.nFromUserID, ct.nTime, ct.szSeqID,
+						ct.szXmlText);
+			}
 
-		for (ChatBinary cb : btL) {
-			callback.OnRecvChatBinaryCallback(cb.eGroupType, cb.nGroupID,
-					cb.nFromUserID, cb.nToUserID, cb.nTime, cb.binaryType,
-					cb.messageId, cb.binaryPath);
+			for (ChatBinary cb : btL) {
+				callback.OnRecvChatBinaryCallback(cb.eGroupType, cb.nGroupID,
+						cb.nFromUserID, cb.nToUserID, cb.nTime, cb.binaryType,
+						cb.messageId, cb.binaryPath);
+			}
+			// clear cache.
+			ctL.clear();
+			btL.clear();
 		}
-		// clear cache.
-		ctL.clear();
-		btL.clear();
 	}
-	
-	
+
 	public void removeChatRequestCallback(ChatRequestCallback callback) {
 		synchronized (callbacks) {
 			for (WeakReference<ChatRequestCallback> wf : callbacks) {
 				if (wf.get() == callback) {
 					callbacks.remove(wf);
+					break;
 				}
 			}
 		}
@@ -141,17 +144,21 @@ public class ChatRequest {
 	private void OnChatRecvTextMessage(int nGroupType, long nGroupID,
 			long nFromUser, long nToUserID, long nTime, String szMessageID,
 			String szTextXml) {
-		if (callbacks.size() > 0) {
-			for (WeakReference<ChatRequestCallback> wf : callbacks) {
-				if (wf.get() == null) {
-					continue;
+		synchronized (callbacks) {
+			if (callbacks.size() > 0) {
+				for (WeakReference<ChatRequestCallback> wf : callbacks) {
+					if (wf.get() == null) {
+						continue;
+					}
+					wf.get()
+							.OnRecvChatTextCallback(nGroupType, nGroupID,
+									nFromUser, nToUserID, nTime, szMessageID,
+									szTextXml);
 				}
-				wf.get().OnRecvChatTextCallback(nGroupType, nGroupID,
-						nFromUser, nToUserID, nTime, szMessageID, szTextXml);
+			} else {
+				ctL.add(new ChatText(nGroupType, nGroupID, nFromUser,
+						nToUserID, nTime, szMessageID, szTextXml));
 			}
-		} else {
-			ctL.add(new ChatText(nGroupType, nGroupID, nFromUser, nToUserID,
-					nTime, szMessageID, szTextXml));
 		}
 	}
 
@@ -180,18 +187,20 @@ public class ChatRequest {
 	private void OnChatRecvBinaryMessage(int eGroupType, long nGroupID,
 			long nFromUserID, long nToUserID, long nTime, int nBinaryType,
 			String szBinaryID, String szFileName) {
-		if (callbacks.size() > 0) {
-			for (WeakReference<ChatRequestCallback> wf : callbacks) {
-				if (wf.get() == null) {
-					continue;
+		synchronized (callbacks) {
+			if (callbacks.size() > 0) {
+				for (WeakReference<ChatRequestCallback> wf : callbacks) {
+					if (wf.get() == null) {
+						continue;
+					}
+					wf.get().OnRecvChatBinaryCallback(eGroupType, nGroupID,
+							nFromUserID, nToUserID, nTime, nBinaryType,
+							szBinaryID, szFileName);
 				}
-				wf.get().OnRecvChatBinaryCallback(eGroupType, nGroupID,
-						nFromUserID, nToUserID, nTime, nBinaryType, szBinaryID,
-						szFileName);
+			} else {
+				btL.add(new ChatBinary(eGroupType, nGroupID, nFromUserID,
+						nToUserID, nTime, nBinaryType, szBinaryID, szFileName));
 			}
-		} else {
-			btL.add(new ChatBinary(eGroupType, nGroupID, nFromUserID,
-					nToUserID, nTime, nBinaryType, szBinaryID, szFileName));
 		}
 	}
 
@@ -212,13 +221,15 @@ public class ChatRequest {
 	 */
 	private void OnChatSendTextMessageResult(int eGroupType, long nGroupID,
 			long nFromUserID, long nToUserID, String sSeqID, int nResult) {
-		if (callbacks.size() > 0) {
-			for (WeakReference<ChatRequestCallback> wf : callbacks) {
-				if (wf.get() == null) {
-					continue;
+		synchronized (callbacks) {
+			if (callbacks.size() > 0) {
+				for (WeakReference<ChatRequestCallback> wf : callbacks) {
+					if (wf.get() == null) {
+						continue;
+					}
+					wf.get().OnSendTextResultCallback(eGroupType, nGroupID,
+							nFromUserID, nToUserID, sSeqID, nResult);
 				}
-				wf.get().OnSendTextResultCallback(eGroupType, nGroupID,
-						nFromUserID, nToUserID, sSeqID, nResult);
 			}
 		}
 	}
@@ -243,25 +254,29 @@ public class ChatRequest {
 	private void OnChatSendBinaryMessageResult(int eGroupType, long nGroupID,
 			long nFromUserID, long nToUserID, int mediaType, String sSeqID,
 			int nResult) {
-		if (callbacks.size() > 0) {
-			for (WeakReference<ChatRequestCallback> wf : callbacks) {
-				if (wf.get() == null) {
-					continue;
+		synchronized (callbacks) {
+			if (callbacks.size() > 0) {
+				for (WeakReference<ChatRequestCallback> wf : callbacks) {
+					if (wf.get() == null) {
+						continue;
+					}
+					wf.get().OnSendBinaryResultCallback(eGroupType, nGroupID,
+							nFromUserID, nToUserID, mediaType, sSeqID, nResult);
 				}
-				wf.get().OnSendBinaryResultCallback(eGroupType, nGroupID,
-						nFromUserID, nToUserID, mediaType, sSeqID, nResult);
 			}
 		}
 	}
 
 	private void OnChatMonitorRecvBinaryResult(int eGroupType, String sSeqID,
 			int nResult) {
-		if (callbacks.size() > 0) {
-			for (WeakReference<ChatRequestCallback> wf : callbacks) {
-				if (wf.get() == null) {
-					continue;
+		synchronized (callbacks) {
+			if (callbacks.size() > 0) {
+				for (WeakReference<ChatRequestCallback> wf : callbacks) {
+					if (wf.get() == null) {
+						continue;
+					}
+					wf.get().OnMonitorRecv(eGroupType, sSeqID, nResult);
 				}
-				wf.get().OnMonitorRecv(eGroupType, sSeqID, nResult);
 			}
 		}
 	}

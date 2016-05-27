@@ -223,12 +223,12 @@ public class BaiduMapImpl implements MapAPI,
 					location.getLongitude());
 			markerListener.onLocated(new BaiduLocation(ll));
 			if(mapImpl.isMyLocationEnabled()) {
-				MyLocationData locData = new MyLocationData.Builder()
-				.accuracy(location.getRadius())
-				// 此处设置开发者获取到的方向信息，顺时针0-360
-				.direction(100).latitude(location.getLatitude())
-				.longitude(location.getLongitude()).build();
-				mapImpl.setMyLocationData(locData);
+//				MyLocationData locData = new MyLocationData.Builder()
+//				.accuracy(location.getRadius())
+//				// 此处设置开发者获取到的方向信息，顺时针0-360
+//				.direction(100).latitude(location.getLatitude())
+//				.longitude(location.getLongitude()).build();
+//				mapImpl.setMyLocationData(locData);
 			}
 		}
 	}
