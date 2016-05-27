@@ -1,10 +1,8 @@
 package com.V2.jni.ind;
 
-import java.io.Serializable;
-
 import com.v2tech.service.jni.JNIIndication;
 
-public class MessageInd extends JNIIndication implements Serializable {
+public class MessageInd extends JNIIndication  {
 	
 	public long uid;
 	

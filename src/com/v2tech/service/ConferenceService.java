@@ -2,6 +2,7 @@ package com.v2tech.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,15 +37,15 @@ import com.v2tech.service.jni.RequestPermissionResponse;
 import com.v2tech.service.jni.RequestUpdateCameraParametersResponse;
 import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.CameraConfiguration;
+import com.v2tech.vo.Live;
+import com.v2tech.vo.MixVideo;
+import com.v2tech.vo.User;
+import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.conference.Conference;
 import com.v2tech.vo.conference.ConferencePermission;
 import com.v2tech.vo.group.Group;
 import com.v2tech.vo.group.Group.GroupType;
 import com.v2tech.vo.msg.VMessage;
-import com.v2tech.vo.Live;
-import com.v2tech.vo.MixVideo;
-import com.v2tech.vo.User;
-import com.v2tech.vo.UserDeviceConfig;
 
 /**
  * <ul>
@@ -179,6 +180,8 @@ public class ConferenceService extends DeviceService {
 		this.sendMessageDelayed(res, 300);
 	}
 
+	
+	private static Random ran = new Random();
 	/**
 	 * Create conference.
 	 * <ul>
@@ -200,11 +203,19 @@ public class ConferenceService extends DeviceService {
 			}
 			return;
 		}
+		long gid = 15010000000L;
+		int seed = ran.nextInt();
+		if (seed < 0) {
+			seed = ~seed;
+		}
+		gid |= seed;
+		ConfRequest.getInstance().ConfEnter(gid);
+		
 		initTimeoutMessage(JNI_REQUEST_CREATE_CONFERENCE,
 				DEFAULT_TIME_OUT_SECS, caller);
-		GroupRequest.getInstance().GroupCreate(
-				Group.GroupType.CONFERENCE.intValue(),
-				l.getConferenceConfigXml(), l.getInvitedAttendeesXml());
+//		GroupRequest.getInstance().GroupCreate(
+//				Group.GroupType.CONFERENCE.intValue(),
+//				l.getConferenceConfigXml(), l.getInvitedAttendeesXml());
 	}
 
 	/**

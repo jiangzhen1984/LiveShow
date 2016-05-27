@@ -30,6 +30,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		((MainApplication)this.getApplication()).onMainCreate();
 		setContentView(R.layout.p2p_message_activity);
 		listView = (ListView)findViewById(R.id.p2p_message_msg_listview);
 		addtionalLayout = findViewById(R.id.p2p_message_addition_lay);
@@ -80,7 +81,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
-	public void updateView(View view, int type, Bitmap bm, String content) {
+	public void updateView(View view, int type, Bitmap bm, CharSequence content) {
 		LocalBind lb = (LocalBind)view.getTag();
 		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);
@@ -100,7 +101,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		}
 	}
 	
-	public void updateView(View view, int type, String content) {
+	public void updateView(View view, int type, CharSequence content) {
 		LocalBind lb = (LocalBind)view.getTag();
 		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);

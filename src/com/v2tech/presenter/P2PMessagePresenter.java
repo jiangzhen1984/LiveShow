@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Editable;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,6 +20,7 @@ import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
+import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageTextItem;
 import com.v2tech.widget.RichEditText;
 import com.v2tech.widget.emoji.EmojiLayoutWidget.EmojiLayoutWidgetListener;
@@ -51,8 +54,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		
 		public View getView();
 		
-		public void updateView(View view, int type, Bitmap bm, String content);
-		public void updateView(View view, int type, String content);
+		public void updateView(View view, int type, Bitmap bm, CharSequence content);
+		public void updateView(View view, int type, CharSequence content);
 		
 		public void showAdditionLayout(boolean flag);
 		
@@ -131,17 +134,41 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 	public void sendBtnClicked() {
 		RichEditText et = ui.getEditable();
+		Editable ettext = et.getEditableText();
+		//0 for p2p
+		int strStart = 0;
+		int spStart = -1;
+		int spEnd = -1;
+		int len = ettext.length();
+		VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+				.getCurrentUser(), chatUser, new Date());
+		ImageSpan[] sbi = ettext.getSpans(0, len, ImageSpan.class);
+		
+		for (ImageSpan s: sbi) {
+			//new VMessageTextItem(vm, i.content);
+			spStart = ettext.getSpanStart(s);
+		
+			if (strStart != spStart) {
+				new VMessageTextItem(vm, ettext.subSequence(strStart, spStart).toString());
+			} else {
+				spEnd = ettext.getSpanEnd(s);
+				new VMessageFaceItem(vm, Integer.parseInt(s.getSource()));
+				//reset string index
+				strStart = spEnd;
+			}
+		}
+		
+		if (strStart != len) {
+			new VMessageTextItem(vm, ettext.subSequence(strStart, len).toString());
+		}
+		messageService.sendMessage(vm, chatUser);
+		
 		Item i = new Item();
 		i.type = ITEM_TYPE_SELF;
-		i.content = et.toString();
+		i.content =ettext;
 		itemList.add(i);
 		localAdapter.notifyDataSetChanged();
 		ui.scrollTo(itemList.size());
-		//0 for p2p
-		VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
-				.getCurrentUser(), chatUser, new Date());
-		new VMessageTextItem(vm, i.content);
-		messageService.sendMessage(vm, chatUser);
 	}
 	
 	
@@ -258,7 +285,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	class Item {
 		int type;
 		Bitmap avatar;
-		String content;
+		CharSequence content;
 	}
 	
 }

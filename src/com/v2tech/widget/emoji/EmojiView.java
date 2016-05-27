@@ -55,6 +55,7 @@ public class EmojiView extends LinearLayout {
 			ImageView iv = null;
 			for (int j = 0; j <= cols && resTab.length > start; j++) {
 				iv = new ImageView(ctx);
+				iv.setTag(start);
 				iv.setImageResource(resTab[start++]);
 				iv.setOnClickListener(clickListener);
 				row.addView(iv, new TableRow.LayoutParams(j));

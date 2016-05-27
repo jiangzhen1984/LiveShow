@@ -23,11 +23,11 @@ public class RichEditText extends EditText {
 	}
 	
 	
-	public void appendEmoji(Drawable drawable) {
+	public void appendEmoji(Drawable drawable, int idx) {
 		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 		SpannableStringBuilder builder = new SpannableStringBuilder("[at]", 0, 4);
 		
-		builder.setSpan(new ImageSpan(drawable, 0), 0, 4,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.setSpan(new ImageSpan(drawable, idx+""), 0, 4,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		int start = this.getSelectionStart();
 		int end = this.getSelectionEnd();
 		if (end == start) {
@@ -35,6 +35,11 @@ public class RichEditText extends EditText {
 		} else {
 			this.getText().replace(start, end-start, builder);
 		}
+	}
+	
+	
+	public void appendEmoji(Drawable drawable) {
+		appendEmoji(drawable, -1);
 	}
 	
 	public void appendEmoji(int res) {
