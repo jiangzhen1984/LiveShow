@@ -40,6 +40,7 @@ public class NotificationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		((MainApplication)this.getApplication()).onMainCreate();
 		DeamonWorker.getInstance().addNotificationListener(noListener);
 		ChatRequest.getInstance().addChatRequestCallback(messageCallbackListener);
 	}

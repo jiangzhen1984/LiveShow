@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-     >
+    android:layout_marginTop="5dp" >
 
     <TextView
         android:id="@+id/p2p_message_layout_time"
@@ -12,16 +13,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:text="TextView"
         android:textColor="#a0a0a0"
-        android:textSize="@dimen/p2p_message_time_text_size"
-        android:text="TextView" />
+        android:textSize="@dimen/p2p_message_time_text_size" />
 
     <LinearLayout
-         android:id="@+id/p2p_message_left_ly"
+        android:id="@+id/p2p_message_left_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="@dimen/p2p_message_body_margin_hor"
-        android:layout_alignParentTop="true" >
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp" >
 
         <ImageView
             android:id="@+id/p2p_message_left_avtar"
@@ -35,8 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_bg_left"
-            android:textColor="#000000"
-            android:text="TextViewsdfsdfsdfsdfsdf\nsdfsdf\n" />
+            android:text="TextViewsdfsdfsdfsdfsdf\nsdfsdf\n"
+            android:textColor="#000000" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,19 +48,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginRight="@dimen/p2p_message_body_margin_hor"
-        android:layout_alignParentTop="true" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/p2p_message_right_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_bg_right"
-            android:textColor="#000000"
-            android:text="TextViwewerwerwerwerwe\n\nwerwe" />
+            android:text="TextViwewerwerwerwerwe\n\nwerwe"
+            android:textColor="#000000" />
 
         <ImageView
-             android:id="@+id/p2p_message_right_avtar"
+            android:id="@+id/p2p_message_right_avtar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"

@@ -6,18 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.util.Vector;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 
@@ -58,6 +53,18 @@ public class MainApplication extends Application {
 	
 	
 	
+	
+	
+	@Override
+	public File getDatabasePath(String name) {
+		return super.getDatabasePath(name);
+	}
+
+
+
+
+
+
 	public void onMainCreate() {
 		if (init) {
 			return;

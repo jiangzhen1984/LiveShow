@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		this.context = context;
 		this.ui = ui;
 		additonState = 0;
-		messageService = new  P2PMessageService();
+		messageService = new  P2PMessageService(context);
 		
 		itemList = new ArrayList<Item>(60);
 		Item item = new Item();
@@ -164,8 +165,9 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		messageService.sendMessage(vm, chatUser);
 		
 		Item i = new Item();
+		i.id = vm.getId();
 		i.type = ITEM_TYPE_SELF;
-		i.content =ettext;
+		i.content = new SpannableStringBuilder(ettext);
 		itemList.add(i);
 		localAdapter.notifyDataSetChanged();
 		ui.scrollTo(itemList.size());
@@ -283,6 +285,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	
 	
 	class Item {
+		long id;
 		int type;
 		Bitmap avatar;
 		CharSequence content;

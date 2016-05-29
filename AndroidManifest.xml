@@ -131,12 +131,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" >
-                       <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+          
         </activity>
         <activity
             android:name="com.v2tech.view.BottomButtonLayoutActivity"
@@ -197,49 +192,56 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        
-         <activity
+        <activity
             android:name="com.v2tech.view.FansFollowActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        
-          <activity
+        <activity
             android:name="com.v2tech.view.P2PMessageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
-   
-            
+              <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <service android:name="com.v2tech.view.JNIService" >
         </service>
-         <service android:name="com.v2tech.view.NotificationService" >
+        <service android:name="com.v2tech.view.NotificationService" >
         </service>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":location" >
         </service>
-        
-        
+
         <receiver android:name="com.v2tech.view.ReceiverLiveMessage" >
             <intent-filter>
                 <action android:name="com.v2tech.notification_action" />
+
                 <category android:name="com.v2tech" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        
-         <receiver android:name="com.v2tech.view.ReceiverLiveStatus" >
+        <receiver android:name="com.v2tech.view.ReceiverLiveStatus" >
             <intent-filter>
                 <action android:name="com.v2tech.notification_action" />
+
                 <category android:name="com.v2tech" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="com.v2tech.db.MessageProvider"
+            android:authorities="com.v2tech.liveshow"
+            android:exported="false" />
     </application>
 
 </manifest>
