@@ -12,7 +12,6 @@ public class MessageProvider extends ContentProvider {
 
 	public MessageProvider() {
 		super();
-		helper = new MessageDBHelper(getContext());
 	}
 
 	@Override
@@ -23,20 +22,52 @@ public class MessageProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
+		if (helper == null) {
+			helper = new MessageDBHelper(getContext());
+		}
 		int token = MessageDescriptor.URI_MATCHER.match(uri);
-		SQLiteDatabase db  = helper.getReadableDatabase();
-		Cursor cur = null;
+		String tableName = null;
 		switch (token) {
 		case MessageDescriptor.SystemMessage.TOKEN:
-			cur =  db.query(MessageDescriptor.SystemMessage.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+			tableName = MessageDescriptor.SystemMessage.TABLE_NAME;
 			break;
 		case MessageDescriptor.SystemMessage.TOKEN_WITH_ID:
-			cur = db.query(MessageDescriptor.SystemMessage.TABLE_NAME, projection, " id ", new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
+			tableName = MessageDescriptor.SystemMessage.TABLE_NAME;
+			selection = " id = ?";
+			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
+		case MessageDescriptor.P2PMessage.TOKEN:
+			throw new RuntimeException(
+					" Does not support token, use:  TOKEN_WITH_ID");
+		case MessageDescriptor.P2PMessage.TOKEN_WITH_ID:
+			tableName = MessageDescriptor.P2PMessage.TABLE_NAME;
+			selection = " id = ?";
+			selectionArgs = new String[] { uri.getLastPathSegment() };
+			break;
+		case MessageDescriptor.P2PMessage.TOKEN_WITH_USER_ID:
+			tableName = MessageDescriptor.P2PMessage.TABLE_NAME;
+			selection = MessageDescriptor.P2PMessage.Cols.FROM_USER + "=? or  "
+					+ MessageDescriptor.P2PMessage.Cols.TO_USER + "=?";
+			selectionArgs = new String[] { uri.getLastPathSegment(),
+					uri.getLastPathSegment() };
+			break;
+
+		case MessageDescriptor.P2PMessageItem.TOKEN_WITH_MASTER_ID:
+			tableName = MessageDescriptor.SystemMessage.TABLE_NAME;
+			selection = " id = ?";
+			selectionArgs = new String[] { uri.getLastPathSegment() };
+			break;
+		default:
+			throw new RuntimeException(
+					" Does not support token" + uri);
+
 		}
-		
+		Cursor cur = null;
+		SQLiteDatabase db = helper.getReadableDatabase();
+		cur = db.query(tableName, projection, selection, selectionArgs, null,
+				null, sortOrder);
 		db.close();
-		
+
 		return cur;
 	}
 
@@ -47,16 +78,31 @@ public class MessageProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		SQLiteDatabase db  = helper.getWritableDatabase();
+		if (helper == null) {
+			helper = new MessageDBHelper(getContext());
+		}
+
 		int token = MessageDescriptor.URI_MATCHER.match(uri);
 		long id = 0;
+		String name = null;
 		switch (token) {
 		case MessageDescriptor.SystemMessage.TOKEN:
-			id = db.insert(MessageDescriptor.SystemMessage.TABLE_NAME, null, values);
+			name = MessageDescriptor.SystemMessage.TABLE_NAME;
 			break;
+		case MessageDescriptor.P2PMessageItem.TOKEN_WITH_MASTER_ID:
+			name = MessageDescriptor.P2PMessageItem.TABLE_NAME;
+			values.put(MessageDescriptor.P2PMessageItem.Cols.MASTER_ID, uri.getLastPathSegment());
+			break;
+		case MessageDescriptor.P2PMessage.TOKEN_WITH_USER_ID:
+			name = MessageDescriptor.P2PMessage.TABLE_NAME;
+			break;
+		default:
+			throw new RuntimeException(" Does not support token: " + uri);
 		}
-		db.close();
-		return uri.buildUpon().appendEncodedPath(id+"").build();
+
+		SQLiteDatabase db = helper.getWritableDatabase();
+		id = db.insert(name, null, values);
+		return uri.buildUpon().appendEncodedPath(id + "").build();
 	}
 
 	@Override

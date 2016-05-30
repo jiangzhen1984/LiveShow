@@ -137,7 +137,8 @@ public class ConferenceService extends DeviceService {
 						LiveWatchingReqPacket.WATCHING), null));
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
-		ConfRequest.getInstance().ConfEnter(l.getLid());
+	//	ConfRequest.getInstance().ConfEnter(l.getLid());
+		ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), l.getLid(), 1);
 		
 	}
 	
@@ -209,7 +210,7 @@ public class ConferenceService extends DeviceService {
 			seed = ~seed;
 		}
 		gid |= seed;
-		ConfRequest.getInstance().ConfEnter(gid);
+		ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), gid, 1);
 		
 		initTimeoutMessage(JNI_REQUEST_CREATE_CONFERENCE,
 				DEFAULT_TIME_OUT_SECS, caller);
@@ -511,6 +512,7 @@ public class ConferenceService extends DeviceService {
 			Message.obtain(mCallbackHandler, JNI_REQUEST_ENTER_CONF, jniRes)
 					.sendToTarget();
 //			
+			ConfRequest.getInstance().NotifyConfAllMessage(nConfID);
 //			//
 //			DeamonWorker.getInstance().request(
 //					new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, nConfID,

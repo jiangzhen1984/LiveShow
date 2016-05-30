@@ -1107,10 +1107,10 @@ public class MainPresenter extends BasePresenter implements
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
 			if (this.currentLive.getPublisher() == null) {
 				this.currentLive.setPublisher(new User(rer.getConf()
-						.getCreator()));
+						.getChairman()));
 			} else {
 				this.currentLive.getPublisher().setmUserId(
-						(rer.getConf().getCreator()));
+						(rer.getConf().getChairman()));
 			}
 
 			Message.obtain(uiHandler, UI_HANDLE_UPDATE_VIDEO_SCREEN,
@@ -1129,7 +1129,7 @@ public class MainPresenter extends BasePresenter implements
 					.getResult();
 			long uid = adi.uid;
 			List<UserDeviceConfig> ll = (List<UserDeviceConfig>) adi.ll;
-			if (ll == null || ll.size() < 0) {
+			if (ll == null || ll.size() < 0) {                                                        
 				V2Log.e("===== chair man no device" + uid);
 				pending = false;
 				return;
@@ -1147,7 +1147,7 @@ public class MainPresenter extends BasePresenter implements
 				pending = false;
 
 			} else {
-				V2Log.e("=====not chair man" + uid);
+				V2Log.e("=====got remote user id : " + uid+"   chair man userid:"+this.currentLive.getPublisher().getmUserId());
 			}
 
 		}

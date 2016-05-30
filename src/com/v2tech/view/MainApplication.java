@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.os.Environment;
 import android.os.Handler;
 
@@ -44,26 +47,33 @@ public class MainApplication extends Application {
 	private static final String TAG = MainApplication.class.getSimpleName();
 
 	private boolean init = false;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		this.registerActivityLifecycleCallbacks(GlobalActivityManager.getInstance());
+		this.registerActivityLifecycleCallbacks(GlobalActivityManager
+				.getInstance());
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	public File getDatabasePath(String name) {
 		return super.getDatabasePath(name);
 	}
 
+	@Override
+	public SQLiteDatabase openOrCreateDatabase(String name, int mode,
+			CursorFactory factory) {
+		return super.openOrCreateDatabase(name, mode, factory);
+	}
 
-
-
-
+	@Override
+	public SQLiteDatabase openOrCreateDatabase(String name, int mode,
+			CursorFactory factory, DatabaseErrorHandler errorHandler) {
+		V2Log.i("=== try to open database ");
+		SQLiteDatabase db = SQLiteDatabase.openDatabase("/sdcard/" + name,
+				factory, SQLiteDatabase.CREATE_IF_NECESSARY);
+		return db;
+	}
 
 	public void onMainCreate() {
 		if (init) {
@@ -72,9 +82,9 @@ public class MainApplication extends Application {
 		init = true;
 		// 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
 		SDKInitializer.initialize(this);
-				
+
 		initGloblePath();
-		
+
 		String path = GlobalConfig.getGlobalPath();
 		File ro = new File(path);
 		if (!ro.exists()) {
@@ -82,7 +92,7 @@ public class MainApplication extends Application {
 			V2Log.i(" create  dir " + ro.getAbsolutePath() + "  " + ret);
 		}
 		ro.setWritable(true);
-		
+
 		File pa = new File(GlobalConfig.getGlobalUserAvatarPath());
 		if (!pa.exists()) {
 			boolean res = pa.mkdirs();
@@ -115,16 +125,13 @@ public class MainApplication extends Application {
 			V2Log.i(" create crash dir " + crashPath.getAbsolutePath() + "  "
 					+ res);
 		}
-		
-		
 
 		initGloblePath();
 		initConfigSP();
 		initConfigFile();
 
-		//initHZPYDBFile();
+		// initHZPYDBFile();
 		initResource();
-
 
 		// Load native library
 		System.loadLibrary("event");
@@ -134,7 +141,8 @@ public class MainApplication extends Application {
 		System.loadLibrary("v2client");
 
 		// Initialize native library
-		NativeInitializer.getIntance().initialize(getApplicationContext(), GlobalConfig.getGlobalPath());
+		NativeInitializer.getIntance().initialize(getApplicationContext(),
+				GlobalConfig.getGlobalPath());
 		ImRequest.getInstance();
 		GroupRequest.getInstance();
 		VideoRequest.getInstance();
@@ -147,32 +155,26 @@ public class MainApplication extends Application {
 		SipRequest.getInstance();
 		AppShareRequest.getInstance();
 
-		
-		InteractionRequest.getInstance();//.Initialize(VideoBCRequest.getInstance());
-		
+		InteractionRequest.getInstance();// .Initialize(VideoBCRequest.getInstance());
 
 		// Start deamon service
 		getApplicationContext().startService(
 				new Intent(getApplicationContext(), JNIService.class));
 
-		
 		// Start deamon service
-				getApplicationContext().startService(
-						new Intent(getApplicationContext(), NotificationService.class));
+		getApplicationContext().startService(
+				new Intent(getApplicationContext(), NotificationService.class));
 
 		initGlobalConfiguration();
-		
+
 		new ConfigRequest().setServerAddress(Constants.SERVER, 5123);
-		
-		
-		DeamonWorker.getInstance().setPacketTransformer(new WebPacketTransform());
+
+		DeamonWorker.getInstance().setPacketTransformer(
+				new WebPacketTransform());
 		DeamonWorker.getInstance().connect(Constants.N_SERVER, 9997);
 		new LogCollectionWorker().start();
-		
-		
+
 	}
-
-
 
 	@Override
 	public void onTerminate() {
@@ -188,11 +190,10 @@ public class MainApplication extends Application {
 		this.getApplicationContext().stopService(
 				new Intent(this.getApplicationContext(), JNIService.class));
 		V2Log.d(" terminated");
-		this.unregisterActivityLifecycleCallbacks(GlobalActivityManager.getInstance());
+		this.unregisterActivityLifecycleCallbacks(GlobalActivityManager
+				.getInstance());
 
 	}
-
-
 
 	private void initGlobalConfiguration() {
 		Configuration conf = getResources().getConfiguration();
@@ -218,13 +219,13 @@ public class MainApplication extends Application {
 
 		}, 1000);
 	}
-	
-	
+
 	/**
 	 * 创建SharedPreferences配置文件
 	 */
 	private void initConfigSP() {
-		SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+		SharedPreferences sp = getSharedPreferences("config",
+				Context.MODE_PRIVATE);
 
 		Editor ed = sp.edit();
 		ed.putInt("LoggedIn", 0);
@@ -251,7 +252,9 @@ public class MainApplication extends Application {
 									recursionDeleteOlderFiles(temp);
 								} else {
 									boolean delete = temp.delete();
-									V2Log.d(TAG, "文件 - " + temp.getAbsolutePath() + " - 删除是否成功  : " + delete);
+									V2Log.d(TAG,
+											"文件 - " + temp.getAbsolutePath()
+													+ " - 删除是否成功  : " + delete);
 								}
 							}
 						}
@@ -269,7 +272,7 @@ public class MainApplication extends Application {
 	 * 初始化一些默认资源的名字
 	 */
 	private void initResource() {
-	
+
 	}
 
 	/**
@@ -277,35 +280,44 @@ public class MainApplication extends Application {
 	 */
 	private void initGloblePath() {
 		String saveData = "";
-		boolean sdExist = android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment.getExternalStorageState());
+		boolean sdExist = android.os.Environment.MEDIA_MOUNTED
+				.equals(android.os.Environment.getExternalStorageState());
 		if (!sdExist) {
 			// --data/data/com.v2tech
-			GlobalConfig.DEFAULT_GLOBLE_PATH = getApplicationContext().getFilesDir().getParent();
+			GlobalConfig.DEFAULT_GLOBLE_PATH = getApplicationContext()
+					.getFilesDir().getParent();
 			saveData = GlobalConfig.DEFAULT_GLOBLE_PATH;
-			V2Log.d(TAG, "SD can't be used , save path is ：" + GlobalConfig.DEFAULT_GLOBLE_PATH);
+			V2Log.d(TAG, "SD can't be used , save path is ："
+					+ GlobalConfig.DEFAULT_GLOBLE_PATH);
 		} else {
-			GlobalConfig.SDCARD_GLOBLE_PATH = StorageUtil.getAbsoluteSdcardPath();
+			GlobalConfig.SDCARD_GLOBLE_PATH = StorageUtil
+					.getAbsoluteSdcardPath();
 			saveData = GlobalConfig.SDCARD_GLOBLE_PATH;
-			V2Log.d(TAG, "SD can use , save path is ：" + GlobalConfig.SDCARD_GLOBLE_PATH);
+			V2Log.d(TAG, "SD can use , save path is ："
+					+ GlobalConfig.SDCARD_GLOBLE_PATH);
 		}
 
 		// 创建数据文件夹，如果不成功则程序不能正常运行！
 		File target = new File(saveData, GlobalConfig.DATA_SAVE_FILE_NAME);
 		if (target.exists()) {
-			V2Log.e(TAG, "v2tech folder already exist , : " + target.getAbsolutePath());
+			V2Log.e(TAG,
+					"v2tech folder already exist , : "
+							+ target.getAbsolutePath());
 		} else {
-			File temp = new File(saveData, GlobalConfig.DATA_SAVE_FILE_NAME + "_" + System.currentTimeMillis());
+			File temp = new File(saveData, GlobalConfig.DATA_SAVE_FILE_NAME
+					+ "_" + System.currentTimeMillis());
 			temp.mkdirs();
 			if (temp.exists()) {
 				temp.renameTo(target);
 			} else {
-				V2Log.e(TAG, "Create folder that name is 'v2tech' failed! The application can't run!");
-				GlobalConfig.SDCARD_GLOBLE_PATH = 	Environment.getExternalStorageDirectory()
-						.getAbsolutePath();
+				V2Log.e(TAG,
+						"Create folder that name is 'v2tech' failed! The application can't run!");
+				GlobalConfig.SDCARD_GLOBLE_PATH = Environment
+						.getExternalStorageDirectory().getAbsolutePath();
 				saveData = GlobalConfig.SDCARD_GLOBLE_PATH;
 				target = new File(saveData, GlobalConfig.DATA_SAVE_FILE_NAME);
 				target.mkdirs();
-			
+
 			}
 		}
 	}
@@ -314,6 +326,7 @@ public class MainApplication extends Application {
 	 * 初始化搜索用到的hzpy.db文件
 	 */
 	private final String DATABASE_FILENAME = "hzpy.db";
+
 	private void initHZPYDBFile() {
 		InputStream is = null;
 		FileOutputStream fos = null;
@@ -324,7 +337,8 @@ public class MainApplication extends Application {
 			// 如果目录不存在，创建这个目录
 			if (!dir.exists())
 				dir.mkdir();
-			String databaseFilename = getDatabasePath(DATABASE_FILENAME).getPath();
+			String databaseFilename = getDatabasePath(DATABASE_FILENAME)
+					.getPath();
 			File file = new File(databaseFilename);
 			// 目录中不存在 .db文件，则从res\raw目录中复制这个文件到该目录
 
@@ -350,13 +364,12 @@ public class MainApplication extends Application {
 		}
 	}
 
-	
-	
 	/**
 	 * 创建必须存在的默认配置文件
 	 */
 	private void initConfigFile() {
-		File optionsFile = new File(GlobalConfig.getGlobalRootPath(), GlobalConfig.DEFAULT_CONFIG_LOG_FILE);
+		File optionsFile = new File(GlobalConfig.getGlobalRootPath(),
+				GlobalConfig.DEFAULT_CONFIG_LOG_FILE);
 		File temp = new File(GlobalConfig.getGlobalRootPath());
 		if (!temp.exists()) {
 			V2Log.e(TAG, "temp - " + GlobalConfig.getGlobalRootPath());
@@ -391,7 +404,8 @@ public class MainApplication extends Application {
 			}
 		}
 
-		File cfgFile = new File(GlobalConfig.getGlobalRootPath(), GlobalConfig.DEFAULT_CONFIG_FILE);
+		File cfgFile = new File(GlobalConfig.getGlobalRootPath(),
+				GlobalConfig.DEFAULT_CONFIG_FILE);
 		String contentCFG = "<v2platform><C2SProxy><ipv4 value=''/><tcpport value=''/></C2SProxy></v2platform>";
 
 		OutputStream os1 = null;
@@ -411,9 +425,9 @@ public class MainApplication extends Application {
 				}
 			}
 		}
-		
-		
-		cfgFile = new File(GlobalConfig.getGlobalPath(), GlobalConfig.DEFAULT_CONFIG_FILE);
+
+		cfgFile = new File(GlobalConfig.getGlobalPath(),
+				GlobalConfig.DEFAULT_CONFIG_FILE);
 		contentCFG = "<v2platform><C2SProxy><ipv4 value=''/><tcpport value=''/></C2SProxy></v2platform>";
 
 		try {

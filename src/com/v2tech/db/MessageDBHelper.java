@@ -21,13 +21,15 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 	
-	public MessageDBHelper(Context context) {
+	public MessageDBHelper(Context context) { 
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(MessageDescriptor.SystemMessage.getCreateSql());
+		db.execSQL(MessageDescriptor.P2PMessage.getCreateSql());
+		db.execSQL(MessageDescriptor.P2PMessageItem.getCreateSql());
 	}
 
 	@Override
@@ -35,4 +37,8 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 
 	}
 
+	
+	
+	
+	
 }

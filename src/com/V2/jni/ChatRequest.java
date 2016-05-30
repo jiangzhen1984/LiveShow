@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.V2.jni.callback.ChatRequestCallback;
+import com.V2.jni.util.V2Log;
 
 public class ChatRequest {
 	private static ChatRequest mChatRequest;
@@ -144,6 +145,7 @@ public class ChatRequest {
 	private void OnChatRecvTextMessage(int nGroupType, long nGroupID,
 			long nFromUser, long nToUserID, long nTime, String szMessageID,
 			String szTextXml) {
+		V2Log.d(szTextXml);
 		synchronized (callbacks) {
 			if (callbacks.size() > 0) {
 				for (WeakReference<ChatRequestCallback> wf : callbacks) {

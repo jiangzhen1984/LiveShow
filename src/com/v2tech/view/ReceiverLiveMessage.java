@@ -5,17 +5,27 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
+import com.V2.jni.util.XmlAttributeExtractor;
 import com.v2tech.presenter.GlobalPresenterManager;
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveMessageHandler;
+import com.v2tech.service.P2PMessageService;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
+import com.v2tech.vo.msg.VMessageAudioItem;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
+import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageTextItem;
 
 public class ReceiverLiveMessage extends BroadcastReceiver {
@@ -25,25 +35,27 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 		String action = intent.getAction();
 		V2Log.i("===> receive broadcast : " + action);
 		if ("com.v2tech.notification_action".equals(action)) {
-			handleNotification(intent);
+			handleNotification(context, intent);
 		}
 	}
 
-	private void handleNotification(Intent i) {
+	private void handleNotification(Context context, Intent i) {
 		String sub = i.getStringExtra("sub");
-		if ("com.v2tech.om.v2tech.live_message".equals(sub)) {
+		if ("com.v2tech.live_message".equals(sub)) {
 			List<LiveMessageHandler> handlers = GlobalPresenterManager
 					.getInstance().getLiveMessageHandler();
 			MessageInd ind = (MessageInd) i.getSerializableExtra("obj");
 			Meta meta = handleNewMessage(ind);
+			VMessage vm = null;
+			
+			if (meta.mt == MetaType.MESSAGE && meta.lid <= 0) {
+				vm = extraMessage(ind);
+			}
 			for (LiveMessageHandler h : handlers) {
 				if (meta.mt == MetaType.MESSAGE) {
 					if (meta.lid > 0) {
 						h.onLiveMessage(meta.lid, meta.uid, ind);
 					} else {
-						V2Log.d("====> " + ind.content);
-						VMessage vm = new VMessage(2, ind.lid, new User(ind.uid), new Date());
-						vm.addItem(new VMessageTextItem(vm, ind.content));
 						h.onP2PMessage(vm);
 					}
 				} else if (meta.mt == MetaType.AUDIO_VIDEO_CTL) {
@@ -54,10 +66,49 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 					}
 				}
 			}
+			
+			if (vm != null) {
+				P2PMessageService.saveMessage(context, vm, vm.getToUser());
+			}
 		}
 	}
+	
+	private VMessage extraMessage(MessageInd ind) {
+		Document doc = XmlAttributeExtractor.buildDocument(ind.content);
+		NodeList  itemNode = doc.getElementsByTagName("ItemList");
+		if (itemNode.getLength() <= 0) {
+			return null;
+		}
+		// 4 for group  2 for p2p
+		VMessage vm = new VMessage(ind.lid > 0 ? 4 : 2 , ind.lid, new User(ind.uid) , new Date());
+		vm.setToUser(GlobalHolder.getInstance().getCurrentUser());
+		NodeList iList = itemNode.item(0).getChildNodes();
+		int len = iList.getLength();
+		for (int i = 0; i < len; i++) {
+			Node n = iList.item(i);
+			if (!(n instanceof Element)) {
+				continue;
+			}
+			Element e = (Element) n;
+			if ("TTextChatItem".equalsIgnoreCase(e.getTagName())) {
+				String content = e.getAttribute("Text");
+				new VMessageTextItem(vm, content);
+			} else if ("TSysFaceChatItem".equalsIgnoreCase(e.getTagName())) {
+				int idx = Integer.parseInt(e.getAttribute("idx"));
+				new VMessageFaceItem(vm, idx);
+			}  else if ("TAudioChatItem".equalsIgnoreCase(e.getTagName())) {
+				String uuid =  e.getAttribute("FileID");
+				String extension =  e.getAttribute("FileExt");
+				int ses = Integer.parseInt(e.getAttribute("Seconds"));
+				new VMessageAudioItem(vm, uuid, extension, ses);
+			}
+		}
+		
+		return vm;
+	}
+	
 
-	public Meta handleNewMessage(MessageInd ind) {
+	private Meta handleNewMessage(MessageInd ind) {
 
 		String content = ind.content;
 		Pattern p = Pattern.compile("(@)(t[1-2])(l)(\\d+)(u)(\\d+)(a)(\\d)(@)");

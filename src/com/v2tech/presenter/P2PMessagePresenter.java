@@ -151,12 +151,13 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		
 			if (strStart != spStart) {
 				new VMessageTextItem(vm, ettext.subSequence(strStart, spStart).toString());
-			} else {
-				spEnd = ettext.getSpanEnd(s);
-				new VMessageFaceItem(vm, Integer.parseInt(s.getSource()));
-				//reset string index
-				strStart = spEnd;
-			}
+				strStart = spStart;
+			} 
+			
+			spEnd = ettext.getSpanEnd(s);
+			new VMessageFaceItem(vm, Integer.parseInt(s.getSource()));
+			//reset string index
+			strStart = spEnd;
 		}
 		
 		if (strStart != len) {
@@ -245,7 +246,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 	@Override
 	public void onEmojiClicked(View v) {
-		ui.getEditable().appendEmoji(((ImageView)v).getDrawable());
+		ImageView iv = (ImageView)v; 
+		ui.getEditable().appendEmoji(iv.getDrawable(), Integer.parseInt(iv.getTag().toString()));
 	}
 
 
