@@ -1,17 +1,21 @@
 package com.v2tech.service;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
 import com.v2tech.db.MessageDescriptor;
+import com.v2tech.db.MessageDescriptor.P2PMessage;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAbstractItem;
@@ -98,9 +102,52 @@ public class P2PMessageService extends AbstractHandler {
 		}
 	}
 	
-	public List<VMessage> getVMList(int start, int count) {
+	public List<VMessage> getVMList(long uid, int start, int count) {
+		Context ctx = wfCtx.get();
+		if (ctx == null) {
+			return null;
+		}
+		Uri uri = MessageDescriptor.P2PMessage.QUERY_URI.buildUpon().appendPath(200+"").build();
+		Cursor cur = ctx.getContentResolver().query(uri, P2PMessage.COL_ARR, null, null,  P2PMessage.Cols.DATE_TIME+" desc ");
+		Cursor itemCur = null;
+		List<VMessage> list = new ArrayList<VMessage>(cur.getCount());
+		while(cur.moveToNext()) {
+			long mid = cur.getLong(0);
+			long fuid = cur.getLong(1);
+			long tuid = cur.getLong(2);
+			long time = cur.getLong(3);
+			int flag = cur.getInt(4);
+			VMessage vm = new VMessage(2, 0, new User(fuid), new User(tuid), new Date(time));
+			vm.setId(mid);
+			vm.setReadState(flag);
+			list.add(vm);
+			
+			//Query item
+			uri = MessageDescriptor.P2PMessageItem.QUERY_URI.buildUpon().appendPath(mid+"").build();
+			itemCur = ctx.getContentResolver().query(uri, MessageDescriptor.P2PMessageItem.COL_ARR, null, null, "");
+			while(itemCur.moveToNext()) {
+				int type = itemCur.getInt(2);
+				String text = itemCur.getString(3);
+				switch (type) {
+				case VMessageAbstractItem.ITEM_TYPE_TEXT:
+					new VMessageTextItem(vm, text);
+					break;
+				case VMessageAbstractItem.ITEM_TYPE_FACE:
+					new VMessageFaceItem(vm, Integer.parseInt(text));
+					break;
+				case VMessageAbstractItem.ITEM_TYPE_AUDIO:
+					String[] subItem = text.split(":");
+					new VMessageAudioItem(vm, subItem[0], subItem[1], Integer.parseInt(subItem[2]));
+					break;
+				}
+				
+				
+			}
+			itemCur.close();
+		}
 		
-		return null;
+		cur.close();
+		return list;
 	}
 
 	@Override

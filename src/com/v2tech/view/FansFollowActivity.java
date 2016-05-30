@@ -90,6 +90,11 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		finish();
 
 	}
+	
+	
+	public Object getIntentData(String key) {
+		return this.getIntent().getExtras().get(key);
+	}
 
 	@Override
 	public void updateTitleBar() {

@@ -442,6 +442,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             map.put("phone", user.getPhone());
             map.put("headurl", user.getHeadurl());
             map.put("signText", user.getSignText());
+            map.put("v2id", user.getV2ID());
             list.add(map);
         }
         lrp.fansList = list;
@@ -466,6 +467,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             map.put("name", user.getName());
             map.put("headurl", user.getHeadurl());
             map.put("signText", user.getSignText());
+            map.put("v2id", user.getV2ID());
             position = user.getPosition();
             map.put("longitude", String.valueOf(position.getLongitude()));
             map.put("latitude", String.valueOf(position.getLatitude()));

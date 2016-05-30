@@ -66,8 +66,6 @@ public class MessageProvider extends ContentProvider {
 		SQLiteDatabase db = helper.getReadableDatabase();
 		cur = db.query(tableName, projection, selection, selectionArgs, null,
 				null, sortOrder);
-		db.close();
-
 		return cur;
 	}
 

@@ -94,6 +94,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 	public void onListItemClicked(Object tag) {
 		User u = (User)tag;
 		Intent i = new Intent();
+		i.putExtra("user", u);
 		i.setClass(context, FansFollowActivity.class);
 		context.startActivity(i);
 	}
@@ -325,7 +326,12 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		User u = null;
 		for (Map<String, String> m : fqrp.fansList) {
 			long id = Long.parseLong(m.get("id"));
-			u = new User(-1);
+			String v2idStr = m.get("v2id");
+			long v2id = -1;
+			if (v2idStr != null && !v2idStr.isEmpty()) {
+			    v2id = Long.parseLong(v2idStr);
+			}
+			u = new User(v2id);
 			u.nId = id;
 			fans.add(u);
 		}
@@ -347,7 +353,12 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		User u = null;
 		for (Map<String, String> m : fqrp.follows) {
 			long id = Long.parseLong(m.get("id"));
-			u = new User(-1);
+			String v2idStr = m.get("v2id");
+			long v2id = -1;
+			if (v2idStr != null && !v2idStr.isEmpty()) {
+			    v2id = Long.parseLong(v2idStr);
+			}
+			u = new User(v2id);
 			u.nId = id;
 			fans.add(u);
 		}

@@ -18,7 +18,7 @@ public class MessageDescriptor {
 
 		matcher.addURI(augura, P2PMessage.PATH, P2PMessage.TOKEN);
 		matcher.addURI(augura, P2PMessage.PATH + "/#", P2PMessage.TOKEN_WITH_ID);
-		matcher.addURI(augura, P2PMessage.PATH_USER,
+		matcher.addURI(augura, P2PMessage.PATH_USER +"/#",
 				P2PMessage.TOKEN_WITH_USER_ID);
 		
 		
@@ -67,6 +67,9 @@ public class MessageDescriptor {
 			public static final String READ_FLAG = "flag";
 		}
 		
+		public static final String[] COL_ARR = { Cols.ID, Cols.FROM_USER,
+				Cols.TO_USER, Cols.DATE_TIME, Cols.READ_FLAG };
+		
 		
 		public static String getCreateSql() {
 			return " create table  " + TABLE_NAME 
@@ -94,6 +97,8 @@ public class MessageDescriptor {
 		public static String PATH_MASTER = PATH+"/master" ;
 		
 		public static Uri INSERT = BASE_URI.buildUpon().appendPath(PATH).appendPath("master").build();
+		
+		public static Uri QUERY_URI = BASE_URI.buildUpon().appendPath(PATH).appendPath("master").build();
 
 		public static String TABLE_NAME ="p2p_message_item";
 		
@@ -109,6 +114,10 @@ public class MessageDescriptor {
 			public static final String TYPE = "item_type";
 			public static final String CONTENT = "content";
 		}
+		
+		
+		public static final String[] COL_ARR = { Cols.ID, Cols.MASTER_ID,
+			Cols.TYPE, Cols.CONTENT};
 		
 		
 		public static String getCreateSql() {

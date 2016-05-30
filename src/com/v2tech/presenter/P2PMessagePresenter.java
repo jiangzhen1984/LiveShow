@@ -6,7 +6,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.View;
@@ -15,12 +18,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.V2.jni.ind.MessageInd;
-import com.V2.jni.util.V2Log;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.P2PMessageService;
+import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
+import com.v2tech.vo.msg.VMessageAbstractItem;
 import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageTextItem;
 import com.v2tech.widget.RichEditText;
@@ -41,14 +45,14 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	private P2PMessagePresenterUI ui;
 	
 	private List<Item> itemList;
-	
 	private LocalAdapter localAdapter;
 	
 	private int additonState;
 	
-	
 	private User chatUser;
 	private P2PMessageService messageService;
+	private Handler loader;
+	private Handler uiHandler;
 	
 	public interface P2PMessagePresenterUI {
 		public void setAdapter(BaseAdapter adapter);
@@ -79,23 +83,14 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		additonState = 0;
 		messageService = new  P2PMessageService(context);
 		
-		itemList = new ArrayList<Item>(60);
-		Item item = new Item();
-		item.type = 2;
-		item.content ="2016-04-20 14:34:32";
-		itemList.add(item);
-		for (int i = 0; i <60; i++) {
-			item = new Item();
-			item.type = i % 2;
-			item.content ="特素推送地方 " + i+" \n\n";
-			itemList.add(item);
-		}
-		
+		itemList = new ArrayList<Item>(20);
+		loader = new Handler(super.backendThread.getLooper());
+		uiHandler = new Handler();
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
-		
 		chatUser = new User(ui.getIntentUserId());
-	    V2Log.i("====> " + ui.getIntentUserId());
+		
+		loader.postDelayed(new LoaderWorker(0, 30), 100);
 	}
 	
 	
@@ -233,7 +228,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	@Override
 	public void onP2PMessage(VMessage vm) {
 		Item i = new Item();
-		i.content =  vm.getAllTextContent();
+		i.content =  buildContent(vm);
+		i.type = ITEM_TYPE_OTHERS;
 		itemList.add(i);
 	}
 
@@ -252,7 +248,23 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 
 
-
+	private CharSequence buildContent(VMessage vm) {
+		SpannableStringBuilder builder = new SpannableStringBuilder();
+		List<VMessageAbstractItem>  list = vm.getItems();
+		for (VMessageAbstractItem item : list) {
+			if (item.getType() == VMessageAbstractItem.ITEM_TYPE_TEXT) {
+				builder.append(((VMessageTextItem)item).getText());
+			} else if (item.getType() == VMessageAbstractItem.ITEM_TYPE_FACE) {
+				SpannableStringBuilder emojiBuilder = new SpannableStringBuilder("[at]", 0, 4);
+				Drawable dra = context.getResources().getDrawable(R.drawable.emo_01);
+				dra.setBounds(0, 0, dra.getIntrinsicWidth(), dra.getIntrinsicHeight());
+				ImageSpan span = new ImageSpan(dra);
+				emojiBuilder.setSpan(span, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				builder.append(emojiBuilder);
+			}
+		}
+		return builder;
+	}
 
 
 
@@ -281,6 +293,45 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 			}
 			ui.updateView(convertView, itemList.get(position).type, itemList.get(position).content);
 			return convertView;
+		}
+		
+	}
+	
+	
+	
+	class LoaderWorker implements Runnable {
+
+		int start;
+		int page;
+		public LoaderWorker(int start, int page) {
+			super();
+			this.start = start;
+			this.page = page;
+		}
+		
+		@Override
+		public void run() {
+			List<VMessage> list = messageService.getVMList(chatUser.getmUserId(), start, page);
+			Item i = null;
+			long uid = GlobalHolder.getInstance().getCurrentUserId();
+			for (VMessage m : list) {
+				i = new Item();
+				i.content =  buildContent(m);
+				if (m.getFromUser().getmUserId() == uid) {
+					i.type = ITEM_TYPE_SELF;
+				} else {
+					i.type = ITEM_TYPE_OTHERS;
+				}
+				itemList.add(i);
+			}
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					localAdapter.notifyDataSetChanged();
+				}
+				
+			});
 		}
 		
 	}
