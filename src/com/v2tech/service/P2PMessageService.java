@@ -74,7 +74,7 @@ public class P2PMessageService extends AbstractHandler {
 		values.put(MessageDescriptor.P2PMessage.Cols.TO_USER,  user.getmUserId()+ "");
 		values.put(MessageDescriptor.P2PMessage.Cols.DATE_TIME,  vm.getDate().getTime());
 		values.put(MessageDescriptor.P2PMessage.Cols.READ_FLAG,  vm.isReadState());
-		Uri uri = ctx.getContentResolver().insert(MessageDescriptor.P2PMessage.INSERT_URI, values);
+		Uri uri = ctx.getContentResolver().insert(MessageDescriptor.P2PMessage.INSERT_URI.buildUpon().appendPath(user.getmUserId()+"").build(), values);
 		vm.setId(Long.parseLong(uri.getLastPathSegment()));
 		
 		Uri masterUri = MessageDescriptor.P2PMessageItem.INSERT.buildUpon().appendPath(uri.getLastPathSegment()).build();
@@ -91,7 +91,13 @@ public class P2PMessageService extends AbstractHandler {
 				values.put(MessageDescriptor.P2PMessageItem.Cols.CONTENT, ((VMessageFaceItem)ai).getIndex());
 				break;
 			case VMessageAbstractItem.ITEM_TYPE_AUDIO:
-				values.put(MessageDescriptor.P2PMessageItem.Cols.CONTENT, ((VMessageAudioItem)ai).getAudioFilePath());
+				VMessageAudioItem vai = (VMessageAudioItem) ai;
+				String content = 
+						vai.getUuid() + ":" +
+						vai.getExtension()+ ":" +
+						vai.getSeconds() + ":" +
+						vai.getReadState();
+				values.put(MessageDescriptor.P2PMessageItem.Cols.CONTENT, content);
 				break;
 			case VMessageAbstractItem.ITEM_TYPE_IMAGE:
 				values.put(MessageDescriptor.P2PMessageItem.Cols.CONTENT, ((VMessageImageItem)ai).getFilePath());
@@ -107,7 +113,7 @@ public class P2PMessageService extends AbstractHandler {
 		if (ctx == null) {
 			return null;
 		}
-		Uri uri = MessageDescriptor.P2PMessage.QUERY_URI.buildUpon().appendPath(200+"").build();
+		Uri uri = MessageDescriptor.P2PMessage.QUERY_URI.buildUpon().appendPath(uid+"").build();
 		Cursor cur = ctx.getContentResolver().query(uri, P2PMessage.COL_ARR, null, null,  P2PMessage.Cols.DATE_TIME+" desc ");
 		Cursor itemCur = null;
 		List<VMessage> list = new ArrayList<VMessage>(cur.getCount());

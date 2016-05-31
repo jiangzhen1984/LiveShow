@@ -1,5 +1,7 @@
 package com.v2tech.db;
 
+import com.v2tech.db.MessageDescriptor.P2PMessageItem;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -53,8 +55,8 @@ public class MessageProvider extends ContentProvider {
 			break;
 
 		case MessageDescriptor.P2PMessageItem.TOKEN_WITH_MASTER_ID:
-			tableName = MessageDescriptor.SystemMessage.TABLE_NAME;
-			selection = " id = ?";
+			tableName = MessageDescriptor.P2PMessageItem.TABLE_NAME;
+			selection = P2PMessageItem.Cols.MASTER_ID +"  = ?";
 			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
 		default:

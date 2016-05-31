@@ -136,6 +136,7 @@ public class LoginPresenter extends BasePresenter {
 	private void handleLoginCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			GlobalHolder.getInstance().getCurrentUser().isNY = false;
+			GlobalHolder.getInstance().getCurrentUser().setMobile( ui.getUserNameText());
 			ui.doLogedIn();
 		} else {
 			ui.doLogonFailed();

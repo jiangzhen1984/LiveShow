@@ -3,10 +3,12 @@ package com.v2tech.presenter;
 import android.content.Context;
 import android.content.Intent;
 
+import com.v2tech.service.GlobalHolder;
 import com.v2tech.view.PersonelRelatedUserListActivity;
 import com.v2tech.view.PersonelVideosActivity;
 import com.v2tech.view.PersonelWalletActivity;
 import com.v2tech.view.SettingActivity;
+import com.v2tech.vo.User;
 
 public class PersonelPresenter extends BasePresenter {
 
@@ -16,6 +18,8 @@ public class PersonelPresenter extends BasePresenter {
 		public void updateTitleBar();
 		
 		public void showPersonelDetailUI();
+		
+		public void updateUserUI(User user);
 	}
 
 	private Context context;
@@ -34,6 +38,7 @@ public class PersonelPresenter extends BasePresenter {
 	public void onUICreated() {
 		super.onUICreated();
 		ui.updateTitleBar();
+		ui.updateUserUI(GlobalHolder.getInstance().getCurrentUser());
 	}
 
 	

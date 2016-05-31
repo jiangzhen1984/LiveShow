@@ -90,6 +90,20 @@ public class VMessageAudioItem extends VMessageAbstractItem {
     public void setReadState(int readState) {
         this.readState = readState;
     }
+    
+    
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public void setSeconds(int seconds) {
+		this.seconds = seconds;
+	}
+
 	/**
 	 */
 	public String toXmlItem() {

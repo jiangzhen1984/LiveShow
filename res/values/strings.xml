@@ -108,5 +108,8 @@
     
     <string name="bounty_title_text">想看看这里</string>
     
+    <string name="p2p_message_btn_text_pressed_tip">按住说话</string>
+    <string name="p2p_message_btn_text_release_tip">松开结束</string>
+    
 
 </resources>

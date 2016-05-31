@@ -229,7 +229,7 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	public void showPersonelUI() {
 		Intent i = new Intent();
-		i.setClass(getApplicationContext(), PersonalActivity.class);
+		i.setClass(getApplicationContext(), PersonelActivity.class);
 		this.startActivityForResult(i, REQUEST_PERSONAL_ACTIVITY);
 	}
 	

@@ -3,8 +3,10 @@ package com.v2tech.view;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,6 +28,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private View emojiBtn;
 	private EmojiLayoutWidget emojiWidget;
 	private RichEditText messageEt;
+	private ImageView switcherBtn;
+	private TextView voiceRecordBtn;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +42,14 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		emojiBtn = findViewById(R.id.p2p_message_emoji_btn);
 		emojiWidget= (EmojiLayoutWidget)findViewById(R.id.emoji_widget);
 		messageEt= (RichEditText)findViewById(R.id.p2p_message_msg_et);
+		switcherBtn= (ImageView)findViewById(R.id.p2p_message_switcher_btn);
+		voiceRecordBtn= (TextView)findViewById(R.id.p2p_message_voice_record_btn);
 		
-		messageEt.appendEmoji(R.drawable.emo_01);
-		messageEt.appendEmoji(R.drawable.emo_02);
-		messageEt.appendEmoji(R.drawable.emo_03);
+		
+		switcherBtn.setOnClickListener(this);
 		emojiBtn.setOnClickListener(this);
 		plusBtn.setOnClickListener(this);
+		voiceRecordBtn.setOnTouchListener(touchListener);
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		
@@ -150,8 +156,37 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	
 	public long getIntentUserId() {
-		return this.getIntent().getLongExtra("chatuserid", -1);
+		return this.getIntent().getLongExtra("chatuserid", 0);
 	}
+	
+	
+	
+	public void showVoiceDialog(boolean flag) {
+		
+	}
+	
+	public void showCancelRecordingDialog(boolean flag) {
+		
+	}
+	
+	public void updateVoiceDBLevel(int level) {
+		
+	}
+	
+	public void switchToVoice() {
+		switcherBtn.setImageResource(R.drawable.voice_switcher_btn);
+		voiceRecordBtn.setText(R.string.p2p_message_btn_text_pressed_tip);
+		voiceRecordBtn.setVisibility(View.VISIBLE);
+		messageEt.setVisibility(View.GONE);
+	}
+	
+	public void switchToText() {
+		switcherBtn.setImageResource(R.drawable.text_switcher_btn);
+		voiceRecordBtn.setVisibility(View.GONE);
+		messageEt.setVisibility(View.VISIBLE);
+	}
+	
+	
 	
 	@Override
 	public void onClick(View v) {
@@ -167,9 +202,38 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		case R.id.title_bar_left_btn:
 			presenter.onReturnBtnClicked();
 			break;
+		case R.id.p2p_message_switcher_btn:
+			presenter.switcherBtnClicked();
+			break;
 		}
 		
 	}
+	
+	
+	private OnTouchListener touchListener = new OnTouchListener() {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			int action = event.getAction();
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				voiceRecordBtn.setPressed(true);
+				voiceRecordBtn.setText(R.string.p2p_message_btn_text_pressed_tip);
+				presenter.onRecordBtnTouchDown(event);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				break;
+			case MotionEvent.ACTION_CANCEL:
+			case MotionEvent.ACTION_UP:
+				voiceRecordBtn.setPressed(false);
+				presenter.onRecordBtnTouchUp(event);
+				voiceRecordBtn.setText(R.string.p2p_message_btn_text_release_tip);
+				break;
+			}
+			return true;
+		}
+		
+	};
 
 
 

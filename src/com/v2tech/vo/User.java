@@ -93,6 +93,9 @@ public class User implements Serializable, Comparable<User> {
 	
 	public boolean isMale;
 	
+	public int vipLevel;
+	
+	
 	public List<UserDeviceConfig> ll ;
 
 	public User(long mUserId) {

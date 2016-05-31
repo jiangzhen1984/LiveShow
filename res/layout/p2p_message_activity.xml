@@ -44,12 +44,12 @@
                 android:id="@+id/p2p_message_msg_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
                 android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
+                android:layout_toRightOf="@+id/p2p_message_switcher_btn"
                 android:background="@drawable/p2p_message_input_text_bg"
-                android:maxLines="3"
-                android:ems="10" >
+                android:ems="10"
+                android:maxLines="3" >
             </com.v2tech.widget.RichEditText>
 
             <ImageView
@@ -68,6 +68,29 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/p2p_message_emoji_icon_btn" />
+
+            <ImageView
+                android:id="@+id/p2p_message_switcher_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
+                android:src="@drawable/voice_switcher_btn" />
+
+            <TextView
+                android:id="@+id/p2p_message_voice_record_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
+                android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
+                android:layout_toRightOf="@+id/p2p_message_switcher_btn"
+                android:text="@string/p2p_message_btn_text_pressed_tip"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+				android:focusableInTouchMode="true"
+                android:background="@drawable/voice_record_btn_selector" />
         </RelativeLayout>
 
         <LinearLayout
@@ -99,7 +122,7 @@
         <include
             android:id="@+id/emoji_widget"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/emoji_view_viewpager_height" 
+            android:layout_height="@dimen/emoji_view_viewpager_height"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             layout="@layout/emoji_layout" />
