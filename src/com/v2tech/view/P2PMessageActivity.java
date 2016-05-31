@@ -82,50 +82,66 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		lb.time = (TextView)view.findViewById(R.id.p2p_message_layout_time);
 		lb.leftLy = view.findViewById(R.id.p2p_message_left_ly);
 		lb.rightLy = view.findViewById(R.id.p2p_message_right_ly);
+		lb.leftContentAdr = (TextView)view.findViewById(R.id.p2p_message_left_content_adr);
+		lb.rightContentAdr = (TextView)view.findViewById(R.id.p2p_message_right_content_adr);
+		
+		lb.leftContent.setTag(lb);
+		lb.rightContent.setTag(lb);
+		lb.leftContent.setOnClickListener(contentClickListener);
+		lb.rightContent.setOnClickListener(contentClickListener);
 		view.setTag(lb);
 		return view;
 	}
 	
 	
-	public void updateView(View view, int type, Bitmap bm, CharSequence content) {
+	public void updateView(View view, int dir, Bitmap bm, CharSequence content, int msgType, boolean isAudioPlaying, Object tag) {
 		LocalBind lb = (LocalBind)view.getTag();
-		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
+		if (dir == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);
 			lb.time.setVisibility(View.VISIBLE);
 			lb.leftLy.setVisibility(View.GONE);
 			lb.rightLy.setVisibility(View.GONE);
-		} else if (type == P2PMessagePresenter.ITEM_TYPE_SELF) {
-			lb.leftContent.setText(content);
+		} else if (dir == P2PMessagePresenter.ITEM_TYPE_SELF) {
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.VISIBLE);
 			lb.rightLy.setVisibility(View.GONE);
-		}else if (type == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
+			if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_TEXT) {
+				lb.leftContentAdr.setVisibility(View.GONE);
+				lb.leftContent.setText(content);
+			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
+				lb.leftContentAdr.setVisibility(View.VISIBLE);
+				//TODO update content length according to audio duration
+				if (isAudioPlaying)  {
+					//TODO start animation
+				}
+			}
+			
+			if (bm != null) {
+				lb.leftAvtar.setImageBitmap(bm);
+			}
+		} else if (dir == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
 			lb.rightContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.GONE);
 			lb.rightLy.setVisibility(View.VISIBLE);
+			if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_TEXT) {
+				lb.rightContentAdr.setVisibility(View.GONE);
+				lb.rightContent.setText(content);
+			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
+				lb.rightContentAdr.setVisibility(View.VISIBLE);
+				//TODO update content length according to audio duration
+				if (isAudioPlaying)  {
+					//TODO start animation
+				}
+			}
+			if (bm != null) {
+				lb.rightAvtar.setImageBitmap(bm);
+			}
 		}
+		
+		lb.tag = tag;
 	}
 	
-	public void updateView(View view, int type, CharSequence content) {
-		LocalBind lb = (LocalBind)view.getTag();
-		if (type == P2PMessagePresenter.ITEM_TYPE_DATE) {
-			lb.time.setText(content);
-			lb.time.setVisibility(View.VISIBLE);
-			lb.leftLy.setVisibility(View.GONE);
-			lb.rightLy.setVisibility(View.GONE);
-		} else if (type == P2PMessagePresenter.ITEM_TYPE_SELF) {
-			lb.leftContent.setText(content);
-			lb.time.setVisibility(View.GONE);
-			lb.leftLy.setVisibility(View.VISIBLE);
-			lb.rightLy.setVisibility(View.GONE);
-		}else if (type == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
-			lb.rightContent.setText(content);
-			lb.time.setVisibility(View.GONE);
-			lb.leftLy.setVisibility(View.GONE);
-			lb.rightLy.setVisibility(View.VISIBLE);
-		}
-	}
 	
 	
 	public void showAdditionLayout(boolean flag) {
@@ -234,6 +250,17 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		}
 		
 	};
+	
+	
+	private OnClickListener contentClickListener = new  OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			LocalBind lb = (LocalBind)v.getTag();
+			presenter.onContentClicked(v, lb.tag);
+		}
+		
+	};
 
 
 
@@ -244,8 +271,11 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		ImageView rightAvtar;
 		TextView leftContent;
 		TextView rightContent;
+		TextView leftContentAdr;
+		TextView rightContentAdr;
 		View leftLy;
 		View rightLy;
+		Object tag;
 	}
 	
 }

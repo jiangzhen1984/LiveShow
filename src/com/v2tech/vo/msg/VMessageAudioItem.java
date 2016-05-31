@@ -53,7 +53,7 @@ public class VMessageAudioItem extends VMessageAbstractItem {
 			this.uuid = UUID.randomUUID().toString();
 		
 		if(TextUtils.isEmpty(audioFilePath) && !TextUtils.isEmpty(extension))
-            this.audioFilePath = GlobalConfig.getGlobalAudioPath() + "/" + uuid + extension;
+            this.audioFilePath = GlobalConfig.getGlobalAudioPath() + "/" + uuid + "." +extension;
 
         if(!TextUtils.isEmpty(audioFilePath) && TextUtils.isEmpty(extension)){
             int start = this.audioFilePath.lastIndexOf(".");

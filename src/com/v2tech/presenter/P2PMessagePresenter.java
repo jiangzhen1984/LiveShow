@@ -26,6 +26,8 @@ import android.widget.ImageView;
 
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
+import com.v2tech.audio.AACDecoder;
+import com.v2tech.audio.AACDecoder.DecoderNotification;
 import com.v2tech.audio.AACEncoder;
 import com.v2tech.audio.AACEncoder.AACEncoderNotification;
 import com.v2tech.service.GlobalHolder;
@@ -42,7 +44,7 @@ import com.v2tech.vo.msg.VMessageTextItem;
 import com.v2tech.widget.RichEditText;
 import com.v2tech.widget.emoji.EmojiLayoutWidget.EmojiLayoutWidgetListener;
 
-public class P2PMessagePresenter extends BasePresenter implements LiveMessageHandler, EmojiLayoutWidgetListener, AACEncoderNotification {
+public class P2PMessagePresenter extends BasePresenter implements LiveMessageHandler, EmojiLayoutWidgetListener, AACEncoderNotification, DecoderNotification {
 	
 	
 	private static final int TYPE_SHOW_ADDITIONAL_LAYOUT = 1;
@@ -54,6 +56,11 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	public static final int ITEM_TYPE_DATE = 2;
 	public static final int ITEM_TYPE_SELF = 0;
 	public static final int ITEM_TYPE_OTHERS = 1;
+	
+	public static final int ITEM_MSG_TYPE_TEXT = 1;
+	public static final int ITEM_MSG_TYPE_IMAGE = 2;
+	public static final int ITEM_MSG_TYPE_AUDIO = 3;
+	
 	
 	private State state = State.IDLE; 
 	
@@ -71,14 +78,14 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	private Handler uiHandler;
 	
 	private AACEncoder aacRecorder;
+	private AACDecoder aacDecoder;
 	
 	public interface P2PMessagePresenterUI {
 		public void setAdapter(BaseAdapter adapter);
 		
 		public View getView();
 		
-		public void updateView(View view, int type, Bitmap bm, CharSequence content);
-		public void updateView(View view, int type, CharSequence content);
+		public void updateView(View view, int dir, Bitmap bm, CharSequence content, int msgType, boolean audioPlay, Object tag);
 		
 		public void showAdditionLayout(boolean flag);
 		
@@ -121,6 +128,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		loader.postDelayed(new LoaderWorker(0, 30), 100);
 		
 		aacRecorder = new AACEncoder(this);
+		aacDecoder = new AACDecoder(this);
 	}
 	
 	
@@ -190,13 +198,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		}
 		messageService.sendMessage(vm, chatUser);
 		
-		Item i = new Item();
-		i.id = vm.getId();
-		i.type = ITEM_TYPE_SELF;
-		i.content = new SpannableStringBuilder(ettext);
-		itemList.add(i);
-		localAdapter.notifyDataSetChanged();
-		ui.scrollTo(itemList.size());
+		itemList.add(buildItem(vm));
+		notifyUIScroller(true);
 	}
 	
 	
@@ -216,9 +219,11 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	
 	
 	public void onRecordBtnTouchDown(MotionEvent ev) {
-		if (state != State.IDLE) {
-			throw new RuntimeException("illegale state " + state);
+		if (state == State.DECODING) {
+			//stop decoding first
+			aacDecoder.stop();
 		}
+		
 		ui.showVoiceDialog(true);
 		ui.showCancelRecordingDialog(false);
 		aacRecorder.start();
@@ -239,6 +244,22 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		ui.showVoiceDialog(true);
 		ui.showCancelRecordingDialog(false);
 	}
+	
+	
+	public void onContentClicked(View view, Object tag) {
+		Item item = (Item)tag;
+		if (item.msgType == ITEM_MSG_TYPE_AUDIO) {
+			aacDecoder.stop();
+			if (!item.isPlaying) {
+				aacDecoder.play(item.path);
+				//TODO start playing animation
+			}
+			item.isPlaying = !item.isPlaying;
+		} else if (item.msgType == ITEM_MSG_TYPE_TEXT) {
+			
+		}
+	}
+	
 	
 	@Override
 	public void onUICreated() {
@@ -294,10 +315,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 	@Override
 	public void onP2PMessage(VMessage vm) {
-		Item i = new Item();
-		i.content =  buildContent(vm);
-		i.type = ITEM_TYPE_OTHERS;
-		itemList.add(i);
+		itemList.add(buildItem(vm));
+		notifyUIScroller(false);
 	}
 
 
@@ -338,7 +357,42 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 	
 	
+	private Item buildItem(VMessage vm) {
+		Item i = new Item();
+		i.content =  buildContent(vm);
+		if (vm.getFromUser().getmUserId() ==  GlobalHolder.getInstance().getCurrentUserId()) {
+			i.type = ITEM_TYPE_SELF;
+		} else {
+			i.type = ITEM_TYPE_OTHERS;
+		}
+		
+		List<VMessageAudioItem> audios = vm.getAudioItems();
+		if (audios.size() >0 ) {
+			i.msgType = ITEM_MSG_TYPE_AUDIO;
+			i.path = audios.get(0).getAudioFilePath();
+		} else if (vm.getImageItems().size() > 0) {
+			i.msgType = ITEM_MSG_TYPE_IMAGE;
+		} else {
+			i.msgType = ITEM_MSG_TYPE_TEXT;
+		}
+		return i;
+	}
 	
+	
+	private void notifyUIScroller(boolean uiThread) {
+		if (uiThread) {
+			localAdapter.notifyDataSetChanged();
+			return;
+		}
+		uiHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				localAdapter.notifyDataSetChanged();
+			}
+			
+		});
+	}
 	
 
 //////////////////AACEncoderNotification////////////////////////
@@ -381,8 +435,10 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 			}
 			VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
 					.getCurrentUser(), chatUser, new Date());
-			new VMessageAudioItem(vm, uuid, accFile.getName(), "aac", (int)duration, 0);
+			new VMessageAudioItem(vm, uuid, null , "aac", (int)duration, 0);
 			messageService.sendMessage(vm, chatUser);
+			itemList.add(buildItem(vm));
+			notifyUIScroller(true);
 		}
 		
 		
@@ -469,8 +525,26 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 
 //////////////////AACEncoderNotification////////////////////////
 
+	
+//////////////////DecoderNotification////////////////////////
+	
+	public void onDecodeFinish() {
+		synchronized (state) {
+			state = State.IDLE;
+		}
+		//TODO update message state
+	}
+	
+	public void onDecodeStart() {
+		synchronized (state) {
+			state = State.DECODING;
+		}
+	}
+	public void onDecodeError(Throwable e) {
+		
+	}
 
-
+//////////////////DecoderNotification////////////////////////
 
 	class LocalAdapter extends BaseAdapter {
 
@@ -494,7 +568,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 			if (convertView == null) {
 				convertView = ui.getView();
 			}
-			ui.updateView(convertView, itemList.get(position).type, itemList.get(position).content);
+			Item item = itemList.get(position);
+			ui.updateView(convertView, item.type, item.avatar, item.content, item.msgType, item.isPlaying, item);
 			return convertView;
 		}
 		
@@ -515,42 +590,34 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		@Override
 		public void run() {
 			List<VMessage> list = messageService.getVMList(chatUser.getmUserId(), start, page);
-			Item i = null;
-			long uid = GlobalHolder.getInstance().getCurrentUserId();
+			
 			for (VMessage m : list) {
-				i = new Item();
-				i.content =  buildContent(m);
-				if (m.getFromUser().getmUserId() == uid) {
-					i.type = ITEM_TYPE_SELF;
-				} else {
-					i.type = ITEM_TYPE_OTHERS;
-				}
-				itemList.add(i);
+				itemList.add(buildItem(m));
 			}
-			uiHandler.post(new Runnable() {
-
-				@Override
-				public void run() {
-					localAdapter.notifyDataSetChanged();
-				}
-				
-			});
+			
+			notifyUIScroller(false);
 		}
 		
 	}
 	
 	
+	
+	
 	class Item {
 		long id;
 		int type;
+		int msgType;
 		Bitmap avatar;
 		CharSequence content;
+		String path;
+		boolean isPlaying;
 	}
 	
 	
 	enum State {
 		RECORDING,
 		RECORDING_SHOW_CANCEL_DIALOG,
+		DECODING,
 		IDLE,
 	}
 	

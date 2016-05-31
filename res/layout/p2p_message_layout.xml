@@ -39,8 +39,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_bg_left"
-            android:text="TextViewsdfsdfsdfsdfsdf\nsdfsdf\n"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text=""
             android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/p2p_message_left_content_adr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/p2p_message_body_margin_hor"
+            android:text="6&apos;"
+            android:textColor="#c0c0c0" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,11 +66,22 @@
         android:layout_marginTop="5dp" >
 
         <TextView
+            android:id="@+id/p2p_message_right_content_adr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/p2p_message_body_margin_hor"
+            android:text="6&apos;"
+            android:textColor="#c0c0c0" />
+
+        <TextView
             android:id="@+id/p2p_message_right_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_bg_right"
-            android:text="TextViwewerwerwerwerwe\n\nwerwe"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text=""
             android:textColor="#000000" />
 
         <ImageView

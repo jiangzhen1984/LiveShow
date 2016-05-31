@@ -309,6 +309,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         positon.setLongitude(p.lng);
         positon.setLatitude(p.lat);
         video.setPosition(positon);
+        video.setUserId((int)p.uid);
         data.addVideo(video);
         packetBuilder.setData(data);
         return packetBuilder.build();
