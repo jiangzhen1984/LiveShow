@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -60,6 +62,17 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	public static final int ITEM_MSG_TYPE_TEXT = 1;
 	public static final int ITEM_MSG_TYPE_IMAGE = 2;
 	public static final int ITEM_MSG_TYPE_AUDIO = 3;
+	
+	
+	public static final int DIALOG_TYPE_NONE = 0;
+	public static final int DIALOG_TYPE_VOLUMN = 1;
+	public static final int DIALOG_TYPE_TOUCH_UP_CANCEL = 2;
+	public static final int DIALOG_TYPE_LONG_DURATION = 3;
+	public static final int DIALOG_TYPE_SHORT_DURATION = 4;
+	
+	
+	public static final int UI_MSG_SHOW_DIALOG = 1;
+	public static final int UI_MSG_DISMISS_DIALOG = 2;
 	
 	
 	private State state = State.IDLE; 
@@ -110,6 +123,13 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		
 		public void switchToText();
 		
+		
+		public void showDialog(boolean flag, int type);
+		
+		
+		public void showSendBtn(boolean flag);
+		public void showPlusBtn(boolean flag);
+		
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -120,7 +140,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		
 		itemList = new ArrayList<Item>(20);
 		loader = new Handler(super.backendThread.getLooper());
-		uiHandler = new Handler();
+		uiHandler = new UIHandler(ui);
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
 		chatUser = new User(ui.getIntentUserId());
@@ -224,6 +244,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 			aacDecoder.stop();
 		}
 		
+		ui.showDialog(true, DIALOG_TYPE_VOLUMN);
 		ui.showVoiceDialog(true);
 		ui.showCancelRecordingDialog(false);
 		aacRecorder.start();
@@ -232,17 +253,21 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	public void onRecordBtnTouchUp(MotionEvent ev) {
 		ui.showVoiceDialog(false);
 		ui.showCancelRecordingDialog(false);
+		//TODO check cancel flag
 		aacRecorder.stop();
+		ui.showDialog(false, DIALOG_TYPE_VOLUMN);
 	}
 
 	public void onRecordBtnTouchMoveOutOfBtn(MotionEvent ev) {
 		ui.showVoiceDialog(false);
 		ui.showCancelRecordingDialog(true);
+		ui.showDialog(true, DIALOG_TYPE_TOUCH_UP_CANCEL);
 	}
 	
 	public void onRecordBtnTouchMoveInBtn(MotionEvent ev) {
 		ui.showVoiceDialog(true);
 		ui.showCancelRecordingDialog(false);
+		ui.showDialog(true, DIALOG_TYPE_VOLUMN);
 	}
 	
 	
@@ -255,8 +280,26 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 				//TODO start playing animation
 			}
 			item.isPlaying = !item.isPlaying;
+			
+			if (item.vm.isReadState() == VMessageAbstractItem.STATE_UNREAD) {
+				messageService.updateVMessageReadFlag(item.id, true);
+				item.vm.setReadState(VMessageAbstractItem.STATE_READED);
+			}
 		} else if (item.msgType == ITEM_MSG_TYPE_TEXT) {
 			
+		}
+	}
+	
+	
+	
+	
+	public void onTextChanged(CharSequence cs) {
+		if (cs.length() > 0) {
+			ui.showSendBtn(true);
+			ui.showPlusBtn(false);
+		} else {
+			ui.showSendBtn(false);
+			ui.showPlusBtn(true);
 		}
 	}
 	
@@ -266,8 +309,11 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		super.onUICreated();
 		ui.showAdditionLayout(false);
 		ui.showEmojiLayout(false);
+		//Check intent flag first
+		
 		additonState |= TYPE_SHOW_VOICE_LAYOUT;
 		switcherBtnClicked();
+		ui.showSendBtn(false);
 		//TODO get user information
 	}
 	
@@ -360,6 +406,8 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 	private Item buildItem(VMessage vm) {
 		Item i = new Item();
 		i.content =  buildContent(vm);
+		i.vm = vm;
+		i.id = vm.getId();
 		if (vm.getFromUser().getmUserId() ==  GlobalHolder.getInstance().getCurrentUserId()) {
 			i.type = ITEM_TYPE_SELF;
 		} else {
@@ -430,15 +478,17 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 			
 			if (duration < 1500) {
 				accFile.deleteOnExit();
-				//TODO short time 
+				Message.obtain(uiHandler, UI_MSG_SHOW_DIALOG, DIALOG_TYPE_SHORT_DURATION, 0).sendToTarget();
+				Message m = Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG, DIALOG_TYPE_NONE, 0);
+				uiHandler.sendMessageDelayed(m, 1200);
 				return;
 			}
-			VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
-					.getCurrentUser(), chatUser, new Date());
-			new VMessageAudioItem(vm, uuid, null , "aac", (int)duration, 0);
-			messageService.sendMessage(vm, chatUser);
-			itemList.add(buildItem(vm));
-			notifyUIScroller(true);
+//			VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+//					.getCurrentUser(), chatUser, new Date());
+//			new VMessageAudioItem(vm, uuid, null , "aac", (int)duration, 0);
+//			messageService.sendMessage(vm, chatUser);
+//			itemList.add(buildItem(vm));
+//			notifyUIScroller(true);
 		}
 		
 		
@@ -590,12 +640,42 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		@Override
 		public void run() {
 			List<VMessage> list = messageService.getVMList(chatUser.getmUserId(), start, page);
-			
 			for (VMessage m : list) {
-				itemList.add(buildItem(m));
+				itemList.add(0, buildItem(m));
 			}
 			
 			notifyUIScroller(false);
+		}
+		
+	}
+	
+	
+	class UIHandler extends Handler {
+		
+		WeakReference<P2PMessagePresenterUI> wui;
+		
+
+		public UIHandler(P2PMessagePresenterUI ppui) {
+			super();
+			this.wui = new WeakReference<P2PMessagePresenterUI>(ppui);
+		}
+
+
+		@Override
+		public void handleMessage(Message msg) {
+			int what = msg.what;
+			switch (what) {
+			case UI_MSG_SHOW_DIALOG:
+				if (wui.get() != null) {
+					wui.get().showDialog(true, msg.arg1);
+				}
+				break;
+			case UI_MSG_DISMISS_DIALOG:
+				if (wui.get() != null) {
+					wui.get().showDialog(false, msg.arg1);
+				}
+				break;
+			}
 		}
 		
 	}
@@ -611,6 +691,7 @@ public class P2PMessagePresenter extends BasePresenter implements LiveMessageHan
 		CharSequence content;
 		String path;
 		boolean isPlaying;
+		VMessage vm;
 	}
 	
 	

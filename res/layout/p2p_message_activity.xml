@@ -20,7 +20,7 @@
         <ListView
             android:id="@+id/p2p_message_msg_listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:divider="@null" >
@@ -67,7 +67,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/p2p_message_emoji_icon_btn" />
+                android:src="@drawable/voice_record_plus_btn" />
+            
+            
+            <TextView
+                android:id="@+id/p2p_message_send_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/p2p_message_send_btn_text"
+                android:textColor="#ffffff"
+                android:background="@drawable/voice_record_send_btn_bg" />
 
             <ImageView
                 android:id="@+id/p2p_message_switcher_btn"

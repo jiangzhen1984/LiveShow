@@ -2,7 +2,9 @@ package com.v2tech.presenter;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import v2av.VideoPlayer;
 import v2av.VideoRecorder;
@@ -130,6 +132,8 @@ public class MainPresenter extends BasePresenter implements
 	private Handler uiHandler;
 
 	// ///////////////////////////////////////
+	private Map<Live, Marker> cacheMarker;
+	///////
 
 	public MainPresenter(Context context, MainPresenterUI ui) {
 		super();
@@ -286,6 +290,7 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+		cacheMarker = new HashMap<Live, Marker>();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
 	}
@@ -306,6 +311,7 @@ public class MainPresenter extends BasePresenter implements
 		vs.clearCalledBack();
 		ls.clearCalledBack();
 		this.h.removeMessages(REPORT_LOCATION);
+		cacheMarker.clear();
 		super.onUIDestroyed();
 	}
 
@@ -828,7 +834,12 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	public void handleLiveFinished(Live l) {
-		
+		Marker m = cacheMarker.get(l);
+		if (m != null) {
+			this.mapInstance.removeMarker(m);
+		} else {
+			V2Log.e("===> no marker for live id " + l);
+		}
 	}
 	
 	// ///////////LiveStatusHandler///////////////////////////////////////////////////
@@ -1089,8 +1100,20 @@ public class MainPresenter extends BasePresenter implements
 
 	}
 
-	private void addLiveMarker(Live live) {
-		mapInstance.addMarker(mapInstance.buildMarker(live));
+	private void addLiveMarker(final Live live) {
+		Marker m = mapInstance.buildMarker(live);
+		mapInstance.addMarker(m);
+		cacheMarker.put(live, m);
+		
+		this.uiHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				handleLiveFinished(live);
+				
+			}
+			
+		}, 2000);
 	}
 	
 	

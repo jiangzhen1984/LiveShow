@@ -6,9 +6,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.map.MapAPI;
+import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.v2liveshow.R;
 
 public class P2PAudioLiverLayout extends RelativeLayout {
@@ -61,8 +62,8 @@ public class P2PAudioLiverLayout extends RelativeLayout {
 
 
 
-	public BaiduMap getWatcherMapInstance() {
-		return mMapView.getMap();
+	public MapAPI getWatcherMapInstance() {
+		return new BaiduMapImpl(mMapView.getMap(), mMapView);
 	}
 
 	public void setListener(P2PAudioLiverLayoutListener listener) {

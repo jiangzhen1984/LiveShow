@@ -1,5 +1,6 @@
 package com.v2tech.db;
 
+import com.v2tech.db.MessageDescriptor.P2PMessage;
 import com.v2tech.db.MessageDescriptor.P2PMessageItem;
 
 import android.content.ContentProvider;
@@ -18,6 +19,11 @@ public class MessageProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
+		if (helper == null) {
+			if (getContext() != null) {
+				helper = new MessageDBHelper(getContext());
+			}
+		}
 		return false;
 	}
 
@@ -25,7 +31,7 @@ public class MessageProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		if (helper == null) {
-			helper = new MessageDBHelper(getContext());
+
 		}
 		int token = MessageDescriptor.URI_MATCHER.match(uri);
 		String tableName = null;
@@ -35,7 +41,7 @@ public class MessageProvider extends ContentProvider {
 			break;
 		case MessageDescriptor.SystemMessage.TOKEN_WITH_ID:
 			tableName = MessageDescriptor.SystemMessage.TABLE_NAME;
-			selection = " id = ?";
+			selection = P2PMessage.Cols.ID +"  = ?";
 			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
 		case MessageDescriptor.P2PMessage.TOKEN:
@@ -43,7 +49,7 @@ public class MessageProvider extends ContentProvider {
 					" Does not support token, use:  TOKEN_WITH_ID");
 		case MessageDescriptor.P2PMessage.TOKEN_WITH_ID:
 			tableName = MessageDescriptor.P2PMessage.TABLE_NAME;
-			selection = " id = ?";
+			selection = P2PMessage.Cols.ID +" = ?";
 			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
 		case MessageDescriptor.P2PMessage.TOKEN_WITH_USER_ID:
@@ -56,12 +62,11 @@ public class MessageProvider extends ContentProvider {
 
 		case MessageDescriptor.P2PMessageItem.TOKEN_WITH_MASTER_ID:
 			tableName = MessageDescriptor.P2PMessageItem.TABLE_NAME;
-			selection = P2PMessageItem.Cols.MASTER_ID +"  = ?";
+			selection = P2PMessageItem.Cols.MASTER_ID + "  = ?";
 			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
 		default:
-			throw new RuntimeException(
-					" Does not support token" + uri);
+			throw new RuntimeException(" Does not support token" + uri);
 
 		}
 		Cursor cur = null;
@@ -91,7 +96,8 @@ public class MessageProvider extends ContentProvider {
 			break;
 		case MessageDescriptor.P2PMessageItem.TOKEN_WITH_MASTER_ID:
 			name = MessageDescriptor.P2PMessageItem.TABLE_NAME;
-			values.put(MessageDescriptor.P2PMessageItem.Cols.MASTER_ID, uri.getLastPathSegment());
+			values.put(MessageDescriptor.P2PMessageItem.Cols.MASTER_ID,
+					uri.getLastPathSegment());
 			break;
 		case MessageDescriptor.P2PMessage.TOKEN_WITH_USER_ID:
 			name = MessageDescriptor.P2PMessage.TABLE_NAME;
@@ -113,7 +119,23 @@ public class MessageProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		return 0;
-	}
+		if (helper == null) {
+			helper = new MessageDBHelper(getContext());
+		}
 
+		int token = MessageDescriptor.URI_MATCHER.match(uri);
+		String tableName = null;
+		switch (token) {
+		case MessageDescriptor.P2PMessage.TOKEN_WITH_ID:
+			tableName = MessageDescriptor.P2PMessage.TABLE_NAME;
+			selection =  P2PMessage.Cols.ID + "  = ?";
+			selectionArgs = new String[]{uri.getLastPathSegment()};
+			break;
+		default:
+			throw new RuntimeException(" Does not support token: " + uri);
+		}
+
+		SQLiteDatabase db = helper.getWritableDatabase();
+		return db.update(tableName, values, selection, selectionArgs);
+	}
 }

@@ -180,7 +180,7 @@ public class Live implements Serializable, Comparable<Live>{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (lid ^ (lid >>> 32));
+		result = prime * result + (int) (nid ^ (nid >>> 32));
 		return result;
 	}
 
@@ -194,7 +194,7 @@ public class Live implements Serializable, Comparable<Live>{
 		if (getClass() != obj.getClass())
 			return false;
 		Live other = (Live) obj;
-		if (lid != other.lid)
+		if (nid != other.nid)
 			return false;
 		return true;
 	}
@@ -218,7 +218,7 @@ public class Live implements Serializable, Comparable<Live>{
 
 	@Override
 	public String toString() {
-		return "Live [publisher=" + publisher + ", url=" + url + ", lat=" + lat
+		return "Live [lid : "+ this.lid +" nid "+ this.nid+"  publisher=" + publisher + ", url=" + url + ", lat=" + lat
 				+ ", lng=" + lng + "]";
 	}
 	

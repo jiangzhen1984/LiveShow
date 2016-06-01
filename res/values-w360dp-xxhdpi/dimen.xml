@@ -72,5 +72,9 @@
     <dimen name="card_scan_ly_icon_padding_hor">10dp</dimen>
     <dimen name="card_scan_ly_text_size">12.5sp</dimen>
     
+    <dimen name="voice_record_dialog_widget_root_margin">15dp</dimen>
+    <dimen name="voice_record_dialog_widget_root_margin_hor">25dp</dimen>
+    <dimen name="voice_record_dialog_widget_text_size">13.5sp</dimen>
+    
 
 </resources>

@@ -103,20 +103,21 @@ public class AACDecoder {
 	}
 
 	public synchronized boolean play(String audioPath) {
+		boolean ret = true;
 		File f = new File(audioPath);
 		if (!f.exists()) {
-			return false;
+			ret = false;
 		}
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(f);
-			return play(fis.getFD());
+			ret =  play(fis.getFD());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			return false;
+			ret =  false;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			ret =  false;
 		} finally {
 			if (fis != null) {
 				try {
@@ -126,6 +127,9 @@ public class AACDecoder {
 				}
 			}
 		}
+		
+		V2Log.i("==> decode request ret: " + ret +"  ==>" + audioPath);
+		return ret;
 	}
 
 	public synchronized boolean play(FileDescriptor fd) {

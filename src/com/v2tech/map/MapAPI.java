@@ -5,9 +5,11 @@ public interface MapAPI {
 	
 	public void addMarker(Marker marker);
 	
+	public void removeMarker(Marker marker);
 	
 	public Marker buildMarker(Object obj);
 	
+	public void clearMarkers();
 	
 	public void updateMap(Updater updater);
 	

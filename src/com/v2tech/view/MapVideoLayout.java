@@ -195,7 +195,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 
 
 	public MapAPI getMap() {
-		return new BaiduMapImpl(mMapView.getMap());
+		return new BaiduMapImpl(mMapView.getMap(), mMapView);
 	}
 
 	public MapView getMapView() {

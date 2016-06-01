@@ -1,8 +1,13 @@
 package com.v2tech.map.baidu;
 
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ViewGroupOverlay;
 
+import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -13,11 +18,11 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -38,6 +43,8 @@ import com.v2tech.vo.Watcher;
 public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
 		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
+	
+	private WeakReference<MapView> mapView;
 
 	public BaiduMap mapImpl;
 
@@ -47,11 +54,12 @@ public class BaiduMapImpl implements MapAPI,
 	// ///listener///
 	private MarkerListener markerListener;
 
-	public BaiduMapImpl(BaiduMap mapImpl) {
+	public BaiduMapImpl(BaiduMap mapImpl, MapView mv) {
 		super();
 		this.mapImpl = mapImpl;
 		mSearchAPI = GeoCoder.newInstance();
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
+		mapView = new WeakReference<MapView>(mv);
 	}
 
 	public BaiduMap getMapImpl() {
@@ -64,13 +72,14 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void addMarker(Marker marker) {
+		MarkerOptions oo = null;
 		if (marker.getLive() != null) {
 			BitmapDescriptor online = BitmapDescriptorFactory
 					.fromResource(R.drawable.marker_live);
 
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("live", marker.getLive());
-			OverlayOptions oo = new MarkerOptions()
+			oo = new MarkerOptions()
 					.icon(online)
 					.position(
 							new LatLng(marker.getLive().getLat(), marker
@@ -82,7 +91,7 @@ public class BaiduMapImpl implements MapAPI,
 
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("watcher", marker.getWatcher());
-			OverlayOptions oo = new MarkerOptions()
+			oo = new MarkerOptions()
 					.icon(online)
 					.position(
 							new LatLng(marker.getWatcher().getLat(), marker
@@ -90,8 +99,23 @@ public class BaiduMapImpl implements MapAPI,
 			mapImpl.addOverlay(oo);
 
 		}
+		((BaiduMaker)marker).oo = oo;
+	}
+	
+	public void removeMarker(Marker marker) {
+		OverlayOptions oo = ((BaiduMaker)marker).oo;
+		MapView mv = mapView.get();
+		if (mv != null) {
+			ViewGroupOverlay gp = mv.getOverlay();
+		}
 	}
 
+	
+	public void clearMarkers() {
+		mapImpl.clear();
+	}
+	
+	
 	@Override
 	public void updateMap(Updater updater) {
 		if (updater instanceof BaiduUpdater) {

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.VoiceRecordDialogWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/voice_record_notification_dialog_bg" >
+
+    <RelativeLayout
+        android:id="@+id/voice_record_more_time_require_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginLeft="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginRight="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginTop="@dimen/voice_record_dialog_widget_root_margin_hor" >
+
+        <ImageView
+            android:id="@+id/voice_record_icon_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/voice_record_exclamation_point_icon" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/voice_record_text_tip_1"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/voice_record_dialog_widget_text_size" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_1"
+            android:layout_centerHorizontal="true"
+            android:text="@string/voice_record_text_occupcation"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/voice_record_long_time_dur_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginLeft="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginRight="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginTop="@dimen/voice_record_dialog_widget_root_margin_hor" >
+
+        <ImageView
+            android:id="@+id/voice_record_icon_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/voice_record_exclamation_point_icon" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/voice_record_text_tip_2"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/voice_record_dialog_widget_text_size" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_2"
+            android:layout_centerHorizontal="true"
+            android:text="@string/voice_record_text_occupcation"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/voice_record_touch_up_cancel_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginLeft="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginRight="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginTop="@dimen/voice_record_dialog_widget_root_margin_hor" >
+
+        <ImageView
+            android:id="@+id/voice_record_icon_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/voice_record_cancel_icon" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/voice_record_cance_tip_bg"
+            android:text="@string/voice_record_text_tip_3"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/voice_record_dialog_widget_text_size" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_3"
+            android:layout_centerHorizontal="true"
+            android:text="@string/voice_record_text_occupcation"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/voice_record_volumn_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginLeft="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginRight="@dimen/voice_record_dialog_widget_root_margin_hor"
+        android:layout_marginTop="@dimen/voice_record_dialog_widget_root_margin_hor" >
+
+        <LinearLayout
+            android:id="@+id/voice_record_icon_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/voice_record_maco_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left|center_vertical"
+                android:src="@drawable/voice_record_volumn_0" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/voice_record_text_tip_4"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/voice_record_dialog_widget_text_size" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_record_icon_4"
+            android:layout_centerHorizontal="true"
+            android:text="@string/voice_record_text_occupcation"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</com.v2tech.widget.VoiceRecordDialogWidget>

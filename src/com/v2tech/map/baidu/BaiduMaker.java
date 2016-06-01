@@ -2,6 +2,7 @@ package com.v2tech.map.baidu;
 
 import android.os.Bundle;
 
+import com.baidu.mapapi.map.OverlayOptions;
 import com.v2tech.map.Marker;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.Watcher;
@@ -10,6 +11,8 @@ public class BaiduMaker extends Marker {
 	
 	
 	private com.baidu.mapapi.map.Marker m;
+	
+	public OverlayOptions oo;
 
 	public BaiduMaker() {
 		super();

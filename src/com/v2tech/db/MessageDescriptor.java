@@ -40,17 +40,17 @@ public class MessageDescriptor {
 
 	public static class P2PMessage {
 
-		public static String PATH = "p2p";
+		public static final  String PATH = "p2p";
 
-		public static String PATH_USER = PATH+ "/user";
+		public static final String PATH_USER = PATH+ "/user";
 		
-		public static Uri URI = BASE_URI.buildUpon().appendPath(PATH).build();
+		public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH).build();
 		
-		public static Uri QUERY_URI = BASE_URI.buildUpon().appendPath(PATH).appendPath("user").build();
+		public static final Uri QUERY_URI = BASE_URI.buildUpon().appendPath(PATH).appendPath("user").build();
 		
-		public static Uri INSERT_URI = BASE_URI.buildUpon().appendPath(PATH).appendPath("user").build();
+		public static final Uri INSERT_URI = BASE_URI.buildUpon().appendPath(PATH).appendPath("user").build();
 		
-		public static String TABLE_NAME ="p2p_message";
+		public static final String TABLE_NAME ="p2p_message";
 
 		public static final int TOKEN = 1;
 

@@ -14,6 +14,7 @@ import android.net.Uri;
 
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
+import com.V2.jni.util.V2Log;
 import com.v2tech.db.MessageDescriptor;
 import com.v2tech.db.MessageDescriptor.P2PMessage;
 import com.v2tech.vo.User;
@@ -154,6 +155,19 @@ public class P2PMessageService extends AbstractHandler {
 		
 		cur.close();
 		return list;
+	}
+	
+	
+	public void updateVMessageReadFlag(long id, boolean readFlag) {
+		Uri uri = MessageDescriptor.P2PMessage.URI.buildUpon().appendPath(id+"").build();
+		if (wfCtx.get() != null) {
+			ContentValues cv = new ContentValues();
+			cv.put(MessageDescriptor.P2PMessage.Cols.READ_FLAG,
+					readFlag ? VMessageAbstractItem.STATE_READED
+							: VMessageAbstractItem.STATE_UNREAD);
+			int ret = wfCtx.get().getContentResolver().update(uri, cv, null, null);
+			V2Log.i("==> update message: "+id+"  with flag :" + readFlag+"  ret:"+ ret);
+		}
 	}
 
 	@Override

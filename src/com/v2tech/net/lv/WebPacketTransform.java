@@ -398,6 +398,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             map.put("phone", user.getPhone());
             map.put("headurl", user.getHeadurl());
             map.put("signText", user.getSignText());
+            map.put("v2id", user.getV2ID());
             list.add(map);
         }
         lrp.follows = list;

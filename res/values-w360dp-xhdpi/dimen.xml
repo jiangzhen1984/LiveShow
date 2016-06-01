@@ -42,5 +42,8 @@
     <dimen name="personel_user_item_name_text_size">13.5sp</dimen>
     <dimen name="personel_user_item_singature_text_size">12.5sp</dimen>
     <dimen name="personel_user_item_btn_text_size">12sp</dimen>
+    <dimen name="voice_record_dialog_widget_root_margin">15dp</dimen>
+    <dimen name="voice_record_dialog_widget_root_margin_hor">25dp</dimen>
+    <dimen name="voice_record_dialog_widget_text_size">13.5sp</dimen>
 
 </resources>

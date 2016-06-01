@@ -1,7 +1,11 @@
 package com.v2tech.view;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,12 +14,14 @@ import android.view.View.OnTouchListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.v2tech.presenter.P2PMessagePresenter;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.RichEditText;
+import com.v2tech.widget.VoiceRecordDialogWidget;
 import com.v2tech.widget.emoji.EmojiLayoutWidget;
 
 public class P2PMessageActivity extends BaseActivity implements P2PMessagePresenterUI, OnClickListener {
@@ -30,6 +36,9 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private RichEditText messageEt;
 	private ImageView switcherBtn;
 	private TextView voiceRecordBtn;
+	private PopupWindow   dialog;
+	private VoiceRecordDialogWidget voiceDialogWidget;
+	private View sendBtn;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +53,15 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		messageEt= (RichEditText)findViewById(R.id.p2p_message_msg_et);
 		switcherBtn= (ImageView)findViewById(R.id.p2p_message_switcher_btn);
 		voiceRecordBtn= (TextView)findViewById(R.id.p2p_message_voice_record_btn);
-		
+		sendBtn = findViewById(R.id.p2p_message_send_btn);
 		
 		switcherBtn.setOnClickListener(this);
 		emojiBtn.setOnClickListener(this);
 		plusBtn.setOnClickListener(this);
+		sendBtn.setOnClickListener(this);
 		voiceRecordBtn.setOnTouchListener(touchListener);
+		
+		messageEt.addTextChangedListener(textWatcher);
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		
@@ -63,6 +75,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	protected void onDestroy() {
 		super.onDestroy();
 		presenter.onUIDestroyed();
+		messageEt.removeTextChangedListener(textWatcher);
 	}
 
 	
@@ -110,6 +123,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				lb.leftContent.setText(content);
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.leftContentAdr.setVisibility(View.VISIBLE);
+				lb.leftContent.setText("");
 				//TODO update content length according to audio duration
 				if (isAudioPlaying)  {
 					//TODO start animation
@@ -129,6 +143,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				lb.rightContent.setText(content);
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.rightContentAdr.setVisibility(View.VISIBLE);
+				lb.rightContent.setText("");
 				//TODO update content length according to audio duration
 				if (isAudioPlaying)  {
 					//TODO start animation
@@ -204,13 +219,56 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	
 	
+	public void showDialog(boolean flag, int type) {
+		if (dialog == null) {
+			dialog = new PopupWindow(this);
+			voiceDialogWidget = (VoiceRecordDialogWidget) LayoutInflater.from(
+					this).inflate(R.layout.voice_record_dialog_widget_layout,
+					null);
+			dialog.setContentView(voiceDialogWidget);
+		}
+		
+		if (flag) {
+			switch (type) {
+			case P2PMessagePresenter.DIALOG_TYPE_VOLUMN:
+				voiceDialogWidget.showVolumnView();
+				break;
+			case P2PMessagePresenter.DIALOG_TYPE_LONG_DURATION:
+				voiceDialogWidget.showLongDurationView();
+				break;
+			case P2PMessagePresenter.DIALOG_TYPE_SHORT_DURATION:
+				voiceDialogWidget.showRequireMoreDuration();
+				break;
+			case P2PMessagePresenter.DIALOG_TYPE_TOUCH_UP_CANCEL:
+				voiceDialogWidget.showTouchUpCancelView();
+				break;
+			}
+			if (!dialog.isShowing()) {
+				dialog.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+			}
+		} else {
+			dialog.dismiss();
+		}
+	}
+	
+	
+	
+	public void showSendBtn(boolean flag) {
+		this.sendBtn.setVisibility(flag? View.VISIBLE : View.GONE);
+	}
+	
+	public void showPlusBtn(boolean flag) {
+		this.plusBtn.setVisibility(flag ? View.VISIBLE : View.INVISIBLE);
+	}
+	
+	
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();
 		switch (id) {
 		case R.id.p2p_message_plus_btn:
-			//presenter.plusBtnClicked();
-			presenter.sendBtnClicked();
+			presenter.plusBtnClicked();
+			//presenter.sendBtnClicked();
 			break;
 		case R.id.p2p_message_emoji_btn:
 			presenter.emojiBtnClicked();
@@ -221,10 +279,15 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		case R.id.p2p_message_switcher_btn:
 			presenter.switcherBtnClicked();
 			break;
+		case R.id.p2p_message_send_btn:
+			presenter.sendBtnClicked();
+			break;
 		}
 		
 	}
 	
+	
+	private boolean inBoundsFlag = true;
 	
 	private OnTouchListener touchListener = new OnTouchListener() {
 
@@ -236,8 +299,22 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				voiceRecordBtn.setPressed(true);
 				voiceRecordBtn.setText(R.string.p2p_message_btn_text_pressed_tip);
 				presenter.onRecordBtnTouchDown(event);
+				inBoundsFlag = true;
 				break;
 			case MotionEvent.ACTION_MOVE:
+				Rect r = new Rect();
+				v.getDrawingRect(r);
+				if (r.contains((int)event.getX(), (int)event.getY())) {
+					if (!inBoundsFlag) {
+						inBoundsFlag = true;
+						presenter.onRecordBtnTouchMoveInBtn(event);
+					}
+				} else {
+					if (inBoundsFlag) {
+						presenter.onRecordBtnTouchMoveOutOfBtn(event);
+						inBoundsFlag = false;
+					}
+				}
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
@@ -264,6 +341,27 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 
 
 
+	
+	private TextWatcher textWatcher = new TextWatcher() {
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			presenter.onTextChanged(s);
+		}
+		
+	};
 
 	class LocalBind {
 		TextView time;

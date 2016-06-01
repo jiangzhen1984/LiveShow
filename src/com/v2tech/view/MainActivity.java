@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.v2tech.map.MapAPI;
-import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.BottomButtonLayout;
@@ -509,7 +508,7 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	public MapAPI getWatcherMapInstance() {
-		return new BaiduMapImpl(this.videoShareLayout.getWatcherMapInstance());
+		return this.videoShareLayout.getWatcherMapInstance();
 	}
 	
 	//FIXME close BTN
