@@ -75,6 +75,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 	public static final int UI_MSG_SHOW_DIALOG = 1;
 	public static final int UI_MSG_DISMISS_DIALOG = 2;
 	public static final int UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG = 3;
+	public static final int UI_MSG_UPDATE_VOLUMN_LEVEL = 4;
 
 	private State state = State.IDLE;
 
@@ -539,8 +540,13 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	@Override
 	public void onDBChanged(double db) {
-		// TODO Auto-generated method stub
-		ui.updateVoiceDBLevel(2);
+		int level = 1;
+		if (db == Double.NaN) {
+			level = 1;
+		} else {
+			level = (int)db % 10 +1;
+		}
+		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0).sendToTarget();
 	}
 
 	@Override
@@ -699,6 +705,9 @@ public class P2PMessagePresenter extends BasePresenter implements
 				break;
 			case UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG:
 				wui.get().stopPlayAniamtion();
+				break;
+			case UI_MSG_UPDATE_VOLUMN_LEVEL:
+				wui.get().updateVoiceDBLevel(msg.arg1);
 				break;
 				
 			}

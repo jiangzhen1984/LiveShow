@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -237,7 +238,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	public void updateVoiceDBLevel(int level) {
-		
+		voiceDialogWidget.updateVolumnLevel(level);
 	}
 	
 	public void switchToVoice() {
@@ -264,6 +265,10 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 					this).inflate(R.layout.voice_record_dialog_widget_layout,
 					null);
 			dialog.setContentView(voiceDialogWidget);
+			dialog.setOutsideTouchable(false);
+			voiceDialogWidget.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+			dialog.setWidth(voiceDialogWidget.getMeasuredWidth());
+			dialog.setHeight(voiceDialogWidget.getMeasuredHeight());
 		}
 		
 		if (flag) {

@@ -39,6 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/voice_record_icon_1"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
             android:text="@string/voice_record_text_occupcation"
             android:visibility="invisible" />
     </RelativeLayout>
@@ -78,6 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/voice_record_icon_2"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
             android:text="@string/voice_record_text_occupcation"
             android:visibility="invisible" />
     </RelativeLayout>
@@ -118,6 +122,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/voice_record_icon_3"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
             android:text="@string/voice_record_text_occupcation"
             android:visibility="invisible" />
     </RelativeLayout>
@@ -147,10 +153,11 @@
                 android:src="@drawable/voice_record_maco_icon" />
 
             <ImageView
+                android:id="@+id/voice_record_icon_volumn_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|left|center_vertical"
-                android:src="@drawable/voice_record_volumn_0" />
+                android:src="@drawable/voice_record_volumn_4" />
         </LinearLayout>
 
         <TextView
@@ -168,6 +175,8 @@
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
             android:layout_below="@+id/voice_record_icon_4"
             android:layout_centerHorizontal="true"
             android:text="@string/voice_record_text_occupcation"

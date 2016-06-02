@@ -1,11 +1,12 @@
 package com.v2tech.widget;
 
-import com.v2tech.v2liveshow.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.v2tech.v2liveshow.R;
 
 public class VoiceRecordDialogWidget extends RelativeLayout {
 	
@@ -14,6 +15,7 @@ public class VoiceRecordDialogWidget extends RelativeLayout {
 	private View tipRootLongDuration;
 	private View tipRootTouchUpCancel;
 	private View tiprootVolumn;
+	private ImageView volumn;
 
 	public VoiceRecordDialogWidget(Context context) {
 		super(context);
@@ -45,6 +47,7 @@ public class VoiceRecordDialogWidget extends RelativeLayout {
 			break;
 		case R.id.voice_record_volumn_root:
 			tiprootVolumn = child;
+			volumn = (ImageView)child.findViewById(R.id.voice_record_icon_volumn_iv);
 			break;
 		}
 		
@@ -78,6 +81,39 @@ public class VoiceRecordDialogWidget extends RelativeLayout {
 		tipRootRequireMoreDuration.setVisibility(View.GONE);
 		tipRootLongDuration.setVisibility(View.GONE);
 		tipRootTouchUpCancel.setVisibility(View.VISIBLE);
+	}
+	
+	public void updateVolumnLevel(int level) {
+		switch (level) {
+		case 1:
+			volumn.setImageResource(R.drawable.voice_record_volumn_1);
+			break;
+		case 2:
+			volumn.setImageResource(R.drawable.voice_record_volumn_2);
+			break;
+		case 3:
+			volumn.setImageResource(R.drawable.voice_record_volumn_3);
+			break;
+		case 4:
+			volumn.setImageResource(R.drawable.voice_record_volumn_4);
+			break;
+		case 5:
+			volumn.setImageResource(R.drawable.voice_record_volumn_5);
+			break;
+		case 6:
+			volumn.setImageResource(R.drawable.voice_record_volumn_6);
+			break;
+		case 7:
+			volumn.setImageResource(R.drawable.voice_record_volumn_7);
+			break;
+		case 8:
+			volumn.setImageResource(R.drawable.voice_record_volumn_8);
+			break;
+		default:
+			volumn.setImageResource(R.drawable.voice_record_volumn_0);
+			break;
+			
+		}
 	}
 
 }

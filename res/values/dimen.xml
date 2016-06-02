@@ -94,6 +94,6 @@
     
     <dimen name="voice_record_dialog_widget_text_size">13.5sp</dimen>
     <dimen name="voice_record_dialog_widget_root_margin">15dp</dimen>
-    <dimen name="voice_record_dialog_widget_root_margin_hor">25dp</dimen>
+    <dimen name="voice_record_dialog_widget_root_margin_hor">20dp</dimen>
 
 </resources>

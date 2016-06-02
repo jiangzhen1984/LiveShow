@@ -2,6 +2,8 @@ package com.v2tech.audio;
 
 import java.nio.ByteBuffer;
 
+import com.V2.jni.util.V2Log;
+
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
@@ -196,7 +198,9 @@ public class AACEncoder {
 
 				saveDB(audioBuffer);
 				if (nofiticationListener != null) {
-					nofiticationListener.onDBChanged(mDB);
+					if (mDB != Double.NaN) {
+						nofiticationListener.onDBChanged(mDB);
+					}
 				}
 
 				inputBuffers = mEncoder.getInputBuffers();
@@ -251,7 +255,9 @@ public class AACEncoder {
 		private void saveDB(byte[] audiobuffer) {
 			int amplitude = (audiobuffer[0] & 0xff) << 8 | audiobuffer[1];
 
-			mDB = 20 * Math.log10((double) Math.abs(amplitude) / 32768);
+			//mDB = 20 * Math.log10((double) Math.abs(amplitude) /65535.0);
+			
+			mDB  = 20.0 * Math.log10(amplitude) - 20.0 *  Math.log10(700);
 		}
 
 		private void fillAACHeader(byte[] data) {
