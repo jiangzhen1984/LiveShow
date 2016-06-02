@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/p2p_message_btn_marigin_hor"
-                android:layout_toLeftOf="@+id/p2p_message_emoji_btn"
+                android:layout_toLeftOf="@+id/p2p_message_plus_btn"
                 android:layout_toRightOf="@+id/p2p_message_switcher_btn"
                 android:text="@string/p2p_message_btn_text_pressed_tip"
                 android:clickable="true"

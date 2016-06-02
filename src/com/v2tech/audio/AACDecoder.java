@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.V2.jni.util.V2Log;
-
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -16,6 +14,8 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.os.Build;
+
+import com.V2.jni.util.V2Log;
 
 public class AACDecoder {
 	/**
@@ -53,6 +53,8 @@ public class AACDecoder {
 	private DecoderNotification notificationListener;
 	
 	private DecoderWorkder worker;
+	
+	private AudioParameter currentPar;
 
 
 	public AACDecoder() {
@@ -102,6 +104,15 @@ public class AACDecoder {
 
 	}
 
+	public synchronized boolean play(AudioParameter par) {
+		if (par == null || par.getPath() == null) {
+			throw new NullPointerException(" par is null or path is null");
+		}
+		this.currentPar = par;
+		return play(par.getPath());
+	}
+	
+	
 	public synchronized boolean play(String audioPath) {
 		boolean ret = true;
 		File f = new File(audioPath);
@@ -201,7 +212,7 @@ public class AACDecoder {
 		@Override
 		public void run() {
 			if (notificationListener != null) {
-				notificationListener.onDecodeStart();
+				notificationListener.onDecodeStart(currentPar);
 			}
 			
 			mDecoder.start();
@@ -252,7 +263,7 @@ public class AACDecoder {
 					if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
 						mEOF = true;
 						if (notificationListener != null) {
-							notificationListener.onDecodeFinish();
+							notificationListener.onDecodeFinish(currentPar);
 						}
 						break;
 					}
@@ -276,7 +287,7 @@ public class AACDecoder {
 			mExtractor.release();
 			
 			if (notificationListener != null) {
-				notificationListener.onDecodeFinish();
+				notificationListener.onDecodeFinish(currentPar);
 			}
 		}
 
@@ -284,8 +295,13 @@ public class AACDecoder {
 	
 	
 	public interface DecoderNotification {
-		public void onDecodeFinish();
-		public void onDecodeStart();
+		public void onDecodeFinish(AudioParameter ap);
+		public void onDecodeStart(AudioParameter ap);
 		public void onDecodeError(Throwable e);
+	}
+	
+	
+	public interface AudioParameter {
+		public String getPath();
 	}
 }

@@ -108,14 +108,14 @@
     
     <string name="bounty_title_text">想看看这里</string>
     
-    <string name="p2p_message_btn_text_pressed_tip">按住说话</string>
-    <string name="p2p_message_btn_text_release_tip">松开结束</string>
+    <string name="p2p_message_btn_text_pressed_tip">松开结束</string>
+    <string name="p2p_message_btn_text_release_tip">按住说话</string>
     
     <string name="voice_record_text_tip_1">说话时间太短</string>
     <string name="voice_record_text_tip_2">说话时间太长</string>
     <string name="voice_record_text_tip_3">松开手指，取消发送</string>
     <string name="voice_record_text_tip_4">松开上滑，取消发送</string>
-    <string name="voice_record_text_occupcation">占位占位占位占位</string>
+    <string name="voice_record_text_occupcation">占位占位占位占位占位</string>
     <string name="p2p_message_send_btn_text">发送</string>
     
 

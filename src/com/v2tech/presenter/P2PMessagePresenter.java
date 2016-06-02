@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.audio.AACDecoder;
+import com.v2tech.audio.AACDecoder.AudioParameter;
 import com.v2tech.audio.AACDecoder.DecoderNotification;
 import com.v2tech.audio.AACEncoder;
 import com.v2tech.audio.AACEncoder.AACEncoderNotification;
@@ -71,6 +74,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	public static final int UI_MSG_SHOW_DIALOG = 1;
 	public static final int UI_MSG_DISMISS_DIALOG = 2;
+	public static final int UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG = 3;
 
 	private State state = State.IDLE;
 
@@ -89,6 +93,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	private AACEncoder aacRecorder;
 	private AACDecoder aacDecoder;
+	
+	
 
 	public interface P2PMessagePresenterUI {
 		public void setAdapter(BaseAdapter adapter);
@@ -125,7 +131,15 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public void showSendBtn(boolean flag);
 
 		public void showPlusBtn(boolean flag);
-
+		
+		
+		public void startAudioPlayAniamtion(View v, Item item);
+		
+		public void stopAudioPlayAniamtion(View v, Item item);
+		
+		public void stopPlayAniamtion();
+		
+		public void simulateKeboardKeyEvent(KeyEvent evt);
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -213,6 +227,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 		itemList.add(buildItem(vm));
 		notifyUIScroller(true);
+		et.setText("");
 	}
 
 	public void switcherBtnClicked() {
@@ -220,6 +235,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 			ui.switchToVoice();
 			additonState &= (~TYPE_SHOW_TEXT_LAYOUT);
 			additonState |= TYPE_SHOW_VOICE_LAYOUT;
+			additonState &= (~TYPE_SHOW_EMOJI_LAYOUT);
+			ui.showEmojiLayout(false);
 		} else if ((this.additonState & TYPE_SHOW_VOICE_LAYOUT) == TYPE_SHOW_VOICE_LAYOUT) {
 			ui.switchToText();
 			additonState &= (~TYPE_SHOW_VOICE_LAYOUT);
@@ -233,6 +250,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			aacDecoder.stop();
 		}
 
+		uiHandler.removeMessages(UI_MSG_DISMISS_DIALOG);
 		ui.showDialog(true, DIALOG_TYPE_VOLUMN);
 		ui.showVoiceDialog(true);
 		ui.showCancelRecordingDialog(false);
@@ -269,9 +287,12 @@ public class P2PMessagePresenter extends BasePresenter implements
 		Item item = (Item) tag;
 		if (item.msgType == ITEM_MSG_TYPE_AUDIO) {
 			aacDecoder.stop();
+			
 			if (!item.isPlaying) {
-				aacDecoder.play(item.path);
-				// TODO start playing animation
+				aacDecoder.play(item);
+				ui.startAudioPlayAniamtion(view, item);
+			} else {
+				ui.stopAudioPlayAniamtion(view, item);
 			}
 			item.isPlaying = !item.isPlaying;
 
@@ -346,6 +367,28 @@ public class P2PMessagePresenter extends BasePresenter implements
 	@Override
 	public void onEmojiClicked(View v) {
 		ImageView iv = (ImageView) v;
+		if (iv.getDrawable().getConstantState() == context.getResources()
+				.getDrawable(R.drawable.emoji_delete_last).getConstantState()) {
+			Editable et = ui.getEditable().getEditableText();
+			int len = et.length();
+			if (len <= 0) {
+				return;
+			}
+			ImageSpan[] sbi = et.getSpans(0, len, ImageSpan.class);
+			if (sbi.length > 0) {
+				ImageSpan is = sbi[sbi.length -1];
+				int end = et.getSpanEnd(is);
+				if (end == len) {
+					et.removeSpan(is);
+					et.delete(len -4 , len);
+				} else {
+					et.delete(len -1 , len);
+				}
+			} else {
+				et.delete(len -1 , len);
+			}
+			return;
+		}
 		ui.getEditable().appendEmoji(iv.getDrawable(),
 				Integer.parseInt(iv.getTag().toString()));
 	}
@@ -377,8 +420,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		i.content = buildContent(vm);
 		i.vm = vm;
 		i.id = vm.getId();
-		if (vm.getFromUser().getmUserId() == GlobalHolder.getInstance()
-				.getCurrentUserId()) {
+		if (0 == 0) {
 			i.type = ITEM_TYPE_SELF;
 		} else {
 			i.type = ITEM_TYPE_OTHERS;
@@ -399,6 +441,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 	private void notifyUIScroller(boolean uiThread) {
 		if (uiThread) {
 			localAdapter.notifyDataSetChanged();
+			ui.scrollTo(itemList.size() -1);
 			return;
 		}
 		uiHandler.post(new Runnable() {
@@ -409,6 +452,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			}
 
 		});
+
 	}
 
 	// ////////////////AACEncoderNotification////////////////////////
@@ -470,7 +514,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			 new VMessageAudioItem(vm, uuid, null , "aac", (int)duration, 0);
 			 messageService.sendMessage(vm, chatUser);
 			 itemList.add(buildItem(vm));
-			 notifyUIScroller(true);
+			 notifyUIScroller(false);
 		}
 		
 
@@ -536,7 +580,6 @@ public class P2PMessagePresenter extends BasePresenter implements
 	}
 
 	private boolean writeAACData(byte[] data, int len) {
-		// TODO save to file
 		try {
 			out.write(data, 0, len);
 		} catch (IOException e) {
@@ -555,17 +598,20 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	// ////////////////DecoderNotification////////////////////////
 
-	public void onDecodeFinish() {
+	public void onDecodeFinish(AudioParameter ap) {
 		synchronized (state) {
 			state = State.IDLE;
 		}
-		// TODO update message state
+		Message.obtain(uiHandler, UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG).sendToTarget();
 	}
 
-	public void onDecodeStart() {
+	public void onDecodeStart(AudioParameter ap) {
 		synchronized (state) {
 			state = State.DECODING;
 		}
+		
+		Item item  = (Item)ap;
+		messageService.updateVMessageReadFlag(item.id, true);
 	}
 
 	public void onDecodeError(Throwable e) {
@@ -639,32 +685,42 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 		@Override
 		public void handleMessage(Message msg) {
+			if (wui.get() == null) {
+				V2Log.e(" miss message " + msg.what +"  due to no context ");
+				return;
+			}
 			int what = msg.what;
 			switch (what) {
 			case UI_MSG_SHOW_DIALOG:
-				if (wui.get() != null) {
-					wui.get().showDialog(true, msg.arg1);
-				}
+				wui.get().showDialog(true, msg.arg1);
 				break;
 			case UI_MSG_DISMISS_DIALOG:
-				if (wui.get() != null) {
-					wui.get().showDialog(false, msg.arg1);
-				}
+				wui.get().showDialog(false, msg.arg1);
 				break;
+			case UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG:
+				wui.get().stopPlayAniamtion();
+				break;
+				
 			}
 		}
 
 	}
 
-	class Item {
-		long id;
-		int type;
-		int msgType;
-		Bitmap avatar;
-		CharSequence content;
-		String path;
-		boolean isPlaying;
-		VMessage vm;
+	public class Item implements AudioParameter {
+		public long id;
+		public int type;
+		public int msgType;
+		public Bitmap avatar;
+		public CharSequence content;
+		public String path;
+		public boolean isPlaying;
+		public VMessage vm;
+		@Override
+		public String getPath() {
+			return path;
+		}
+		
+		
 	}
 
 	enum State {

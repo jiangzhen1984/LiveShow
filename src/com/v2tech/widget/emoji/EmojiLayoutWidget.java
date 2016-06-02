@@ -15,14 +15,20 @@ import com.v2tech.widget.emoji.EmojiView.EmojiViewListener;
 public class EmojiLayoutWidget extends LinearLayout {
 	
 	
-	private static int[] EMOJI_RES_TABLE = new int[R.drawable.emo_75 - R.drawable.emo_01 + 2];
+	private static int[] EMOJI_RES_TABLE = new int[R.drawable.emo_75 - R.drawable.emo_01 + 4];
 	private static final int VIEW_COLS = 10;
 	private static final int VIEW_ROWS = 3;
 	
 	static {
-		for (int i = 1 ; i <= R.drawable.emo_75 - R.drawable.emo_01; i++) {
-			EMOJI_RES_TABLE[i] = R.drawable.emo_01 + (i - 1);
+		int i = 1 ;
+		for (; i <= R.drawable.emo_75 - R.drawable.emo_01; i++) {
+			if (i %  (VIEW_COLS * VIEW_ROWS) == 0) {
+				EMOJI_RES_TABLE[i] = R.drawable.emoji_delete_last;
+			} else {
+				EMOJI_RES_TABLE[i] = R.drawable.emo_01 + (i - 1);
+			}
 		}
+		EMOJI_RES_TABLE[i] = R.drawable.emoji_delete_last;
 	}
 	
 	

@@ -1,16 +1,19 @@
 package com.v2tech.view;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.v2tech.presenter.P2PMessagePresenter;
+import com.v2tech.presenter.P2PMessagePresenter.Item;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.RichEditText;
@@ -26,6 +30,9 @@ import com.v2tech.widget.emoji.EmojiLayoutWidget;
 
 public class P2PMessageActivity extends BaseActivity implements P2PMessagePresenterUI, OnClickListener {
 
+	
+	private InputMethodManager imm;
+	
 	private P2PMessagePresenter presenter;
 	
 	private ListView listView;
@@ -69,6 +76,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		
 		presenter.onUICreated();
 		emojiWidget.setListener(presenter);
+		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		
 	}
 
 	@Override
@@ -98,10 +107,16 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		lb.leftContentAdr = (TextView)view.findViewById(R.id.p2p_message_left_content_adr);
 		lb.rightContentAdr = (TextView)view.findViewById(R.id.p2p_message_right_content_adr);
 		
-		lb.leftContent.setTag(lb);
-		lb.rightContent.setTag(lb);
-		lb.leftContent.setOnClickListener(contentClickListener);
-		lb.rightContent.setOnClickListener(contentClickListener);
+		
+		lb.leftContentBG  = view.findViewById(R.id.p2p_message_left_content_bg);
+		lb.rightContentBG  = view.findViewById(R.id.p2p_message_right_content_bg);
+		lb.leftContentMacro  = (ImageView)view.findViewById(R.id.p2p_message_left_content_macro);
+		lb.rightContentMacro = (ImageView)view.findViewById(R.id.p2p_message_right_content_macro);
+		
+		lb.leftContentBG.setTag(lb);
+		lb.rightContentBG.setTag(lb);
+		lb.leftContentBG.setOnClickListener(contentClickListener);
+		lb.rightContentBG.setOnClickListener(contentClickListener);
 		view.setTag(lb);
 		return view;
 	}
@@ -121,9 +136,14 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_TEXT) {
 				lb.leftContentAdr.setVisibility(View.GONE);
 				lb.leftContent.setText(content);
+				lb.leftContent.setVisibility(View.VISIBLE);
+				lb.leftContentMacro.setVisibility(View.GONE);
+				//TODO stop animation
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.leftContentAdr.setVisibility(View.VISIBLE);
+				lb.leftContent.setVisibility(View.GONE);
 				lb.leftContent.setText("");
+				lb.leftContentMacro.setVisibility(View.VISIBLE);
 				//TODO update content length according to audio duration
 				if (isAudioPlaying)  {
 					//TODO start animation
@@ -141,9 +161,14 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_TEXT) {
 				lb.rightContentAdr.setVisibility(View.GONE);
 				lb.rightContent.setText(content);
+				lb.rightContent.setVisibility(View.VISIBLE);
+				lb.rightContentMacro.setVisibility(View.GONE);
+				//TODO stop animation
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.rightContentAdr.setVisibility(View.VISIBLE);
 				lb.rightContent.setText("");
+				lb.rightContent.setVisibility(View.GONE);
+				lb.rightContentMacro.setVisibility(View.VISIBLE);
 				//TODO update content length according to audio duration
 				if (isAudioPlaying)  {
 					//TODO start animation
@@ -167,6 +192,9 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	public void showEmojiLayout(boolean flag) {
 		emojiWidget.setVisibility(flag?View.VISIBLE:View.GONE);
+		if (flag) {
+			imm.hideSoftInputFromWindow(messageEt.getWindowToken(), 0);
+		}
 	}
 	
 	
@@ -181,7 +209,15 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
-	public void scrollTo(int position) {
+	public void scrollTo(final int position) {
+//		listView.post(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				listView.setSelection(position);
+//			}
+//
+//		});
 		listView.setSelection(position);
 	}
 	
@@ -205,14 +241,16 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	public void switchToVoice() {
-		switcherBtn.setImageResource(R.drawable.voice_switcher_btn);
+		switcherBtn.setImageResource(R.drawable.text_switcher_btn);
 		voiceRecordBtn.setText(R.string.p2p_message_btn_text_pressed_tip);
 		voiceRecordBtn.setVisibility(View.VISIBLE);
 		messageEt.setVisibility(View.GONE);
+	
+	    imm.hideSoftInputFromWindow(messageEt.getWindowToken(), 0);
 	}
 	
 	public void switchToText() {
-		switcherBtn.setImageResource(R.drawable.text_switcher_btn);
+		switcherBtn.setImageResource(R.drawable.voice_switcher_btn);
 		voiceRecordBtn.setVisibility(View.GONE);
 		messageEt.setVisibility(View.VISIBLE);
 	}
@@ -262,6 +300,52 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
+	public void startAudioPlayAniamtion(View v, Item item) {
+		LocalBind lb = (LocalBind)v.getTag();
+		if (lb.leftLy.getVisibility() == View.VISIBLE) {
+			lb.leftContentMacro.setImageResource(R.drawable.audio_play_left_volumn_ani);
+		} else if (lb.rightLy.getVisibility() == View.VISIBLE) {
+			lb.rightContentMacro.setImageResource(R.drawable.audio_play_right_volumn_ani);
+		}
+		lb.playingState = true;
+	}
+	
+	public void stopAudioPlayAniamtion(View v, Item item) {
+		LocalBind lb = (LocalBind)v.getTag();
+		if (lb.leftLy.getVisibility() == View.VISIBLE) {
+			lb.leftContentMacro.setImageResource(R.drawable.audio_play_voice_left_frame3);
+		} else if (lb.rightLy.getVisibility() == View.VISIBLE) {
+			lb.rightContentMacro.setImageResource(R.drawable.audio_play_voice_right_frame3);
+		}
+		lb.playingState = false;
+	}
+	
+	
+	
+	
+	
+	@Override
+	public void stopPlayAniamtion() {
+		int len  = listView.getChildCount();
+		for (int i = 0; i < len; i++) {
+			View v = listView.getChildAt(i);
+			LocalBind lb = (LocalBind)v.getTag();
+			if (lb.playingState) {
+				stopAudioPlayAniamtion(v, null);
+			}
+		}
+		
+	}
+	
+	
+	
+
+	@Override
+	public void simulateKeboardKeyEvent(KeyEvent evt) {
+		messageEt.dispatchKeyEvent(evt);
+		
+	}
+
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();
@@ -369,11 +453,16 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		ImageView rightAvtar;
 		TextView leftContent;
 		TextView rightContent;
+		View leftContentBG;
+		View rightContentBG;
+		ImageView leftContentMacro;
+		ImageView rightContentMacro;
 		TextView leftContentAdr;
 		TextView rightContentAdr;
 		View leftLy;
 		View rightLy;
 		Object tag;
+		boolean playingState;
 	}
 	
 }
