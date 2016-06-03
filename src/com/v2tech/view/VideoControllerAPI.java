@@ -4,12 +4,7 @@ import com.v2tech.vo.Live;
 
 public interface VideoControllerAPI {
 
-	
-	/**
-	 * Post new message to current video
-	 * @param str
-	 */
-	public void  addNewMessage(String str);
+
 	
 	
 	/**

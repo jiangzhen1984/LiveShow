@@ -57,6 +57,7 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		audioRecordBtn.setOnTouchListener(touchListener);
 		this.overridePendingTransition(R.animator.left_to_right_in,
 				R.animator.left_to_right_out);
+		presenter.onUICreated();
 
 	}
 

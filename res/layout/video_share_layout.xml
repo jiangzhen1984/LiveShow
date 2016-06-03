@@ -14,6 +14,15 @@
             android:id="@+id/local_camera_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        
+         <include
+            android:id="@+id/video_share_top_message_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/video_right_border_layout"
+            layout="@layout/message_marquee_layout" />
 
         <include
             android:id="@+id/video_right_border_layout"

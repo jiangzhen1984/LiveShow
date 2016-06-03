@@ -28,7 +28,7 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 
 	private TextView[] messagesText = new TextView[3];
 	private Animation[] anmations = new Animation[3];
-	private Queue<String> pendingMsgQueue = new LinkedList<String>();
+	private Queue<CharSequence> pendingMsgQueue = new LinkedList<CharSequence>();
 
 	private MessageMarqueeLayoutListener listener;
 
@@ -79,7 +79,7 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 
 	}
 
-	public void addMessageString(String msg) {
+	public void addMessageString(CharSequence msg) {
 		for (int i = 0; i < mMaxLines; i++) {
 			if (IDLE.equals(messagesText[i].getTag())
 					|| (messagesText[i].getTag() == null)) {
@@ -136,7 +136,7 @@ public class MessageMarqueeLinearLayout extends LinearLayout {
 	}
 
 	private boolean firePendingMsg() {
-		String pendingMsg = pendingMsgQueue.poll();
+		CharSequence pendingMsg = pendingMsgQueue.poll();
 		if (pendingMsg == null) {
 			return false;
 		}

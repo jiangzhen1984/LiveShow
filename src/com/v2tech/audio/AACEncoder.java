@@ -52,11 +52,10 @@ public class AACEncoder {
 	 */
 	private double mDB;
 
-
 	private RecorderThread workerThread;
-	
+
 	private AACEncoderNotification nofiticationListener;
-	
+
 	/**
 	 * 
 	 * @param out
@@ -65,7 +64,6 @@ public class AACEncoder {
 		this.nofiticationListener = nofiticationListener;
 	}
 
-	
 	public AACEncoder() {
 
 	}
@@ -110,12 +108,12 @@ public class AACEncoder {
 			if (mIsRecording) {
 				throw new RuntimeException("is recording please stop first");
 			}
-
-			initEncoder();
 			mIsRecording = true;
-			workerThread = new RecorderThread();
-			workerThread.start();
 		}
+		initEncoder();
+
+		workerThread = new RecorderThread();
+		workerThread.start();
 
 	}
 
@@ -125,28 +123,17 @@ public class AACEncoder {
 				return;
 			}
 			mIsRecording = false;
-			
-			
-			while (workerThread.isAlive()) {
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			mEncoder.stop();
-			mRecorder.stop();
-			mEncoder.release();
-			mRecorder.release();
 		}
+
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	
-	
-	
-
 	class RecorderThread extends Thread {
-		
 
 		@Override
 		public void run() {
@@ -165,7 +152,6 @@ public class AACEncoder {
 
 			byte[] outData;
 
-
 			if (nofiticationListener != null) {
 				nofiticationListener.onRecordStart();
 			}
@@ -175,24 +161,18 @@ public class AACEncoder {
 				try {
 					read = mRecorder.read(audioBuffer, 0, mBufferSize);
 					if (read <= 0) {
-						synchronized (mLock) {
-							mIsRecording = false;
-						}
 						if (nofiticationListener != null) {
-							nofiticationListener.onError(new Exception(" End of stream"));
+							nofiticationListener.onError(new Exception(
+									" End of stream"));
 						}
 						break;
 					}
-				} catch(Exception e) {
-					synchronized (mLock) {
-						mIsRecording = false;
-					}
+				} catch (Exception e) {
 					if (nofiticationListener != null) {
 						nofiticationListener.onError(e);
 					}
 					break;
 				}
-				
 
 				saveDB(audioBuffer);
 				if (nofiticationListener != null) {
@@ -227,10 +207,10 @@ public class AACEncoder {
 							- AAC_HEADER_LENGTH);
 
 					fillAACHeader(outData);
-					
-					
+
 					if (nofiticationListener != null) {
-						nofiticationListener.onAACDataOutput(outData, outData.length);
+						nofiticationListener.onAACDataOutput(outData,
+								outData.length);
 					}
 
 					mEncoder.releaseOutputBuffer(outputBufferIndex, false);
@@ -242,10 +222,15 @@ public class AACEncoder {
 
 			mEncoder.stop();
 			mRecorder.stop();
+			mEncoder.release();
+			mRecorder.release();
 
-			
 			if (nofiticationListener != null) {
 				nofiticationListener.onRecordFinish();
+			}
+
+			synchronized (mLock) {
+				mIsRecording = false;
 			}
 
 		}
@@ -253,9 +238,9 @@ public class AACEncoder {
 		private void saveDB(byte[] audiobuffer) {
 			int amplitude = (audiobuffer[0] & 0xff) << 8 | audiobuffer[1];
 
-			//mDB = 20 * Math.log10((double) Math.abs(amplitude) /65535.0);
-			
-			mDB  = 20.0 * Math.log10(amplitude) - 20.0 *  Math.log10(700);
+			// mDB = 20 * Math.log10((double) Math.abs(amplitude) /65535.0);
+
+			mDB = 20.0 * Math.log10(amplitude) - 20.0 * Math.log10(700);
 		}
 
 		private void fillAACHeader(byte[] data) {
@@ -279,18 +264,17 @@ public class AACEncoder {
 		}
 
 	};
-	
-	
+
 	public interface AACEncoderNotification {
-		
+
 		public void onRecordStart();
-		
+
 		public void onRecordFinish();
-		
+
 		public void onError(Throwable e);
-		
+
 		public void onDBChanged(double db);
-		
+
 		public void onAACDataOutput(byte[] data, int len);
 	}
 

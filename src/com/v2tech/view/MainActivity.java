@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.v2tech.map.MapAPI;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BottomButtonLayout;
 
 public class MainActivity extends BaseActivity implements
@@ -369,8 +370,12 @@ public class MainActivity extends BaseActivity implements
 //	}
 	
 	
-	public void queuedMessage(final String msg) {
+	public void queuedWatchingMessage(CharSequence msg) {
 		mMapVideoLayout.addNewMessage(msg);
+	}
+	
+	public void queuedPublisingMessage(CharSequence msg) {
+		videoShareLayout.addNewMessage(msg);
 	}
 	
 	public void updateBalanceSum(final float num) {
@@ -514,6 +519,23 @@ public class MainActivity extends BaseActivity implements
 	//FIXME close BTN
 	public void closeVideo(boolean flag) {
 		
+	}
+	
+	
+	public void addWatcher(int flag, Watcher watcher) {
+		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
+			videoShareLayout.addWatcher(watcher);
+		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
+			mMapVideoLayout.addWatcher(watcher);
+		}
+	}
+	
+	public void removeWatcher(int flag, Watcher watcher) {
+		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
+			videoShareLayout.removeWatcher(watcher);
+		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
+			mMapVideoLayout.removeWatcher(watcher);
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////

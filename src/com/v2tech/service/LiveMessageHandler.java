@@ -12,7 +12,7 @@ public interface LiveMessageHandler {
 	public void onVdideoMessage(long liveId, long uid, int opt);
 	
 	
-	public void onLiveMessage(long liveId, long uid, MessageInd ind);
+	public void onLiveMessage(long liveId, long uid, VMessage vm);
 	
 	
 	public void onP2PMessage(VMessage vm);

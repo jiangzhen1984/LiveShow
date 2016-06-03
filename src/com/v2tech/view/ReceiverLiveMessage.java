@@ -54,7 +54,8 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 			for (LiveMessageHandler h : handlers) {
 				if (meta.mt == MetaType.MESSAGE) {
 					if (meta.lid > 0) {
-						h.onLiveMessage(meta.lid, meta.uid, ind);
+						vm = extraMessage(ind);
+						h.onLiveMessage(meta.lid, meta.uid, vm);
 					} else {
 						h.onP2PMessage(vm);
 					}

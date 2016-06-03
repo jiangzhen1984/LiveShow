@@ -207,7 +207,7 @@ public class FansFollowPresenter extends BasePresenter implements
 		
 		if (sendFlag) {
 			Intent i = new Intent();
-			i.putExtra("chatuserid", u.getmUserId());
+			//i.putExtra("chatuserid", u.getmUserId());
 			i.putExtra("audiofile", this.accFile);
 			i.setClass(context, P2PMessageActivity.class);
 			context.startActivity(i);
@@ -276,7 +276,9 @@ public class FansFollowPresenter extends BasePresenter implements
 	}
 
 	private boolean closeAACFile() {
-
+		if (out == null) {
+			return false;
+		}
 		try {
 			out.close();
 		} catch (IOException e1) {

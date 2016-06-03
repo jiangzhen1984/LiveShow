@@ -136,10 +136,10 @@ public class LiveService extends AbstractHandler {
 						.getCurrentUser().nId, l.getLid(),
 						l.getLat(),
 						l.getLng()));
-		V2Log.i("===reportLiveStatus ==>" + resp.getHeader().isError());
 		if (!resp.getHeader().isError()) {
 			l.setNid(((LivePublishRespPacket)resp).nvid);
 		}
+		V2Log.i("== report live status error: "  + resp.getHeader().isError() +"   nid: "+ l.getNid()+"  live id:"+ l.getLid());
 	}
 	
 	

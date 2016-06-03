@@ -5611,6 +5611,18 @@ public final class WebPackage {
     // optional float gratuityCount = 8;
     boolean hasGratuityCount();
     float getGratuityCount();
+    
+    // optional int32 degree = 9;
+    boolean hasDegree();
+    int getDegree();
+    
+    // optional int32 resultType = 10;
+    boolean hasResultType();
+    int getResultType();
+    
+    // optional bool HLSMode = 11;
+    boolean hasHLSMode();
+    boolean getHLSMode();
   }
   public static final class Video extends
       com.google.protobuf.GeneratedMessage
@@ -5746,6 +5758,36 @@ public final class WebPackage {
       return gratuityCount_;
     }
     
+    // optional int32 degree = 9;
+    public static final int DEGREE_FIELD_NUMBER = 9;
+    private int degree_;
+    public boolean hasDegree() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public int getDegree() {
+      return degree_;
+    }
+    
+    // optional int32 resultType = 10;
+    public static final int RESULTTYPE_FIELD_NUMBER = 10;
+    private int resultType_;
+    public boolean hasResultType() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    public int getResultType() {
+      return resultType_;
+    }
+    
+    // optional bool HLSMode = 11;
+    public static final int HLSMODE_FIELD_NUMBER = 11;
+    private boolean hLSMode_;
+    public boolean hasHLSMode() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public boolean getHLSMode() {
+      return hLSMode_;
+    }
+    
     private void initFields() {
       id_ = 0;
       videoNum_ = "";
@@ -5755,6 +5797,9 @@ public final class WebPackage {
       userCount_ = 0;
       likeCount_ = 0;
       gratuityCount_ = 0F;
+      degree_ = 0;
+      resultType_ = 0;
+      hLSMode_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5791,6 +5836,15 @@ public final class WebPackage {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeFloat(8, gratuityCount_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt32(9, degree_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeInt32(10, resultType_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeBool(11, hLSMode_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -5832,6 +5886,18 @@ public final class WebPackage {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(8, gratuityCount_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, degree_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, resultType_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, hLSMode_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5978,6 +6044,12 @@ public final class WebPackage {
         bitField0_ = (bitField0_ & ~0x00000040);
         gratuityCount_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000080);
+        degree_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        resultType_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        hLSMode_ = false;
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
       
@@ -6052,6 +6124,18 @@ public final class WebPackage {
           to_bitField0_ |= 0x00000080;
         }
         result.gratuityCount_ = gratuityCount_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.degree_ = degree_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.resultType_ = resultType_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.hLSMode_ = hLSMode_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6091,6 +6175,15 @@ public final class WebPackage {
         }
         if (other.hasGratuityCount()) {
           setGratuityCount(other.getGratuityCount());
+        }
+        if (other.hasDegree()) {
+          setDegree(other.getDegree());
+        }
+        if (other.hasResultType()) {
+          setResultType(other.getResultType());
+        }
+        if (other.hasHLSMode()) {
+          setHLSMode(other.getHLSMode());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -6165,6 +6258,21 @@ public final class WebPackage {
             case 69: {
               bitField0_ |= 0x00000080;
               gratuityCount_ = input.readFloat();
+              break;
+            }
+            case 72: {
+              bitField0_ |= 0x00000100;
+              degree_ = input.readInt32();
+              break;
+            }
+            case 80: {
+              bitField0_ |= 0x00000200;
+              resultType_ = input.readInt32();
+              break;
+            }
+            case 88: {
+              bitField0_ |= 0x00000400;
+              hLSMode_ = input.readBool();
               break;
             }
           }
@@ -6421,6 +6529,69 @@ public final class WebPackage {
       public Builder clearGratuityCount() {
         bitField0_ = (bitField0_ & ~0x00000080);
         gratuityCount_ = 0F;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 degree = 9;
+      private int degree_ ;
+      public boolean hasDegree() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public int getDegree() {
+        return degree_;
+      }
+      public Builder setDegree(int value) {
+        bitField0_ |= 0x00000100;
+        degree_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearDegree() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        degree_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 resultType = 10;
+      private int resultType_ ;
+      public boolean hasResultType() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      public int getResultType() {
+        return resultType_;
+      }
+      public Builder setResultType(int value) {
+        bitField0_ |= 0x00000200;
+        resultType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearResultType() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        resultType_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional bool HLSMode = 11;
+      private boolean hLSMode_ ;
+      public boolean hasHLSMode() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      public boolean getHLSMode() {
+        return hLSMode_;
+      }
+      public Builder setHLSMode(boolean value) {
+        bitField0_ |= 0x00000400;
+        hLSMode_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearHLSMode() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        hLSMode_ = false;
         onChanged();
         return this;
       }
@@ -7265,17 +7436,18 @@ public final class WebPackage {
       "\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010descName\030\021 " +
       "\001(\t\022\014\n\004v2ID\030\022 \001(\t\"?\n\010Position\022\021\n\tlongitu",
       "de\030\001 \001(\001\022\020\n\010latitude\030\002 \001(\001\022\016\n\006radius\030\003 \001" +
-      "(\005\"\234\001\n\005Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001" +
+      "(\005\"\321\001\n\005Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001" +
       "(\t\022\016\n\006userId\030\003 \001(\005\022\033\n\010position\030\004 \001(\0132\t.P" +
       "osition\022\013\n\003sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022" +
       "\021\n\tlikeCount\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(" +
-      "\002\"\325\001\n\010Gratuity\022\020\n\010giftType\030\001 \001(\005\022\020\n\010toUs" +
-      "erID\030\002 \001(\005\022\022\n\nfromUserID\030\003 \001(\005\022\016\n\006amount" +
-      "\030\004 \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002\022 \n\006answer\030\006 " +
-      "\001(\0162\020.Gratuity.Answer\022\017\n\007videoId\030\007 \001(\005\"9" +
-      "\n\006Answer\022\013\n\007receive\020\000\022\n\n\006accept\020\001\022\n\n\006ref",
-      "use\020\002\022\n\n\006cancel\020\003B\037\n\021com.v2tech.net.lvB\n" +
-      "WebPackage"
+      "\002\022\016\n\006degree\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n" +
+      "\007HLSMode\030\013 \001(\010\"\325\001\n\010Gratuity\022\020\n\010giftType\030" +
+      "\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserID\030\003 " +
+      "\001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002" +
+      "\022 \n\006answer\030\006 \001(\0162\020.Gratuity.Answer\022\017\n\007vi",
+      "deoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n\n\006ac" +
+      "cept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003B\037\n\021com.v2" +
+      "tech.net.lvB\nWebPackage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7327,7 +7499,7 @@ public final class WebPackage {
           internal_static_Video_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Video_descriptor,
-              new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", },
+              new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", "Degree", "ResultType", "HLSMode", },
               com.v2tech.net.lv.WebPackage.Video.class,
               com.v2tech.net.lv.WebPackage.Video.Builder.class);
           internal_static_Gratuity_descriptor =

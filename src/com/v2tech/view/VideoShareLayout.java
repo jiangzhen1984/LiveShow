@@ -10,8 +10,10 @@ import android.widget.LinearLayout;
 
 import com.v2tech.map.MapAPI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Watcher;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
+import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.P2PAudioLiverLayout;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
@@ -40,6 +42,7 @@ public class VideoShareLayout extends LinearLayout {
 	private RequestConnectLayout connectionRequestLayout;
 	private P2PVideoMainLayout p2pVideoMainLayout;
 	private P2PAudioLiverLayout p2pAudioLiverLayout;
+	private MessageMarqueeLinearLayout msgMarqueeLayout; 
 
 	public VideoShareLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -61,6 +64,7 @@ public class VideoShareLayout extends LinearLayout {
 			localCameraSurface = (SurfaceView)child.findViewById(R.id.local_camera_view);
 			liverInformationLayout = (LiveInformationLayout)child.findViewById(R.id.video_right_border_layout);
 			videoWatcherListLayout = (VideoWatcherListLayout)child.findViewById(R.id.video_layout_bottom_layout);
+			msgMarqueeLayout = (MessageMarqueeLinearLayout) child.findViewById(R.id.video_share_top_message_layout);
 		} else if (child.getId() == R.id.video_share_bottom_ly) {
 			videoShareBtnLayout = (VideoShareBtnLayout)child.findViewById(R.id.video_share_btn_ly);
 			connectionRequestLayout = (RequestConnectLayout)child.findViewById(R.id.video_share_request_connect);
@@ -159,9 +163,28 @@ public class VideoShareLayout extends LinearLayout {
 	
 	
 	
+	public void addWatcher(Watcher watcher) {
+		videoWatcherListLayout.addWatcher(watcher);
+	}
+	
+	public void removeWatcher(Watcher watcher) {
+		videoWatcherListLayout.removeWatcher(watcher);
+	}
+	
+	
+	public void addNewMessage(CharSequence msg) {
+		msgMarqueeLayout.addMessageString(msg);
+	}
+	
+	
 	public MapAPI getWatcherMapInstance() {
 		return p2pAudioLiverLayout.getWatcherMapInstance();
 	}
+	
+	public void showMarqueeMessage(boolean flag) {
+		msgMarqueeLayout.updateMessageShow(flag);
+	}
+	
 	
 	private void layoutAnimationOut(View v) {
 		v.setVisibility(View.GONE);

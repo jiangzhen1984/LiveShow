@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.LiveStatusHandler;
+import com.v2tech.service.LiveWathcingHandler;
 
 public class GlobalPresenterManager {
 
@@ -15,6 +16,7 @@ public class GlobalPresenterManager {
 	private Vector<WeakReference<BasePresenter>> list = new Vector<WeakReference<BasePresenter>>();
 	private Vector<WeakReference<LiveStatusHandler>> liveStatusHandlerList = new Vector<WeakReference<LiveStatusHandler>>();
 	private Vector<WeakReference<LiveMessageHandler>> liveMessageHandlerList = new Vector<WeakReference<LiveMessageHandler>>();
+	private Vector<WeakReference<LiveWathcingHandler>> liveWatchingHandlerList = new Vector<WeakReference<LiveWathcingHandler>>();
 	
 
 	private GlobalPresenterManager() {
@@ -31,6 +33,12 @@ public class GlobalPresenterManager {
 		list.add(new WeakReference<BasePresenter>(presenter));
 		if (presenter instanceof LiveStatusHandler) {
 			onLiveStatusHandlerCreated((LiveStatusHandler) presenter);
+		} 
+		if (presenter instanceof LiveMessageHandler) {
+			onLiveMessageHandlerCreated((LiveMessageHandler) presenter);
+		} 
+		if (presenter instanceof LiveWathcingHandler) {
+			onLiveWathcingHandlerCreated((LiveWathcingHandler) presenter);
 		}
 	}
 
@@ -45,6 +53,12 @@ public class GlobalPresenterManager {
 
 					if (act instanceof LiveStatusHandler) {
 						onLiveStatusHandlerDestroyed((LiveStatusHandler) presenter);
+					} 
+					if (act instanceof LiveWathcingHandler) {
+						onLiveWathcingHandlerDestroyed((LiveWathcingHandler) presenter);
+					} 
+					if (act instanceof LiveMessageHandler) {
+						onLiveMessageHandlerDestroyed((LiveMessageHandler) presenter);
 					}
 
 					break;
@@ -58,7 +72,7 @@ public class GlobalPresenterManager {
 		liveMessageHandlerList.add(new WeakReference<LiveMessageHandler>(lsh));
 	}
 
-	public void onLLiveMessageHandlerDestroyed(LiveMessageHandler lsh) {
+	public void onLiveMessageHandlerDestroyed(LiveMessageHandler lsh) {
 		synchronized (liveMessageHandlerList) {
 			int size = liveMessageHandlerList.size();
 
@@ -128,5 +142,46 @@ public class GlobalPresenterManager {
 			return handlers;
 		}
 	}
+	
+	
+	
+	
+	public void onLiveWathcingHandlerCreated(LiveWathcingHandler lsh) {
+		liveWatchingHandlerList.add(new WeakReference<LiveWathcingHandler>(lsh));
+	}
+
+	public void onLiveWathcingHandlerDestroyed(LiveWathcingHandler lsh) {
+		synchronized (liveWatchingHandlerList) {
+			int size = liveWatchingHandlerList.size();
+
+			for (int i = 0; i < size; i++) {
+				WeakReference<LiveWathcingHandler> w = liveWatchingHandlerList
+						.get(i);
+				LiveWathcingHandler act = w.get();
+				if (act != null) {
+					liveWatchingHandlerList.remove(i);
+				}
+			}
+		}
+	}
+	
+	
+	public List<LiveWathcingHandler> getLiveWathcingHandler() {
+		synchronized (liveWatchingHandlerList) {
+			int size = liveWatchingHandlerList.size();
+			List<LiveWathcingHandler> handlers = new ArrayList<LiveWathcingHandler>(
+					size);
+			for (int i = 0; i < size; i++) {
+				WeakReference<LiveWathcingHandler> w = liveWatchingHandlerList
+						.get(i);
+				LiveWathcingHandler act = w.get();
+				if (act != null) {
+					handlers.add(act);
+				}
+			}
+			return handlers;
+		}
+	}
+
 
 }

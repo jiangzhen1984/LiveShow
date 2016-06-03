@@ -30,6 +30,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.video.VideoController;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BountyMarkerWidget;
 import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiveInformationLayout;
@@ -202,9 +203,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		return this.mMapView;
 	}
 
-	@Override
-	public void addNewMessage(String str) {
-		mMsgLayout.addMessageString(str);
+	
+	public void addNewMessage(CharSequence msg) {
+		mMsgLayout.addMessageString(msg);
 	}
 	
 	
@@ -536,6 +537,16 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	public void setVideoWatcherListLayoutListener(VideoWatcherListLayoutListener listener) {
 		this.liveWatcherLayout.setListener(listener);
 	}
+	
+	
+	public void addWatcher(Watcher watcher) {
+		liveWatcherLayout.addWatcher(watcher);
+	}
+	
+	public void removeWatcher(Watcher watcher) {
+		liveWatcherLayout.removeWatcher(watcher);
+	}
+	
 	
 	
 	

@@ -3,13 +3,18 @@ package com.v2tech.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Watcher;
 
 public class VideoWatcherListLayout extends RelativeLayout {
 	
 	private View publisher;
+	
+	private HorizontalScrollView horizontalScrollView;
 	
 	private VideoWatcherListLayoutListener listener;
 
@@ -33,6 +38,8 @@ public class VideoWatcherListLayout extends RelativeLayout {
 		if (child.getId() == R.id.liver_ly) {
 			publisher = child;
 			publisher.setOnClickListener(clickListener);
+		} else if(child.getId() == R.id.video_ly_btm_watcher_lineryout) {
+			horizontalScrollView = (HorizontalScrollView)child;
 		}
 	}
 	
@@ -55,8 +62,24 @@ public class VideoWatcherListLayout extends RelativeLayout {
 	};
 	
 	
+	public void addWatcher(Watcher watcher) {
+		ImageView iv = new ImageView(getContext());
+		iv.setImageResource(R.drawable.avatar_female);
+		iv.setTag(watcher);
+		horizontalScrollView.addView(iv);
+	}
 	
-	
+	public void removeWatcher(Watcher watcher) {
+		int count = horizontalScrollView.getChildCount();
+		for (int i = 0; i <count; i++) {
+			View v = horizontalScrollView.getChildAt(i);
+			Watcher w = (Watcher)v.getTag();
+			if (w.getmUserId() == watcher.getmUserId()) {
+				horizontalScrollView.removeViewAt(i);
+				break;
+			}
+		}
+	}
 	
 	public VideoWatcherListLayoutListener getListener() {
 		return listener;

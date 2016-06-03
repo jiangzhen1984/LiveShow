@@ -13,12 +13,9 @@ import java.util.UUID;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -38,6 +35,7 @@ import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.util.GlobalConfig;
+import com.v2tech.util.MessageUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
@@ -341,7 +339,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 	}
 
 	@Override
-	public void onLiveMessage(long liveId, long uid, MessageInd ind) {
+	public void onLiveMessage(long liveId, long uid, VMessage vm) {
 
 	}
 
@@ -380,36 +378,13 @@ public class P2PMessagePresenter extends BasePresenter implements
 				Integer.parseInt(iv.getTag().toString()));
 	}
 
-	private CharSequence buildContent(VMessage vm) {
-		SpannableStringBuilder builder = new SpannableStringBuilder();
-		List<VMessageAbstractItem> list = vm.getItems();
-		for (VMessageAbstractItem item : list) {
-			if (item.getType() == VMessageAbstractItem.ITEM_TYPE_TEXT) {
-				builder.append(((VMessageTextItem) item).getText());
-			} else if (item.getType() == VMessageAbstractItem.ITEM_TYPE_FACE) {
-				SpannableStringBuilder emojiBuilder = new SpannableStringBuilder(
-						"[at]", 0, 4);
-				Drawable dra = context.getResources().getDrawable(
-						R.drawable.emo_01);
-				dra.setBounds(0, 0, dra.getIntrinsicWidth(),
-						dra.getIntrinsicHeight());
-				ImageSpan span = new ImageSpan(dra);
-				emojiBuilder.setSpan(span, 0, 4,
-						Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-				builder.append(emojiBuilder);
-			}
-		}
-		return builder;
-	}
 
-	static int a = 1;
 	private Item buildItem(VMessage vm) {
 		Item i = new Item();
-		i.content = buildContent(vm);
+		i.content = MessageUtil.buildContent(context, vm);
 		i.vm = vm;
 		i.id = vm.getId();
-		//TODO FIXME should use current user
-		if (a ++ % 2 == 0) {
+		if (vm.getFromUser().getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
 			i.type = ITEM_TYPE_SELF;
 		} else {
 			i.type = ITEM_TYPE_OTHERS;

@@ -15,6 +15,7 @@ import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
 import com.v2tech.net.lv.LivePublishIndPacket;
 import com.v2tech.net.lv.LiveWatchingIndPacket;
+import com.v2tech.net.lv.LiveWatchingReqPacket;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse.Result;
@@ -28,6 +29,7 @@ public class NotificationService extends Service {
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH = "com.v2tech.live_publish";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_FINISH = "com.v2tech.live_finished";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_LEAVE = "com.v2tech.live_leave";
+	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING = "com.v2tech.live_watching";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_MESSAGE = "com.v2tech.live_message";
 
 	
@@ -78,10 +80,23 @@ public class NotificationService extends Service {
 				sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH, live);
 			} else if (ip instanceof LiveWatchingIndPacket) {
 				LiveWatchingIndPacket  lwip =(LiveWatchingIndPacket) ip;
-				//3 means publisher closed live
-				if (lwip.type == 3) {
-					User u = new User(lwip.uid) ;
-					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH, new String[]{"obj", "lid", "opt"}, new Serializable[]{u, lwip.nid, lwip.type});
+				if (lwip.type == LiveWatchingReqPacket.CLOSE) {
+					User u = new User(lwip.uid);
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH,
+							new String[] { "obj", "lid", "opt" },
+							new Serializable[] { u, lwip.nid, lwip.type });
+				} else if (lwip.type == LiveWatchingReqPacket.WATCHING) {
+					User u = new User(lwip.uid);
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING,
+							new String[] { "live", "user", "type" },
+							new Serializable[] { lwip.nid, u,
+									LiveWatchingReqPacket.WATCHING });
+				} else if (lwip.type == LiveWatchingReqPacket.CANCEL) {
+					User u = new User(lwip.uid);
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_LEAVE,
+							new String[] { "live", "user", "type" },
+							new Serializable[] { lwip.nid, u,
+									LiveWatchingReqPacket.CANCEL });
 				}
 			}
 

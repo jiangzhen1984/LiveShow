@@ -53,6 +53,7 @@ public class MainApplication extends Application {
 		super.onCreate();
 		this.registerActivityLifecycleCallbacks(GlobalActivityManager
 				.getInstance());
+		onMainCreate();
 	}
 
 	@Override
