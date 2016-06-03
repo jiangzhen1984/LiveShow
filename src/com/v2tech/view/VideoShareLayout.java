@@ -13,6 +13,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
+import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.P2PAudioLiverLayout;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
@@ -102,7 +103,9 @@ public class VideoShareLayout extends LinearLayout {
 		this.p2pAudioLiverLayout.setListener(listener);
 	}
 	
-	
+	public void setMessageMarqueeLayoutListener(MessageMarqueeLayoutListener listener) {
+		this.msgMarqueeLayout.setListener(listener);
+	}
 	
 	
 	

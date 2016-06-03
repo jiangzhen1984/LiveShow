@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements
 		videoShareLayout.setRequestConnectLayoutListener(presenter);
 		videoShareLayout.setP2PVideoMainLayoutListener(presenter);
 		videoShareLayout.setP2PAudioLiverLayoutListener(presenter);
+		videoShareLayout.setMessageMarqueeLayoutListener(presenter);
 		
 	}
 	
@@ -405,6 +406,7 @@ public class MainActivity extends BaseActivity implements
 	
 	public void showMarqueeMessage(boolean flag) {
 		mMapVideoLayout.showMarqueeMessage(flag);
+		videoShareLayout.showMarqueeMessage(flag);
 	}
 	
 	
