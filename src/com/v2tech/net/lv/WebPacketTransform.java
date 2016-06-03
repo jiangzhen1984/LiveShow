@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.V2.jni.util.V2Log;
-import com.v2tech.net.lv.WebPackage.Video;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;

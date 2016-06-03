@@ -22,9 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/p2p_message_padding_1"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="@dimen/p2p_message_body_margin_hor"
-        android:layout_marginRight="75dp"
         android:layout_marginTop="5dp" >
 
         <ImageView
@@ -69,23 +70,43 @@
             android:text="6&apos;"
             android:textColor="#c0c0c0" />
     </LinearLayout>
+    
+    
+     <LinearLayout
+        android:id="@+id/p2p_message_padding_1"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        >
+         
+     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/p2p_message_right_ly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/p2p_message_padding_2"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="75dp"
         android:layout_marginRight="@dimen/p2p_message_body_margin_hor"
         android:layout_marginTop="5dp" >
+        
+        <ImageView
+            android:id="@+id/p2p_message_right_avtar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+            android:src="@drawable/p2p_message_avtar_female" />
 
         <TextView
             android:id="@+id/p2p_message_right_content_adr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/p2p_message_right_content_bg"
+            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/p2p_message_body_margin_hor"
             android:text="6&apos;"
             android:textColor="#c0c0c0" />
@@ -95,6 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_bg_right"
+            android:layout_toLeftOf="@+id/p2p_message_right_avtar"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -117,12 +139,17 @@
                 android:src="@drawable/audio_play_voice_right_frame3" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/p2p_message_right_avtar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
-            android:src="@drawable/p2p_message_avtar_female" />
-    </LinearLayout>
+        
+    </RelativeLayout>
+    
+    <LinearLayout
+        android:id="@+id/p2p_message_padding_2"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal"
+        >
+         
+     </LinearLayout>
 
 </RelativeLayout>

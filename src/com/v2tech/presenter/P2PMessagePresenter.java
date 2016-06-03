@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -116,10 +115,6 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public void scrollTo(int position);
 
 		public long getIntentUserId();
-
-		public void showVoiceDialog(boolean flag);
-
-		public void showCancelRecordingDialog(boolean flag);
 
 		public void updateVoiceDBLevel(int level);
 
@@ -253,22 +248,15 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 		uiHandler.removeMessages(UI_MSG_DISMISS_DIALOG);
 		ui.showDialog(true, DIALOG_TYPE_VOLUMN);
-		ui.showVoiceDialog(true);
-		ui.showCancelRecordingDialog(false);
 		aacRecorder.start();
 	}
 
 	public void onRecordBtnTouchUp(MotionEvent ev) {
-		ui.showVoiceDialog(false);
-		ui.showCancelRecordingDialog(false);
-		// TODO check cancel flag
 		aacRecorder.stop();
 		ui.showDialog(false, DIALOG_TYPE_VOLUMN);
 	}
 
 	public void onRecordBtnTouchMoveOutOfBtn(MotionEvent ev) {
-		ui.showVoiceDialog(false);
-		ui.showCancelRecordingDialog(true);
 		ui.showDialog(true, DIALOG_TYPE_TOUCH_UP_CANCEL);
 		synchronized (state) {
 			state = State.RECORDING_SHOW_CANCEL_DIALOG;
@@ -276,8 +264,6 @@ public class P2PMessagePresenter extends BasePresenter implements
 	}
 
 	public void onRecordBtnTouchMoveInBtn(MotionEvent ev) {
-		ui.showVoiceDialog(true);
-		ui.showCancelRecordingDialog(false);
 		ui.showDialog(true, DIALOG_TYPE_VOLUMN);
 		synchronized (state) {
 			state = State.RECORDING;
@@ -416,12 +402,14 @@ public class P2PMessagePresenter extends BasePresenter implements
 		return builder;
 	}
 
+	static int a = 1;
 	private Item buildItem(VMessage vm) {
 		Item i = new Item();
 		i.content = buildContent(vm);
 		i.vm = vm;
 		i.id = vm.getId();
-		if (0 == 0) {
+		//TODO FIXME should use current user
+		if (a ++ % 2 == 0) {
 			i.type = ITEM_TYPE_SELF;
 		} else {
 			i.type = ITEM_TYPE_OTHERS;
@@ -467,6 +455,10 @@ public class P2PMessagePresenter extends BasePresenter implements
 		boolean ret = openAACFile();
 		if (!ret) {
 			// TODO notify user
+			
+			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
+					DIALOG_TYPE_NONE, 0).sendToTarget();
+			this.aacRecorder.stop();
 		}
 		duration = System.currentTimeMillis();
 		V2Log.i("=====start to record , open file aac file " + ret + "  file:"
@@ -481,6 +473,9 @@ public class P2PMessagePresenter extends BasePresenter implements
 				+ accFile);
 		if (!ret) {
 			// TODO notify user
+			synchronized (state) {
+				state = State.IDLE;
+			}
 			return;
 		} 
 		
@@ -497,6 +492,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		}
 		
 		duration = (System.currentTimeMillis() - duration);
+		//Check duration is valid or not
 		if (duration < 1500) {
 			accFile.deleteOnExit();
 			Message.obtain(uiHandler, UI_MSG_SHOW_DIALOG,

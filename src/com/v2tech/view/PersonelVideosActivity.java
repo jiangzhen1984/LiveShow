@@ -3,7 +3,6 @@
  */
 package com.v2tech.view;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -240,7 +239,7 @@ public class PersonelVideosActivity extends BaseActivity implements
 			LocalBind lb = null;
 			if (convertView == null) {
 				View view = infalter.inflate(R.layout.video_list_view_item,
-						null);
+						(ViewGroup)null);
 				lb = new LocalBind();
 				view.setTag(lb);
 				lb.left = (ImageView) view

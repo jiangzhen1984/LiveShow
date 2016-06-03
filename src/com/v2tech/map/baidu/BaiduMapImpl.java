@@ -1,13 +1,8 @@
 package com.v2tech.map.baidu;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.view.ViewGroupOverlay;
 
-import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -22,7 +17,6 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
-import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -44,7 +38,7 @@ public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
 		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
 	
-	private WeakReference<MapView> mapView;
+	//private WeakReference<MapView> mapView;
 
 	public BaiduMap mapImpl;
 
@@ -59,7 +53,7 @@ public class BaiduMapImpl implements MapAPI,
 		this.mapImpl = mapImpl;
 		mSearchAPI = GeoCoder.newInstance();
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
-		mapView = new WeakReference<MapView>(mv);
+	//	mapView = new WeakReference<MapView>(mv);
 	}
 
 	public BaiduMap getMapImpl() {
@@ -103,11 +97,11 @@ public class BaiduMapImpl implements MapAPI,
 	}
 	
 	public void removeMarker(Marker marker) {
-		OverlayOptions oo = ((BaiduMaker)marker).oo;
-		MapView mv = mapView.get();
-		if (mv != null) {
-			ViewGroupOverlay gp = mv.getOverlay();
-		}
+//		OverlayOptions oo = ((BaiduMaker)marker).oo;
+//		MapView mv = mapView.get();
+//		if (mv != null) {
+//			ViewGroupOverlay gp = mv.getOverlay();
+//		}
 	}
 
 	

@@ -148,6 +148,11 @@ public class LiverInteractionLayout extends LinearLayout {
 		followBtnTV.setText(res);
 	}
 
+	
+	
+	public View getAudioRecordBtn() {
+		return chatRequestBtn;
+	}
 
 	private OnClickListener listener = new OnClickListener() {
 

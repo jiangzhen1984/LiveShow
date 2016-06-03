@@ -3,7 +3,6 @@
  */
 package com.v2tech.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,7 +141,7 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LocalBind lb  = null;
 			if (convertView == null) {
-				View view = infalter.inflate(R.layout.personel_wallet_detail_item, null);
+				View view = infalter.inflate(R.layout.personel_wallet_detail_item, (ViewGroup)null);
 				lb = new LocalBind();
 				view.setTag(lb);
 				lb.name = (TextView)view.findViewById(R.id.personel_wallet_name);

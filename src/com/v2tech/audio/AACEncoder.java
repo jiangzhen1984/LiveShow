@@ -2,8 +2,6 @@ package com.v2tech.audio;
 
 import java.nio.ByteBuffer;
 
-import com.V2.jni.util.V2Log;
-
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;

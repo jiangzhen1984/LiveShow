@@ -14,8 +14,6 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 
@@ -118,7 +116,6 @@ public class DeamonWorker implements Runnable, NetConnector,
 			}
 
 		} catch (Exception e) {
-			// FIXME add recovery policy
 			V2Log.e(e.getMessage());
 			Log.e("DeamonWorker", " error :", e);
 			e.printStackTrace();
@@ -403,8 +400,8 @@ public class DeamonWorker implements Runnable, NetConnector,
 	}
 
 	class LocalChannel extends ChannelInitializer<SocketChannel> {
-		private final StringDecoder DECODER = new StringDecoder();
-		private final StringEncoder ENCODER = new StringEncoder();
+//		private final StringDecoder DECODER = new StringDecoder();
+//		private final StringEncoder ENCODER = new StringEncoder();
 
 		public LocalChannel() {
 		}

@@ -96,7 +96,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	
 	public View getView() {
-		View view = LayoutInflater.from(this).inflate(R.layout.p2p_message_layout, null);
+		View view = LayoutInflater.from(this).inflate(R.layout.p2p_message_layout, (ViewGroup)null);
 		LocalBind lb = new LocalBind();
 		lb.leftAvtar = (ImageView)view.findViewById(R.id.p2p_message_left_avtar);
 		lb.rightAvtar = (ImageView)view.findViewById(R.id.p2p_message_right_avtar);
@@ -228,15 +228,6 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
-	
-	public void showVoiceDialog(boolean flag) {
-		
-	}
-	
-	public void showCancelRecordingDialog(boolean flag) {
-		
-	}
-	
 	public void updateVoiceDBLevel(int level) {
 		voiceDialogWidget.updateVolumnLevel(level);
 	}
@@ -263,7 +254,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			dialog = new PopupWindow(this);
 			voiceDialogWidget = (VoiceRecordDialogWidget) LayoutInflater.from(
 					this).inflate(R.layout.voice_record_dialog_widget_layout,
-					null);
+							(ViewGroup)null);
 			dialog.setContentView(voiceDialogWidget);
 			dialog.setOutsideTouchable(false);
 			voiceDialogWidget.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
