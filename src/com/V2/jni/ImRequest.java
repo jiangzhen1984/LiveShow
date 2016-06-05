@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.V2.jni.callback.ImRequestCallback;
+import com.V2.jni.util.V2Log;
 
 public class ImRequest {
 	private List<WeakReference<ImRequestCallback>> mCallBacks;
@@ -230,7 +231,13 @@ public class ImRequest {
 
 	
 	private void OnImRegisterGuest(String na1, String na2, int fl) {
-		
+		V2Log.i(na1+"  ===>" + na2+"  ==>" + fl);
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<ImRequestCallback> wf = this.mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnLoginCallback(fl, 0, 0, System.currentTimeMillis()/1000, null);
+			}
+		}
 	}
 	/**
 	 * @brief 登录IM回调函数

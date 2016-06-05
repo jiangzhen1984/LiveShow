@@ -62,7 +62,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private static final int ANIMATION_DURATION = 1000;
 	
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMaximumFlingVelocity;

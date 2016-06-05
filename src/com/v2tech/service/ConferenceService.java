@@ -137,8 +137,8 @@ public class ConferenceService extends DeviceService {
 						LiveWatchingReqPacket.WATCHING), null));
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
-	//	ConfRequest.getInstance().ConfEnter(l.getLid());
-		ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), l.getLid(), 1);
+		ConfRequest.getInstance().ConfEnter(l.getLid());
+	//	ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), l.getLid(), 1);
 		
 	}
 	
@@ -204,19 +204,19 @@ public class ConferenceService extends DeviceService {
 			}
 			return;
 		}
-		long gid = 15010000000L;
-		int seed = ran.nextInt();
-		if (seed < 0) {
-			seed = ~seed;
-		}
-		gid |= seed;
-		ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), gid, 1);
+//		long gid = 15010000000L;
+//		int seed = ran.nextInt();
+//		if (seed < 0) {
+//			seed = ~seed;
+//		}
+//		gid |= seed;
+		//ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), gid, 1);
 		
 		initTimeoutMessage(JNI_REQUEST_CREATE_CONFERENCE,
 				DEFAULT_TIME_OUT_SECS, caller);
-//		GroupRequest.getInstance().GroupCreate(
-//				Group.GroupType.CONFERENCE.intValue(),
-//				l.getConferenceConfigXml(), l.getInvitedAttendeesXml());
+		GroupRequest.getInstance().GroupCreate(
+				Group.GroupType.CONFERENCE.intValue(),
+				l.getConferenceConfigXml(), l.getInvitedAttendeesXml());
 	}
 
 	/**

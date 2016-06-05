@@ -76,7 +76,13 @@ public class UserService extends AbstractHandler {
 			
 			GlobalHolder.getInstance().setCurrentUser(loginUser);
 			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",  true);
+			if (GlobalHolder.getInstance().getCurrentUser().isNY) {
+				ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", true);
+			} else {
+				V2Log.i("====log v2 system with guest ");
+				ImRequest.getInstance().ImRegisterGuest(mail);
+			}
+			//ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",  true);
 		} else {
 			if (caller != null) {
 				Message m = Message.obtain(caller.getHandler(), caller.what,
@@ -113,7 +119,12 @@ public class UserService extends AbstractHandler {
 			u.isNY = isNY;
 			GlobalHolder.getInstance().setCurrentUser(u);
 			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
-			ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", true);
+			if (isNY) {
+				ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", true);
+			} else {
+				V2Log.i("====log v2 system with guest ");
+				ImRequest.getInstance().ImRegisterGuest(mail);
+			}
 		} else {
 			if (caller != null) {
 				V2Log.e("Loged in failed ");
