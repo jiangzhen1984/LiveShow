@@ -47,12 +47,14 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private PopupWindow   dialog;
 	private VoiceRecordDialogWidget voiceDialogWidget;
 	private View sendBtn;
+	private View root;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		((MainApplication)this.getApplication()).onMainCreate();
 		setContentView(R.layout.p2p_message_activity);
+		root = findViewById(R.id.p2p_message_layout_root);
 		listView = (ListView)findViewById(R.id.p2p_message_msg_listview);
 		addtionalLayout = findViewById(R.id.p2p_message_addition_lay);
 		plusBtn = findViewById(R.id.p2p_message_plus_btn);
@@ -80,6 +82,14 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		
 	}
+	
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		presenter.onUIStarted();
+	}
+
 
 	@Override
 	protected void onDestroy() {
@@ -278,7 +288,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				break;
 			}
 			if (!dialog.isShowing()) {
-				dialog.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+				dialog.showAtLocation(root, Gravity.CENTER, 0, 0);
 			}
 		} else {
 			dialog.dismiss();
@@ -340,6 +350,15 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	public void simulateKeboardKeyEvent(KeyEvent evt) {
 		messageEt.dispatchKeyEvent(evt);
 		
+	}
+	
+	
+	public int getStartType() {
+		return getIntent().getIntExtra("type", -1);
+	}
+	
+	public String getAacfilePath() {
+		return getIntent().getStringExtra("audiofile");
 	}
 
 	@Override

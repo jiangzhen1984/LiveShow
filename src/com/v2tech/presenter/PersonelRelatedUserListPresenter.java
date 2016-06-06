@@ -12,7 +12,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
 
+import com.v2tech.frag.UserListFragment.UserListFragmentClickListener;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.FansQueryReqPacket;
 import com.v2tech.net.lv.FansQueryRespPacket;
@@ -26,7 +28,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.view.FansFollowActivity;
 import com.v2tech.vo.User;
 
-public class PersonelRelatedUserListPresenter extends BasePresenter {
+public class PersonelRelatedUserListPresenter extends BasePresenter implements UserListFragmentClickListener {
 	
 	public static final int TYPE_FANS = 1;
 	public static final int TYPE_FRIENDS = 2;
@@ -148,6 +150,16 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 		ui.updateItemUserTag(convertView, u);
 	}
 
+	
+	
+
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 	@Override
@@ -239,6 +251,8 @@ public class PersonelRelatedUserListPresenter extends BasePresenter {
 			}
 			break;
 		case TYPE_FRIEND_INVITATION:
+			break;
+		case TYPE_MESSAGE:
 			break;
 		}
 		

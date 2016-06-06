@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.audio.AACDecoder;
 import com.v2tech.audio.AACDecoder.AudioParameter;
@@ -91,8 +90,6 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	private AACEncoder aacRecorder;
 	private AACDecoder aacDecoder;
-	
-	
 
 	public interface P2PMessagePresenterUI {
 		public void setAdapter(BaseAdapter adapter);
@@ -125,15 +122,18 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public void showSendBtn(boolean flag);
 
 		public void showPlusBtn(boolean flag);
-		
-		
+
 		public void startAudioPlayAniamtion(View v, Item item);
-		
+
 		public void stopAudioPlayAniamtion(View v, Item item);
-		
+
 		public void stopPlayAniamtion();
-		
+
 		public void simulateKeboardKeyEvent(KeyEvent evt);
+
+		public int getStartType();
+
+		public String getAacfilePath();
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -272,7 +272,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		Item item = (Item) tag;
 		if (item.msgType == ITEM_MSG_TYPE_AUDIO) {
 			aacDecoder.stop();
-			
+
 			if (!item.isPlaying) {
 				aacDecoder.play(item);
 				ui.startAudioPlayAniamtion(view, item);
@@ -300,6 +300,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		}
 	}
 
+	private boolean fireAction = false;
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
@@ -311,6 +312,52 @@ public class P2PMessagePresenter extends BasePresenter implements
 		switcherBtnClicked();
 		ui.showSendBtn(false);
 		// TODO get user information
+		int startFlag = ui.getStartType();
+		// error for notify short duration
+		if (startFlag == 1) {
+			fireAction = true;
+		} else if (startFlag == 2) {
+			fireAction = true;
+		}
+	}
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
+		if (!fireAction) {
+			return;
+		}
+		fireAction = false;
+		
+		uiHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				int startFlag = ui.getStartType();
+				// error for notify short duration
+				if (startFlag == 1) {
+					Message.obtain(uiHandler, UI_MSG_SHOW_DIALOG,
+							DIALOG_TYPE_SHORT_DURATION, 0).sendToTarget();
+					Message m = Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
+							DIALOG_TYPE_NONE, 0);
+					uiHandler.sendMessageDelayed(m, 1200);
+				//success for send message
+				} else if (startFlag == 2) {
+					String audioFile = ui.getAacfilePath();
+					VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+							.getCurrentUser(), chatUser, new Date());
+					new VMessageAudioItem(vm, uuid, audioFile, "aac", (int) duration, 0);
+					messageService.sendMessage(vm, chatUser);
+					itemList.add(buildItem(vm));
+					notifyUIScroller(true);
+				}
+				
+			}
+			
+		}, 500);
+		
 	}
 
 	@Override
@@ -361,16 +408,16 @@ public class P2PMessagePresenter extends BasePresenter implements
 			}
 			ImageSpan[] sbi = et.getSpans(0, len, ImageSpan.class);
 			if (sbi.length > 0) {
-				ImageSpan is = sbi[sbi.length -1];
+				ImageSpan is = sbi[sbi.length - 1];
 				int end = et.getSpanEnd(is);
 				if (end == len) {
 					et.removeSpan(is);
-					et.delete(len -4 , len);
+					et.delete(len - 4, len);
 				} else {
-					et.delete(len -1 , len);
+					et.delete(len - 1, len);
 				}
 			} else {
-				et.delete(len -1 , len);
+				et.delete(len - 1, len);
 			}
 			return;
 		}
@@ -378,13 +425,13 @@ public class P2PMessagePresenter extends BasePresenter implements
 				Integer.parseInt(iv.getTag().toString()));
 	}
 
-
 	private Item buildItem(VMessage vm) {
 		Item i = new Item();
 		i.content = MessageUtil.buildContent(context, vm);
 		i.vm = vm;
 		i.id = vm.getId();
-		if (vm.getFromUser().getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
+		if (vm.getFromUser().getmUserId() == GlobalHolder.getInstance()
+				.getCurrentUserId()) {
 			i.type = ITEM_TYPE_SELF;
 		} else {
 			i.type = ITEM_TYPE_OTHERS;
@@ -405,7 +452,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 	private void notifyUIScroller(boolean uiThread) {
 		if (uiThread) {
 			localAdapter.notifyDataSetChanged();
-			ui.scrollTo(itemList.size() -1);
+			ui.scrollTo(itemList.size() - 1);
 			return;
 		}
 		uiHandler.post(new Runnable() {
@@ -430,9 +477,9 @@ public class P2PMessagePresenter extends BasePresenter implements
 		boolean ret = openAACFile();
 		if (!ret) {
 			// TODO notify user
-			
-			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
-					DIALOG_TYPE_NONE, 0).sendToTarget();
+
+			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG, DIALOG_TYPE_NONE,
+					0).sendToTarget();
 			this.aacRecorder.stop();
 		}
 		duration = System.currentTimeMillis();
@@ -442,7 +489,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 	@Override
 	public void onRecordFinish() {
-		
+
 		boolean ret = closeAACFile();
 		V2Log.i("=====finish record , close file aac file " + ret + "  file:"
 				+ accFile);
@@ -452,8 +499,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 				state = State.IDLE;
 			}
 			return;
-		} 
-		
+		}
+
 		boolean sendFlag = false;
 		synchronized (state) {
 			if (state == State.RECORDING) {
@@ -463,11 +510,11 @@ public class P2PMessagePresenter extends BasePresenter implements
 				state = State.IDLE;
 				return;
 			}
-			
+
 		}
-		
+
 		duration = (System.currentTimeMillis() - duration);
-		//Check duration is valid or not
+		// Check duration is valid or not
 		if (duration < 1500) {
 			accFile.deleteOnExit();
 			Message.obtain(uiHandler, UI_MSG_SHOW_DIALOG,
@@ -479,16 +526,15 @@ public class P2PMessagePresenter extends BasePresenter implements
 		} else {
 			sendFlag = true;
 		}
-		
+
 		if (sendFlag) {
-			 VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
-			 .getCurrentUser(), chatUser, new Date());
-			 new VMessageAudioItem(vm, uuid, null , "aac", (int)duration, 0);
-			 messageService.sendMessage(vm, chatUser);
-			 itemList.add(buildItem(vm));
-			 notifyUIScroller(false);
+			VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
+					.getCurrentUser(), chatUser, new Date());
+			new VMessageAudioItem(vm, uuid, null, "aac", (int) duration, 0);
+			messageService.sendMessage(vm, chatUser);
+			itemList.add(buildItem(vm));
+			notifyUIScroller(false);
 		}
-		
 
 	}
 
@@ -515,9 +561,10 @@ public class P2PMessagePresenter extends BasePresenter implements
 		if (db == Double.NaN) {
 			level = 1;
 		} else {
-			level = (int)db % 10 +1;
+			level = (int) db % 10 + 1;
 		}
-		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0).sendToTarget();
+		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0)
+				.sendToTarget();
 	}
 
 	@Override
@@ -579,15 +626,16 @@ public class P2PMessagePresenter extends BasePresenter implements
 		synchronized (state) {
 			state = State.IDLE;
 		}
-		Message.obtain(uiHandler, UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG).sendToTarget();
+		Message.obtain(uiHandler, UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG)
+				.sendToTarget();
 	}
 
 	public void onDecodeStart(AudioParameter ap) {
 		synchronized (state) {
 			state = State.DECODING;
 		}
-		
-		Item item  = (Item)ap;
+
+		Item item = (Item) ap;
 		messageService.updateVMessageReadFlag(item.id, true);
 	}
 
@@ -663,7 +711,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		@Override
 		public void handleMessage(Message msg) {
 			if (wui.get() == null) {
-				V2Log.e(" miss message " + msg.what +"  due to no context ");
+				V2Log.e(" miss message " + msg.what + "  due to no context ");
 				return;
 			}
 			int what = msg.what;
@@ -680,7 +728,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			case UI_MSG_UPDATE_VOLUMN_LEVEL:
 				wui.get().updateVoiceDBLevel(msg.arg1);
 				break;
-				
+
 			}
 		}
 
@@ -695,12 +743,12 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public String path;
 		public boolean isPlaying;
 		public VMessage vm;
+
 		@Override
 		public String getPath() {
 			return path;
 		}
-		
-		
+
 	}
 
 	enum State {

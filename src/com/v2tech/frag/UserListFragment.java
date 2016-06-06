@@ -6,16 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.v2tech.v2liveshow.R;
 
-public class UserListFragment extends Fragment implements UserListFragmentNotification {
+public class UserListFragment extends Fragment implements UserListFragmentNotification, OnItemClickListener {
 	
 	private ListView listview;
 	private LocalAdapter adapter;
 	private UserListFragmentConnector connector;
+	private UserListFragmentClickListener listener;
 	
 	
 	public UserListFragment() {
@@ -43,9 +46,10 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View root = LayoutInflater.from(getActivity()).inflate(R.layout.user_list_layout, null);
+		View root = LayoutInflater.from(getActivity()).inflate(R.layout.user_list_layout, (ViewGroup)null);
 		listview = (ListView)root.findViewById(R.id.listView_list);
 		listview.setAdapter(adapter);
+		listview.setOnItemClickListener(this);
 		return root;
 	}
 
@@ -70,6 +74,14 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	
 	
 	
+	public UserListFragmentClickListener getListener() {
+		return listener;
+	}
+
+	public void setListener(UserListFragmentClickListener listener) {
+		this.listener = listener;
+	}
+
 	public UserListFragmentConnector getConnector() {
 		return connector;
 	}
@@ -82,6 +94,20 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 	public void notifyDatasetChanged() {
 		adapter.notifyDataSetChanged();
 	}
+
+	
+	
+
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if (listener != null) {
+			listener.onItemClick(parent, view, position, id);
+		}
+	}
+
+
 
 
 
@@ -126,6 +152,11 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 		
 		public View inflate();
 		
+	}
+	
+	public interface UserListFragmentClickListener {
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id);
 	}
 
 }

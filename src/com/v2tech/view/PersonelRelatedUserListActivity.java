@@ -15,7 +15,6 @@ import com.v2tech.frag.UserListFragment;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter.PersonelRelatedUserListPresenterUI;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.vo.User;
 
 public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		PersonelSearchBarFragment.PersonelSearchBarTextListener,
@@ -24,6 +23,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 	private static final int BTN_TYPE_FANS = 1;
 	private static final int BTN_TYPE_FOLLOWS = 2;
 	private static final int BTN_TYPE_FIRENDS = 3;
+	private static final int BTN_TYPE_MESSAGE = 4;
 	
 	
 	PersonelSearchBarFragment barFrag;
@@ -55,6 +55,7 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 
 		barFrag.setListener(this);
 		listFrag.setConnector(this);
+		listFrag.setListener(presenter);
 		
 		returnBtn.setOnClickListener(this);
 		presenter.onUICreated();

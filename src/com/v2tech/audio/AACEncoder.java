@@ -126,6 +126,7 @@ public class AACEncoder {
 		}
 
 		try {
+			Thread.interrupted();
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

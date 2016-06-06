@@ -158,11 +158,16 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 				break;
 			}
 			if (!dialog.isShowing()) {
-				dialog.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+				dialog.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, -220);
 			}
 		} else {
 			dialog.dismiss();
 		}
+	}
+	
+	
+	public void updateVoiceDBLevel(int level) {
+		voiceDialogWidget.updateVolumnLevel(level);
 	}
 	
 	

@@ -62,7 +62,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	private static final int ANIMATION_DURATION = 1000;
 	
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
 	private int mMaximumFlingVelocity;
@@ -576,6 +576,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	private void doTouchDown(MotionEvent ev) {
+		mMapView.onPause();
 		layoutOffsetY = 0;
 		removedOffset = 0;
 		mOffsetTop = 0;
@@ -623,8 +624,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				updateOffset(dy);
 			} else if (mDragType != newType) {
 				if (mDragType == DragType.REMOVE) {
-//					layoutOffsetY = offsetY;
-//					requestLayout();
+					layoutOffsetY = offsetY;
+					requestLayout();
 					
 					
 //					int dis1 = (int)(absDy - absOffsetY);
@@ -647,8 +648,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				}
 			} else {
 				if (mDragType == DragType.REMOVE) {
-//					layoutOffsetY = offsetY;
-//					requestLayout();
+					layoutOffsetY = offsetY;
+					requestLayout();
 				} else {
 					updateOffset(dy);
 				}
@@ -710,6 +711,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mDragDir = DragDirection.NONE;
 		
 		mVelocityTracker.clear();
+		mMapView.onResume();
 	}
 	
 	
@@ -781,33 +783,36 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 
 		
 		int realTop = top + mOffsetTop  + layoutOffsetY;
-		int realBottom = realTop + mVideoShowPager.getMeasuredHeight();
-		mVideoShowPager.layout(left, realTop, right, realBottom);
+		int bottomChildTop = realTop + mVideoShowPager.getMeasuredHeight();
+		mVideoShowPager.layout(left, realTop, right, bottomChildTop);
 		
 		if (DEBUG) {
 			V2Log.d(TAG, "changed:" + changed + "  bottom:" + bottom + "  "
 					+ mVideoShowPager.getMeasuredHeight() + "  "
 					+ mVideoShowPager.getMeasuredWidth() + "  realTop:" + realTop
-					+ "   realBottom:" + realBottom +"  layoutOffsetY:"+layoutOffsetY);
+					+ "   realBottom:" + bottomChildTop +"  layoutOffsetY:"+layoutOffsetY);
 		}
 
 
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
 		mMsgLayout.layout(left, realTop + lp.topMargin, right, realTop + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
-		mMapView.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop -  + layoutOffsetY);
+		mMapView.layout(left, bottomChildTop, right, bottom );
 		
 		int bw = bountyMarker.getMeasuredWidth();
 		int bh = bountyMarker.getMeasuredHeight();
 		int bl = left + (right - left - bw) / 2;
 		int br = bl + bw;
-		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() - bh) /2;
+		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
 		int btm = bto + bh;
-		//bountyMarker.layout(bl, bto, br, btm);
+		bountyMarker.layout(bl, bto, br, btm);
 		
-		mDragLayout.layout(left, realTop, right, realBottom);
-		liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, realBottom);
-		liveWatcherLayout.layout(left, realBottom - liveWatcherLayout.getMeasuredHeight() , right, realBottom);
-		
+		mDragLayout.layout(left, realTop, right, bottomChildTop);
+		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
+			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, bottomChildTop);
+		}
+		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
+			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() , right, bottomChildTop);
+		}
 		if (lierInteractionLayout.getVisibility() == View.VISIBLE) {
 			lierInteractionLayout.layout(left, realTop + mVideoShowPager.getMeasuredHeight(), right, bottom + mOffsetTop);
 		}

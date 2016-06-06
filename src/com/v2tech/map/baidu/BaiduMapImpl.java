@@ -1,8 +1,12 @@
 package com.v2tech.map.baidu;
 
+import java.lang.ref.WeakReference;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.util.LongSparseArray;
 
+import com.V2.jni.util.V2Log;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -23,13 +27,17 @@ import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.v2tech.map.LSLocation;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
 import com.v2tech.map.Marker;
 import com.v2tech.map.MarkerListener;
 import com.v2tech.map.Updater;
+import com.v2tech.service.AsyncResult;
+import com.v2tech.service.MessageListener;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.Watcher;
@@ -37,6 +45,10 @@ import com.v2tech.vo.Watcher;
 public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
 		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
+	
+	private static final int GET_ADDS_NAME = 1;
+	
+	private static LongSparseArray<WeakReference<MessageListener>> pendingListener = new LongSparseArray<WeakReference<MessageListener>>();
 	
 	//private WeakReference<MapView> mapView;
 
@@ -54,6 +66,7 @@ public class BaiduMapImpl implements MapAPI,
 		mSearchAPI = GeoCoder.newInstance();
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
 	//	mapView = new WeakReference<MapView>(mv);
+		this.mapImpl.setOnMapStatusChangeListener(this);
 	}
 
 	public BaiduMap getMapImpl() {
@@ -197,6 +210,12 @@ public class BaiduMapImpl implements MapAPI,
 		markerListener = listener;
 		mapImpl.setOnMarkerClickListener(this);
 	}
+	
+	
+	public LSLocation getMapCenter() {
+		LatLng tar = mapImpl.getMapStatus().target;
+		return new LSLocation(tar.latitude,tar.longitude); 
+	}
 
 	class BaiduUpdater extends Updater {
 		MapStatusUpdate u;
@@ -216,6 +235,9 @@ public class BaiduMapImpl implements MapAPI,
 		}
 		return false;
 	}
+	
+	
+	
 
 	// /////////////////////BaiduMap.OnMapStatusChangeListener
 
@@ -229,6 +251,15 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onMapStatusChangeStart(MapStatus status) {
+	
+	}
+	
+	
+	public void getLocationName(LSLocation location, MessageListener listener) {
+		if (listener != null) {
+			pendingListener.put(GET_ADDS_NAME, new WeakReference<MessageListener>(listener));
+		}
+		mSearchAPI.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.lat, location.lng)));
 	}
 
 	// //////////////////BaiduMap.OnMapStatusChangeListener
@@ -265,7 +296,13 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onGetReverseGeoCodeResult(ReverseGeoCodeResult res) {
-
+		WeakReference<MessageListener> wf = pendingListener.get(GET_ADDS_NAME);
+		if (wf.get() == null) {
+			V2Log.e("[ERROR] no listener for geo reverse search: " + res.getAddress());
+			return;
+		}
+		wf.get().doNotification(new AsyncResult(wf.get().getObject(),res.getAddress()));
+		
 	}
 	// ////////////////////// OnGetGeoCoderResultListener
 

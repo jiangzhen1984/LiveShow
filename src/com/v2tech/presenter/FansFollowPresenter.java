@@ -36,7 +36,6 @@ public class FansFollowPresenter extends BasePresenter implements
 	
 	public static final int UI_MSG_SHOW_DIALOG = 1;
 	public static final int UI_MSG_DISMISS_DIALOG = 2;
-	public static final int UI_MSG_STOP_AUDIO_PLAY_ANI_DIALOG = 3;
 	public static final int UI_MSG_UPDATE_VOLUMN_LEVEL = 4;
 	
 
@@ -50,6 +49,8 @@ public class FansFollowPresenter extends BasePresenter implements
 		public Object getIntentData(String key);
 		
 		public void showDialog(boolean flag, int type);
+		
+		public void updateVoiceDBLevel(int level);
 	}
 
 	private Handler uiHandler;
@@ -153,7 +154,6 @@ public class FansFollowPresenter extends BasePresenter implements
 		if (!ret) {
 			// TODO notify user
 			
-			//TODO close dialog
 			 Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
 						DIALOG_TYPE_NONE, 0).sendToTarget();
 			this.aacRecorder.stop();
@@ -191,22 +191,25 @@ public class FansFollowPresenter extends BasePresenter implements
 			
 		}
 		
+		int type = 1;
 		duration = (System.currentTimeMillis() - duration);
 		//Check duration is valid or not
 		if (duration < 1500) {
 			accFile.deleteOnExit();
-			Message.obtain(uiHandler, UI_MSG_SHOW_DIALOG,
-					DIALOG_TYPE_SHORT_DURATION, 0).sendToTarget();
-			Message m = Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
-					DIALOG_TYPE_NONE, 0);
-			uiHandler.sendMessageDelayed(m, 1200);
-			return;
+			// error and notify short duration
+			type = 1;
+			sendFlag = true;
+			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
+					DIALOG_TYPE_NONE, 0).sendToTarget();
 		} else {
+			//success and send message
+			type = 2;
 			sendFlag = true;
 		}
 		
 		if (sendFlag) {
 			Intent i = new Intent();
+			i.putExtra("type", type);
 			//i.putExtra("chatuserid", u.getmUserId());
 			i.putExtra("audiofile", this.accFile);
 			i.setClass(context, P2PMessageActivity.class);
@@ -355,6 +358,9 @@ public class FansFollowPresenter extends BasePresenter implements
 				break;
 			case UI_MSG_DISMISS_DIALOG:
 				wui.get().showDialog(false, msg.arg1);
+				break;
+			case UI_MSG_UPDATE_VOLUMN_LEVEL:
+				wui.get().updateVoiceDBLevel(msg.arg1);
 				break;
 			}
 		}

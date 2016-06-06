@@ -1,5 +1,7 @@
 package com.v2tech.map;
 
+import com.v2tech.service.MessageListener;
+
 public interface MapAPI {
 	
 	
@@ -32,5 +34,11 @@ public interface MapAPI {
 	
 	
 	public void registerMakerListener(MarkerListener listener);
+	
+	
+	public void getLocationName(LSLocation location, MessageListener listener);
+	
+	
+	public LSLocation getMapCenter();
 
 }
