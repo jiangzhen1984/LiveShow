@@ -259,7 +259,11 @@ public class ConfRequest {
 	 * @param eUserRole
 	 *            用户登录会议中的权限
 	 */
-	public native void ConfQuickEnter(int eUEType, String szUser, long nUserID, long nGroupID, int eUserRole);
+//	public native void ConfQuickEnter(int eUEType, String szUser, long nUserID, long nGroupID, int eUserRole);
+	
+	
+	public native void ConfQuickEnter(int eUEType, String szUser, long groupId, int role);
+
 
 	/**
 	 * @brief 会议中同步视频

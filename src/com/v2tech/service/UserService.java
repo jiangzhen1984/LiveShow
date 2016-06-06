@@ -212,7 +212,7 @@ public class UserService extends AbstractHandler {
 					"yyyy-MM-dd HH:mm:ss");
 			String date = fromat.format(new Date(
 					GlobalConfig.SERVER_TIME * 1000));
-			V2Log.i("get server time ：" + date+"   ===> "+ nUserID+"  result:" + nResult);
+			V2Log.i("get server time ：" + date+"   ===> uid:"+ nUserID+"  result:" + nResult);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
 			
