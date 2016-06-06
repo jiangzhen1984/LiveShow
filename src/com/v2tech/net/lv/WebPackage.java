@@ -3399,6 +3399,14 @@ public final class WebPackage {
     // optional string v2ID = 18;
     boolean hasV2ID();
     String getV2ID();
+    
+    // optional string v2UserName = 19;
+    boolean hasV2UserName();
+    String getV2UserName();
+    
+    // optional string v2Pwd = 20;
+    boolean hasV2Pwd();
+    String getV2Pwd();
   }
   public static final class User extends
       com.google.protobuf.GeneratedMessage
@@ -3854,6 +3862,70 @@ public final class WebPackage {
       }
     }
     
+    // optional string v2UserName = 19;
+    public static final int V2USERNAME_FIELD_NUMBER = 19;
+    private java.lang.Object v2UserName_;
+    public boolean hasV2UserName() {
+      return ((bitField0_ & 0x00040000) == 0x00040000);
+    }
+    public String getV2UserName() {
+      java.lang.Object ref = v2UserName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          v2UserName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getV2UserNameBytes() {
+      java.lang.Object ref = v2UserName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        v2UserName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string v2Pwd = 20;
+    public static final int V2PWD_FIELD_NUMBER = 20;
+    private java.lang.Object v2Pwd_;
+    public boolean hasV2Pwd() {
+      return ((bitField0_ & 0x00080000) == 0x00080000);
+    }
+    public String getV2Pwd() {
+      java.lang.Object ref = v2Pwd_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          v2Pwd_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getV2PwdBytes() {
+      java.lang.Object ref = v2Pwd_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        v2Pwd_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       id_ = 0;
       phone_ = "";
@@ -3873,6 +3945,8 @@ public final class WebPackage {
       followType_ = 0;
       descName_ = "";
       v2ID_ = "";
+      v2UserName_ = "";
+      v2Pwd_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3939,6 +4013,12 @@ public final class WebPackage {
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         output.writeBytes(18, getV2IDBytes());
+      }
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+        output.writeBytes(19, getV2UserNameBytes());
+      }
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+        output.writeBytes(20, getV2PwdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -4020,6 +4100,14 @@ public final class WebPackage {
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(18, getV2IDBytes());
+      }
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(19, getV2UserNameBytes());
+      }
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(20, getV2PwdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4186,6 +4274,10 @@ public final class WebPackage {
         bitField0_ = (bitField0_ & ~0x00010000);
         v2ID_ = "";
         bitField0_ = (bitField0_ & ~0x00020000);
+        v2UserName_ = "";
+        bitField0_ = (bitField0_ & ~0x00040000);
+        v2Pwd_ = "";
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
       
@@ -4300,6 +4392,14 @@ public final class WebPackage {
           to_bitField0_ |= 0x00020000;
         }
         result.v2ID_ = v2ID_;
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+          to_bitField0_ |= 0x00040000;
+        }
+        result.v2UserName_ = v2UserName_;
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00080000;
+        }
+        result.v2Pwd_ = v2Pwd_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4369,6 +4469,12 @@ public final class WebPackage {
         }
         if (other.hasV2ID()) {
           setV2ID(other.getV2ID());
+        }
+        if (other.hasV2UserName()) {
+          setV2UserName(other.getV2UserName());
+        }
+        if (other.hasV2Pwd()) {
+          setV2Pwd(other.getV2Pwd());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4493,6 +4599,16 @@ public final class WebPackage {
             case 146: {
               bitField0_ |= 0x00020000;
               v2ID_ = input.readBytes();
+              break;
+            }
+            case 154: {
+              bitField0_ |= 0x00040000;
+              v2UserName_ = input.readBytes();
+              break;
+            }
+            case 162: {
+              bitField0_ |= 0x00080000;
+              v2Pwd_ = input.readBytes();
               break;
             }
           }
@@ -5110,6 +5226,78 @@ public final class WebPackage {
       void setV2ID(com.google.protobuf.ByteString value) {
         bitField0_ |= 0x00020000;
         v2ID_ = value;
+        onChanged();
+      }
+      
+      // optional string v2UserName = 19;
+      private java.lang.Object v2UserName_ = "";
+      public boolean hasV2UserName() {
+        return ((bitField0_ & 0x00040000) == 0x00040000);
+      }
+      public String getV2UserName() {
+        java.lang.Object ref = v2UserName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          v2UserName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setV2UserName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00040000;
+        v2UserName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearV2UserName() {
+        bitField0_ = (bitField0_ & ~0x00040000);
+        v2UserName_ = getDefaultInstance().getV2UserName();
+        onChanged();
+        return this;
+      }
+      void setV2UserName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00040000;
+        v2UserName_ = value;
+        onChanged();
+      }
+      
+      // optional string v2Pwd = 20;
+      private java.lang.Object v2Pwd_ = "";
+      public boolean hasV2Pwd() {
+        return ((bitField0_ & 0x00080000) == 0x00080000);
+      }
+      public String getV2Pwd() {
+        java.lang.Object ref = v2Pwd_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          v2Pwd_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setV2Pwd(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00080000;
+        v2Pwd_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearV2Pwd() {
+        bitField0_ = (bitField0_ & ~0x00080000);
+        v2Pwd_ = getDefaultInstance().getV2Pwd();
+        onChanged();
+        return this;
+      }
+      void setV2Pwd(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00080000;
+        v2Pwd_ = value;
         onChanged();
       }
       
@@ -7426,7 +7614,7 @@ public final class WebPackage {
       " \001(\005\022\014\n\004from\030\004 \001(\005\022\n\n\002to\030\005 \001(\005\022\033\n\010positi" +
       "on\030\006 \003(\0132\t.Position\022\023\n\004user\030\007 \003(\0132\005.User",
       "\022\025\n\005video\030\010 \003(\0132\006.Video\022\033\n\010gratuity\030\t \003(" +
-      "\0132\t.Gratuity\"\302\002\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005pho" +
+      "\0132\t.Gratuity\"\345\002\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005pho" +
       "ne\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004 \001(\t\022\022\n\np" +
       "wd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001(\t\022\017\n\007hea" +
       "durl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n\003sex\030\t \001(" +
@@ -7434,20 +7622,21 @@ public final class WebPackage {
       "\n\tfansCount\030\014 \001(\005\022\023\n\013followCount\030\r \001(\005\022\033" +
       "\n\010position\030\016 \001(\0132\t.Position\022\020\n\010deviceID\030" +
       "\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010descName\030\021 " +
-      "\001(\t\022\014\n\004v2ID\030\022 \001(\t\"?\n\010Position\022\021\n\tlongitu",
-      "de\030\001 \001(\001\022\020\n\010latitude\030\002 \001(\001\022\016\n\006radius\030\003 \001" +
-      "(\005\"\321\001\n\005Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001" +
-      "(\t\022\016\n\006userId\030\003 \001(\005\022\033\n\010position\030\004 \001(\0132\t.P" +
-      "osition\022\013\n\003sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022" +
-      "\021\n\tlikeCount\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(" +
-      "\002\022\016\n\006degree\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n" +
-      "\007HLSMode\030\013 \001(\010\"\325\001\n\010Gratuity\022\020\n\010giftType\030" +
-      "\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserID\030\003 " +
-      "\001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002" +
-      "\022 \n\006answer\030\006 \001(\0162\020.Gratuity.Answer\022\017\n\007vi",
-      "deoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n\n\006ac" +
-      "cept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003B\037\n\021com.v2" +
-      "tech.net.lvB\nWebPackage"
+      "\001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName\030\023 \001(\t\022\r\n",
+      "\005v2Pwd\030\024 \001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 " +
+      "\001(\001\022\020\n\010latitude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\321\001" +
+      "\n\005Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n" +
+      "\006userId\030\003 \001(\005\022\033\n\010position\030\004 \001(\0132\t.Positi" +
+      "on\022\013\n\003sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tli" +
+      "keCount\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006" +
+      "degree\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSM" +
+      "ode\030\013 \001(\010\"\325\001\n\010Gratuity\022\020\n\010giftType\030\001 \001(\005" +
+      "\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserID\030\003 \001(\005\022\016" +
+      "\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002\022 \n\006a",
+      "nswer\030\006 \001(\0162\020.Gratuity.Answer\022\017\n\007videoId" +
+      "\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n\n\006accept\020" +
+      "\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003B\037\n\021com.v2tech." +
+      "net.lvB\nWebPackage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7483,7 +7672,7 @@ public final class WebPackage {
           internal_static_User_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_User_descriptor,
-              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", },
+              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", },
               com.v2tech.net.lv.WebPackage.User.class,
               com.v2tech.net.lv.WebPackage.User.Builder.class);
           internal_static_Position_descriptor =

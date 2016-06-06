@@ -44,6 +44,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             return serializeWacherListQueryRequest((WatcherListQueryReqPacket) p);
         }else if (p instanceof V2UserIdReportReqPacket) {
             return serializeV2UserIdReportequest((V2UserIdReportReqPacket) p);
+        }else if (p instanceof V2AccountReprotReqPacket) {
+            return serializeV2AccountReprotRequest((V2AccountReprotReqPacket) p);
         }else if (p instanceof PacketProxy) {
             return serialize(((PacketProxy) p).getPacket());
         } else {
@@ -143,6 +145,12 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         	
             WebPackage.User userPacket = webPackage.getData().getUser(0);
             lrp.uid = userPacket.getId();
+            lrp.v2account = userPacket.getV2UserName();
+            lrp.v2password = userPacket.getV2Pwd();
+            if (lrp.v2account != null && lrp.v2account.equals("null")) {
+            	  lrp.v2account = null;
+            	  lrp.v2password = null;
+            }
 
             List<WebPackage.User> userList = webPackage.getData().getUserList();
             if(userList != null){
@@ -495,4 +503,20 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setData(data);
         return packetBuilder.build();
     }
+    
+    private WebPackage.Packet serializeV2AccountReprotRequest(V2AccountReprotReqPacket p) {
+        WebPackage.Packet.Builder packetBuilder = WebPackage.Packet.newBuilder();
+        packetBuilder.setPacketType(WebPackage.Packet.type.iq);
+        packetBuilder.setId(String.valueOf(p.getId()));
+        packetBuilder.setMethod("v2NameAndPwd");
+
+        WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
+        WebPackage.User.Builder user = WebPackage.User.newBuilder();
+        user.setV2UserName(p.account);
+        user.setV2Pwd(p.password);
+        data.addUser(user);
+        packetBuilder.setData(data);
+        return packetBuilder.build();
+    }
+    
 }

@@ -232,15 +232,15 @@ public class ImRequest {
 	
 	private void OnImRegisterGuest(String na1, String na2, int fl) {
 		V2Log.i(na1+"  ===>" + na2+"  ==>" + fl);
-		if (fl == 0) {
-			this.ImLogin(na1, na2, 1, 2, "", false);
-		}
-//		for (int i = 0; i < mCallBacks.size(); i++) {
-//			WeakReference<ImRequestCallback> wf = this.mCallBacks.get(i);
-//			if (wf != null && wf.get() != null) {
-//				wf.get().OnLoginCallback(fl, 0, 0, System.currentTimeMillis()/1000, null);
-//			}
+//		if (fl == 0) {
+//			this.ImLogin(na1, na2, 1, 2, "", false);
 //		}
+		for (int i = 0; i < mCallBacks.size(); i++) {
+			WeakReference<ImRequestCallback> wf = this.mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnGuestRegister(na1, na2, fl);
+			}
+		}
 	}
 	/**
 	 * @brief 登录IM回调函数

@@ -134,5 +134,9 @@ public abstract class ImRequestCallbackAdapter implements ImRequestCallback {
 	}
 	
 	
+	public void OnGuestRegister(String account, String password, int ret) {
+		
+	}
+	
 	
 }

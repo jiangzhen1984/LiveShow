@@ -1160,7 +1160,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	}
 
 	// waiting for chair man device information
-	private boolean pending = true;
+	private boolean pending = false;
 
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {

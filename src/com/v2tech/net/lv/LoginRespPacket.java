@@ -13,6 +13,10 @@ public class LoginRespPacket extends ResponsePacket {
 	public String url;
 	
 	public List<Fans> fansList;
+	
+	public String v2account;
+	
+	public String v2password;
 
 	public class Fans {
 		public long id;

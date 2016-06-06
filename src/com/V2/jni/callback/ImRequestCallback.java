@@ -132,4 +132,8 @@ public interface ImRequestCallback {
 	public void OnImRegisterPhoneUser(int ret);
 
 	public void OnImUpdateUserPwd(int ret);
+	
+	
+	
+	public void OnGuestRegister(String account, String password, int ret);
 }

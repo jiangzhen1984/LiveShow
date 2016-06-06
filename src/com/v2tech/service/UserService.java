@@ -19,6 +19,7 @@ import com.v2tech.net.lv.GetCodeReqPacket;
 import com.v2tech.net.lv.LoginReqPacket;
 import com.v2tech.net.lv.LoginRespPacket;
 import com.v2tech.net.lv.LogoutReqPacket;
+import com.v2tech.net.lv.V2AccountReprotReqPacket;
 import com.v2tech.net.lv.V2UserIdReportReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
@@ -56,13 +57,14 @@ public class UserService extends AbstractHandler {
 	 *            callback message Message.obj is {@link MessageListener}
 	 */
 	public void login(String mail, String passwd, MessageListener caller) {
-		ResponsePacket p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, null, passwd, true));
+		ResponsePacket p = DeamonWorker.getInstance().request(
+				new LoginReqPacket(false, mail, null, passwd, true));
 		V2Log.e("===> login to user " + p.getHeader().isError());
 		if (!p.getHeader().isError()) {
-			LoginRespPacket lrp =(LoginRespPacket)p;
+			LoginRespPacket lrp = (LoginRespPacket) p;
 			User loginUser = new User(0);
 			loginUser.nId = lrp.uid;
-			
+
 			if (lrp.fansList != null) {
 				List<User> fl = new ArrayList<User>(lrp.fansList.size());
 				for (LoginRespPacket.Fans f : lrp.fansList) {
@@ -73,25 +75,35 @@ public class UserService extends AbstractHandler {
 				}
 				loginUser.fansList = fl;
 			}
-			
+
 			GlobalHolder.getInstance().setCurrentUser(loginUser);
-			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
+			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS,
+					caller);
 			if (GlobalHolder.getInstance().getCurrentUser().isNY) {
-				ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", true);
+				ImRequest.getInstance().ImLogin(mail, passwd,
+						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
+						"", true);
 			} else {
-				V2Log.i("====log v2 system with guest ");
-				ImRequest.getInstance().ImRegisterGuest(mail);
+				if (lrp.v2account != null && lrp.v2password != null) {
+					V2Log.i("====log v2 system with account " + lrp.v2account );
+					 ImRequest.getInstance().ImLogin(lrp.v2account, lrp.v2password,
+					 V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "", false);
+				} else {
+					V2Log.i("====log v2 system with guest ");
+					ImRequest.getInstance().ImRegisterGuest(mail);
+				}
 			}
-			//ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "",  true);
+			
 		} else {
 			if (caller != null) {
 				Message m = Message.obtain(caller.getHandler(), caller.what,
-						new RequestLogInResponse(null, JNIResponse.Result.FAILED));
+						new RequestLogInResponse(null,
+								JNIResponse.Result.FAILED));
 				m.sendToTarget();
 			}
 		}
 	}
-	
+
 	/**
 	 * Asynchronous login function. After login, will call post message to your
 	 * handler
@@ -104,13 +116,16 @@ public class UserService extends AbstractHandler {
 	 * @param caller
 	 *            callback message Message.obj is {@link MessageListener}
 	 */
-	public void login(String mail, String passwd, boolean isNY, MessageListener caller) {
-		
+	public void login(String mail, String passwd, boolean isNY,
+			MessageListener caller) {
+
 		ResponsePacket p = null;
 		if (isNY) {
-			p = DeamonWorker.getInstance().request(new LoginReqPacket(true, mail));
+			p = DeamonWorker.getInstance().request(
+					new LoginReqPacket(true, mail));
 		} else {
-			p = DeamonWorker.getInstance().request(new LoginReqPacket(false, mail, passwd));
+			p = DeamonWorker.getInstance().request(
+					new LoginReqPacket(false, mail, passwd));
 		}
 		if (!p.getHeader().isError()) {
 			LoginRespPacket lrp = (LoginRespPacket) p;
@@ -118,9 +133,12 @@ public class UserService extends AbstractHandler {
 			u.nId = lrp.uid;
 			u.isNY = isNY;
 			GlobalHolder.getInstance().setCurrentUser(u);
-			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS, caller);
+			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS,
+					caller);
 			if (isNY) {
-				ImRequest.getInstance().ImLogin(mail, passwd, V2GlobalEnum.USER_STATUS_ONLINE,  V2ClientType.ANDROID, "", true);
+				ImRequest.getInstance().ImLogin(mail, passwd,
+						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
+						"", true);
 			} else {
 				V2Log.i("====log v2 system with guest ");
 				ImRequest.getInstance().ImRegisterGuest(mail);
@@ -131,17 +149,16 @@ public class UserService extends AbstractHandler {
 			}
 		}
 	}
-	
-	
-	
+
 	public void logout(MessageListener caller, boolean forlogin) {
-		DeamonWorker.getInstance().requestAsync(new PacketProxy(new LogoutReqPacket(forlogin), null));
+		DeamonWorker.getInstance().requestAsync(
+				new PacketProxy(new LogoutReqPacket(forlogin), null));
 		ImRequest.getInstance().ImLogout();
 		if (caller != null && caller.getHandler() != null) {
-			Message.obtain(caller.getHandler(), caller.getWhat(), new AsyncResult(caller.getObject(), null)).sendToTarget();
+			Message.obtain(caller.getHandler(), caller.getWhat(),
+					new AsyncResult(caller.getObject(), null)).sendToTarget();
 		}
 	}
-	
 
 	/**
 	 * Update user information. If updated user is logged user, can update all
@@ -165,27 +182,24 @@ public class UserService extends AbstractHandler {
 		if (user.getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
 			ImRequest.getInstance().ImModifyBaseInfo(user.toXml());
 		} else {
-//			if (!TextUtils.isEmpty(user.getNickName()))
-//				ImRequest.getInstance().im
-//						.modifyCommentName(
-//								user.getmUserId(),
-//								EscapedcharactersProcessing.convert(user
-//										.getNickName()));
+			// if (!TextUtils.isEmpty(user.getNickName()))
+			// ImRequest.getInstance().im
+			// .modifyCommentName(
+			// user.getmUserId(),
+			// EscapedcharactersProcessing.convert(user
+			// .getNickName()));
 		}
 	}
-	
-	
-	
-	public String  sendVaidationCode(String phoneNumber) {
+
+	public String sendVaidationCode(String phoneNumber) {
 		DeamonWorker.getInstance().request(new GetCodeReqPacket(phoneNumber));
 		return null;
 	}
-	
-	
+
 	public void followUser(User user, boolean follow) {
-		DeamonWorker.getInstance().requestAsync(new PacketProxy(new FollowReqPacket(user.nId, follow), null));
+		DeamonWorker.getInstance().requestAsync(
+				new PacketProxy(new FollowReqPacket(user.nId, follow), null));
 	}
-	
 
 	@Override
 	public void clearCalledBack() {
@@ -199,8 +213,6 @@ public class UserService extends AbstractHandler {
 		public ImRequestCB(Handler handler) {
 			this.handler = handler;
 		}
-		
-		
 
 		@Override
 		public void OnLoginCallback(long nUserID, int nStatus, int nResult,
@@ -212,11 +224,12 @@ public class UserService extends AbstractHandler {
 					"yyyy-MM-dd HH:mm:ss");
 			String date = fromat.format(new Date(
 					GlobalConfig.SERVER_TIME * 1000));
-			V2Log.i("get server time ：" + date+"   ===> uid:"+ nUserID+"  result:" + nResult);
+			V2Log.i("get server time ：" + date + "   ===> uid:" + nUserID
+					+ "  result:" + nResult);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
-			
-			User u  = GlobalHolder.getInstance().getCurrentUser();
+
+			User u = GlobalHolder.getInstance().getCurrentUser();
 			if (u != null) {
 				u.setmUserId(nUserID);
 			} else {
@@ -225,13 +238,11 @@ public class UserService extends AbstractHandler {
 			Message m = Message.obtain(handler, JNI_REQUEST_LOG_IN,
 					new RequestLogInResponse(u, res));
 			handler.dispatchMessage(m);
-			//report to user server
+			// report to user server
 			DeamonWorker.getInstance().requestAsync(
 					new PacketProxy(new V2UserIdReportReqPacket(GlobalHolder
 							.getInstance().getCurrentUserId()), null));
 		}
-
-
 
 		@Override
 		public void OnConnectResponseCallback(int nResult) {
@@ -253,6 +264,15 @@ public class UserService extends AbstractHandler {
 							new RequestUserUpdateResponse(u,
 									JNIResponse.Result.SUCCESS));
 			handler.dispatchMessage(m);
+		}
+
+		public void OnGuestRegister(String account, String password, int ret) {
+			DeamonWorker.getInstance().requestAsync(
+					new PacketProxy(new V2AccountReprotReqPacket(account,
+							password), null));
+			ImRequest.getInstance().ImLogin(account, password,
+					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "",
+					false);
 		}
 
 	}
