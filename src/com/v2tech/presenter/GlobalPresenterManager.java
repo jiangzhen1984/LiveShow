@@ -80,8 +80,9 @@ public class GlobalPresenterManager {
 				WeakReference<LiveMessageHandler> w = liveMessageHandlerList
 						.get(i);
 				LiveMessageHandler act = w.get();
-				if (act != null) {
+				if (act != null & act == lsh) {
 					liveMessageHandlerList.remove(i);
+					break;
 				}
 			}
 		}
@@ -100,8 +101,9 @@ public class GlobalPresenterManager {
 				WeakReference<LiveStatusHandler> w = liveStatusHandlerList
 						.get(i);
 				LiveStatusHandler act = w.get();
-				if (act != null) {
+				if (act != null && act == lsh) {
 					liveStatusHandlerList.remove(i);
+					break;
 				}
 			}
 		}
@@ -158,8 +160,9 @@ public class GlobalPresenterManager {
 				WeakReference<LiveWathcingHandler> w = liveWatchingHandlerList
 						.get(i);
 				LiveWathcingHandler act = w.get();
-				if (act != null) {
+				if (act != null && act == lsh) {
 					liveWatchingHandlerList.remove(i);
+					break;
 				}
 			}
 		}
