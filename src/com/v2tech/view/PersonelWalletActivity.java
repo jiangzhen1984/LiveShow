@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelWalletPresenter;
 import com.v2tech.presenter.PersonelWalletPresenter.PersonelWalletPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -47,9 +48,6 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 		returnButton.setOnClickListener(this);
 		
 		infalter = LayoutInflater.from(this);
-		
-		presenter.onUICreated();
-
 	}
 
 	@Override
@@ -64,7 +62,10 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 	}
 
 
-	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
+	}
 	
 	
 	

@@ -45,5 +45,8 @@
     <dimen name="voice_record_dialog_widget_root_margin">15dp</dimen>
     <dimen name="voice_record_dialog_widget_root_margin_hor">20dp</dimen>
     <dimen name="voice_record_dialog_widget_text_size">13.5sp</dimen>
+    
+     <dimen name="liver_interaction_personel_btn_margin_hor">10dp</dimen>
+     <dimen name="liver_interaction_personel_btn_text_size">16sp</dimen>
 
 </resources>

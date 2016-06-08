@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.v2tech.map.MapAPI;
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Watcher;
@@ -57,7 +58,6 @@ public class MainActivity extends BaseActivity implements
 
 		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
 		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
-		presenter.onUICreated();
 
 	}
 
@@ -156,6 +156,13 @@ public class MainActivity extends BaseActivity implements
 	}
 	
 	
+
+
+
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
+	}
 
 
 

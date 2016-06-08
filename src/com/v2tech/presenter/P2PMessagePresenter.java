@@ -97,7 +97,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public View getView();
 
 		public void updateView(View view, int dir, Bitmap bm,
-				CharSequence content, int msgType, boolean audioPlay, Object tag);
+				CharSequence content, int msgType, boolean audioPlay, Object tag, int audioSec);
 
 		public void showAdditionLayout(boolean flag);
 
@@ -441,6 +441,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		if (audios.size() > 0) {
 			i.msgType = ITEM_MSG_TYPE_AUDIO;
 			i.path = audios.get(0).getAudioFilePath();
+			i.audioSec = audios.get(0).getSeconds() / 1000 + 1;
 		} else if (vm.getImageItems().size() > 0) {
 			i.msgType = ITEM_MSG_TYPE_IMAGE;
 		} else {
@@ -669,7 +670,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			}
 			Item item = itemList.get(position);
 			ui.updateView(convertView, item.type, item.avatar, item.content,
-					item.msgType, item.isPlaying, item);
+					item.msgType, item.isPlaying, item, item.audioSec);
 			return convertView;
 		}
 
@@ -743,6 +744,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public String path;
 		public boolean isPlaying;
 		public VMessage vm;
+		int audioSec;
 
 		@Override
 		public String getPath() {

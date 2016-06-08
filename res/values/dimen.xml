@@ -66,6 +66,8 @@
     <dimen name="liver_interaction_btn_margin_top">70dp</dimen>
     <dimen name="liver_interaction_personel_text_label_padding_hor">10dp</dimen>
     <dimen name="liver_interaction_personel_text_label_margin_left">10dp</dimen>
+     <dimen name="liver_interaction_personel_btn_margin_hor">10dp</dimen>
+     <dimen name="liver_interaction_personel_btn_text_size">16sp</dimen>
     <dimen name="personel_wallet_detail_balance_text_size">22.5sp</dimen>
     <dimen name="personel_wallet_detail_tips_text_size">12sp</dimen>
     <dimen name="personel_wallet_detail_item_date_text_size">13.5sp</dimen>

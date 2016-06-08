@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar_ly"
         android:layout_marginTop="25dp"
-        layout="@layout/liver_interaction_layout" />
+        layout="@layout/personel_detail_layout" />
 
 </RelativeLayout>

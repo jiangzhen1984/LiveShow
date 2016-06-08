@@ -406,6 +406,10 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             map.put("headurl", user.getHeadurl());
             map.put("signText", user.getSignText());
             map.put("v2id", user.getV2ID());
+            map.put("fansCount", user.getFansCount()+"");
+            map.put("followCount", user.getFollowCount()+"");
+            map.put("signature", user.getSignText());
+           
             list.add(map);
         }
         lrp.follows = list;
@@ -452,6 +456,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             map.put("headurl", user.getHeadurl());
             map.put("signText", user.getSignText());
             map.put("v2id", user.getV2ID());
+            map.put("fansCount", user.getFansCount()+"");
+            map.put("followCount", user.getFollowCount()+"");
+            map.put("signature", user.getSignText());
             list.add(map);
         }
         lrp.fansList = list;

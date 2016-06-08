@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelPresenter;
 import com.v2tech.presenter.PersonelPresenter.PersonelPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -74,7 +75,6 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 
-		presenter.onUICreated();
 		this.overridePendingTransition(R.animator.left_to_right_in,
 				R.animator.left_to_right_out);
 
@@ -160,7 +160,11 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 	@Override
 	public void finishMainUI() {
 		finish();
-
+	}
+	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.LoginPresenter;
 import com.v2tech.presenter.LoginPresenter.LoginPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -102,7 +103,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	
 	
 	
-	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
+	}
 	
   ///////////////////////////////////////presenter//////////////
 	

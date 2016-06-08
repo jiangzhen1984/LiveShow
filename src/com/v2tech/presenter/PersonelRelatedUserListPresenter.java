@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -98,6 +99,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		Intent i = new Intent();
 		i.putExtra("user", u);
 		i.setClass(context, FansFollowActivity.class);
+		i.putExtra("type", type);
 		context.startActivity(i);
 	}
 	
@@ -347,6 +349,20 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 			}
 			u = new User(v2id);
 			u.nId = id;
+			String strfansC = m.get("fansCount");
+			if (!TextUtils.isEmpty(strfansC)) {
+				u.fansCount =Integer.parseInt(strfansC); 
+			}
+			
+			String strFollowCount = m.get("followCount");
+			if (!TextUtils.isEmpty(strFollowCount)) {
+				u.followerCount =Integer.parseInt(strFollowCount); 
+			}
+			
+			String strvideoCount = m.get("videoCount");
+			if (!TextUtils.isEmpty(strvideoCount)) {
+				u.videoCount =Integer.parseInt(strvideoCount); 
+			}
 			fans.add(u);
 		}
 		
@@ -374,6 +390,21 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 			}
 			u = new User(v2id);
 			u.nId = id;
+			
+			String strfansC = m.get("fansCount");
+			if (!TextUtils.isEmpty(strfansC)) {
+				u.fansCount =Integer.parseInt(strfansC); 
+			}
+			
+			String strFollowCount = m.get("followCount");
+			if (!TextUtils.isEmpty(strFollowCount)) {
+				u.followerCount =Integer.parseInt(strFollowCount); 
+			}
+			
+			String strvideoCount = m.get("videoCount");
+			if (!TextUtils.isEmpty(strvideoCount)) {
+				u.videoCount =Integer.parseInt(strvideoCount); 
+			}
 			fans.add(u);
 		}
 		

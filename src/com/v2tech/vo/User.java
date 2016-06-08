@@ -95,6 +95,11 @@ public class User implements Serializable, Comparable<User> {
 	
 	public int vipLevel;
 	
+	public int videoCount;
+	public int fansCount;
+	public int followerCount;
+	public String location;
+	
 	
 	public List<UserDeviceConfig> ll ;
 

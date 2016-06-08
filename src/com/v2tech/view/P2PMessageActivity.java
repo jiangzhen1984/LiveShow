@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.P2PMessagePresenter;
 import com.v2tech.presenter.P2PMessagePresenter.Item;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
@@ -94,8 +95,12 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		presenter.onUIDestroyed();
 		messageEt.removeTextChangedListener(textWatcher);
+	}
+	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
 	}
 
 	
@@ -133,7 +138,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	}
 	
 	
-	public void updateView(View view, int dir, Bitmap bm, CharSequence content, int msgType, boolean isAudioPlaying, Object tag) {
+	public void updateView(View view, int dir, Bitmap bm, CharSequence content,
+			int msgType, boolean isAudioPlaying, Object tag, int audioSec) {
 		LocalBind lb = (LocalBind)view.getTag();
 		if (dir == P2PMessagePresenter.ITEM_TYPE_DATE) {
 			lb.time.setText(content);
@@ -152,6 +158,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				//TODO stop animation
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.leftContentAdr.setVisibility(View.VISIBLE);
+				lb.leftContentAdr.setText(audioSec+"'");
 				lb.leftContent.setVisibility(View.GONE);
 				lb.leftContent.setText("");
 				lb.leftContentMacro.setVisibility(View.VISIBLE);
@@ -177,6 +184,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 				//TODO stop animation
 			} else if (msgType == P2PMessagePresenter.ITEM_MSG_TYPE_AUDIO) {
 				lb.rightContentAdr.setVisibility(View.VISIBLE);
+				lb.rightContentAdr.setText(audioSec+"'");
 				lb.rightContent.setText("");
 				lb.rightContent.setVisibility(View.GONE);
 				lb.rightContentMacro.setVisibility(View.VISIBLE);

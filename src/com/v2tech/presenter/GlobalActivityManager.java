@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
 
+import com.v2tech.view.BaseActivity;
+import com.v2tech.view.BaseFragmentActivity;
+
 public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 	
 	private static GlobalActivityManager instance;
@@ -38,12 +41,16 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 	@Override
 	public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 		list.add(new WeakReference<Activity>(activity));
+		
 	}
 
 	@Override
 	public void onActivityStarted(Activity activity) {
-		// TODO Auto-generated method stub
-		
+		if (activity instanceof  BaseActivity) {
+			((BaseActivity)activity).getPresenter().onUICreated();
+		} else if (activity instanceof BaseFragmentActivity) {
+			((BaseFragmentActivity)activity).getPresenter().onUICreated();
+		}
 	}
 
 	@Override
@@ -79,6 +86,11 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 				Activity act = w.get();
 				if (act == activity) {
 					list.remove(i);
+					if (activity instanceof  BaseActivity) {
+						((BaseActivity)activity).getPresenter().onUIDestroyed();
+					} else if (activity instanceof BaseFragmentActivity) {
+						((BaseFragmentActivity)activity).getPresenter().onUIDestroyed();
+					}
 					break;
 				}
 			}

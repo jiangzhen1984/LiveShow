@@ -90,7 +90,8 @@
     <string name="liver_interaction_personel_text_fans_text">粉丝</string>
     <string name="liver_interaction_personel_text_follow_text">关注</string>
     <string name="liver_interaction_personel_text_label">设备备注和标签</string>
-    
+     <string name="liver_interaction_personel_message_send_btn_text">发消息</string>
+     <string name="liver_interaction_personel_video_call_btn_text">视频聊天</string>
     
     <string name="requesting_connect_video_text">邀请您视频聊天</string>
     <string name="requesting_connect_audio_text">邀请您对讲</string>
@@ -117,6 +118,8 @@
     <string name="voice_record_text_tip_4">手指上划，取消发送</string>
     <string name="voice_record_text_occupcation">占位占位占位占位占位</string>
     <string name="p2p_message_send_btn_text">发送</string>
+    
+   
     
 
 </resources>

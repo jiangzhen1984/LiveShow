@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.SettingPresenter;
 import com.v2tech.presenter.SettingPresenter.SettingPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -39,8 +40,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, Se
 		
 		returnButton.setOnClickListener(this);
 		signoutBtn.setOnClickListener(this);
-		
-		presenter.onUICreated();
 
 	}
 
@@ -60,6 +59,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener, Se
 
 
 	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
+	}
 	
 	
 	

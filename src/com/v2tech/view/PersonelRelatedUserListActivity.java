@@ -2,7 +2,6 @@ package com.v2tech.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,11 +11,12 @@ import android.widget.TextView;
 import com.v2tech.frag.CardScanFragment;
 import com.v2tech.frag.PersonelSearchBarFragment;
 import com.v2tech.frag.UserListFragment;
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter;
 import com.v2tech.presenter.PersonelRelatedUserListPresenter.PersonelRelatedUserListPresenterUI;
 import com.v2tech.v2liveshow.R;
 
-public class PersonelRelatedUserListActivity extends FragmentActivity implements
+public class PersonelRelatedUserListActivity extends BaseFragmentActivity implements
 		PersonelSearchBarFragment.PersonelSearchBarTextListener,
 		UserListFragment.UserListFragmentConnector, PersonelRelatedUserListPresenterUI, View.OnClickListener {
 
@@ -58,7 +58,19 @@ public class PersonelRelatedUserListActivity extends FragmentActivity implements
 		listFrag.setListener(presenter);
 		
 		returnBtn.setOnClickListener(this);
-		presenter.onUICreated();
+	}
+	
+	
+	
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+
+	public BasePresenter getPresenter() {
+		return this.presenter;
 	}
 
 	@Override

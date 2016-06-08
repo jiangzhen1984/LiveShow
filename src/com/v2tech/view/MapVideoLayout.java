@@ -624,8 +624,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				updateOffset(dy);
 			} else if (mDragType != newType) {
 				if (mDragType == DragType.REMOVE) {
-					layoutOffsetY = offsetY;
-					requestLayout();
+//					layoutOffsetY = offsetY;
+//					requestLayout();
 					
 					
 //					int dis1 = (int)(absDy - absOffsetY);
@@ -648,8 +648,8 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				}
 			} else {
 				if (mDragType == DragType.REMOVE) {
-					layoutOffsetY = offsetY;
-					requestLayout();
+//					layoutOffsetY = offsetY;
+//					requestLayout();
 				} else {
 					updateOffset(dy);
 				}
@@ -804,7 +804,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		int br = bl + bw;
 		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
 		int btm = bto + bh;
-		bountyMarker.layout(bl, bto, br, btm);
+	//	bountyMarker.layout(bl, bto, br, btm);
 		
 		mDragLayout.layout(left, realTop, right, bottomChildTop);
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {

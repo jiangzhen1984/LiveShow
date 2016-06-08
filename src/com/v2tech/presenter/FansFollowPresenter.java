@@ -6,10 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
@@ -18,6 +20,8 @@ import android.view.View;
 import com.V2.jni.util.V2Log;
 import com.v2tech.audio.AACEncoder;
 import com.v2tech.audio.AACEncoder.AACEncoderNotification;
+import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.UserService;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.vo.User;
@@ -25,63 +29,80 @@ import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 
 public class FansFollowPresenter extends BasePresenter implements
 		AACEncoderNotification, InterfactionBtnClickListener {
-	
-	
+
+	public static final int TYPE_FANS = 1;
+	public static final int TYPE_FOLLOWERS = 2;
+	public static final int TYPE_FRIENDS = 3;
+
 	public static final int DIALOG_TYPE_NONE = 0;
 	public static final int DIALOG_TYPE_VOLUMN = 1;
 	public static final int DIALOG_TYPE_TOUCH_UP_CANCEL = 2;
 	public static final int DIALOG_TYPE_LONG_DURATION = 3;
 	public static final int DIALOG_TYPE_SHORT_DURATION = 4;
-	
-	
+
 	public static final int UI_MSG_SHOW_DIALOG = 1;
 	public static final int UI_MSG_DISMISS_DIALOG = 2;
 	public static final int UI_MSG_UPDATE_VOLUMN_LEVEL = 4;
-	
 
 	public interface FansFollowPresenterUI {
 		public void finishMainUI();
-		
+
 		public void updateTitleBar();
-		
+
 		public void showBox();
-		
+
 		public Object getIntentData(String key);
-		
+
 		public void showDialog(boolean flag, int type);
-		
+
 		public void updateVoiceDBLevel(int level);
+
+		public void updatePersonelViewData(Bitmap avatar, String name,
+				String sign, String location, int vipLevel, int video,
+				int fans, int followers, int type);
+		
+		public void updateBtnText(boolean addFlag);
 	}
 
 	private Handler uiHandler;
 	private Context context;
 	private FansFollowPresenterUI ui;
 	private User u;
-	
+	private int type;
+	private UserService us;
+
 	private AACEncoder aacRecorder;
 	private State state = State.IDLE;
+	private boolean addFlag;
 
 	public FansFollowPresenter(Context context, FansFollowPresenterUI ui) {
 		super();
 		this.context = context;
 		this.ui = ui;
-		u = (User)ui.getIntentData("user");
+		u = (User) ui.getIntentData("user");
+		type = (Integer) ui.getIntentData("type");
 		aacRecorder = new AACEncoder(this);
 		uiHandler = new UIHandler(ui);
+		us = new UserService();
 	}
-	
-	
-	
 
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
 		ui.updateTitleBar();
 		ui.showBox();
+		ui.updatePersonelViewData(null, u.getName(), u.getSignature(),
+				u.location, u.vipLevel, u.videoCount, u.fansCount, u.fansCount,
+				type);
+
+		if (type == FansFollowPresenter.TYPE_FANS) {
+			addFlag = true;
+		} else if (type == FansFollowPresenter.TYPE_FOLLOWERS) {
+			addFlag = false;
+		} else if (type == FansFollowPresenter.TYPE_FRIENDS) {
+			addFlag = false;
+		}
 	}
-
-
-
 
 	public void friendsBtnClicked() {
 
@@ -103,24 +124,15 @@ public class FansFollowPresenter extends BasePresenter implements
 		ui.finishMainUI();
 	}
 
-
-
-
 	@Override
 	public void onChattingBtnClicked(View v) {
 	}
 
-
-
-
 	@Override
 	public void onVideoCallBtnClicked(View v) {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
-
 
 	@Override
 	public void onMsgBtnClicked(View v) {
@@ -128,20 +140,38 @@ public class FansFollowPresenter extends BasePresenter implements
 		i.putExtra("chatuserid", u.getmUserId());
 		i.setClass(context, P2PMessageActivity.class);
 		context.startActivity(i);
-		
-	}
 
+	}
 
 	public void onFollowBtnClick(View v) {
+		List<User> userList = null;
+		if (type == TYPE_FOLLOWERS) {
+			userList = GlobalHolder.getInstance().mMyFans;
+		} else if (type == TYPE_FANS) {
+			userList = GlobalHolder.getInstance().mMyFollowers;
+		} else if (type == TYPE_FRIENDS) {
+			userList = GlobalHolder.getInstance().mMyFriends;
+		}
+
+		us.followUser(u, addFlag);
+		if (userList != null) {
+			if (addFlag) {
+				userList.add(u);
+			} else {
+				userList.remove(u);
+			}
+		} 
+		addFlag = !addFlag;
 		
+		ui.updateBtnText(addFlag);
 	}
-	
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public void onUIDestroyed() {
+		super.onUIDestroyed();
+		us.clearCalledBack();
+	}
+
 	@Override
 	public void onRecordStart() {
 		synchronized (state) {
@@ -153,9 +183,9 @@ public class FansFollowPresenter extends BasePresenter implements
 				+ accFile);
 		if (!ret) {
 			// TODO notify user
-			
-			 Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
-						DIALOG_TYPE_NONE, 0).sendToTarget();
+
+			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG, DIALOG_TYPE_NONE,
+					0).sendToTarget();
 			this.aacRecorder.stop();
 			return;
 		}
@@ -164,9 +194,6 @@ public class FansFollowPresenter extends BasePresenter implements
 				+ accFile);
 	}
 
-
-
-
 	@Override
 	public void onRecordFinish() {
 		boolean ret = closeAACFile();
@@ -174,11 +201,11 @@ public class FansFollowPresenter extends BasePresenter implements
 				+ accFile);
 		if (!ret) {
 			synchronized (state) {
-					state = State.IDLE;
+				state = State.IDLE;
 			}
 			return;
-		} 
-		
+		}
+
 		boolean sendFlag = false;
 		synchronized (state) {
 			if (state == State.RECORDING) {
@@ -188,37 +215,34 @@ public class FansFollowPresenter extends BasePresenter implements
 				state = State.IDLE;
 				return;
 			}
-			
+
 		}
-		
+
 		int type = 1;
 		duration = (System.currentTimeMillis() - duration);
-		//Check duration is valid or not
+		// Check duration is valid or not
 		if (duration < 1500) {
 			accFile.deleteOnExit();
 			// error and notify short duration
 			type = 1;
 			sendFlag = true;
-			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG,
-					DIALOG_TYPE_NONE, 0).sendToTarget();
+			Message.obtain(uiHandler, UI_MSG_DISMISS_DIALOG, DIALOG_TYPE_NONE,
+					0).sendToTarget();
 		} else {
-			//success and send message
+			// success and send message
 			type = 2;
 			sendFlag = true;
 		}
-		
+
 		if (sendFlag) {
 			Intent i = new Intent();
 			i.putExtra("type", type);
-			//i.putExtra("chatuserid", u.getmUserId());
+			// i.putExtra("chatuserid", u.getmUserId());
 			i.putExtra("audiofile", this.accFile);
 			i.setClass(context, P2PMessageActivity.class);
 			context.startActivity(i);
 		}
 	}
-
-
-
 
 	@Override
 	public void onError(Throwable e) {
@@ -237,22 +261,17 @@ public class FansFollowPresenter extends BasePresenter implements
 				+ accFile + "  " + e);
 	}
 
-
-
-
 	@Override
 	public void onDBChanged(double db) {
 		int level = 1;
 		if (db == Double.NaN) {
 			level = 1;
 		} else {
-			level = (int)db % 10 +1;
+			level = (int) db % 10 + 1;
 		}
-		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0).sendToTarget();
+		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0)
+				.sendToTarget();
 	}
-
-
-
 
 	@Override
 	public void onAACDataOutput(byte[] data, int len) {
@@ -264,7 +283,6 @@ public class FansFollowPresenter extends BasePresenter implements
 		}
 	}
 
-	
 	private boolean openAACFile() {
 		try {
 			uuid = UUID.randomUUID().toString();
@@ -291,7 +309,7 @@ public class FansFollowPresenter extends BasePresenter implements
 		out = null;
 		return true;
 	}
-	
+
 	private boolean writeAACData(byte[] data, int len) {
 		try {
 			out.write(data, 0, len);
@@ -306,8 +324,6 @@ public class FansFollowPresenter extends BasePresenter implements
 	private String uuid;
 	private File accFile;
 	private OutputStream out;
-
-
 
 	public void onRecordBtnTouchDown(MotionEvent ev) {
 		uiHandler.removeMessages(UI_MSG_DISMISS_DIALOG);
@@ -333,9 +349,7 @@ public class FansFollowPresenter extends BasePresenter implements
 			state = State.RECORDING;
 		}
 	}
-	
-	
-	
+
 	class UIHandler extends Handler {
 
 		WeakReference<FansFollowPresenterUI> wui;
@@ -348,7 +362,7 @@ public class FansFollowPresenter extends BasePresenter implements
 		@Override
 		public void handleMessage(Message msg) {
 			if (wui.get() == null) {
-				V2Log.e(" miss message " + msg.what +"  due to no context ");
+				V2Log.e(" miss message " + msg.what + "  due to no context ");
 				return;
 			}
 			int what = msg.what;
@@ -366,9 +380,7 @@ public class FansFollowPresenter extends BasePresenter implements
 		}
 
 	}
-	
-	
-	
+
 	enum State {
 		RECORDING, RECORDING_SHOW_CANCEL_DIALOG, DECODING, IDLE,
 	}

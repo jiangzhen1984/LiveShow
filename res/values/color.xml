@@ -45,6 +45,8 @@
     <color name="personel_setting_text_color">#000000</color>
     <color name="liver_iteraction_ly_bg">#f0eff5</color>
     <color name="liver_iteraction_personel_box_bg">#ffffff</color>
+     <color name="liver_iteraction_personel_message_send_text_color">#ffffff</color>
+     <color name="liver_iteraction_personel_video_call_text_color">#000000</color>
     <color name="fans_follow_activity_layout_bg">#f0eff5</color>
     <color name="watcher_requesting_connect_ly_bg">#f0eff5</color>
     <color name="personel_user_item_text_cr">#a0a0a0</color>

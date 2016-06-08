@@ -144,7 +144,7 @@ public class P2PMessageService extends AbstractHandler {
 					break;
 				case VMessageAbstractItem.ITEM_TYPE_AUDIO:
 					String[] subItem = text.split(":");
-					new VMessageAudioItem(vm, subItem[0], subItem[1], Integer.parseInt(subItem[2]));
+					new VMessageAudioItem(vm, subItem[0], subItem[1], Integer.parseInt(subItem[2]), Integer.parseInt(subItem[3]));
 					break;
 				}
 				

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelShowPresenter;
 import com.v2tech.presenter.PersonelShowPresenter.PersonelShowPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -84,6 +85,13 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
 	public void finishMainUI() {
 		finish();
 
+	}
+	
+	
+	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
 	}
 
 	@Override

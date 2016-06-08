@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.LiverInteractionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/liver_iteraction_ly_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/liver_interaction_box1_margin_top"
+        android:background="@color/liver_iteraction_personel_box_bg" >
+
+        <ImageView
+            android:id="@+id/liver_interaction_avtar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/liver_interaction_avtar_margin_left"
+            android:padding="@dimen/liver_interaction_avtar_padding"
+            android:src="@drawable/liver_interaction_avatar" />
+
+        <LinearLayout
+            android:id="@+id/liver_interaction_btn_ly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/liver_interaction_btn_box_margin_right"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/liver_interaction_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/liver_interaction_cancel_follow_friend" />
+
+            <TextView
+                android:id="@+id/liver_interaction_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/liver_interaction_follow"
+                android:textColor="@color/liver_iteraction_personel_text_color"
+                android:textSize="@dimen/liver_interaction_btn_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/liver_interaction_text_margin_hor"
+            android:layout_marginRight="@dimen/liver_interaction_text_margin_hor"
+            android:layout_toLeftOf="@+id/liver_interaction_btn_ly"
+            android:layout_toRightOf="@+id/liver_interaction_avtar"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/liver_interaction_text_margin_top" >
+
+                <TextView
+                    android:id="@+id/liver_interaction_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="晨羲"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/liver_interaction_name_text_size" />
+
+                <ImageView
+                    android:id="@+id/liver_interaction_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:src="@drawable/gender_male" />
+
+                <ImageView
+                    android:id="@+id/liver_interaction_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:src="@drawable/level_2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginTop="@dimen/liver_interaction_text_margin_top"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/liver_interaction_signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自我介绍"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" >
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center_vertical"
+                        android:src="@drawable/liver_interaction_location_icon" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/liver_interaction_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="上海"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:text="|"
+                    android:textColor="@color/liver_iteraction_personel_text_color" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:text="@string/liver_interaction_personel_text_video_text"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:id="@+id/liver_interaction_videos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:text="@string/liver_interaction_personel_text_fans_text"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:id="@+id/liver_interaction_fans"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="56"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
+                    android:text="@string/liver_interaction_personel_text_follow_text"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+
+                <TextView
+                    android:id="@+id/liver_interaction_follows"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="732"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
+                    android:textSize="@dimen/liver_interaction_text_size" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/common_sep_line"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/liver_interaction_box_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sep_line"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/liver_iteraction_personel_box_bg"
+            android:paddingBottom="@dimen/liver_interaction_personel_text_label_padding_hor"
+            android:paddingTop="@dimen/liver_interaction_personel_text_label_padding_hor" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/liver_interaction_personel_text_label_margin_left"
+                android:text="@string/liver_interaction_personel_text_label"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/liver_interaction_personel_text_label_margin_left"
+                android:src="@drawable/personel_right_arrow_icon" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sep_line"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/liver_interaction_box2_margin_top"
+        android:padding="5dp" >
+
+
+        
+
+
+        <TextView
+            android:id="@+id/liver_interaction_chating_btn_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/liver_interaction_video_call_btn_iv"
+            android:layout_marginTop="10dp"
+            android:text=" " />
+
+        <TextView
+            android:id="@+id/liver_interaction_msg_btn_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/liver_interaction_personel_message_send_btn_text"
+            android:layout_marginLeft="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:layout_marginRight="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:textColor="@color/liver_iteraction_personel_message_send_text_color"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:textSize="@dimen/liver_interaction_personel_btn_text_size"
+            android:background="@drawable/message_send_btn_selector" />
+        
+        <TextView
+            android:id="@+id/liver_interaction_video_call_btn_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/liver_interaction_personel_video_call_btn_text"
+            android:layout_marginLeft="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:layout_marginRight="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:textColor="@color/liver_iteraction_personel_video_call_text_color"
+            android:layout_below="@+id/liver_interaction_msg_btn_iv"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:textSize="@dimen/liver_interaction_personel_btn_text_size"
+            android:background="@drawable/video_call_btn_selector"  />
+    </RelativeLayout>
+
+</com.v2tech.widget.LiverInteractionLayout>

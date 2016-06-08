@@ -3,7 +3,7 @@
  */
 package com.v2tech.view;
 
-import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.FansFollowPresenter;
 import com.v2tech.presenter.FansFollowPresenter.FansFollowPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -26,7 +27,7 @@ import com.v2tech.widget.VoiceRecordDialogWidget;
  * @author jiangzhen
  * 
  */
-public class FansFollowActivity extends Activity implements OnClickListener,
+public class FansFollowActivity extends BaseActivity implements OnClickListener,
 		FansFollowPresenterUI {
 
 	private TextView titleBarName;
@@ -44,7 +45,7 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.fans_follow_activity);
 		presenter = new FansFollowPresenter(this, this);
-
+		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 		personelLayout = (LiverInteractionLayout)  findViewById(R.id.personel_liver_interaction_layout);
@@ -57,7 +58,6 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 		audioRecordBtn.setOnTouchListener(touchListener);
 		this.overridePendingTransition(R.animator.left_to_right_in,
 				R.animator.left_to_right_out);
-		presenter.onUICreated();
 
 	}
 
@@ -107,9 +107,45 @@ public class FansFollowActivity extends Activity implements OnClickListener,
 	@Override
 	public void finishMainUI() {
 		finish();
-
 	}
 	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
+	}
+	
+	public void updatePersonelViewData(Bitmap avatar, String name,
+			String sign, String location, int vipLevel, int video,
+			int fans, int followers, int type) {
+		if (avatar != null) {
+			personelLayout.updateAvatarImg(avatar);
+		}
+		
+		if (name != null) {
+			personelLayout.updateNameText(name);
+		}
+		
+		personelLayout.updateSignature(sign);
+		personelLayout.updateLocationText(location);
+		personelLayout.updateVidoesText(video+"");
+		personelLayout.updateFansText(fans+"");
+		personelLayout.updateFollowsText(followers+"");
+		if (type == FansFollowPresenter.TYPE_FANS) {
+			personelLayout.updateFollowBtnTextResource(R.drawable.liver_interaction_follow);
+			personelLayout.updateFollowBtnTextResource(R.string.personel_item_user_f_text);
+		} else if (type == FansFollowPresenter.TYPE_FOLLOWERS) {
+			personelLayout.updateFollowBtnTextResource(R.drawable.liver_interaction_cancel_follow);
+			personelLayout.updateFollowBtnTextResource(R.string.personel_item_user_cf_text);
+		} else if (type == FansFollowPresenter.TYPE_FRIENDS) {
+			personelLayout.updateFollowBtnTextResource(R.drawable.liver_interaction_cancel_follow_friend);
+			personelLayout.updateFollowBtnTextResource(R.string.personel_item_user_cf_text);
+		}
+	}
+	
+	
+	public void updateBtnText(boolean addFlag) {
+		personelLayout.updateFollowBtnTextResource(addFlag?R.string.personel_item_user_f_text : R.string.personel_item_user_cf_text);
+	}
 	
 	public Object getIntentData(String key) {
 		if (this.getIntent().getExtras() == null) {

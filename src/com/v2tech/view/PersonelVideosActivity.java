@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelVideosPresenter;
 import com.v2tech.presenter.PersonelVideosPresenter.PersonelVideosPresenterUI;
 import com.v2tech.v2liveshow.R;
@@ -51,7 +52,6 @@ public class PersonelVideosActivity extends BaseActivity implements
 		returnButton.setOnClickListener(this);
 		infalter = LayoutInflater.from(this);
 
-		presenter.onUICreated();
 
 	}
 
@@ -81,6 +81,11 @@ public class PersonelVideosActivity extends BaseActivity implements
 
 	public void doFinish() {
 		finish();
+	}
+	
+	@Override
+	public BasePresenter getPresenter() {
+		return presenter;
 	}
 
 	public void updateTitle() {
