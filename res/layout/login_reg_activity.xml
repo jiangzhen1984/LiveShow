@@ -158,6 +158,20 @@
                     android:textColor="@color/login_agreement_text_color"
                     android:textSize="@dimen/login_text_size" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/login_reg_activity_notification_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:background="@drawable/notification_bg"
+                android:layout_below="@+id/relativeLayout1"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="@string/login_error_text_incorrect_username_pwd" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -209,6 +223,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relativeLayout2"

@@ -46,6 +46,7 @@
     <string name="login_action_text_code_hint">验证码</string>
     <string name="login_error_incorrect_phone_number">手机号不正确</string>
     <string name="login_bottom_other_account_text">第三方帐号登录</string>
+    <string name="login_error_text_incorrect_username_pwd">请输入正确的手机号码或验证码</string>
     <string name="main_search_no_element_found">没有找到相关的信息</string>
     <string name="empty_image_content_desc"></string>
     <string name="personal_show_avatar_text">头像</string>

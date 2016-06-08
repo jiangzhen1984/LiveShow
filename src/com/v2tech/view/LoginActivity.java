@@ -4,6 +4,7 @@
 package com.v2tech.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	private View mVerificationCodeBtn;
 	private TextView mStartBtn;
 	private View returnButton;
+	private ProgressDialog proDialog;
+	private TextView notificationView;
 	
 	
 	private LoginPresenter presenter;
@@ -46,6 +49,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 		mVerificationCodeBtn = findViewById(R.id.get_verification_code_button);
 		mStartBtn = (TextView)findViewById(R.id.start_button);
 		returnButton = findViewById(R.id.title_bar_left_btn);
+		notificationView = (TextView)findViewById(R.id.login_reg_activity_notification_view);
 		
 		mVerificationCodeBtn.setOnClickListener(this);
 		mStartBtn.setOnClickListener(this);
@@ -151,14 +155,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 
 	@Override
 	public void doLogonFailed() {
-		// TODO Auto-generated method stub
-		
+		proDialog.dismiss();
 	}
 
 	@Override
 	public void showLogingInProgress() {
-		// TODO Auto-generated method stub
-		
+		if (proDialog == null) {
+			proDialog = new ProgressDialog(this);
+			proDialog.setCancelable(false);
+		}
+		proDialog.show();
 	}
 	
 
@@ -189,8 +195,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	}
 
 	
-	
+	public void showIncorrectMsgIncorrectUsername() {
+		notificationView.setText(R.string.login_error_text_incorrect_username_pwd);
+	}
 
+	
+	public void showNotificaitonView(final boolean flag) {
+		this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				notificationView.setVisibility(flag? View.VISIBLE:View.INVISIBLE);
+			}
+			
+		});
+		
+	}
 ///////////////////////////////////////presenter//////////////
 	
 
