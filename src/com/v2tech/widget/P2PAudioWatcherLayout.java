@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.wheel.NumericArrayWheelAdapter;
-import com.v2tech.widget.wheel.NumericWheelAdapter;
 import com.v2tech.widget.wheel.WheelView;
 
 public class P2PAudioWatcherLayout extends LinearLayout {

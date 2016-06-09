@@ -5,7 +5,6 @@ import java.util.UUID;
 import android.text.TextUtils;
 
 import com.V2.jni.util.V2Log;
-import com.v2tech.service.GlobalHolder;
 import com.v2tech.util.GlobalConfig;
 
 public class VMessageAudioItem extends VMessageAbstractItem {

@@ -14,10 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.V2.jni.V2GlobalEnum;
 import com.V2.jni.util.V2Log;
-import com.v2tech.service.GlobalHolder;
-import com.v2tech.util.GlobalConfig;
 import com.v2tech.vo.User;
-import com.v2tech.vo.User.Status;
 
 
 /**
