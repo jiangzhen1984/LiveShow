@@ -34,6 +34,11 @@ public class MessageDescriptor {
 		matcher.addURI(augura, SystemMessage.PATH, SystemMessage.TOKEN);
 		matcher.addURI(augura, SystemMessage.PATH + "/#",
 				SystemMessage.TOKEN_WITH_ID);
+		
+		
+		matcher.addURI(augura, MessageSession.PATH, MessageSession.TOKEN);
+		matcher.addURI(augura, MessageSession.PATH + "/#",
+				MessageSession.TOKEN_WITH_ID);
 
 		return matcher;
 	}
@@ -179,6 +184,66 @@ public class MessageDescriptor {
 					+ " NUMERIC(1),"
 					+ Cols.SYSTEM_MESSAGE_TIMESTAMP
 					+ " NUMERIC(20))";
+		}
+	}
+	
+	
+	
+	public static class MessageSession {
+		
+		public static String PATH = "session";
+
+		public static String NAME = PATH;
+
+		public static final int TOKEN = 9;
+
+		public static final int TOKEN_WITH_ID = 10;
+		
+		public static String TABLE_NAME ="message_session";
+
+		public static Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH)
+				.build();
+		
+		public static final int MES_TYPE_SYSTEM = 1;
+		public static final int MES_TYPE_USER = 2;
+		
+		public static final int MES_STATE_READ = 1;
+		public static final int MES_STATE_UNREAD = 0;
+
+		public static class Cols {
+			public static final String ID = BaseColumns._ID;
+
+			public static final String SYSTEM_MESSAGE_TYPE = "msg_type";
+			public static final String SYSTEM_MESSAGE_FROM_USER_ID = "from_user_id";
+			public static final String SYSTEM_MESSAGE_FROM_USER_NAME = "from_user_name";
+			public static final String SYSTEM_MESSAGE_STATE = "msg_state";
+			public static final String SYSTEM_MESSAGE_UNREAD_COUNT = "msg_unread_count";
+			public static final String SYSTEM_MESSAGE_TIMESTAMP = "msg_timestamp";
+
+			public static final String[] ALL_CLOS = { ID, SYSTEM_MESSAGE_TYPE,
+				SYSTEM_MESSAGE_FROM_USER_ID, SYSTEM_MESSAGE_FROM_USER_NAME,
+				SYSTEM_MESSAGE_STATE,SYSTEM_MESSAGE_UNREAD_COUNT,SYSTEM_MESSAGE_TIMESTAMP };
+		}
+		
+		
+		public static String getCreateSql() {
+			return " create table  " + TABLE_NAME 
+					+ " ( "
+					+ Cols.ID
+					+ " integer primary key AUTOINCREMENT,"
+					+ Cols.SYSTEM_MESSAGE_TYPE
+					+ " NUMERIC(1),"
+					+ Cols.SYSTEM_MESSAGE_FROM_USER_ID
+					+ " NUMERIC(20),"
+					+ Cols.SYSTEM_MESSAGE_FROM_USER_NAME
+					+ " text,"
+					+ Cols.SYSTEM_MESSAGE_STATE
+					+ " NUMERIC(1),"
+					+ Cols.SYSTEM_MESSAGE_UNREAD_COUNT
+					+ " NUMERIC(4),"
+					+ Cols.SYSTEM_MESSAGE_TIMESTAMP
+					+ " NUMERIC(20)"
+					+" )";
 		}
 	}
 

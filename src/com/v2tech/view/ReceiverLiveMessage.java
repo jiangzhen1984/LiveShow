@@ -70,6 +70,7 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 			
 			if (vm != null) {
 				P2PMessageService.saveMessage(context, vm, vm.getToUser());
+				P2PMessageService.saveOrUpdateMessageSession(context, vm,  vm.getToUser(), false, true);
 			}
 		}
 	}

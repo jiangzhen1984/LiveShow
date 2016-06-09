@@ -1,13 +1,14 @@
 package com.v2tech.db;
 
-import com.v2tech.db.MessageDescriptor.P2PMessage;
-import com.v2tech.db.MessageDescriptor.P2PMessageItem;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
+import com.v2tech.db.MessageDescriptor.MessageSession;
+import com.v2tech.db.MessageDescriptor.P2PMessage;
+import com.v2tech.db.MessageDescriptor.P2PMessageItem;
 
 public class MessageProvider extends ContentProvider {
 
@@ -65,14 +66,28 @@ public class MessageProvider extends ContentProvider {
 			selection = P2PMessageItem.Cols.MASTER_ID + "  = ?";
 			selectionArgs = new String[] { uri.getLastPathSegment() };
 			break;
+		case MessageDescriptor.MessageSession.TOKEN:
+			tableName = MessageDescriptor.MessageSession.TABLE_NAME;
+			break;
 		default:
 			throw new RuntimeException(" Does not support token" + uri);
 
 		}
+		String newSortOrder = null;
+		String limit = null;
+		int idx = sortOrder.indexOf("limit");
+		if (idx != -1) {
+			newSortOrder = sortOrder.substring(0, idx);
+			limit = sortOrder.substring(idx +6 );
+		} else {
+			newSortOrder = sortOrder;
+		}
+		
+		
 		Cursor cur = null;
 		SQLiteDatabase db = helper.getReadableDatabase();
 		cur = db.query(tableName, projection, selection, selectionArgs, null,
-				null, sortOrder);
+				null, newSortOrder, limit);
 		return cur;
 	}
 
@@ -102,6 +117,9 @@ public class MessageProvider extends ContentProvider {
 		case MessageDescriptor.P2PMessage.TOKEN_WITH_USER_ID:
 			name = MessageDescriptor.P2PMessage.TABLE_NAME;
 			break;
+		case MessageDescriptor.MessageSession.TOKEN:
+			name = MessageDescriptor.MessageSession.TABLE_NAME;
+			break;
 		default:
 			throw new RuntimeException(" Does not support token: " + uri);
 		}
@@ -129,6 +147,11 @@ public class MessageProvider extends ContentProvider {
 		case MessageDescriptor.P2PMessage.TOKEN_WITH_ID:
 			tableName = MessageDescriptor.P2PMessage.TABLE_NAME;
 			selection =  P2PMessage.Cols.ID + "  = ?";
+			selectionArgs = new String[]{uri.getLastPathSegment()};
+			break;
+		case MessageDescriptor.MessageSession.TOKEN_WITH_ID:
+			tableName = MessageDescriptor.MessageSession.TABLE_NAME;
+			selection =  MessageSession.Cols.ID + "  = ?";
 			selectionArgs = new String[]{uri.getLastPathSegment()};
 			break;
 		default:

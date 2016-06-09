@@ -1,6 +1,7 @@
 package com.v2tech.presenter;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,12 @@ import com.v2tech.net.lv.FollowsQueryRespPacket;
 import com.v2tech.net.pkt.RequestPacket;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.P2PMessageService;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.FansFollowActivity;
 import com.v2tech.vo.User;
+import com.v2tech.vo.msg.VMessageSession;
 
 public class PersonelRelatedUserListPresenter extends BasePresenter implements UserListFragmentClickListener {
 	
@@ -42,20 +45,22 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	private Context context;
 	private UserService us;
+	private P2PMessageService messageService;
 	
 	private PersonelRelatedUserListPresenterUI ui;
 	private int type;
 	
-	List<User> userList;
-	
+	private List<Item> itemList;
+	private List<User> userList;
+	private List<VMessageSession> msessList;
 	private LocalBackendHandler local;
 	
 	public interface PersonelRelatedUserListPresenterUI {
 		public void updateSearchBarHint(String text);
 		public void updateItemAvatar(View parent, Bitmap bm);
-		public void updateItemName(View parent, String name);
-		public void updateItemText(View parent, String txt);
-		public void updateItemSn(View parent, String sn);
+		public void updateItemName(View parent, CharSequence name);
+		public void updateItemText(View parent, CharSequence txt);
+		public void updateItemSn(View parent, CharSequence sn);
 		public void updateItemBtnCancel(View parent);
 		public void updateItemBtnFollow(View parent);
 		public void updateItemBtnTag(View parent, Object tag);
@@ -95,9 +100,9 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	
 	public void onListItemClicked(Object tag) {
-		User u = (User)tag;
+		Item item = (Item)tag;
 		Intent i = new Intent();
-		i.putExtra("user", u);
+		i.putExtra("user", item.u);
 		i.setClass(context, FansFollowActivity.class);
 		i.putExtra("type", type);
 		context.startActivity(i);
@@ -106,17 +111,19 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	public void onItemBtnClicked(Object tag) {
 		Long id = (Long) tag;
-		for (User u : userList) {
+		for (int i = 0; i < userList.size(); i++) {
+			User u = userList.get(i);
 			if (u.nId == id) {
 				if (type == TYPE_FOLLOWS) {
 				  us.followUser(u, false);
-				  userList.remove(u);
+				  userList.remove(i);
+				  //remove from ui adpater list
+				  itemList.remove(i);
 				} else if (type == TYPE_FANS) {
 					us.followUser(u, true);
 					if (GlobalHolder.getInstance().mMyFollowers != null) {
 						GlobalHolder.getInstance().mMyFollowers.add(u);
 					}
-					
 				}
 				break;
 			}
@@ -126,30 +133,30 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	
 	public int getCount() {
-		return userList == null ? 0 : userList.size();
+		return itemList == null ? 0 : itemList.size();
 	}
 
 	public Object getItem(int position) {
-		return userList.get(position);
+		return itemList.get(position);
 	}
 
 	public long getItemId(int position) {
-		return userList.get(position).nId;
+		return itemList.get(position).id;
 	}
 
 	public void update(int position, View convertView) {
-		User u = userList.get(position);
-		ui.updateItemName(convertView, u.getName());
-		ui.updateItemSn(convertView, u.getSignature());
+		Item item = itemList.get(position);
+		ui.updateItemName(convertView, item.name);
+		ui.updateItemSn(convertView, item.sn);
 //		if (u.follow) {
 //			ui.updateItemBtnCancel(convertView);
 //		} else {
 //			ui.updateItemBtnFollow(convertView);
 //		}
-		ui.updateItemBtnTag(convertView, Long.valueOf(u.nId));
+		ui.updateItemBtnTag(convertView, Long.valueOf(item.id));
 		
-		ui.updateItemGender(convertView, u.isMale);
-		ui.updateItemUserTag(convertView, u);
+		ui.updateItemGender(convertView, item.gender);
+		ui.updateItemUserTag(convertView, item);
 	}
 
 	
@@ -255,6 +262,11 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		case TYPE_FRIEND_INVITATION:
 			break;
 		case TYPE_MESSAGE:
+			if (messageService == null) {
+				messageService = new P2PMessageService(context.getApplicationContext());
+			}
+			msessList = messageService.getMessageSession(0, 40);
+			convertMessageSessionList(msessList);
 			break;
 		}
 		
@@ -276,7 +288,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		}
 		
 		userList = tempList;
-		
+		convertUserList(userList);
 
 		uiHandler.post(new Runnable() {
 
@@ -414,6 +426,45 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	}
 	
 	
+	
+	
+	private static SimpleDateFormat format =  new SimpleDateFormat("hh:mm"); 
+	private void convertMessageSessionList(List<VMessageSession> sessList) {
+		if (sessList == null || sessList.size() <= 0) {
+			return;
+		}
+		
+		itemList  = new ArrayList<Item>(sessList.size());
+		for (VMessageSession vs : sessList) {
+			Item item = new Item();
+			itemList.add(item);
+			item.id = vs.id;
+			item.name = vs.fromName;
+			item.sn = vs.content;
+			item.time = format.format(vs.timestamp);
+			item.u = new User(vs.fromUid);
+		}
+	}
+	
+	
+	private void convertUserList(List<User> sessList) {
+		if (sessList == null || sessList.size() <= 0) {
+			return;
+		}
+		
+		itemList  = new ArrayList<Item>(sessList.size());
+		for (User vs : sessList) {
+			Item item = new Item();
+			itemList.add(item);
+			item.id = vs.getmUserId();
+			item.name = vs.getName();
+			item.gender = vs.isMale;
+			item.u = vs;
+			//item.sn = vs.content;
+			//item.time = format.format(vs.timestamp);
+		}
+	}
+	
 	private Handler uiHandler = new Handler();
 	
 	
@@ -438,5 +489,17 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 			}
 		}
 		
+	}
+	
+	
+	
+	class Item {
+		public long id;
+		public CharSequence name;
+		public CharSequence sn;
+		public boolean gender;
+		public CharSequence time;
+		public int underCount;
+		public User u;
 	}
 }

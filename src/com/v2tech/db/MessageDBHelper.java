@@ -30,6 +30,7 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 		db.execSQL(MessageDescriptor.SystemMessage.getCreateSql());
 		db.execSQL(MessageDescriptor.P2PMessage.getCreateSql());
 		db.execSQL(MessageDescriptor.P2PMessageItem.getCreateSql());
+		db.execSQL(MessageDescriptor.MessageSession.getCreateSql());
 	}
 
 	@Override

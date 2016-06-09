@@ -157,15 +157,15 @@ public class PersonelRelatedUserListActivity extends BaseFragmentActivity implem
 		
 	}
 	
-	public void updateItemName(View parent, String name) {
+	public void updateItemName(View parent, CharSequence name) {
 		LocalBind lb = (LocalBind)parent.getTag();
 		lb.name.setText(name);
 	}
-	public void updateItemText(View parent, String txt) {
+	public void updateItemText(View parent, CharSequence txt) {
 		LocalBind lb = (LocalBind)parent.getTag();
 		lb.text.setText(txt);
 	}
-	public void updateItemSn(View parent, String sn) {
+	public void updateItemSn(View parent, CharSequence sn) {
 		LocalBind lb = (LocalBind)parent.getTag();
 		lb.sign.setText(sn);
 	}
