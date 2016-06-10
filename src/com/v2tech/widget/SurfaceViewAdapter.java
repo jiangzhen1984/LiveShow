@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.support.v4.view.PagerAdapter;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -44,10 +45,12 @@ public class SurfaceViewAdapter extends PagerAdapter {
 	}
 
 	private SurfaceView createSurfaceView(int index) {
-		SurfaceView mSurfaceView = new SurfaceView(ctx);
+		SurfaceView mSurfaceView = new V2SurfaceView(ctx);
 		mSurfaceView.setZOrderOnTop(true);
 		mSurfaceView.setZOrderMediaOverlay(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
+		mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+		mSurfaceView.setAlpha(0.5F);
 //		mSurfaceView.setTag(index);
 //		mSurfaceView.setWillNotDraw(true);
 		return mSurfaceView;
@@ -73,7 +76,6 @@ public class SurfaceViewAdapter extends PagerAdapter {
 			Canvas c = holder.lockCanvas();
 			drawFirstBlankFrame(c);
 			holder.unlockCanvasAndPost(c);
-			Surface surface = holder.getSurface();
 		}
 
 		@Override
@@ -93,9 +95,9 @@ public class SurfaceViewAdapter extends PagerAdapter {
 		int height = c.getHeight();
 		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
 		Canvas tmp = new Canvas(bp);
-		tmp.drawColor(Color.BLACK);
+		tmp.drawColor(Color.argb(127, 0, 0, 0));
 		Paint p = new Paint();
-		p.setColor(Color.WHITE);
+		p.setColor(Color.BLACK);
 		p.setTextSize(60);
 		tmp.drawText((index++) + "", width / 2, height / 2, p);
 		c.drawBitmap(bp, 0, 0, new Paint());

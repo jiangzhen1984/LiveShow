@@ -15,8 +15,6 @@ public class VideoShareBtnLayout extends RelativeLayout {
 
 	private Button shareBtn;
 
-	private View dragView;
-	
 	private View mapBtn;
 
 	private VideoShareBtnLayoutListener listener;
@@ -40,9 +38,6 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		if (child.getId() == R.id.video_share_button) {
 			shareBtn = (Button) child;
 			shareBtn.setOnClickListener(clickListener);
-		} else if (child.getId() == R.id.video_share_drag_view) {
-			dragView = child;
-			dragView.setOnTouchListener(touchListener);
 		} else if (child.getId() == R.id.video_share_map_btn) {
 			mapBtn = child;
 			mapBtn.setOnClickListener(clickListener);
@@ -96,6 +91,7 @@ public class VideoShareBtnLayout extends RelativeLayout {
 
 		@Override
 		public void onClick(View v) {
+			V2Log.i(v+"  cliecked");
 			if (listener == null) {
 				return;
 			}

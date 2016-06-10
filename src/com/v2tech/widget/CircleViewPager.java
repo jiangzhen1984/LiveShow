@@ -102,6 +102,18 @@ public class CircleViewPager extends ViewGroup {
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 		mInimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
 	}
+	
+	
+
+	@Override
+	public void setAlpha(float alpha) {
+		super.setAlpha(alpha);
+		int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			View child = getChildAt(i);
+			child.setAlpha(alpha);
+		}
+	}
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
