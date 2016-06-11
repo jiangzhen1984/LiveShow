@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.v2liveshow.R;
@@ -27,9 +26,10 @@ public class WidgetRootLayout extends ViewGroup{
 	private int mTouchSlop;
 	private int mTouchTapTimeout;
 
+	private V2SurfaceView mLocalCameraSurfaceView;
 	private V2SurfaceView mSurfaceView;
 	private PagerAdapter mViewPagerAdapter;
-	private VideoShareBtnLayout viedeoShartBtnLayout;
+	public VideoShareBtnLayout viedeoShartBtnLayout;
 
 	private Direction direction = Direction.D_UNKNOW;
 	private State mState = State.PLAYING;
@@ -55,6 +55,7 @@ public class WidgetRootLayout extends ViewGroup{
 	}
 
 	private SurfaceHolder mholder;
+	public SurfaceHolder mholder1;
 
 	private void init() {
 		final ViewConfiguration configuration = ViewConfiguration
@@ -91,6 +92,12 @@ public class WidgetRootLayout extends ViewGroup{
 				Bitmap bp = Bitmap.createBitmap(width, height,
 						Bitmap.Config.ARGB_4444);
 				Canvas tmp = new Canvas(bp);
+				
+				Paint p = new Paint();
+				p.setColor(Color.BLACK);
+				p.setTextSize(60);
+				tmp.drawText((1) + "", width / 2, height / 2, p);
+				
 				tmp.drawColor(Color.argb(255, 0, 0, 0));
 				c.drawBitmap(bp, 0, 0, new Paint());
 				bp.recycle();
@@ -110,8 +117,17 @@ public class WidgetRootLayout extends ViewGroup{
 
 		});
 		
+		
+		mLocalCameraSurfaceView = new V2SurfaceView(getContext());
+		mLocalCameraSurfaceView.setZOrderOnTop(true);
+		mLocalCameraSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+		mholder1 = mLocalCameraSurfaceView.getHolder();
+		
+		
 
 		this.addView(mSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,
+				700));
+		this.addView(mLocalCameraSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				700));
 		this.addView(viedeoShartBtnLayout, new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -268,21 +284,28 @@ public class WidgetRootLayout extends ViewGroup{
 	}
 
 	private void offsetForIdelOrPlaying(int offset) {
+		mLocalCameraSurfaceView.offsetTopAndBottom(offset);
 		mSurfaceView.offsetTopAndBottom(offset);
 		viedeoShartBtnLayout.offsetTopAndBottom(-offset);
 		float cent = (float) distanceY / (float) playingSurfaceViewMoveDistance;
-		drawAlpha(cent);
+		drawAlpha(mholder, cent);
+		drawAlpha(mholder1, 1.0F - cent);
 	}
 
 	private void offsetForRecording(int offset) {
 		mSurfaceView.offsetLeftAndRight(-offset);
 		viedeoShartBtnLayout.offsetTopAndBottom(offset);
+		mLocalCameraSurfaceView.offsetTopAndBottom(-offset);
 		float cent = 1.0F - ((float) distanceY / (float) playingSurfaceViewMoveDistance);
-		drawAlpha(cent);
+		drawAlpha(mholder,cent);
+		drawAlpha(mholder1, 1.0F - cent);
 	}
 
-	private void drawAlpha(float cent) {
-		Canvas c = mholder.lockCanvas();
+	private void drawAlpha(SurfaceHolder holder, float cent) {
+		Canvas c = holder.lockCanvas();
+		if (c == null) {
+			return;
+		}
 		int width = c.getWidth();
 		int height = c.getHeight();
 		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
@@ -290,8 +313,11 @@ public class WidgetRootLayout extends ViewGroup{
 		tmp.drawColor(Color.argb((int) (255 * (1F - cent)), 0, 0, 0));
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
-		mholder.unlockCanvasAndPost(c);
+		holder.unlockCanvasAndPost(c);
 	}
+	
+	
+	
 
 	@Override
 	public boolean performClick() {
@@ -307,15 +333,20 @@ public class WidgetRootLayout extends ViewGroup{
 					.getMeasuredHeight() + top;
 			mSurfaceView.layout(0, 0, mSurfaceView.getMeasuredWidth(),
 					mSurfaceView.getMeasuredHeight());
+			mLocalCameraSurfaceView.layout(0, -mLocalCameraSurfaceView.getMeasuredHeight() -top, mLocalCameraSurfaceView.getMeasuredWidth(),
+					 -top);
+			
 			viedeoShartBtnLayout.layout(0, bottom
 					, right, bottom
 					+ viedeoShartBtnLayout.getMeasuredHeight() + top); //- viedeoShartBtnLayout.getMeasuredHeight() - top
 		} else if (mState == State.RECODING) {
+			mLocalCameraSurfaceView.layout(0, 0, mLocalCameraSurfaceView.getMeasuredWidth(),
+					mLocalCameraSurfaceView.getMeasuredHeight());
 			mSurfaceView.layout(right, 0,
 					right + mSurfaceView.getMeasuredWidth(),
 					mSurfaceView.getMeasuredHeight());
 			viedeoShartBtnLayout.layout(0,
-					bottom - viedeoShartBtnLayout.getMeasuredHeight() - top,
+					mLocalCameraSurfaceView.getMeasuredHeight(),
 					right, bottom + viedeoShartBtnLayout.getMeasuredHeight()
 							+ top);
 		}
@@ -462,6 +493,13 @@ public class WidgetRootLayout extends ViewGroup{
 				V2Log.i("=== flying quit");
 				mFlyState = FlyingState.IDLE;
 				mState = nextState;
+				if (mState == State.PLAYING) {
+					drawAlpha(mholder, 0F);
+					drawAlpha(mholder1, 1.0F);
+				} else if (mState == State.RECODING) {
+					drawAlpha(mholder, 1.0F);
+					drawAlpha(mholder1, 0.0F);
+				}
 				requestLayout();
 				setStart = false;
 			}

@@ -50,7 +50,7 @@ public class SurfaceViewAdapter extends PagerAdapter {
 		mSurfaceView.setZOrderMediaOverlay(true);
 		mSurfaceView.getHolder().addCallback(mHolderCallback);
 		mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-		mSurfaceView.setAlpha(0.5F);
+		//mSurfaceView.setAlpha(0.5F);
 //		mSurfaceView.setTag(index);
 //		mSurfaceView.setWillNotDraw(true);
 		return mSurfaceView;
@@ -95,9 +95,9 @@ public class SurfaceViewAdapter extends PagerAdapter {
 		int height = c.getHeight();
 		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
 		Canvas tmp = new Canvas(bp);
-		tmp.drawColor(Color.argb(127, 0, 0, 0));
+		tmp.drawColor(Color.argb(255, 0, 0, 0));
 		Paint p = new Paint();
-		p.setColor(Color.BLACK);
+		p.setColor(Color.WHITE);
 		p.setTextSize(60);
 		tmp.drawText((index++) + "", width / 2, height / 2, p);
 		c.drawBitmap(bp, 0, 0, new Paint());

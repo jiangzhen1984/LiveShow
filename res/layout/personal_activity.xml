@@ -2,8 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="@dimen/personel_root_margin_right"
-    android:layout_marginRight="@dimen/personel_root_margin_right"
     android:background="@color/login_reg_layout_bg" >
 
     <include
