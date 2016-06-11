@@ -13,22 +13,20 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.View.OnTouchListener;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.widget.V2SurfaceView;
 import com.v2tech.widget.VideoShareBtnLayout;
 
-public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
+public class WidgetRootLayout extends ViewGroup{
 
-	
-	
 	private int mTouchSlop;
 	private int mTouchTapTimeout;
-	
+
 	private V2SurfaceView mSurfaceView;
 	private PagerAdapter mViewPagerAdapter;
 	private VideoShareBtnLayout viedeoShartBtnLayout;
@@ -59,12 +57,11 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 	private SurfaceHolder mholder;
 
 	private void init() {
-		
-		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
+		final ViewConfiguration configuration = ViewConfiguration
+				.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mTouchTapTimeout = ViewConfiguration.getTapTimeout();
-		
-		
+
 		// // setOnTouchListener(this);
 		// mVideoShowPager = new CircleViewPager(getContext());
 		// mVideoShowPager.setId(0x10000001);
@@ -112,18 +109,36 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 			}
 
 		});
+		
 
 		this.addView(mSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				700));
 		this.addView(viedeoShartBtnLayout, new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-		this.setOnTouchListener(this);
 	}
+
+	
+	
+
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		touchInterceptFlag = checkTouchEvent(ev);
+		int action = ev.getAction();
+		switch (action) {
+		case MotionEvent.ACTION_DOWN:
+			doTouchDown(ev);
+			break;
+		case MotionEvent.ACTION_MOVE:
+			int xDiff = Math.abs((int)ev.getX() - initX);
+			int yDiff = Math.abs((int)ev.getY() - initY);
+			if (mTouchSlop > xDiff || mTouchSlop > yDiff) {
+				touchInterceptFlag = true;
+			}
+			break;
+		case MotionEvent.ACTION_UP:
+			touchInterceptFlag = false;
+			break;
+		}
 		return touchInterceptFlag;
 	}
 
@@ -160,25 +175,28 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 	int lastY;
 	int distanceY = 1;
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (!touchInterceptFlag) {
-			return false;
-		}
-		boolean flag = false;
+	 @Override
+	public boolean onTouchEvent(MotionEvent event) {
 		int act = event.getAction();
 		switch (act) {
 		case MotionEvent.ACTION_DOWN:
+			 boolean flag = checkTouchEvent(event);
+			 V2Log.i("handle touch :" + flag);
+			 if (!flag) {
+				 return false;
+			 }
 			flag = doTouchDown(event);
 			break;
 		case MotionEvent.ACTION_MOVE:
-			flag = doTouchMove(event);
+			V2Log.i("Move: x:" + event.getX()+" y:" + event.getY());
+			doTouchMove(event);
 			break;
 		case MotionEvent.ACTION_UP:
-			flag = doTouchUp(event);
+			doTouchUp(event);
+			touchInterceptFlag = false;
 			break;
 		}
-		return flag;
+		return true;
 	}
 
 	private boolean doTouchDown(MotionEvent event) {
@@ -217,9 +235,12 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 	}
 
 	private boolean doTouchUp(MotionEvent event) {
-		if (mTouchSlop > Math.abs(lastX - initX) && mTouchSlop > Math.abs(lastY - initY)) {
+		if (mTouchSlop > Math.abs(lastX - initX)
+				&& mTouchSlop > Math.abs(lastY - initY)) {
 			viedeoShartBtnLayout.performClick();
-			V2Log.i(" no move:" +mTouchSlop +" x-distance:" + Math.abs(lastX - initX) +"  y-distance:" +Math.abs(lastY - initY));
+			V2Log.i(" no move:" + mTouchSlop + " x-distance:"
+					+ Math.abs(lastX - initX) + "  y-distance:"
+					+ Math.abs(lastY - initY));
 			return false;
 		}
 		if (mFly == null) {
@@ -228,14 +249,16 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 		switch (mState) {
 		case PLAYING:
 			if (direction == Direction.D_DOWN) {
-				mFly.startFlying(playingSurfaceViewMoveDistance - distanceY, State.RECODING);
+				mFly.startFlying(playingSurfaceViewMoveDistance - distanceY,
+						State.RECODING);
 			} else if (direction == Direction.D_UP) {
 				mFly.startFlying(Math.abs(distanceY), State.PLAYING);
 			}
 			break;
 		case RECODING:
 			if (direction == Direction.D_DOWN) {
-				mFly.startFlying(playingSurfaceViewMoveDistance - distanceY, State.PLAYING);
+				mFly.startFlying(playingSurfaceViewMoveDistance - distanceY,
+						State.PLAYING);
 			}
 			break;
 		default:
@@ -284,8 +307,9 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 					.getMeasuredHeight() + top;
 			mSurfaceView.layout(0, 0, mSurfaceView.getMeasuredWidth(),
 					mSurfaceView.getMeasuredHeight());
-			viedeoShartBtnLayout.layout(0, bottom, right, bottom
-					+ viedeoShartBtnLayout.getMeasuredHeight() + top);
+			viedeoShartBtnLayout.layout(0, bottom
+					, right, bottom
+					+ viedeoShartBtnLayout.getMeasuredHeight() + top); //- viedeoShartBtnLayout.getMeasuredHeight() - top
 		} else if (mState == State.RECODING) {
 			mSurfaceView.layout(right, 0,
 					right + mSurfaceView.getMeasuredWidth(),
@@ -422,10 +446,10 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 				}
 				if (mState == State.PLAYING) {
 					offsetForIdelOrPlaying(direction == Direction.D_UP ? -velocity
-						: velocity);
+							: velocity);
 				} else if (mState == State.RECODING) {
 					offsetForRecording(direction == Direction.D_UP ? -velocity
-						: velocity);
+							: velocity);
 				}
 				distance -= velocity;
 				if (distance <= 0) {
@@ -444,5 +468,7 @@ public class WidgetRootLayout extends ViewGroup implements OnTouchListener {
 		}
 
 	};
+
+
 
 }
