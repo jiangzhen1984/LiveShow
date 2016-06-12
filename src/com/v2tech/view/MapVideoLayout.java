@@ -375,6 +375,9 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		} else {
 			fireFlyingdown = false; 
 		}
+		
+		//mMapView.offsetTopAndBottom(offset);
+		//mVideoShowPager.offsetTopAndBottom(offset);
 		requestLayout();
 	}
 

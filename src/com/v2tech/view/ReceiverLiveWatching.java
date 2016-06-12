@@ -14,28 +14,29 @@ import com.v2tech.vo.User;
 
 public class ReceiverLiveWatching extends BroadcastReceiver {
 
-	
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		if ("com.v2tech.notification_action".equals(action)) {
-			String sub = intent.getStringExtra("sub");
-			if ("com.v2tech.live_watching".equals(sub)) {
-				Long  nid = (Long)intent.getLongExtra("live", -1);
-				User  u = (User)intent.getSerializableExtra("user");
-				int type = intent.getIntExtra("type", -1);
-				List<LiveWathcingHandler> handlers = GlobalPresenterManager.getInstance().getLiveWathcingHandler();
-				Live l = new Live(null, -1, nid, 0, 0);
-				for (LiveWathcingHandler h : handlers) {
-					//watching
-					if (type == LiveWatchingReqPacket.WATCHING) {
-						h.onUserWatched(l, u);
-					//leave
-					} else if (type == LiveWatchingReqPacket.CANCEL) {
-						h.onWatcherLeaved(l, u);
-					}
-				}
+		if (!"com.v2tech.notification_action".equals(action)) {
+			return;
+		}
+		String sub = intent.getStringExtra("sub");
+		if (!"com.v2tech.live_watching".equals(sub)) {
+			return;
+		}
+		Long nid = (Long) intent.getLongExtra("live", -1);
+		User u = (User) intent.getSerializableExtra("user");
+		int type = intent.getIntExtra("type", -1);
+		List<LiveWathcingHandler> handlers = GlobalPresenterManager
+				.getInstance().getLiveWathcingHandler();
+		Live l = new Live(null, -1, nid, 0, 0);
+		for (LiveWathcingHandler h : handlers) {
+			// watching
+			if (type == LiveWatchingReqPacket.WATCHING) {
+				h.onUserWatched(l, u);
+				// leave
+			} else if (type == LiveWatchingReqPacket.CANCEL) {
+				h.onWatcherLeaved(l, u);
 			}
 		}
 	}

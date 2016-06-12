@@ -29,6 +29,7 @@ import com.v2tech.map.MarkerListener;
 import com.v2tech.service.AsyncResult;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.InquiryService;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.LiveService;
 import com.v2tech.service.LiveStatusHandler;
@@ -124,6 +125,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	private LiveService ls;
 	private Handler h;
 	private Live currentLive;
+	private InquiryService is;
 
 	private int videoScreenState;
 	private boolean cameraSurfaceViewMeasure = false;
@@ -318,6 +320,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 		us.clearCalledBack();
 		vs.clearCalledBack();
 		ls.clearCalledBack();
+		is.clearCalledBack();
 		this.h.removeMessages(REPORT_LOCATION);
 		cacheMarker.clear();
 		super.onUIDestroyed();
@@ -508,6 +511,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 	@Override
 	public void onLiveInfoTipsBtnClicked(View v) {
+		is.startInquiry(20.0F, 0d, 0D);
 		if (currentLive == null) {
 			return;
 		}
@@ -763,7 +767,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 	@Override
 	public void onTipsBtnClicked(View view) {
-
+		is.startInquiry(20.0F, 0d, 0D);
 	}
 
 	// ///////////P2PAudioWatcherLayoutListener
@@ -1040,6 +1044,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
+		is = new InquiryService();
 		vs.registerAttendeeDeviceListener(h, ATTEND_LISTENER, null);
 		// vs.registerAttendeeDeviceListener(h, WATCHER_DEVICE_LISTENER, null);
 

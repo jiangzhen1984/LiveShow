@@ -46,6 +46,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             return serializeV2UserIdReportequest((V2UserIdReportReqPacket) p);
         }else if (p instanceof V2AccountReprotReqPacket) {
             return serializeV2AccountReprotRequest((V2AccountReprotReqPacket) p);
+        }else if (p instanceof InquiryReqPacket) {
+            return serializeInquiryRequest((InquiryReqPacket) p);
         }else if (p instanceof PacketProxy) {
             return serialize(((PacketProxy) p).getPacket());
         } else {
@@ -94,7 +96,13 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             return extraWatcherListQueryResponse(webPackage);
         } else if ("getFollowList".equalsIgnoreCase(type)) {
             return extraFollowsQueryResponse(webPackage);
-        }else {
+        } else if ("gratuity".equalsIgnoreCase(type)) {
+        	if (ind) {
+        		return extraInquiryIndication(webPackage);
+        	} else {
+        		return extraCommonResponse(webPackage);
+        	}
+        }  else {
             return null;
         }
     }
@@ -525,5 +533,38 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setData(data);
         return packetBuilder.build();
     }
+    
+    private WebPackage.Packet serializeInquiryRequest(InquiryReqPacket p) {
+        WebPackage.Packet.Builder packetBuilder = WebPackage.Packet.newBuilder();
+        packetBuilder.setPacketType(WebPackage.Packet.type.iq);
+        packetBuilder.setId(String.valueOf(p.getId()));
+        packetBuilder.setMethod("gratuity");
+        packetBuilder.setOperateType("normal");
+
+        WebPackage.Gratuity.Builder bid = WebPackage.Gratuity.newBuilder();
+        bid.setAmount(p.award);
+        bid.setFromUserID((int)p.currentUserId);
+        if (p.type == InquiryReqPacket.TYPE_CANCEL) {
+        	bid.setAnswer(WebPackage.Gratuity.Answer.cancel);
+        }
+        
+        WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
+        data.addGratuity(bid);
+        
+        
+        return packetBuilder.build();
+    }
+    
+    
+    
+    private Packet extraInquiryIndication(WebPackage.Packet webPackage) {
+    	InquiryIndPacket lrp = new InquiryIndPacket();
+        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        long uid = webPackage.getData().getUserList().get(0).getId();
+		V2Log.i("====> get inquiry indiction : " + uid + "  type:  "
+				+ webPackage.getData().getGratuity(0).getAnswer().ordinal());
+        return lrp;
+    }
+    
     
 }
