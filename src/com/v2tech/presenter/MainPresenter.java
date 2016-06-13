@@ -139,7 +139,8 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 	// ///////////////////////////////////////
 	private Map<Live, Marker> cacheMarker;
-
+	
+	
 	// /////
 
 	public MainPresenter(Context context, MainPresenterUI ui) {
@@ -832,6 +833,7 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	// ///////////LiveStatusHandler///////////////////////////////////////////////////
 
 	public void handleNewLivePushlishment(Live l) {
+		V2Log.i("==== get new live -->" + l.getLid());
 		addLiveMarker(l);
 	}
 

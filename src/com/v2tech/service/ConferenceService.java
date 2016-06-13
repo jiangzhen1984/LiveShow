@@ -135,6 +135,7 @@ public class ConferenceService extends DeviceService {
 		DeamonWorker.getInstance().request(
 				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
 						LiveWatchingReqPacket.WATCHING), null));
+		V2Log.i("===  request join meeting  : "+  l.getLid());
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
 		ConfRequest.getInstance().ConfEnter(l.getLid());
