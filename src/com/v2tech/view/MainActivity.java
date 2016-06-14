@@ -1,5 +1,6 @@
 package com.v2tech.view;
 
+import v2av.VideoPlayer;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -545,6 +546,11 @@ public class MainActivity extends BaseActivity implements
 		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
 			mMapVideoLayout.removeWatcher(watcher);
 		}
+	}
+	
+	
+	public VideoPlayer getVideoPlayer() {
+		return mMapVideoLayout.getVideoPlayer();
 	}
 	
 	/////////////////////////////////////////////////////////////

@@ -141,6 +141,8 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	private Map<Live, Marker> cacheMarker;
 	
 	
+	private VideoPlayer  vpController;
+	
 	// /////
 
 	public MainPresenter(Context context, MainPresenterUI ui) {
@@ -240,6 +242,8 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 		public void addWatcher(int flag, Watcher watcher);
 		
 		public void removeWatcher(int flag, Watcher watcher);
+		
+		public VideoPlayer getVideoPlayer();
 	}
 
 	public void videoShareButtonClicked() {
@@ -1203,12 +1207,13 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 				return;
 			}
 			if (uid == this.currentLive.getPublisher().getmUserId()) {
-				VideoPlayer vp = new VideoPlayer();
-				vp.SetSurface(ui.getCurrentSurface().getHolder());
-				// TODO open chairman device
+				//TODO update
+				if (vpController == null) {
+					vpController = ui.getVideoPlayer();
+				}
 				UserDeviceConfig udc = new UserDeviceConfig(0,
 						this.currentLive.getLid(), currentLive.getPublisher()
-								.getmUserId(), ll.get(0).getDeviceID(), vp);
+								.getmUserId(), ll.get(0).getDeviceID(), vpController);
 				vs.requestOpenVideoDevice(
 						new ConferenceGroup(this.currentLive.getLid(), null,
 								null, null, null), udc, null);

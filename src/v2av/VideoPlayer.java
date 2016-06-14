@@ -7,6 +7,8 @@ import com.V2.jni.util.V2Log;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -124,9 +126,9 @@ public class VideoPlayer {
 		}
 		
 		restBitmap = screens[nextIndex];
-		
-		V2Log.i(videoSrcRect+" ===> "+ videoTarRect);
-		V2Log.i(restSrcRect+" ===> "+ restTarRect);
+		V2Log.i("cent :" + x);
+		V2Log.i("video :" + videoSrcRect+" ===> "+ videoTarRect);
+		V2Log.i("rest :" + restSrcRect+" ===> "+ restTarRect);
 		
 	}
 	
@@ -207,11 +209,14 @@ public class VideoPlayer {
 		}
 		
 		
+		Canvas c = null;
 		for (int i = 0; screens != null && i < screens.length; i++) {
 			if (screens[i] != null && !screens[i].isRecycled()) {
 				screens[i].recycle();
 			}
 			screens[i] = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			c = new Canvas(screens[i]);
+			drawFirstBlankFrame(c);
 		}
 
 		_playBuffer = ByteBuffer.allocateDirect(width * height * 4);
@@ -256,5 +261,21 @@ public class VideoPlayer {
 		canvas.restore();
 
 		mSurfaceH.unlockCanvasAndPost(canvas);
+	}
+	
+	
+	static int index = 1;
+	private void drawFirstBlankFrame(Canvas c) {
+		int width = c.getWidth();
+		int height = c.getHeight();
+		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+		Canvas tmp = new Canvas(bp);
+		tmp.drawColor(Color.argb(255, 0, 0, 0));
+		Paint p = new Paint();
+		p.setColor(Color.WHITE);
+		p.setTextSize(60);
+		tmp.drawText((index++) + "", width / 2, height / 2, p);
+		c.drawBitmap(bp, 0, 0, new Paint());
+		bp.recycle();
 	}
 }
