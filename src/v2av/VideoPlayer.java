@@ -11,9 +11,12 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-public class VideoPlayer implements SurfaceHolder.Callback {
-	public static int DisplayRotation = 0;
+import com.V2.jni.util.V2Log;
 
+public class VideoPlayer implements SurfaceHolder.Callback {
+
+	private static final boolean DEBUG = false;
+	
 	private SurfaceHolder mSurfaceH;
 	private Bitmap mBitmap;
 	private Rect rect;
@@ -133,6 +136,22 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 				videoRenderType = VideoRenderType.LEFT_CONTENT;
 				videoCanvas = new Canvas(content1Bitmap);
 			}
+		} else {
+			nextIndex = (currentIndex + len + 1) % len;
+			content1SrcRect.left = 0;
+			content1SrcRect.right = width;
+			content1TarRect.left = 0;
+			content1TarRect.right = width;
+			
+			content2SrcRect.left =  width;
+			content2SrcRect.right = width + width;
+			content2TarRect.left = 0;
+			content2TarRect.right = width;
+			if (videoRenderType != VideoRenderType.LEFT_CONTENT) {
+				videoRenderType = VideoRenderType.LEFT_CONTENT;
+				videoCanvas = new Canvas(content1Bitmap);
+			}
+			
 		}
 		content1Bitmap = screens[currentIndex];
 		content2Bitmap = screens[nextIndex];
@@ -141,10 +160,11 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 			currentIndex = nextIndex;
 			//TODO notify index changed
 		}
-//		
-//		V2Log.i("cent :" + x +"  curent Index:" + currentIndex+"  nextIndex:"+nextIndex);
-//		V2Log.i("video :" + content1SrcRect+" ===> "+ content1TarRect);
-//		V2Log.i("rest :" + content2SrcRect+" ===> "+ content2TarRect);
+		if (DEBUG) {
+			V2Log.i("cent :" + x +"  curent Index:" + currentIndex+"  nextIndex:"+nextIndex);
+			V2Log.i("video :" + content1SrcRect+" ===> "+ content1TarRect);
+			V2Log.i("rest :" + content2SrcRect+" ===> "+ content2TarRect);
+		}
 		if (!renderingVideo) {
 			postInvalidate();
 		}
@@ -152,9 +172,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	}
 	
 	public void finishTranslate() {
-//		Canvas c = new Canvas(restBitmap);
-//		Rect dst = new Rect(0, 0, restBitmap.getWidth(), restBitmap.getHeight());
-//		c.drawBitmap(mBitmap, null, dst, null);
+		translate(0F, 0F);
 	}
 	
 	public void setItemIndex(int idx) {
@@ -271,10 +289,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	 */
 	@SuppressWarnings("unused")
 	private void CreateBitmap(int width, int height) {
-		Log.i("jni", "call create bitmap " + width + " " + height);
+		Log.i("jni", "call create bitmap " + width + " " + height +"  mapping to "+ rect);
 		renderingVideo = true;
 		
-		videoBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		videoBitmap = Bitmap.createBitmap(width, height, Config.RGB_565);
 		
 		videoCanvas = new Canvas(content1Bitmap);
 		videoRenderType = VideoRenderType.LEFT_CONTENT; 

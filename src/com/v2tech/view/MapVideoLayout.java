@@ -608,7 +608,6 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 		} else if (mDragDir == DragDirection.HORIZONTAL) {
 			//mVideoShowPager.fakeDragBy(dx);
 			//TODO translate
-			V2Log.i("=== >  " + offsetX);
 			videoController.translate((float)offsetX /tsv.getMeasuredWidth(), 0);
 		}
 
@@ -754,7 +753,6 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 
 		@Override
 		public void run() {
-			//V2Log.i("distance===>" + distance +"   initVelocity:"+ initVelocity+"  offset:"+ offset);
 			if (distance > 0) {
 				if (distance - initVelocity < 0) {
 					initVelocity = distance;
