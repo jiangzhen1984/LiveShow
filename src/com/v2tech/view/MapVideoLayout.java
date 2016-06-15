@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import v2av.VideoPlayer;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.MotionEventCompat;
@@ -33,7 +32,6 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BountyMarkerWidget;
-import com.v2tech.widget.CircleViewPager;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout;
@@ -51,8 +49,7 @@ import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
-public class MapVideoLayout extends FrameLayout implements OnTouchListener,
-CircleViewPager.OnPageChangeListener, VideoControllerAPI{
+public class MapVideoLayout extends FrameLayout implements OnTouchListener, VideoControllerAPI{
 	
 	
 	private static final int ANIMATION_TYPE_IN = 1;
@@ -75,8 +72,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 
 	private VideoPlayer videoController;
 	private MapView mMapView;
-	//private CircleViewPager mVideoShowPager;
-	//private PagerAdapter mViewPagerAdapter;
 	private TouchSurfaceView tsv;
 	private MessageMarqueeLinearLayout mMsgLayout;
 	private RelativeLayout mDragLayout;
@@ -135,12 +130,12 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 //		mVideoShowPager.setOffscreenPageLimit(6);
 //		mVideoShowPager.setAdapter(mViewPagerAdapter);
 //		mVideoShowPager.setCurrentItem(2, false);
-		
+		videoController = new VideoPlayer(6);
 		tsv =  new TouchSurfaceView(getContext()); 
 		tsv.setZOrderOnTop(true);
 		tsv.setZOrderMediaOverlay(true);
 		tsv.getHolder().setFormat(PixelFormat.TRANSPARENT);
-		videoController = tsv.getPlayerController();
+		tsv.getHolder().addCallback(videoController);
 
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.compassEnabled(true);
@@ -230,49 +225,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	}
 	
 
-	@Override
-	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) {
-
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		if (DEBUG) {
-			V2Log.i(TAG, " change new position:" + position);
-		}
-		if (mVideoChangedListener != null) {
-//			mVideoChangedListener
-//					.onChanged((VideoShowFragment) mViewPagerAdapter
-//							.getItem(position));
-		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-		if (state == CircleViewPager.SCROLL_STATE_IDLE) {
-			pasuseCurrentVideo(false);
-		}
-	}
-	
-	public void onPagePreapredRemove(int item) {
-		//Can not remove last one
-//		if (mViewPagerAdapter.getCount() <= 1) {
-//			mVideoShowPager.requestLayout();
-//			return;
-//		}
-		//reset mOffsetTop for layout. because baidu map always request layout
-		mOffsetTop = 0;
-	//	mViewPagerAdapter.removeItem(item);
-	//	mViewPagerAdapter.notifyDataSetChanged();
-		
-//		//Notify parent to update item
-		if (mVideoChangedListener != null) {
-//			mVideoChangedListener
-//					.onChanged((VideoShowFragment) mViewPagerAdapter
-//							.getItem(mVideoShowPager.getCurrentItem()));
-		}
-	}
 
 	public void setPosInterface(LayoutPositionChangedListener posInterface) {
 		this.mPosInterface = posInterface;
@@ -391,29 +343,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		//mVideoShowPager.offsetTopAndBottom(offset);
 		requestLayout();
 	}
-
-	public void udpateCover(Bitmap bm) {
-		//TODO add cover
-	}
-
-	public void pauseDrawState(boolean flag) {
-		pasuseCurrentVideo(flag);
-		if (flag) {
-			mMapView.onPause();
-		} else {
-			mMapView.onResume();
-			bringChildToFront(mMapView);
-		}
-	}
-	
-	
-	
-	public void pasuseCurrentVideo(boolean flag) {
-
-	}
-	
-	
-	
 	
 	public void updateRendNum(int num) {
 		liveInformationLayout.updateRecommands(num+"");
@@ -563,7 +492,7 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	public VideoPlayer getVideoPlayer() {
-		return tsv.getPlayerController();
+		return videoController;
 	}
 	
 	
@@ -594,7 +523,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	
 	private void doTouchDown(MotionEvent ev) {
-		mMapView.onPause();
 		layoutOffsetY = 0;
 		removedOffset = 0;
 		mOffsetTop = 0;
@@ -607,7 +535,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		mLastX = mInitX;
 		mLastY = mInitY;
 		
-		pasuseCurrentVideo(true);
 		videoController.startTranslate();
 	}
 	
@@ -725,19 +652,16 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 				}
 			} else if (mDragDir == DragDirection.HORIZONTAL) {
 				//mVideoShowPager.endFakeDrag();
-				float cent = (float)mAbsDisX /tsv.getMeasuredWidth();
-				new FlyingX().startFlying(cent, Math.abs(mAbsDisX));
+				new FlyingX().startFlying(mAbsDisX, tsv.getMeasuredWidth());
 				
 				
 			} else {
-				pasuseCurrentVideo(false);
 			}
         }
 		
 		mDragDir = DragDirection.NONE;
 		
 		mVelocityTracker.clear();
-		mMapView.onResume();
 		
 	}
 	
@@ -801,35 +725,52 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 	
 	class FlyingX implements Runnable {
 
-		int initVelocity;
-		int distance;
+		int initVelocity = 95;
+		int distance = 0;
 		float cent;
+		int type = 1;
+		float offset;
+		float limition;
 
-		public void startFlying(float cent, int offset) {
-			this.cent = cent;
+		public void startFlying(int offset, int limition) {
+			this.offset = offset;
+			this.limition = limition;
+			this.cent = (float)offset / (float)limition;
 			if (this.cent > 0.2F) {
-				distance = tsv.getMeasuredWidth() - offset;
-				initVelocity = -95;
+				type = 2;
+				distance = Math.abs(tsv.getMeasuredWidth() - offset);
+			} else if(cent > 0.0F &&  cent < 0.2F) {
+				distance = offset;
+				type = 1;
 			} else if (this.cent < - 0.2F) {
-				distance = tsv.getMeasuredWidth() - offset;
-				initVelocity = 95;
+				type = 1;
+				distance =  tsv.getMeasuredWidth() + offset;
+			} else if (this.cent > - 0.2F && this.cent < 0.0F) {
+				type = 2;
+				distance =  -offset;
 			}
 			postOnAnimation(this);
 		}
 
 		@Override
 		public void run() {
+			//V2Log.i("distance===>" + distance +"   initVelocity:"+ initVelocity+"  offset:"+ offset);
 			if (distance > 0) {
 				if (distance - initVelocity < 0) {
 					initVelocity = distance;
 				}
+				
+				if (type == 1) {
+						offset -= initVelocity;
+				} else {
+						offset += initVelocity;
+				}
 
 				videoController.translate(
-						(float) distance / (float) tsv.getMeasuredWidth(), 0F);
+						 offset / limition, 0F);
 				distance -= initVelocity;
 
 				postOnAnimationDelayed(this, 15);
-			} else if (distance < 0) {
 			} else {
 				videoController.finishTranslate();
 			}
@@ -847,15 +788,6 @@ CircleViewPager.OnPageChangeListener, VideoControllerAPI{
 		
 		int realTop = top + mOffsetTop  + layoutOffsetY;
 		int bottomChildTop = realTop + tsv.getMeasuredHeight();
-//		int bottomChildTop = realTop + mVideoShowPager.getMeasuredHeight();
-//		mVideoShowPager.layout(left, realTop, right, bottomChildTop);
-//		
-//		if (DEBUG) {
-//			V2Log.d(TAG, "changed:" + changed + "  bottom:" + bottom + "  "
-//					+ mVideoShowPager.getMeasuredHeight() + "  "
-//					+ mVideoShowPager.getMeasuredWidth() + "  realTop:" + realTop
-//					+ "   realBottom:" + bottomChildTop +"  layoutOffsetY:"+layoutOffsetY);
-//		}
 
 		tsv.layout(left, realTop, right, bottomChildTop);
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();

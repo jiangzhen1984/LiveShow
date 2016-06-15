@@ -2,8 +2,6 @@ package v2av;
 
 import java.nio.ByteBuffer;
 
-import com.V2.jni.util.V2Log;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -13,27 +11,34 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-public class VideoPlayer {
+public class VideoPlayer implements SurfaceHolder.Callback {
 	public static int DisplayRotation = 0;
 
 	private SurfaceHolder mSurfaceH;
 	private Bitmap mBitmap;
-	
-	private Bitmap mVideoBitmap;
-	private Rect videoSrcRect;
-	private Rect videoTarRect;
-	
-	private Bitmap restBitmap;
-	private Rect restSrcRect;
-	private Rect restTarRect;
-	private boolean needDrawRest;
-	
-	private Canvas rootCanvas;
 	private Rect rect;
 	
 	
+	private Bitmap videoBitmap;
+	private Bitmap content1Bitmap;
+	private Bitmap content2Bitmap;
+	
+	
+	private Rect content1SrcRect;
+	private Rect content1TarRect;
+	
+	
+	private Rect content2SrcRect;
+	private Rect content2TarRect;
+	
+	private Canvas rootCanvas;
+	private Canvas videoCanvas;
+	private VideoRenderType videoRenderType = VideoRenderType.LEFT_CONTENT;
+	
 	private Bitmap[] screens;
 	private int currentIndex;
+	
+	boolean renderingVideo;
 
 	
 	// private int mDisplayMode = 0; //0,1,2
@@ -79,16 +84,13 @@ public class VideoPlayer {
 		
 		mSurfaceH = null;
 		mBitmap = null;
-		mVideoBitmap = null;
 		rootCanvas = null;
 		mIsSuspended = true;
-		restBitmap = null;
 		screens = null;
 	}
 
 	
 	public void startTranslate() {
-		needDrawRest = true;
 	}
 	
 	/**
@@ -97,53 +99,139 @@ public class VideoPlayer {
 	 * @param y
 	 */
 	public void translate(float x, float y) {
-		int width = mVideoBitmap.getWidth();
-		int distance =(int)( Math.abs(x) * mVideoBitmap.getWidth());
+		int width = mBitmap.getWidth();
+		int distance =(int)( Math.abs(x) * mBitmap.getWidth());
 		int len = screens.length;
 		int nextIndex = 0;
 		if (x > 0) {
 			nextIndex = (currentIndex + len - 1) % len;
-			restSrcRect.left = width - distance;
-			restSrcRect.right = width;
-			restTarRect.left = 0;
-			restTarRect.right = distance;
+			content2SrcRect.left = width - distance;
+			content2SrcRect.right = width;
+			content2TarRect.left = 0;
+			content2TarRect.right = distance;
 			
-			videoSrcRect.left = 0;
-			videoSrcRect.right = width - distance;
-			videoTarRect.left = distance;
-			videoTarRect.right = width;
+			content1SrcRect.left = 0;
+			content1SrcRect.right = width - distance;
+			content1TarRect.left = distance;
+			content1TarRect.right = width;
+			if (videoRenderType != VideoRenderType.RIGHT_CONTENT) {
+				videoRenderType = VideoRenderType.RIGHT_CONTENT;
+				videoCanvas = new Canvas(content2Bitmap);
+			}
 		} else if (x < 0) {
 			nextIndex = (currentIndex + len + 1) % len;
-			restSrcRect.left =  0;
-			restSrcRect.right = distance;
-			restTarRect.left = width - distance;
-			restTarRect.right = width;
+			content2SrcRect.left =  0;
+			content2SrcRect.right = distance;
+			content2TarRect.left = width - distance;
+			content2TarRect.right = width;
 			
-			videoSrcRect.left = distance;
-			videoSrcRect.right = width;
-			videoTarRect.left = 0;
-			videoTarRect.right = width - distance;
+			content1SrcRect.left = distance;
+			content1SrcRect.right = width;
+			content1TarRect.left = 0;
+			content1TarRect.right = width - distance;
+			if (videoRenderType != VideoRenderType.LEFT_CONTENT) {
+				videoRenderType = VideoRenderType.LEFT_CONTENT;
+				videoCanvas = new Canvas(content1Bitmap);
+			}
 		}
+		content1Bitmap = screens[currentIndex];
+		content2Bitmap = screens[nextIndex];
 		
-		restBitmap = screens[nextIndex];
-		V2Log.i("cent :" + x);
-		V2Log.i("video :" + videoSrcRect+" ===> "+ videoTarRect);
-		V2Log.i("rest :" + restSrcRect+" ===> "+ restTarRect);
+		if (x == 1.0F || x == -1.0F) {
+			currentIndex = nextIndex;
+			//TODO notify index changed
+		}
+//		
+//		V2Log.i("cent :" + x +"  curent Index:" + currentIndex+"  nextIndex:"+nextIndex);
+//		V2Log.i("video :" + content1SrcRect+" ===> "+ content1TarRect);
+//		V2Log.i("rest :" + content2SrcRect+" ===> "+ content2TarRect);
+		if (!renderingVideo) {
+			postInvalidate();
+		}
 		
 	}
 	
 	public void finishTranslate() {
-		needDrawRest = false;
-		Canvas c = new Canvas(restBitmap);
-		Rect dst = new Rect(0, 0, restBitmap.getWidth(), restBitmap.getHeight());
-		c.drawBitmap(mVideoBitmap, null, dst, null);
+//		Canvas c = new Canvas(restBitmap);
+//		Rect dst = new Rect(0, 0, restBitmap.getWidth(), restBitmap.getHeight());
+//		c.drawBitmap(mBitmap, null, dst, null);
 	}
 	
 	public void setItemIndex(int idx) {
 		if (idx < 0  || idx >= screens.length) {
 			throw new IndexOutOfBoundsException(" idx :" + idx);
 		}
+		int width = mBitmap.getWidth();
 		currentIndex = idx;
+		int len = screens.length;
+		int nextIndex = (currentIndex + len + 1) % len;
+		
+		content1SrcRect.left = 0;
+		content1SrcRect.right = width;
+		content1TarRect.left = 0;
+		content1TarRect.right = width;
+		
+		content2SrcRect.left =  0;
+		content2SrcRect.right = width;
+		content2TarRect.left = width ;
+		content2TarRect.right = width + width;
+		
+		
+		content1Bitmap = screens[currentIndex];
+		content2Bitmap = screens[nextIndex];
+		postInvalidate();
+	}
+
+	
+	
+	
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		Canvas hc = holder.lockCanvas();
+		int width = hc.getWidth();
+		int height = hc.getHeight();
+		holder.unlockCanvasAndPost(hc);
+		
+		Canvas c = null;
+		for (int i = 0; screens != null && i < screens.length; i++) {
+			if (screens[i] != null && !screens[i].isRecycled()) {
+				screens[i].recycle();
+			}
+			screens[i] = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			c = new Canvas(screens[i]);
+			drawFirstBlankFrame(c, i +1);
+		}
+		
+		mSurfaceH = holder;
+		
+		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		rootCanvas = new Canvas(mBitmap);
+		
+
+		rect = new Rect(0, 0, width, height);
+		
+		content1SrcRect = new Rect(0, 0, width, height);
+		content1TarRect = new Rect(0, 0, width, height);
+		content2SrcRect = new Rect(0, 0, width, height);
+		content2TarRect = new Rect(0, 0, width, height);
+		setItemIndex(0);
+		
+	}
+
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
@@ -157,20 +245,18 @@ public class VideoPlayer {
 
 	@SuppressWarnings("unused")
 	private void DestroyBitmap() {
+		renderingVideo = false;
 		Log.w("V2TECH", "JNI destroy bitmap");
+		if (videoBitmap != null && !videoBitmap.isRecycled()) {
+			videoBitmap.recycle();
+		}
+		videoBitmap = null;
+		videoCanvas = null;
 	}
 	
 	private void recycleBitmap() {
 		if (mBitmap != null && !mBitmap.isRecycled()) {
 			mBitmap.recycle();
-		}
-		
-		if (mVideoBitmap != null) {
-			mVideoBitmap.recycle();
-		}
-		
-		if (restBitmap != null) {
-			restBitmap.recycle();
 		}
 
 		for (int i = 0; screens != null && i < screens.length; i++) {
@@ -186,37 +272,18 @@ public class VideoPlayer {
 	@SuppressWarnings("unused")
 	private void CreateBitmap(int width, int height) {
 		Log.i("jni", "call create bitmap " + width + " " + height);
-		recycleBitmap();
-
-		// mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		mVideoBitmap = Bitmap.createBitmap(width, height, Config.RGB_565);
-		restBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		renderingVideo = true;
 		
-		videoSrcRect = new Rect(0, 0, width, height);
-		videoTarRect = new Rect(0, 0, width, height);
-		restSrcRect = new Rect(0, 0, width, height);
-		restTarRect = new Rect(0, 0, width, height);
+		videoBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		
-		
-		rootCanvas = new Canvas(mBitmap);
+		videoCanvas = new Canvas(content1Bitmap);
+		videoRenderType = VideoRenderType.LEFT_CONTENT; 
 		mClearCanvas = 0;
 
 		Canvas canvas = mSurfaceH.lockCanvas();
 		if (canvas != null) {
 			SetViewSize(canvas.getWidth(), canvas.getHeight());
 			mSurfaceH.unlockCanvasAndPost(canvas);
-		}
-		
-		
-		Canvas c = null;
-		for (int i = 0; screens != null && i < screens.length; i++) {
-			if (screens[i] != null && !screens[i].isRecycled()) {
-				screens[i].recycle();
-			}
-			screens[i] = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-			c = new Canvas(screens[i]);
-			drawFirstBlankFrame(c);
 		}
 
 		_playBuffer = ByteBuffer.allocateDirect(width * height * 4);
@@ -234,9 +301,17 @@ public class VideoPlayer {
 		if (this.mIsSuspended) {
 			return;
 		}
-		mVideoBitmap.copyPixelsFromBuffer(_playBuffer);
+		videoBitmap.copyPixelsFromBuffer(_playBuffer);
 		_playBuffer.rewind();
-
+		
+		videoCanvas.drawBitmap(videoBitmap, null, rect, null);
+		
+		postInvalidate();
+		
+	}
+	
+	
+	private void postInvalidate() {
 		Canvas canvas = mSurfaceH.lockCanvas();
 		if (canvas == null) {
 			return;
@@ -247,25 +322,15 @@ public class VideoPlayer {
 			++mClearCanvas;
 		}
 		
-		if (rect == null) {
-			rect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-		}
+		rootCanvas.drawBitmap(content1Bitmap, content1SrcRect, content1TarRect, null);
+		rootCanvas.drawBitmap(content2Bitmap, content2SrcRect, content2TarRect, null);
 		
-		rootCanvas.drawBitmap(mVideoBitmap, videoSrcRect, videoTarRect, null);
-		if (needDrawRest) {
-			rootCanvas.drawBitmap(restBitmap, restSrcRect, restTarRect, null);
-		}
-		
-		canvas.save();
 		canvas.drawBitmap(mBitmap, null, rect, null);
-		canvas.restore();
-
 		mSurfaceH.unlockCanvasAndPost(canvas);
 	}
 	
 	
-	static int index = 1;
-	private void drawFirstBlankFrame(Canvas c) {
+	private void drawFirstBlankFrame(Canvas c, int index) {
 		int width = c.getWidth();
 		int height = c.getHeight();
 		Bitmap bp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
@@ -274,8 +339,14 @@ public class VideoPlayer {
 		Paint p = new Paint();
 		p.setColor(Color.WHITE);
 		p.setTextSize(60);
-		tmp.drawText((index++) + "", width / 2, height / 2, p);
+		tmp.drawText((index) + "", width / 2, height / 2, p);
 		c.drawBitmap(bp, 0, 0, new Paint());
 		bp.recycle();
+	}
+	
+	
+	enum VideoRenderType{
+		LEFT_CONTENT,
+		RIGHT_CONTENT;
 	}
 }
