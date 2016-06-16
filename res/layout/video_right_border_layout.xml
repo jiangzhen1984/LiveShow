@@ -4,20 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/video_close_btn"
+    <LinearLayout
+         android:id="@+id/video_close_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-         android:layout_gravity="center"
-        android:src="@drawable/close_video_btn_selector" />
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".2"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/close_video_btn_selector" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/video_right_border_rd_ly"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_weight=".2"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <TextView
@@ -39,11 +48,12 @@
     </LinearLayout>
 
     <LinearLayout
-         android:id="@+id/video_right_border_tips_ly"
+        android:id="@+id/video_right_border_tips_ly"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/video_right_border_recommandation_button_margin_top"
+        android:layout_weight=".2"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <TextView
@@ -67,9 +77,10 @@
     <LinearLayout
         android:id="@+id/video_right_border_share_ly"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/video_right_border_recommandation_button_margin_top"
+        android:layout_weight=".2"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <ImageView
@@ -77,6 +88,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/video_share_up" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/video_right_border_full_screen_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".2"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/video_full_screen_btn" />
     </LinearLayout>
 
 </com.v2tech.widget.LiveInformationLayout>

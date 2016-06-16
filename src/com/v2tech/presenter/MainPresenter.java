@@ -63,14 +63,12 @@ import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
-import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
 
 MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 		BottomButtonLayoutListener,
-		MapVideoLayout.OnVideoFragmentChangedListener,
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
@@ -178,15 +176,11 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 		public SurfaceView getCameraSurfaceView();
 
-		public SurfaceView getCurrentSurface();
-
 		public SurfaceView getP2PMainSurface();
 
 		public SurfaceView getP2PMainWatherSurface();
 
 		public void showBottomLayout(boolean flag);
-
-		public void resizeCameraSurfaceSize();
 
 		public void showError(int flag);
 
@@ -447,7 +441,6 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	public void onDrag() {
 		if (!cameraSurfaceViewMeasure) {
 			cameraSurfaceViewMeasure = true;
-			ui.resizeCameraSurfaceSize();
 		}
 		if (!isState(LOCAL_CAMERA_OPENING)) {
 
@@ -570,37 +563,6 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 	// //////////////////VideoWatcherListLayoutListener
 
-	// ///////////OnVideoFragmentChangedListener
-
-	@Override
-	public void onChanged(VideoShowFragment videoFrag) {
-		if (currentLive != null) {
-			vs.requestExitConference(currentLive, null);
-			currentLive = null;
-		}
-
-		unsetState(WATCHING_FLAG);
-		// TODO reset status
-
-		// TODO update show new live
-		Live l = (Live) videoFrag.getTag1();
-		if (l == null) {
-			// TODO request new one
-
-			// TODO update tag;
-
-			// TODO update screen
-		} else {
-			// join new one
-			vs.requestEnterConference(l, new MessageListener(h,
-					WATCHING_REQUEST_CALLBACK, null));
-			currentLive = l;
-			updateLiveScreen(l);
-		}
-
-	}
-
-	// ///////////OnVideoFragmentChangedListener
 
 	// ///////////RequestConnectLayoutListener
 	@Override
@@ -997,21 +959,6 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 	
 	
 ///////////LiveWathcingHandler///////////////////////////////////////////////////
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 

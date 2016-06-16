@@ -34,14 +34,7 @@
             android:textColor="@color/video_layout_bottom_text_color" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/video_layout_bottom_layout_margin_right"
-        android:src="@drawable/video_full_screen_btn" />
+
 
     <HorizontalScrollView
         android:id="@+id/video_ly_btm_watcher_lineryout"

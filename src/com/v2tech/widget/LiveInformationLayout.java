@@ -3,7 +3,6 @@ package com.v2tech.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,8 +10,7 @@ import com.v2tech.v2liveshow.R;
 
 public class LiveInformationLayout extends LinearLayout {
 
-	private ImageView videoCloseBtn;
-
+	private View videoCloseBtn;
 	private TextView recommandCountTV;
 	private TextView tipsCountTV;
 	private View tipsBtn;
@@ -39,7 +37,7 @@ public class LiveInformationLayout extends LinearLayout {
 		super.addView(child, index, params);
 		int id = child.getId();
 		if (id == R.id.video_close_btn) {
-			videoCloseBtn = (ImageView) child;
+			videoCloseBtn = child;
 			videoCloseBtn.setOnClickListener(clickListener);
 		} else if (id == R.id.video_right_border_rd_ly) {
 			recommandCountTV = (TextView) child

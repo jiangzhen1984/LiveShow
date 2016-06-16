@@ -29,7 +29,7 @@ public class MainActivity extends BaseActivity implements
 
 	// private BottomButtonLayout mBottomButtonLayout;
 	private FrameLayout mMainLayout;
-	private VideoShareLayout videoShareLayout;
+	//private VideoShareLayout videoShareLayout;
 	private MapVideoLayout mMapVideoLayout;
 	private BottomButtonLayout bottomButtonLayout;
 
@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity implements
 
 
 		initMapviewLayout();
-		initVideoShareLayout();
+		//initVideoShareLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
 		initResetOrder();
@@ -68,7 +68,6 @@ public class MainActivity extends BaseActivity implements
 		mMapVideoLayout = new MapVideoLayout(this);
 
 		mMapVideoLayout.setPosInterface(presenter);
-		mMapVideoLayout.setVideoChangedListener(presenter);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
@@ -98,16 +97,16 @@ public class MainActivity extends BaseActivity implements
 
 	
 	
-	private void initVideoShareLayout() {
-		
-		videoShareLayout = (VideoShareLayout)findViewById(R.id.video_share_ly);
-		videoShareLayout.setVideoShareBtnLayoutListener(presenter);
-		videoShareLayout.setRequestConnectLayoutListener(presenter);
-		videoShareLayout.setP2PVideoMainLayoutListener(presenter);
-		videoShareLayout.setP2PAudioLiverLayoutListener(presenter);
-		videoShareLayout.setMessageMarqueeLayoutListener(presenter);
-		
-	}
+//	private void initVideoShareLayout() {
+//		
+//		videoShareLayout = (VideoShareLayout)findViewById(R.id.video_share_ly);
+//		videoShareLayout.setVideoShareBtnLayoutListener(presenter);
+//		videoShareLayout.setRequestConnectLayoutListener(presenter);
+//		videoShareLayout.setP2PVideoMainLayoutListener(presenter);
+//		videoShareLayout.setP2PAudioLiverLayoutListener(presenter);
+//		videoShareLayout.setMessageMarqueeLayoutListener(presenter);
+//		
+//	}
 	
 	
 	private void initResetOrder() {
@@ -269,11 +268,11 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public void updateVideShareButtonText(boolean publish) {
-		if (publish) {
-			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
-		} else {
-			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_share_button_bg);
-		}
+//		if (publish) {
+//			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
+//		} else {
+//			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_share_button_bg);
+//		}
 	}
 
 	
@@ -282,14 +281,15 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public void videoShareLayoutFlyout() {
-		mMapVideoLayout.requestUpFlying();
+		//mMapVideoLayout.requestUpFlying();
 	}
 
 
 	
 	@Override
 	public SurfaceView getCameraSurfaceView() {
-		return videoShareLayout.getLocalCameraView();
+		//return videoShareLayout.getLocalCameraView();
+		return null;
 	}
 
 	
@@ -301,27 +301,6 @@ public class MainActivity extends BaseActivity implements
 	}
 
 	
-
-
-
-	@Override
-	public void resizeCameraSurfaceSize() {
-//		int width = localSurfaceView.getWidth();
-//		int height = localSurfaceView.getHeight();
-//		int r = width % 16;
-//		MarginLayoutParams lp = (MarginLayoutParams)localSurfaceView.getLayoutParams();
-//		if (r > 0) {
-//			lp.leftMargin = r /2;
-//			lp.rightMargin = r /2;
-//		}
-//		
-//		r = height % 9;
-//		if (r > 0) {
-//			lp.topMargin = r;
-//		}
-//		localSurfaceView.setLayoutParams(lp);
-	}
-
 	
 	@Override
 	public void showError(int flag) {
@@ -352,14 +331,6 @@ public class MainActivity extends BaseActivity implements
 	
 
 
-
-	@Override
-	public SurfaceView getCurrentSurface() {
-		return (SurfaceView)mMapVideoLayout.getCurrentVideoController().getVideoView();
-	}
-	
-	
-
 	@Override
 	public void showDebugMsg(final String msg) {
 		this.runOnUiThread(new Runnable() {
@@ -374,17 +345,13 @@ public class MainActivity extends BaseActivity implements
 	}
 	
 	
-//	public void setCurrentLive(Live l) {
-//		mMapVideoLayout.getCurrentVideoFragment().setTag1(l);
-//	}
-	
 	
 	public void queuedWatchingMessage(CharSequence msg) {
 		mMapVideoLayout.addNewMessage(msg);
 	}
 	
 	public void queuedPublisingMessage(CharSequence msg) {
-		videoShareLayout.addNewMessage(msg);
+		//videoShareLayout.addNewMessage(msg);
 	}
 	
 	public void updateBalanceSum(final float num) {
@@ -414,37 +381,37 @@ public class MainActivity extends BaseActivity implements
 	
 	public void showMarqueeMessage(boolean flag) {
 		mMapVideoLayout.showMarqueeMessage(flag);
-		videoShareLayout.showMarqueeMessage(flag);
+		//videoShareLayout.showMarqueeMessage(flag);
 	}
 	
 	
 	public void updateConnectLayoutBtnType(int type) {
-		if (type ==1) {
-			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
-			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.audio_call_accept_btn);
-		} else {
-			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.video_call_decline_btn);
-			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.video_call_accept_btn);
-		}
+//		if (type ==1) {
+//			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
+//			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.audio_call_accept_btn);
+//		} else {
+//			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.video_call_decline_btn);
+//			videoShareLayout.getConnectionRequestLayout().updateRightBtnIcon(R.drawable.video_call_accept_btn);
+//		}
 	}
 	
 	
 	public void showConnectRequestLayout(boolean flag) {
-		videoShareLayout.showRequestConnectionLayout(flag);
+	//	videoShareLayout.showRequestConnectionLayout(flag);
 	}
 	
 	
 	public void showP2PLiverLayout(boolean flag) {
-		videoShareLayout.showP2PLiverLayout(flag);
+		//videoShareLayout.showP2PLiverLayout(flag);
 	}
 	
 	
 	public void mapVideoLayoutFlyingIn() {
-		mMapVideoLayout.requestUpFlying();
+		//mMapVideoLayout.requestUpFlying();
 	}
 	
 	public void updateVideoLayoutOffset(int dy) {
-		mMapVideoLayout.updateOffset(dy);
+	//	mMapVideoLayout.updateOffset(dy);
 	}
 	
 
@@ -455,24 +422,20 @@ public class MainActivity extends BaseActivity implements
 	
 	@Override
 	public void showP2PVideoLayout(boolean flag) {
-		videoShareLayout.showP2PVideoLayout(flag);
+	//	videoShareLayout.showP2PVideoLayout(flag);
 		
 	}
 	
 	
 	public SurfaceView  getP2PMainSurface() {
-		return videoShareLayout.getP2PMainSurface();
+		//return videoShareLayout.getP2PMainSurface();
+		return null;
 	}
-
-
 
 
 	public void showVideoshareBtnLayout(boolean flag) {
-		videoShareLayout.showVideoShareBtnLy(flag);
+		//videoShareLayout.showVideoShareBtnLy(flag);
 	}
-
-
-
 
 
 	@Override
@@ -523,7 +486,8 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	public MapAPI getWatcherMapInstance() {
-		return this.videoShareLayout.getWatcherMapInstance();
+		//return this.videoShareLayout.getWatcherMapInstance();
+		return null;
 	}
 	
 	//FIXME close BTN
@@ -533,19 +497,19 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	public void addWatcher(int flag, Watcher watcher) {
-		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
-			videoShareLayout.addWatcher(watcher);
-		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
-			mMapVideoLayout.addWatcher(watcher);
-		}
+//		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
+//			videoShareLayout.addWatcher(watcher);
+//		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
+//			mMapVideoLayout.addWatcher(watcher);
+//		}
 	}
 	
 	public void removeWatcher(int flag, Watcher watcher) {
-		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
-			videoShareLayout.removeWatcher(watcher);
-		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
-			mMapVideoLayout.removeWatcher(watcher);
-		}
+//		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
+//			videoShareLayout.removeWatcher(watcher);
+//		} else if (flag == MainPresenter.WATCHER_FLAG_WATCHER) {
+//			mMapVideoLayout.removeWatcher(watcher);
+//		}
 	}
 	
 	

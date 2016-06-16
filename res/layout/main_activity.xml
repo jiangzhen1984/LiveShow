@@ -11,13 +11,6 @@
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
 
-    <include
-        android:id="@+id/video_share_ly"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/title_bar_ly"
-        layout="@layout/video_share_layout" />
-
     <FrameLayout
         android:id="@+id/main"
         android:layout_width="match_parent"

@@ -1,6 +1,5 @@
 package com.v2tech.frag;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
@@ -169,10 +168,6 @@ public class NavigationDrawerFragment extends Fragment {
 
 
 
-
-	private ActionBar getActionBar() {
-		return getActivity().getActionBar();
-	}
 
 	/**
 	 * Callbacks interface that all activities using this fragment must

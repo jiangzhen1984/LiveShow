@@ -14,7 +14,7 @@ import android.view.SurfaceHolder;
 
 //import v2av.VideoRecordInfo.CameraID;
 
-public class VideoRecorder {
+public class VideoRecorder  implements SurfaceHolder.Callback {
 	public static SurfaceHolder VideoPreviewSurfaceHolder = null;
 	public static int DisplayRotation = 0;
 	public static int CodecType = 0;
@@ -50,7 +50,6 @@ public class VideoRecorder {
 	@SuppressWarnings("unused")
 	private int StartRecordVideo() {
 
-		Log.i("DEBUG", "===============================");
 		if (mCapDevInfo == null) {
 			return -1;
 		}
@@ -434,4 +433,24 @@ public class VideoRecorder {
 
 		mEncoder = null;
 	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+		
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		
+	}
+	
+	
+	
+	
 }

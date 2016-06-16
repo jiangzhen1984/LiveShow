@@ -1,25 +1,19 @@
 package com.v2tech.view;
 
-import java.util.ArrayList;
-
 import v2av.VideoPlayer;
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
-import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMapOptions;
@@ -28,6 +22,7 @@ import com.v2tech.map.MapAPI;
 import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.video.VideoController;
+import com.v2tech.video.VideoShareSufaceViewCallback;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.Watcher;
@@ -45,12 +40,14 @@ import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.TouchSurfaceView;
+import com.v2tech.widget.VideoShareBtnLayout;
 import com.v2tech.widget.VideoShowFragment;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
-public class MapVideoLayout extends FrameLayout implements OnTouchListener, VideoControllerAPI{
+public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	
+	private static int VIDEO_SURFACE_HEIGHT = 684;
 	
 	private static final int ANIMATION_TYPE_IN = 1;
 	private static final int ANIMATION_TYPE_OUT = 2;
@@ -63,18 +60,17 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	private static final boolean DEBUG = true;
 	private static final String TAG = "MapVideoLayout";
 	
-	private int mMaximumFlingVelocity;
-	private int mDefaultVelocity = 40;
 	private int mTouchSlop;
-	private int mCameraShapeSLop;
 	private int mTouchTapTimeout;
 	
 
 	private VideoPlayer videoController;
+	
 	private MapView mMapView;
 	private TouchSurfaceView tsv;
+	private TouchSurfaceView shareSurfaceView;
+	private VideoShareBtnLayout videoShareBtnLayout;
 	private MessageMarqueeLinearLayout mMsgLayout;
-	private RelativeLayout mDragLayout;
 	private LiverInteractionLayout lierInteractionLayout;
 	private RequestConnectLayout   requestConnectLayout;
 	private P2PVideoMainLayout p2pVideoLayout;
@@ -85,25 +81,13 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	private BountyMarkerWidget bountyMarker;
 	
 	private LayoutPositionChangedListener mPosInterface;
-	private VelocityTracker mVelocityTracker;
 	
-	//calculate sum when user move down circle view pager
-	private int mOffsetTop;
 	
-	//calculate sum when user move up circle view pager
-	private int removedOffset = 0;
-	private DragDirection mDragDir = DragDirection.NONE;
-	private DragType mDragType = DragType.NONE;
-	private boolean fireFlyingdown = false;
-	
-	private OnVideoFragmentChangedListener mVideoChangedListener;
-
-	
+	private ScreenType st = ScreenType.VIDEO_MAP;
+	private PostState ps = PostState.IDLE;
+	private Flying fly = new Flying();
 
 
-	private final ArrayList<View> mMatchParentChildren = new ArrayList<View>(1);
-	private boolean mMeasureAllChildren = false;
-	
 	public MapVideoLayout(Context context) {
 		super(context);
 		init();
@@ -120,22 +104,15 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	}
 
 	private void init() {
-		// setOnTouchListener(this);
-//		mVideoShowPager = new CircleViewPager(getContext());
-//		mVideoShowPager.setId(0x10000001);
-//		mVideoShowPager.setOnPageChangeListener(this);
-//		mViewPagerAdapter = new SurfaceViewAdapter(
-//				getContext(),
-//				6);
-//		mVideoShowPager.setOffscreenPageLimit(6);
-//		mVideoShowPager.setAdapter(mViewPagerAdapter);
-//		mVideoShowPager.setCurrentItem(2, false);
 		videoController = new VideoPlayer(6);
 		tsv =  new TouchSurfaceView(getContext()); 
 		tsv.setZOrderOnTop(true);
 		tsv.setZOrderMediaOverlay(true);
 		tsv.getHolder().setFormat(PixelFormat.TRANSPARENT);
 		tsv.getHolder().addCallback(videoController);
+		
+		shareSurfaceView = new TouchSurfaceView(getContext()); 
+		shareSurfaceView.getHolder().addCallback(new VideoShareSufaceViewCallback());
 
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.compassEnabled(true);
@@ -143,13 +120,10 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 		mapOptions.zoomControlsEnabled(false);
 		mapOptions.rotateGesturesEnabled(true);
 		mMapView = new MapView(getContext(), mapOptions);
-//
 		
 		mMsgLayout = (MessageMarqueeLinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.message_marquee_layout, (ViewGroup)null);
+		videoShareBtnLayout = (VideoShareBtnLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_share_btn_layout, (ViewGroup)null);
 		
-		
-		mDragLayout = new RelativeLayout(getContext());
-		mDragLayout.setOnTouchListener(this);
 		
 		lierInteractionLayout = (LiverInteractionLayout)LayoutInflater.from(getContext()).inflate(R.layout.liver_interaction_layout, (ViewGroup)null);
 		lierInteractionLayout.showInnerBox(false);
@@ -171,26 +145,27 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 		
 		bountyMarker = (BountyMarkerWidget)LayoutInflater.from(getContext()).inflate(R.layout.bounty_marker_layout, (ViewGroup)null);
 		
-		this.addView(tsv, -1, generateDefaultLayoutParams());
-		this.addView(mDragLayout, -1, generateDefaultLayoutParams());
+		this.addView(shareSurfaceView, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
+		this.addView(videoShareBtnLayout, -1, generateDefaultLayoutParams());
+		
+		this.addView(tsv, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
 		this.addView(mMapView, -1, generateDefaultLayoutParams());
 		this.addView(lierInteractionLayout, -1, generateDefaultLayoutParams());
 		this.addView(p2pVideoLayout, -1, generateDefaultLayoutParams());
 		this.addView(p2pAudioWatcherLayout, -1, generateDefaultLayoutParams());
+		
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 10;
 		this.addView(mMsgLayout, -1, lp);
-		this.addView(liveInformationLayout, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+		this.addView(liveInformationLayout, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, VIDEO_SURFACE_HEIGHT ));
 		this.addView(liveWatcherLayout, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(requestConnectLayout, -1, generateDefaultLayoutParams());
 		this.addView(bountyMarker, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
-		mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mTouchTapTimeout = ViewConfiguration.getTapTimeout();
-		mCameraShapeSLop = mTouchSlop * 3;
 	}
 	
 	
@@ -230,11 +205,6 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 		this.mPosInterface = posInterface;
 	}
 
-	public void setVideoChangedListener(
-			OnVideoFragmentChangedListener videoChangedListener) {
-		this.mVideoChangedListener = videoChangedListener;
-	}
-	
 
 	public VideoController getCurrentVideoController() {
 		return new VideoController() {
@@ -246,9 +216,6 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 			}
 			
 		};
-	
-//		return (VideoShowFragment) mViewPagerAdapter
-//				.getItem(this.mVideoShowPager.getCurrentItem());
 	}
 
 	@Override
@@ -259,10 +226,6 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	@Override
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();
-		if (mVelocityTracker != null) {
-			mVelocityTracker.recycle();
-			mVelocityTracker = null;
-		}
 	}
 
 	public interface OnVideoFragmentChangedListener {
@@ -284,64 +247,12 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	}
 
 	
-	private int mInitX;
-	private int mInitY;
-	private int mLastY;
-	private int mLastX;
-	private int mAbsDisX;
-	private int mAbsDisY;
 
-	public void requestUpFlying() {
-		mDragType = DragType.RESTORE;
-		Flying fl = new Flying();
-		fl.startFlying(-mDefaultVelocity);
-	}
-	
-	
-	public void updateDragType(DragType dragType) {
-		mDragType = dragType;
-	}
-	
-	
-	public DragType determinteDragType(int disY, int offsetY, DragDirection dir) {
-		int ret = mAbsDisY + offsetY;
-		if (ret < 0) {
-			return DragType.REMOVE;
-		}  else {
-			return DragType.SHARE;
-		}
-	}
-	
 
 	
-	public void updateOffset(int offset) {
-		if (mDragType == DragType.SHARE || mDragType == DragType.RESTORE) {
-			if (mOffsetTop + offset < 0) {
-				mOffsetTop = 0;
-			} else {
-				mOffsetTop += offset;
-			}
-		} else if (mDragType == DragType.REMOVE) {
-			removedOffset += offset;
-			//mVideoShowPager.fakeDragUpBy(offset);
-		} else if (mDragType == DragType.NONE) {
-			return;
-		}
-		
-		if (mOffsetTop > mCameraShapeSLop) {
-			float cent = Math.abs(mOffsetTop - mCameraShapeSLop) / 2;
-			if (cent >= 100.0F) {
-				fireFlyingdown = true;
-			} else {
-				fireFlyingdown = false;
-			}
-		} else {
-			fireFlyingdown = false; 
-		}
-		
-		//mMapView.offsetTopAndBottom(offset);
-		//mVideoShowPager.offsetTopAndBottom(offset);
-		requestLayout();
+	public void translateTsvAndMap(int offset) {
+		tsv.offsetTopAndBottom(offset);
+		mMapView.offsetTopAndBottom(offset);
 	}
 	
 	public void updateRendNum(int num) {
@@ -497,18 +408,48 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	
 	
 	
-	int mActivePointerId = -1;
-	int mCurrentPage = -1;
+	
+	private int mInitY;
+	private int mInitX;
+	private int mLastY;
+	
+
 	@Override
-	public boolean onTouch(View v, MotionEvent ev) {
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		boolean flag = false;
+		int x = (int) ev.getX();
+		int y = (int) ev.getY();
+		int disX = Math.abs(x - mInitX);
+		int disY = Math.abs(y - mInitY);
+		
 		int action = ev.getAction();
-		if (mVelocityTracker == null) {
-			mVelocityTracker = VelocityTracker.obtain();
-		}
-		mVelocityTracker.addMovement(ev);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			doTouchDown(ev);
+			break;
+		case MotionEvent.ACTION_MOVE:
+			int yDiff = Math.abs((int)ev.getY() - mInitY);
+			flag = checkTouchRectEvent(ev) && yDiff > disX;
+			break;
+		case MotionEvent.ACTION_UP:
+			flag = false;
+			break;
+		}
+		return flag;
+	}
+	
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		int action = ev.getAction();
+		int y = (int)ev.getY();
+		switch (action) {
+		case MotionEvent.ACTION_DOWN:
+			if (!checkTouchRectEvent(ev)) {
+				return false;
+			}
+			doTouchDown(ev);
+			
 			break;
 		case MotionEvent.ACTION_MOVE:
 			doTouchMove(ev);
@@ -518,149 +459,108 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 			break;
 		}
 
+		mLastY = y;
+		
 		return true;
+	}
+	
+	
+	private boolean checkTouchRectEvent(MotionEvent ev) {
+		boolean ret = false;
+		int x = (int) ev.getX();
+		int y = (int) ev.getY();
+		int disX = Math.abs(x - mInitX);
+		int disY = Math.abs(y - mInitY);
+
+		switch (st) {
+		case VIDEO_MAP:
+			V2Log.i("==check event x:" + x + "   txv x :" + tsv.getLeft()
+					+ "   rigth:" + tsv.getRight() + "  top:" + tsv.getTop()
+					+ "  bottom:" + tsv.getBottom() +"  disY:" + disY+"  disX:"+ disX+"");
+			ret = (x >= (int) tsv.getLeft()
+					&& tsv.getRight() >= x
+					&& (int) tsv.getTop() <= y && tsv
+					.getBottom() >= y);
+			break;
+		case VIDEO_SHARE:
+			ret = true;
+			break;
+		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			break;
+		case VIDEO_SHARE_MAP:
+			break;
+		case VIDEO_SHARE_P2P:
+			break;
+		default:
+			break;
+		}
+		V2Log.i("==check event ret:" + ret+"   st:"+ st);
+
+		return ret;
 	}
 	
 	
 	private void doTouchDown(MotionEvent ev) {
 		layoutOffsetY = 0;
-		removedOffset = 0;
-		mOffsetTop = 0;
-		mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
-		//mVideoShowPager.beginFakeDrag();
-	///	mCurrentPage = mVideoShowPager.getCurrentItem();
 
-		mInitX = (int)ev.getRawX();
-		mInitY = (int)ev.getRawY();
-		mLastX = mInitX;
+		mInitY = (int)ev.getY();
 		mLastY = mInitY;
+		mInitX = (int)ev.getX();
 		
-		videoController.startTranslate();
 	}
 	
 	int layoutOffsetY = 0;
 	
 	private void doTouchMove(MotionEvent ev) {
-		int rawX = (int)ev.getRawX();
-		int rawY = (int)ev.getRawY();
-		int offsetX = rawX - mInitX;
-		int offsetY = rawY - mInitY;
-		int dy =  rawY - mLastY;
-		int dx =  rawX - mLastX;
-		int absOffsetY = Math.abs(offsetY);
-		int absDy = Math.abs(dy);
-		
-		
-		if (mDragDir == DragDirection.NONE) {
-			if (Math.abs(dx) > absDy && Math.abs(offsetX) > mTouchSlop) {
-				mDragDir = DragDirection.HORIZONTAL;
-			} else if (absOffsetY > mTouchSlop){
-				mDragDir = DragDirection.VERTICAL;
-			}
+		int dy =  (int)ev.getY() - mLastY;
+		switch (st) {
+		case VIDEO_MAP:
+			translateTsvAndMap(dy);
+			break;
+		case VIDEO_SHARE:
+			translateTsvAndMap(dy);
+			break;
+		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			break;
+		case VIDEO_SHARE_MAP:
+			break;
+		case VIDEO_SHARE_P2P:
+			break;
+		default:
+			break;
 		}
-
-		if (mDragDir == DragDirection.VERTICAL) {
-			
-			DragType newType = determinteDragType(offsetY, dy, mDragDir);
-			if (DEBUG) {
-				V2Log.d("determinteDragType new type:" + newType +"   removedOffset:"+ removedOffset+"   mOffsetTop:"+mOffsetTop +"  layoutOffsetY:"+ layoutOffsetY);
-			}
-			if (mDragType == DragType.NONE) {
-				mDragType = newType;
-				updateOffset(dy);
-			} else if (mDragType != newType) {
-				if (mDragType == DragType.REMOVE) {
-//					layoutOffsetY = offsetY;
-//					requestLayout();
-					
-					
-//					int dis1 = (int)(absDy - absOffsetY);
-//					//restore removed offset
-//					//updateOffset(-removedOffset);
-//					mDragType = newType;
-//					//update new offset for share
-//					updateOffset((int)absOffsetY - dis1);
-//					if (DEBUG) {
-//						V2Log.d("old remove  dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
-//					}
-				} else if (mDragType == DragType.SHARE) {
-					int dis1 = (absDy - absOffsetY);
-					updateOffset(-mOffsetTop);
-					mDragType = newType;
-					updateOffset(-absOffsetY - dis1);
-					if (DEBUG) {
-						V2Log.d("old share dis1:" + dis1+"   "+-(absOffsetY - dis1)+"   abs offset:" +absOffsetY);
-					}
-				}
-			} else {
-				if (mDragType == DragType.REMOVE) {
-//					layoutOffsetY = offsetY;
-//					requestLayout();
-				} else {
-					updateOffset(dy);
-				}
-			}
-			if (mPosInterface != null && mDragType == DragType.SHARE) {
-				mPosInterface.onDrag();
-			}
-			
-			
-		} else if (mDragDir == DragDirection.HORIZONTAL) {
-			//mVideoShowPager.fakeDragBy(dx);
-			//TODO translate
-			videoController.translate((float)offsetX /tsv.getMeasuredWidth(), 0);
-		}
-
-		mLastX = rawX;
-		mLastY = rawY;
-		
-		mAbsDisX = mLastX- mInitX;
-		mAbsDisY = mLastY- mInitY;
-
 	}
 	
 	private void doTouchUp(MotionEvent ev) {
-		mLastX = (int)ev.getRawX();
-		mLastY = (int)ev.getRawY();
-		
-		mAbsDisX = mLastX- mInitX;
-		mAbsDisY = mLastY- mInitY;
-		
-        // A fling must travel the minimum tap distance
-        final VelocityTracker velocityTracker = mVelocityTracker;
-        velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-        boolean tap = false;
-        if (mTouchTapTimeout > (ev.getEventTime() - ev.getDownTime())) {
-        	tap = true;
-        }
-      
-        if (tap && Math.abs(mAbsDisX) < mTouchSlop && Math.abs(mAbsDisY) < mTouchSlop) {
-        		doVideoScreenTap();
-        } else {
-			if (mDragDir == DragDirection.VERTICAL) {
-				if (mDragType == DragType.SHARE) {
-					Flying fl = new Flying();
-					if (fireFlyingdown && mPosInterface != null) {
-						mPosInterface.onPreparedFlyingOut();
-					} 
-					
-					fl.startFlying(fireFlyingdown ? mDefaultVelocity : -mDefaultVelocity);
-					
-				} else if (mDragType == DragType.REMOVE) {
-				//	mVideoShowPager.endFakeDrag();
-				}
-			} else if (mDragDir == DragDirection.HORIZONTAL) {
-				//mVideoShowPager.endFakeDrag();
-				new FlyingX().startFlying(mAbsDisX, tsv.getMeasuredWidth());
-				
-				
+		int disY = Math.abs((int)ev.getY() - mInitY);
+		switch (st) {
+		case VIDEO_MAP:
+			if (disY > 100) {
+				ps = PostState.GO_NEXT;
+				fly.startFlying(getBottom() - disY , ScreenType.VIDEO_SHARE);
 			} else {
+				ps = PostState.RESTORE;
+				fly.startFlying(disY , ScreenType.VIDEO_MAP);
 			}
-        }
-		
-		mDragDir = DragDirection.NONE;
-		
-		mVelocityTracker.clear();
+			break;
+		case VIDEO_SHARE:
+			if (disY > 100) {
+				ps = PostState.GO_NEXT;
+				fly.startFlying(getBottom() - disY , ScreenType.VIDEO_MAP);
+			} else {
+				ps = PostState.RESTORE;
+				fly.startFlying(disY , ScreenType.VIDEO_SHARE);
+			}
+			break;
+		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			break;
+		case VIDEO_SHARE_MAP:
+			break;
+		case VIDEO_SHARE_P2P:
+			break;
+		default:
+			break;
+		}
 		
 	}
 	
@@ -671,55 +571,69 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 		}
 	}
 	
+	private void postTranslation(int offset) {
+		switch (st) {
+		case VIDEO_MAP:
+			if (ps == PostState.GO_NEXT) {
+				translateTsvAndMap(offset);
+			} else {
+				translateTsvAndMap(-offset);
+			}
+			break;
+		case VIDEO_SHARE:
+			if (ps == PostState.GO_NEXT) {
+				translateTsvAndMap(-offset);
+			} else {
+				translateTsvAndMap(offset);
+			}
+			break;
+		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			break;
+		case VIDEO_SHARE_MAP:
+			break;
+		case VIDEO_SHARE_P2P:
+			break;
+		default:
+			break;
+		}
+	}
 	
 	
-
+	
 	class Flying implements Runnable {
-
-		int initVelocity;
-
-		public void startFlying(int initVelocity) {
-			this.initVelocity = initVelocity;
+		
+		int distance;
+		ScreenType nextType;
+		int velocity;
+		public void startFlying(int distance, ScreenType nextType) {
+			this.distance = distance;
+			this.nextType = nextType;
+			velocity = 95;
 			postOnAnimation(this);
 		}
 
 		@Override
 		public void run() {
-			if (DEBUG) {
-				V2Log.d(TAG, "[FLYING] : " + mOffsetTop + "   " + initVelocity
-						+ "   " + getBottom());
-			}
-			if (mOffsetTop <= 0 && initVelocity < 0) {
-				mOffsetTop = 0;
-				updateOffset(mOffsetTop);
-				if (mPosInterface != null) {
-					mPosInterface.onFlyingIn();
+			V2Log.i("=== remain distance:" +distance +"  velocity:"+ velocity+"   st:"+ st);
+			if (distance > 0) {
+				if (distance - velocity <= 0) {
+					velocity = distance;
 				}
-				
-				fireFlyingdown = false;
-				mDragType = DragType.NONE;
-				return;
-			}
-
-			if (mOffsetTop > getBottom() && initVelocity > 0) {
-				if (mPosInterface != null) {
-					mPosInterface.onFlyingOut();
-				}
-				fireFlyingdown = false;
-				mDragType = DragType.NONE;
-				return;
-			}
-			if (initVelocity > 0) {
-				initVelocity += 35;
+				postTranslation(velocity);
+				distance -= velocity;
+				postOnAnimationDelayed(this, 15);
 			} else {
-				initVelocity -= 35;
+				ps = PostState.IDLE;
+				if (nextType != st) {
+					st = nextType;
+					//TODO Post UI type changed
+				}
+				requestLayout();
 			}
-			updateOffset(initVelocity);
-
-			postOnAnimationDelayed(this, 35);
 		}
+		
+	}
 
-	};
 	
 	
 	class FlyingX implements Runnable {
@@ -782,134 +696,55 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
-
 		
-		int realTop = top + mOffsetTop  + layoutOffsetY;
-		int bottomChildTop = realTop + tsv.getMeasuredHeight();
+		int bottomChildTop = top + tsv.getMeasuredHeight();
 
-		tsv.layout(left, realTop, right, bottomChildTop);
+		if (st == ScreenType.VIDEO_MAP) {
+			tsv.layout(left, top, right, bottomChildTop);
+			shareSurfaceView.layout(left, top, right, bottomChildTop);
+			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			mMapView.layout(left, bottomChildTop, right, bottom);
+		} else if (st == ScreenType.VIDEO_SHARE) {
+			tsv.layout(left, bottom, right, bottom + tsv.getMeasuredHeight());
+			shareSurfaceView.layout(left, top, right, bottomChildTop);
+			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			mMapView.layout(left, bottom + tsv.getMeasuredHeight(), right, bottom + tsv.getMeasuredHeight() + (bottom - tsv.getMeasuredHeight()) );
+		}
+		
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
-		mMsgLayout.layout(left, realTop + lp.topMargin, right, realTop + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
-		mMapView.layout(left, bottomChildTop, right, bottom );
+		mMsgLayout.layout(left, top + lp.topMargin, right, top + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		
-		int bw = bountyMarker.getMeasuredWidth();
-		int bh = bountyMarker.getMeasuredHeight();
-		int bl = left + (right - left - bw) / 2;
-		int br = bl + bw;
-		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
-		int btm = bto + bh;
-	//	bountyMarker.layout(bl, bto, br, btm);
+//		int bw = bountyMarker.getMeasuredWidth();
+//		int bh = bountyMarker.getMeasuredHeight();
+//		int bl = left + (right - left - bw) / 2;
+//		int br = bl + bw;
+//		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
+//		int btm = bto + bh;
+//	//	bountyMarker.layout(bl, bto, br, btm);
 		
-		mDragLayout.layout(left, realTop, right, bottomChildTop);
+		
+		
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
-			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), realTop, right, bottomChildTop);
+			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), top, right, bottomChildTop);
 		}
 		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
-			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() , right, bottomChildTop);
+			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() , right - liveInformationLayout.getMeasuredWidth(), bottomChildTop);
 		}
 		if (lierInteractionLayout.getVisibility() == View.VISIBLE) {
-			lierInteractionLayout.layout(left,bottomChildTop, right, bottom + mOffsetTop);
+			lierInteractionLayout.layout(left,bottomChildTop, right, bottom );
 		}
 		if (requestConnectLayout.getVisibility() == View.VISIBLE) {
-			requestConnectLayout.layout(left, bottomChildTop, right, bottom + mOffsetTop);
+			requestConnectLayout.layout(left, bottomChildTop, right, bottom);
 		}
 		if (p2pVideoLayout.getVisibility() == View.VISIBLE) {
-			p2pVideoLayout.layout(left,bottomChildTop , right, bottom + mOffsetTop);
+			p2pVideoLayout.layout(left,bottomChildTop , right, bottom);
 		}
 		if (p2pAudioWatcherLayout.getVisibility() == View.VISIBLE) {
-			p2pAudioWatcherLayout.layout(left, bottomChildTop, right, bottom + mOffsetTop);
+			p2pAudioWatcherLayout.layout(left, bottomChildTop, right, bottom);
 		}
-		
-		
 		
 	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-		int count = getChildCount();
-
-		final boolean measureMatchParentChildren = MeasureSpec
-				.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY
-				|| MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.EXACTLY;
-		mMatchParentChildren.clear();
-
-		int maxWidth = 0;
-		int childState = 0;
-		int maxHeight = resolveSizeAndState(0, heightMeasureSpec, childState);
-		for (int i = 0; i < count; i++) {
-			final View child = getChildAt(i);
-			if (mMeasureAllChildren || child.getVisibility() != GONE) {
-				measureChildWithMargins(child, widthMeasureSpec, 0,
-						heightMeasureSpec, maxHeight / 2);
-				final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-				maxWidth = Math.max(maxWidth, child.getMeasuredWidth()
-						+ lp.leftMargin + lp.rightMargin);
-				maxHeight = Math.max(maxHeight, child.getMeasuredHeight()
-						+ lp.topMargin + lp.bottomMargin);
-				childState = combineMeasuredStates(childState,
-						child.getMeasuredState());
-				if (measureMatchParentChildren) {
-					if (lp.width == LayoutParams.MATCH_PARENT
-							|| lp.height == LayoutParams.MATCH_PARENT) {
-						mMatchParentChildren.add(child);
-					}
-				}
-			}
-		}
-
-		// Check against our minimum height and width
-		maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
-		maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
-
-		// Check against our foreground's minimum height and width
-		final Drawable drawable = getForeground();
-		if (drawable != null) {
-			maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
-			maxWidth = Math.max(maxWidth, drawable.getMinimumWidth());
-		}
-
-		setMeasuredDimension(
-				resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
-				resolveSizeAndState(maxHeight, heightMeasureSpec,
-						childState << MEASURED_HEIGHT_STATE_SHIFT));
-
-		count = mMatchParentChildren.size();
-		if (count > 1) {
-			for (int i = 0; i < count; i++) {
-				final View child = mMatchParentChildren.get(i);
-
-				final MarginLayoutParams lp = (MarginLayoutParams) child
-						.getLayoutParams();
-				int childWidthMeasureSpec;
-				int childHeightMeasureSpec;
-
-				if (lp.width == LayoutParams.MATCH_PARENT) {
-					childWidthMeasureSpec = MeasureSpec
-							.makeMeasureSpec(getMeasuredWidth() - lp.leftMargin
-									- lp.rightMargin, MeasureSpec.EXACTLY);
-				} else {
-					childWidthMeasureSpec = getChildMeasureSpec(
-							widthMeasureSpec, lp.leftMargin + lp.rightMargin,
-							lp.width);
-				}
-
-				if (lp.height == LayoutParams.MATCH_PARENT) {
-					childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
-							getMeasuredHeight() - lp.topMargin
-									- lp.bottomMargin, MeasureSpec.EXACTLY);
-				} else {
-					childHeightMeasureSpec = getChildMeasureSpec(
-							heightMeasureSpec, lp.topMargin + lp.bottomMargin,
-							lp.height);
-				}
-
-				child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-			}
-		}
-
-	}
-	
 	
 	
 	class NotificationWrapper {
@@ -919,16 +754,12 @@ public class MapVideoLayout extends FrameLayout implements OnTouchListener, Vide
 	}
 
 	
-	enum Operation {
-		NONE, PRESS, DRAGING
-	}
-	enum DragDirection {
-		NONE, VERTICAL, HORIZONTAL;
+	enum PostState {
+		IDLE, RESTORE, GO_NEXT;
 	}
 	
-	
-	public enum DragType {
-		NONE, SHARE, REMOVE, RESTORE
+	enum ScreenType {
+		VIDEO_MAP, VIDEO_SHARE, VIDEO_SHARE_CONNECTION_REQUESTING, VIDEO_SHARE_MAP, VIDEO_SHARE_P2P;
 	}
-
+	
 }
