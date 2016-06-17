@@ -1,9 +1,7 @@
 package com.v2tech.widget;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -51,41 +49,7 @@ public class VideoShareBtnLayout extends RelativeLayout {
 	int mActivePointerId;
 	
 	
-	private OnTouchListener touchListener = new OnTouchListener() {
 
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			int action = event.getAction();
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				mActivePointerId = MotionEventCompat.getPointerId(event, 0);
-				initY = MotionEventCompat.getY(event, 0);
-				lastY = initY;
-				if (listener != null) {
-					listener.requestStartDrag();
-				}
-				break;
-			case MotionEvent.ACTION_MOVE:
-				final int pointerIndex = MotionEventCompat.findPointerIndex(
-						event, mActivePointerId);
-				final float y = MotionEventCompat.getY(event, pointerIndex);
-				final float dy = y - lastY;
-				if (listener != null) {
-					listener.requestUpdateOffset((int) dy);
-				}
-				lastY = y;
-				break;
-			case MotionEvent.ACTION_UP:
-				V2Log.d("Start translate");
-				if (listener != null) {
-					listener.requestFlyingOut();
-				}
-				break;
-			}
-			return true;
-		}
-
-	};
 
 	private OnClickListener clickListener = new OnClickListener() {
 
@@ -127,12 +91,6 @@ public class VideoShareBtnLayout extends RelativeLayout {
 
 	public interface VideoShareBtnLayoutListener {
 		public void onVideoSharedBtnClicked(View v);
-		
-		public void requestStartDrag();
-		
-		public void requestUpdateOffset(int dy);
-		
-		public void requestFlyingOut();
 		
 		public void onMapShareBtnClicked(View v);
 	}

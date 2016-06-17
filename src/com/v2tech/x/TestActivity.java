@@ -80,21 +80,6 @@ public class TestActivity extends Activity {
 			}
 
 			@Override
-			public void requestStartDrag() {
-				
-			}
-
-			@Override
-			public void requestUpdateOffset(int dy) {
-				
-			}
-
-			@Override
-			public void requestFlyingOut() {
-				
-			}
-
-			@Override
 			public void onMapShareBtnClicked(View v) {
 				
 			}

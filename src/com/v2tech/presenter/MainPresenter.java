@@ -43,7 +43,8 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.view.MapVideoLayout;
+import com.v2tech.view.MapVideoLayout.ScreenType;
+import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.Live;
@@ -66,7 +67,7 @@ import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
-		MarkerListener,
+		MarkerListener,UITypeStatusChangedListener, 
 		BottomButtonLayoutListener,
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
@@ -220,14 +221,6 @@ public class MainPresenter extends BasePresenter implements
 
 		public void showProgressDialog(boolean flag, String text);
 
-		public void showP2PLiverLayout(boolean flag);
-
-		public void showVideoshareBtnLayout(boolean flag);
-
-		public void mapVideoLayoutFlyingIn();
-
-		public void updateVideoLayoutOffset(int x);
-
 		public void updateInterfactionFollowBtn(boolean followed);
 
 		public MapAPI getWatcherMapInstance();
@@ -237,6 +230,8 @@ public class MainPresenter extends BasePresenter implements
 		public void removeWatcher(int flag, Watcher watcher);
 		
 		public VideoPlayer getVideoPlayer();
+		
+		public void showMap(boolean flag);
 	}
 
 	public void videoShareButtonClicked() {
@@ -613,7 +608,7 @@ public class MainPresenter extends BasePresenter implements
 		} else if (isState(AUDIO_CALL_REQUEST_SHOW)) {
 			setState(AUDIO_P2P_SHOW);
 			unsetState(AUDIO_CALL_REQUEST_SHOW);
-			ui.showP2PLiverLayout(true);
+			ui.showMap(true);
 			this.requestConnection(this.currentLive.getLid(),
 					VMessageAudioVideoRequestItem.TYPE_AUDIO,
 					VMessageAudioVideoRequestItem.ACTION_ACCEPT);
@@ -742,7 +737,7 @@ public class MainPresenter extends BasePresenter implements
 
 	public void onDeclineBtn(View view) {
 		unsetState(AUDIO_P2P_SHOW);
-		ui.showP2PLiverLayout(false);
+		ui.showMap(false);
 		this.requestConnection(this.currentLive.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_AUDIO,
 				VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
@@ -750,10 +745,10 @@ public class MainPresenter extends BasePresenter implements
 
 	public void onMapReturnBtn(View view) {
 		if (!isState(VIDEO_SHARE_BTN_SHOW)) {
-			ui.showVideoshareBtnLayout(true);
+			ui.showMap(false);
 			setState(VIDEO_SHARE_BTN_SHOW);
 			// show map view
-			ui.showP2PLiverLayout(false);
+			ui.showMap(false);
 		}
 	}
 
@@ -766,24 +761,11 @@ public class MainPresenter extends BasePresenter implements
 		videoShareButtonClicked();
 	}
 
-	public void requestStartDrag() {
-
-	}
-
-	public void requestUpdateOffset(int dy) {
-		ui.updateVideoLayoutOffset(dy);
-	}
-
-	public void requestFlyingOut() {
-		ui.mapVideoLayoutFlyingIn();
-	}
-
 	public void onMapShareBtnClicked(View v) {
 		if (isState(VIDEO_SHARE_BTN_SHOW)) {
-			ui.showVideoshareBtnLayout(false);
 			unsetState(VIDEO_SHARE_BTN_SHOW);
 			// show map view
-			ui.showP2PLiverLayout(true);
+			ui.showMap(true);
 
 			// TODO add watcher list marker to map
 			if (currentLive != null) {
@@ -932,7 +914,7 @@ public class MainPresenter extends BasePresenter implements
 
 	// ///////////BottomButtonLayoutListener///////////////////////////////////////////////////
 	
-///////////LiveWathcingHandler///////////////////////////////////////////////////
+	///////////LiveWathcingHandler///////////////////////////////////////////////////
 	
 	@Override
 	public void onUserWatched(Live l, User user) {
@@ -959,6 +941,46 @@ public class MainPresenter extends BasePresenter implements
 	
 ///////////LiveWathcingHandler///////////////////////////////////////////////////
 	
+	
+	///////////UITypeStatusChangedListener///////////////////////////////////////////////////	
+	@Override
+	public void onUITypeChanged(ScreenType screenType) {
+		switch (screenType) {
+		case INQUIRE_BIDING:
+			break;
+		case VIDEO_MAP:
+			if (isState(PUBLISHING_FLAG)) {
+				videoShareButtonClicked();
+			}
+			setState(WATCHING_FLAG);
+			break;
+		case VIDEO_PUBLISHER_SHOW:
+			break;
+		case VIDEO_SHARE:
+			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+			.getInstance().getCurrentUserId(), "", null);
+			vs.requestOpenVideoDevice(duc, null);
+			ui.showBottomLayout(false);
+			this.setState(LOCAL_CAMERA_OPENING);
+			this.unsetState(BOTTOM_LAYOUT_SHOW);
+			break;
+		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			break;
+		case VIDEO_SHARE_MAP:
+			break;
+		case VIDEO_SHARE_P2P_PUBLISHER:
+			break;
+		case VIDEO_SHARE_P2P_WATCHER:
+			break;
+		case VIDEO_WATCHING_AUDIO_CONNECTION:
+			break;
+		default:
+			break;
+		
+		}
+		
+	}
+	///////////UITypeStatusChangedListener///////////////////////////////////////////////////
 	
 
 	private void requestConnection(long lid, int type, int action) {

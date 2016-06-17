@@ -52,7 +52,6 @@ public class MainActivity extends BaseActivity implements
 
 
 		initMapviewLayout();
-		//initVideoShareLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
 		initResetOrder();
@@ -66,13 +65,14 @@ public class MainActivity extends BaseActivity implements
 
 	private void initMapviewLayout() {
 		mMapVideoLayout = new MapVideoLayout(this);
-
+		mMapVideoLayout.setUiTypeListener(presenter);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);
 		mMapVideoLayout.setVideoWatcherListLayoutListener(presenter);
 		mMapVideoLayout.setP2PVideoMainLayoutListener(presenter);
 		mMapVideoLayout.setMessageMarqueeLayoutListener(presenter);
+		mMapVideoLayout.setVideoShareBtnLayoutListener(presenter);
 		
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
@@ -254,11 +254,11 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public void updateVideShareButtonText(boolean publish) {
-//		if (publish) {
-//			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
-//		} else {
-//			videoShareLayout.updateVideoShareBtnBackground(R.drawable.video_share_button_bg);
-//		}
+		if (publish) {
+			mMapVideoLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
+		} else {
+			mMapVideoLayout.updateVideoShareBtnBackground(R.drawable.video_share_button_bg);
+		}
 	}
 
 	
@@ -370,6 +370,10 @@ public class MainActivity extends BaseActivity implements
 		//videoShareLayout.showMarqueeMessage(flag);
 	}
 	
+	public void showMap(boolean flag) {
+		mMapVideoLayout.showMap(flag);
+	}
+	
 	
 	public void updateConnectLayoutBtnType(int type) {
 //		if (type ==1) {
@@ -384,20 +388,6 @@ public class MainActivity extends BaseActivity implements
 	
 	public void showConnectRequestLayout(boolean flag) {
 	//	videoShareLayout.showRequestConnectionLayout(flag);
-	}
-	
-	
-	public void showP2PLiverLayout(boolean flag) {
-		//videoShareLayout.showP2PLiverLayout(flag);
-	}
-	
-	
-	public void mapVideoLayoutFlyingIn() {
-		//mMapVideoLayout.requestUpFlying();
-	}
-	
-	public void updateVideoLayoutOffset(int dy) {
-	//	mMapVideoLayout.updateOffset(dy);
 	}
 	
 

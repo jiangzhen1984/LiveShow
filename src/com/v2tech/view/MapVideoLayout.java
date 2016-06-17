@@ -1,6 +1,7 @@
 package com.v2tech.view;
 
 import v2av.VideoPlayer;
+import v2av.VideoRecorder;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
@@ -39,6 +40,7 @@ import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.TouchSurfaceView;
 import com.v2tech.widget.TouchSurfaceView.Translate;
 import com.v2tech.widget.VideoShareBtnLayout;
+import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
@@ -106,7 +108,8 @@ public class MapVideoLayout extends FrameLayout {
 		
 		shareSurfaceView = new TouchSurfaceView(getContext()); 
 		shareSurfaceView.getHolder().addCallback(new VideoShareSufaceViewCallback());
-
+		VideoRecorder.VideoPreviewSurfaceHolder = shareSurfaceView.getHolder();
+		
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
 		mapOptions.compassEnabled(true);
 		mapOptions.scaleControlEnabled(true);
@@ -211,6 +214,10 @@ public class MapVideoLayout extends FrameLayout {
 		//TODO add implments
 	}
 	
+	public void updateVideoShareBtnBackground(int res) {
+		videoShareBtnLayout.updateSharedBtnBackground(res);
+	}
+	
 	public void showVideoBtnLy(boolean flag) {
 		liveInformationLayout.setVisibility(flag? View.VISIBLE:View.GONE);
 	}
@@ -218,7 +225,21 @@ public class MapVideoLayout extends FrameLayout {
 		liveWatcherLayout.setVisibility(flag? View.VISIBLE:View.GONE);
 	}
 	
-	
+	public void showMap(boolean flag) {
+		if (st != ScreenType.VIDEO_SHARE) {
+			throw new RuntimeException(" only support " + ScreenType.VIDEO_SHARE +" type but current st: " + st);
+		}
+		int distance = getBottom() - borderY;
+		if (flag) {
+			// fake UI behavior for simulate touch move up.
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_MAP,
+					ScreenType.VIDEO_SHARE_MAP, PostState.RESTORE,
+					distance);
+		} else {
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_MAP,
+					ScreenType.VIDEO_SHARE, PostState.GO_NEXT, distance);
+		}
+	}
 	
 	public void showLiverInteractionLy(boolean flag) {
 		if (st != ScreenType.VIDEO_MAP && flag) {
@@ -320,6 +341,10 @@ public class MapVideoLayout extends FrameLayout {
 	
 	public void setMessageMarqueeLayoutListener(MessageMarqueeLayoutListener listener) {
 		this.mMsgLayout.setListener(listener);
+	}
+	
+	public void setVideoShareBtnLayoutListener(VideoShareBtnLayoutListener listener) {
+		this.videoShareBtnLayout.setListener(listener);
 	}
 	
 	public void showMarqueeMessageLayout(boolean flag) {
@@ -596,6 +621,7 @@ public class MapVideoLayout extends FrameLayout {
 			
 			liveInformationLayout.offsetTopAndBottom(offset);
 			liveWatcherLayout.offsetTopAndBottom(offset);
+			mMsgLayout.offsetTopAndBottom(offset);
 		}
 	}
 	
@@ -643,6 +669,11 @@ public class MapVideoLayout extends FrameLayout {
 			}
 			break;
 		case VIDEO_SHARE_MAP:
+			if (ps == PostState.GO_NEXT) {
+				translateBottomView(mMapView, offset);
+			} else {
+				translateBottomView(mMapView, -offset);
+			}
 			break;
 		case VIDEO_SHARE_P2P_PUBLISHER:
 			if (ps == PostState.GO_NEXT) {
@@ -784,11 +815,13 @@ public class MapVideoLayout extends FrameLayout {
 			int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
 			int btm = bto + bh;
 			bountyMarker.layout(bl, bto, br, btm);
+		} else if (st == ScreenType.VIDEO_SHARE_MAP) {
+			
 		}
 		
 		
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
-		mMsgLayout.layout(left, top + lp.topMargin, right, top + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
+		mMsgLayout.layout(left, tsv.getTop() + lp.topMargin, right, tsv.getTop() + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
 			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), tsv.getTop(), right, tsv.getBottom());
