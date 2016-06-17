@@ -12,8 +12,9 @@ public class TouchSurfaceView extends SurfaceView {
 	private FlyingX fx;
 
 	private int mTouchSlop;
+	private int mTouchTapTimeout;
 	private int initX;
-	
+	private int initY;
 	
 	public TouchSurfaceView(Context context) {
 		super(context);
@@ -33,6 +34,7 @@ public class TouchSurfaceView extends SurfaceView {
 	private void init() {
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
+		mTouchTapTimeout = ViewConfiguration.getTapTimeout();
 	}
 
 	
@@ -43,11 +45,14 @@ public class TouchSurfaceView extends SurfaceView {
 			return false;
 		}
 		int disX = (int)event.getX() - initX;
+		int disY = (int)event.getY() - initY;
+		
 		int action = event.getAction();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			translate.onStartTranslate();
 			initX = (int)event.getX();
+			initY = (int)event.getY();
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (Math.abs(disX) > mTouchSlop) {
@@ -56,6 +61,11 @@ public class TouchSurfaceView extends SurfaceView {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
+			//do touch tap check
+			if (Math.abs(disX) <= mTouchSlop && Math.abs(disY) <= mTouchSlop && (event.getEventTime() - event.getDownTime()) < mTouchTapTimeout) {
+				this.performClick();
+				break;
+			}
 			if (fx == null) {
 				fx = new FlyingX();
 			}
@@ -73,6 +83,7 @@ public class TouchSurfaceView extends SurfaceView {
 
 		public void onFinishTranslate();
 	}
+	
 
 	public Translate getTranslate() {
 		return translate;

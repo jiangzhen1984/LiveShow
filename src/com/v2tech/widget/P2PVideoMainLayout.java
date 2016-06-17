@@ -11,6 +11,8 @@ import com.v2tech.v2liveshow.R;
 public class P2PVideoMainLayout extends RelativeLayout {
 	
 	
+	private View btnLayout;
+	
 	private View leftBtn;
 	
 	private View rightBtn;
@@ -42,7 +44,11 @@ public class P2PVideoMainLayout extends RelativeLayout {
 		super.addView(child, index, params);
 		if (child.getId() == R.id.p2p_video_main_surfaceview) {
 			surfaceView = (SurfaceView)child;
+			if (btnLayout != null) {
+				btnLayout.bringToFront();
+			}
 		} else if (child.getId() == R.id.p2p_video_main_btn_ly) {
+			btnLayout = child;
 			leftBtn = child.findViewById(R.id.p2p_video_main_left_btn);
 			rightBtn = child.findViewById(R.id.p2p_video_main_right_btn);
 			leftBtn.setOnClickListener(click);
@@ -95,8 +101,6 @@ public class P2PVideoMainLayout extends RelativeLayout {
 	public void setListener(P2PVideoMainLayoutListener listener) {
 		this.listener = listener;
 	}
-
-
 
 
 	public interface P2PVideoMainLayoutListener {

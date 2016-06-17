@@ -95,19 +95,6 @@ public class MainActivity extends BaseActivity implements
 	}
 
 	
-	
-//	private void initVideoShareLayout() {
-//		
-//		videoShareLayout = (VideoShareLayout)findViewById(R.id.video_share_ly);
-//		videoShareLayout.setVideoShareBtnLayoutListener(presenter);
-//		videoShareLayout.setRequestConnectLayoutListener(presenter);
-//		videoShareLayout.setP2PVideoMainLayoutListener(presenter);
-//		videoShareLayout.setP2PAudioLiverLayoutListener(presenter);
-//		videoShareLayout.setMessageMarqueeLayoutListener(presenter);
-//		
-//	}
-	
-	
 	private void initResetOrder() {
 		mPersonalButton.bringToFront();
 	}

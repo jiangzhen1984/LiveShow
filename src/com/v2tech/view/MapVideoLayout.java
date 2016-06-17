@@ -18,6 +18,7 @@ import com.baidu.mapapi.map.MapView;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.baidu.BaiduMapImpl;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.video.SurfaceVideoController;
 import com.v2tech.video.VideoController;
 import com.v2tech.video.VideoShareSufaceViewCallback;
 import com.v2tech.vo.Live;
@@ -41,7 +42,7 @@ import com.v2tech.widget.VideoShareBtnLayout;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
-public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
+public class MapVideoLayout extends FrameLayout {
 	
 	private static int VIDEO_SURFACE_HEIGHT = 684;
 
@@ -50,13 +51,12 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	private static final boolean DEBUG = true;
 	
 	private int mTouchSlop;
-	private int mTouchTapTimeout;
 	private int borderY;
 	
 	private UITypeStatusChangedListener uiTypeListener;
 	
-	
-	private VideoPlayer videoController;
+	private VideoController videoController;
+	private VideoPlayer videoPlayer;
 	
 	private MapView mMapView;
 	private TouchSurfaceView tsv;
@@ -95,13 +95,14 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	}
 
 	private void init() {
-		videoController = new VideoPlayer(6);
+		videoPlayer = new VideoPlayer(6);
 		tsv =  new TouchSurfaceView(getContext()); 
 		tsv.setZOrderOnTop(true);
 		tsv.setZOrderMediaOverlay(true);
 		tsv.getHolder().setFormat(PixelFormat.TRANSPARENT);
-		tsv.getHolder().addCallback(videoController);
+		tsv.getHolder().addCallback(videoPlayer);
 		tsv.setTranslate(touchSurfaceViewTranslate);
+		
 		
 		shareSurfaceView = new TouchSurfaceView(getContext()); 
 		shareSurfaceView.getHolder().addCallback(new VideoShareSufaceViewCallback());
@@ -124,10 +125,9 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		requestConnectLayout = (RequestConnectLayout)LayoutInflater.from(getContext()).inflate(R.layout.requesting_connect_layout, (ViewGroup)null);
 		
 		p2pVideoLayout= (P2PVideoMainLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_video_main_layout, (ViewGroup)null);
-		p2pVideoLayout.setVisibility(View.GONE);
+		p2pVideoLayout.getSurfaceView().getHolder().addCallback(new  VideoShareSufaceViewCallback());
 		
 		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, (ViewGroup)null);
-		
 		
 		liveInformationLayout = (LiveInformationLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, (ViewGroup)null);
 		liveWatcherLayout	 = (VideoWatcherListLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_layout_bottom_layout, (ViewGroup)null);
@@ -154,14 +154,11 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
-		mTouchTapTimeout = ViewConfiguration.getTapTimeout();
+		
+		videoController = new SurfaceVideoController(tsv, videoPlayer);
 	}
 	
 	
-	
-	
-	
-
 
 	public MapAPI getMap() {
 		return new BaiduMapImpl(mMapView.getMap(), mMapView);
@@ -189,20 +186,10 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	}
 	
 
-	public VideoController getCurrentVideoController() {
-		return new VideoController() {
-
-			@Override
-			public View getVideoView() {
-				//return (SurfaceView)((SurfaceViewAdapter)mViewPagerAdapter).getItem(mVideoShowPager.getCurrentItem());
-				return tsv;
-			}
-			
-		};
+	public VideoController getCurrentvideoPlayer() {
+		return videoController;
 	}
 
-
-	
 	
 	public void updateRendNum(int num) {
 		liveInformationLayout.updateRecommands(num+"");
@@ -234,23 +221,21 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	
 	
 	public void showLiverInteractionLy(boolean flag) {
-//		if (st != ScreenType.VIDEO_MAP && flag) {
-//			throw new RuntimeException(" screen type can not support: " + st
-//					+ "  only support from " + ScreenType.VIDEO_MAP + " to "
-//					+ ScreenType.VIDEO_PUBLISHER_SHOW);
-//		}
-//		int distance = getBottom() - tsv.getMeasuredHeight();
-//		if (flag) {
-//			// fake UI behavior for simulate touch move up.
-//			turnUITypeAnimation(ScreenType.VIDEO_PUBLISHER_SHOW,
-//					ScreenType.VIDEO_PUBLISHER_SHOW, PostState.RESTORE,
-//					distance);
-//		} else {
-//			turnUITypeAnimation(ScreenType.VIDEO_PUBLISHER_SHOW,
-//					ScreenType.VIDEO_MAP, PostState.GO_NEXT, distance);
-//		}
-		showP2PAudioWatcherLy(flag);
-
+		if (st != ScreenType.VIDEO_MAP && flag) {
+			throw new RuntimeException(" screen type can not support: " + st
+					+ "  only support from " + ScreenType.VIDEO_MAP + " to "
+					+ ScreenType.VIDEO_PUBLISHER_SHOW);
+		}
+		int distance = getBottom() - tsv.getMeasuredHeight();
+		if (flag) {
+			// fake UI behavior for simulate touch move up.
+			turnUITypeAnimation(ScreenType.VIDEO_PUBLISHER_SHOW,
+					ScreenType.VIDEO_PUBLISHER_SHOW, PostState.RESTORE,
+					distance);
+		} else {
+			turnUITypeAnimation(ScreenType.VIDEO_PUBLISHER_SHOW,
+					ScreenType.VIDEO_MAP, PostState.GO_NEXT, distance);
+		}
 	}
 
 	public void showRequestingConnectionLy(boolean flag) {
@@ -280,8 +265,16 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	}
 	
 	public void showP2PVideoLayout(boolean flag) {
-//		showOrHidenViewAnimation(p2pVideoLayout, flag);
-//		p2pVideoLayout.bringToFront();
+		int distance = getBottom() - tsv.getMeasuredHeight();
+		if (flag) {
+			// fake UI behavior for simulate touch move up.
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
+					ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
+					PostState.RESTORE, distance);
+		} else {
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
+					ScreenType.VIDEO_SHARE, PostState.GO_NEXT, distance);
+		}
 	}
 	
 	private void turnUITypeAnimation(ScreenType currentST, ScreenType nextST, PostState nextPS, int distance) {
@@ -356,11 +349,8 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	
 	
 	public VideoPlayer getVideoPlayer() {
-		return videoController;
+		return videoPlayer;
 	}
-	
-	
-	
 	
 	
 	
@@ -390,7 +380,6 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		int x = (int) ev.getX();
 		int y = (int) ev.getY();
 		int disX = Math.abs(x - mInitX);
-		int disY = Math.abs(y - mInitY);
 		
 		int action = ev.getAction();
 		switch (action) {
@@ -441,14 +430,9 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		boolean ret = false;
 		int x = (int) ev.getX();
 		int y = (int) ev.getY();
-		int disX = Math.abs(x - mInitX);
-		int disY = Math.abs(y - mInitY);
 
 		switch (st) {
 		case VIDEO_MAP:
-			V2Log.i("==check event x:" + x + "   txv x :" + tsv.getLeft()
-					+ "   rigth:" + tsv.getRight() + "  top:" + tsv.getTop()
-					+ "  bottom:" + tsv.getBottom() +"  disY:" + disY+"  disX:"+ disX+"");
 			ret = (x >= (int) tsv.getLeft()
 					&& tsv.getRight() >= x
 					&& (int) tsv.getTop() <= y && tsv
@@ -465,7 +449,11 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P:
+		case VIDEO_SHARE_P2P_PUBLISHER:
+			ret = (x >= (int) p2pVideoLayout.getLeft()
+			&& p2pVideoLayout.getRight() >= x
+			&& (int) p2pVideoLayout.getTop() <= y && p2pVideoLayout
+			.getBottom() >= y);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			ret = (x >= (int) lierInteractionLayout.getLeft()
@@ -482,7 +470,6 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		default:
 			break;
 		}
-		V2Log.i("==check event ret:" + ret+"   st:"+ st);
 
 		return ret;
 	}
@@ -514,7 +501,8 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P:
+		case VIDEO_SHARE_P2P_PUBLISHER:
+			translateBottomView(p2pVideoLayout, dy);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			translateBottomView(lierInteractionLayout, dy);
@@ -528,55 +516,67 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	}
 	
 	private void doTouchUp(MotionEvent ev) {
-		int disY = Math.abs((int)ev.getY() - mInitY);
+		int absDisY = Math.abs((int)ev.getY() - mInitY);
+		int disY = (int)ev.getY() - mInitY;
 		switch (st) {
 		case VIDEO_MAP:
-			if (disY > FLYING_SLOP) {
+			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
-				fly.startFlying(getBottom() - disY , ScreenType.VIDEO_SHARE);
+				if (disY < 0) {
+					fly.startFlying(tsv.getMeasuredHeight() - absDisY , ScreenType.INQUIRE_BIDING);
+				} else {
+					fly.startFlying(getBottom() - absDisY , ScreenType.VIDEO_SHARE);
+				}
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(disY , ScreenType.VIDEO_MAP);
+				fly.startFlying(absDisY , ScreenType.VIDEO_MAP);
 			}
 			break;
 		case VIDEO_SHARE:
-			if (disY > FLYING_SLOP) {
+			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
-				fly.startFlying(getBottom() - disY , ScreenType.VIDEO_MAP);
+				fly.startFlying(getBottom() - absDisY , ScreenType.VIDEO_MAP);
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(disY , ScreenType.VIDEO_SHARE);
+				fly.startFlying(absDisY , ScreenType.VIDEO_SHARE);
 			}
 			break;
 		case VIDEO_SHARE_CONNECTION_REQUESTING:
-			if (disY > FLYING_SLOP) {
+			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
-				fly.startFlying(getBottom() - borderY - disY , ScreenType.VIDEO_SHARE);
+				fly.startFlying(getBottom() - borderY - absDisY , ScreenType.VIDEO_SHARE);
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(disY , st);
+				fly.startFlying(absDisY , st);
 			}
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P:
-			break;
-		case VIDEO_PUBLISHER_SHOW:
-			if (disY > FLYING_SLOP) {
+		case VIDEO_SHARE_P2P_PUBLISHER:
+			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
-				fly.startFlying(getBottom() - borderY - disY , ScreenType.VIDEO_MAP);
+				fly.startFlying(getBottom() - borderY - absDisY , ScreenType.VIDEO_SHARE);
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(disY , ScreenType.VIDEO_PUBLISHER_SHOW);
+				fly.startFlying(absDisY , ScreenType.VIDEO_SHARE_P2P_PUBLISHER);
+			}
+			break;
+		case VIDEO_PUBLISHER_SHOW:
+			if (absDisY > FLYING_SLOP) {
+				ps = PostState.GO_NEXT;
+				fly.startFlying(getBottom() - borderY - absDisY , ScreenType.VIDEO_MAP);
+			} else {
+				ps = PostState.RESTORE;
+				fly.startFlying(absDisY , ScreenType.VIDEO_PUBLISHER_SHOW);
 			}
 			break;
 		case VIDEO_WATCHING_AUDIO_CONNECTION:
-			if (disY > FLYING_SLOP) {
+			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
-				fly.startFlying(getBottom() - borderY - disY , ScreenType.VIDEO_MAP);
+				fly.startFlying(getBottom() - borderY - absDisY , ScreenType.VIDEO_MAP);
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(disY , ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION);
+				fly.startFlying(absDisY , ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION);
 			}
 			break;
 		default:
@@ -590,6 +590,13 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	private void translateTsvAndMap(int offset) {
 		tsv.offsetTopAndBottom(offset);
 		mMapView.offsetTopAndBottom(offset);
+		if (tsv.getTop() < 0) {
+			shareSurfaceView.offsetTopAndBottom(offset);
+			videoShareBtnLayout.offsetTopAndBottom(offset);
+			
+			liveInformationLayout.offsetTopAndBottom(offset);
+			liveWatcherLayout.offsetTopAndBottom(offset);
+		}
 	}
 	
 	private void translateBottomView(View bottomView, int offset) {
@@ -604,13 +611,21 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		bottomView.offsetTopAndBottom(offset);
 	}
 	
-	private void postTranslation(int offset) {
+	private void postTranslation(int offset, ScreenType next) {
 		switch (st) {
 		case VIDEO_MAP:
 			if (ps == PostState.GO_NEXT) {
-				translateTsvAndMap(offset);
+				if (next == ScreenType.INQUIRE_BIDING) {
+					translateTsvAndMap(-offset);
+				} else {
+					translateTsvAndMap(offset);
+				}
 			} else {
-				translateTsvAndMap(-offset);
+				if (next == ScreenType.INQUIRE_BIDING) {
+					translateTsvAndMap(offset);
+				} else {
+					translateTsvAndMap(-offset);
+				}
 			}
 			break;
 		case VIDEO_SHARE:
@@ -629,7 +644,12 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P:
+		case VIDEO_SHARE_P2P_PUBLISHER:
+			if (ps == PostState.GO_NEXT) {
+				translateBottomView(p2pVideoLayout, offset);
+			} else {
+				translateBottomView(p2pVideoLayout, -offset);
+			}
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			if (ps == PostState.GO_NEXT) {
@@ -674,7 +694,7 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 				if (distance - velocity <= 0) {
 					velocity = distance;
 				}
-				postTranslation(velocity);
+				postTranslation(velocity, nextType);
 				distance -= velocity;
 				postOnAnimationDelayed(this, 5);
 			} else {
@@ -706,6 +726,7 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		}
 		V2Log.i("====> layout st:"+ st +"   ts:"+ ts);
 		int bottomChildTop = top + tsv.getMeasuredHeight();
+		int bottomHeight = bottom - bottomChildTop;
 
 		if (st == ScreenType.VIDEO_MAP) {
 			borderY = tsv.getMeasuredHeight();
@@ -721,10 +742,11 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 			tsv.layout(left, bottom, right, bottom + tsv.getMeasuredHeight());
 			shareSurfaceView.layout(left, top, right, bottomChildTop);
 			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
-			mMapView.layout(left, bottom + tsv.getMeasuredHeight(), right, bottom + tsv.getMeasuredHeight() + (bottom - tsv.getMeasuredHeight()) );
+			mMapView.layout(left, bottom, right, bottom + bottomHeight);
 			lierInteractionLayout.layout(left,bottom, right, bottom + lierInteractionLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
 			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
+			p2pVideoLayout.layout(left,bottom , right, bottom + p2pVideoLayout.getMeasuredHeight());
 		} else if (st ==  ScreenType.VIDEO_PUBLISHER_SHOW) {
 			borderY = tsv.getMeasuredHeight();
 			tsv.layout(left, top, right, bottomChildTop);
@@ -742,33 +764,39 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 			tsv.layout(left, top, right, bottomChildTop);
 			mMapView.layout(left, bottomChildTop, right, bottom);
 			p2pAudioWatcherLayout.layout(left, bottomChildTop, right, bottomChildTop + p2pAudioWatcherLayout.getMeasuredHeight());
+		} else if (st == ScreenType.VIDEO_SHARE_P2P_PUBLISHER) {
+			shareSurfaceView.layout(left, top, right, bottomChildTop);
+			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			p2pVideoLayout.layout(left,bottomChildTop , right, bottom);
+			mMapView.layout(left, bottom, right, bottom + bottomHeight);
+		} else if (st == ScreenType.INQUIRE_BIDING) {
+			borderY = mMapView.getMeasuredHeight();
+			mMapView.layout(left, top, right, bottom - tsv.getMeasuredHeight());
+			tsv.layout(left, - tsv.getMeasuredHeight(), right, 0 );
+			shareSurfaceView.layout(left, - tsv.getMeasuredHeight(), right, 0);
+			videoShareBtnLayout.layout(left, top, right, bottom - tsv.getMeasuredHeight());
+			
+			
+			int bw = bountyMarker.getMeasuredWidth();
+			int bh = bountyMarker.getMeasuredHeight();
+			int bl = left + (right - left - bw) / 2;
+			int br = bl + bw;
+			int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
+			int btm = bto + bh;
+			bountyMarker.layout(bl, bto, br, btm);
 		}
+		
 		
 		LayoutParams lp = (LayoutParams)mMsgLayout.getLayoutParams();
 		mMsgLayout.layout(left, top + lp.topMargin, right, top + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		
-//		int bw = bountyMarker.getMeasuredWidth();
-//		int bh = bountyMarker.getMeasuredHeight();
-//		int bl = left + (right - left - bw) / 2;
-//		int br = bl + bw;
-//		int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
-//		int btm = bto + bh;
-//	//	bountyMarker.layout(bl, bto, br, btm);
-		
-		
-		
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
-			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), top, right, bottomChildTop);
+			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), tsv.getTop(), right, tsv.getBottom());
 		} 
 		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
-			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() , right - liveInformationLayout.getMeasuredWidth(), bottomChildTop);
+			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() - tsv.getTop() , right - liveInformationLayout.getMeasuredWidth(), tsv.getBottom());
 		}
-
-
-		if (p2pVideoLayout.getVisibility() == View.VISIBLE) {
-			p2pVideoLayout.layout(left,bottomChildTop , right, bottom);
-		}
-			
+		
 	}
 
 	
@@ -783,19 +811,19 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 		
 		@Override
 		public void onStartTranslate() {
-			videoController.startTranslate();
+			videoPlayer.startTranslate();
 		}
 
 
 		@Override
 		public void onTranslate(float x, float y) {
-			videoController.translate(x, y);
+			videoPlayer.translate(x, y);
 		}
 		
 
 		@Override
 		public void onFinishTranslate() {
-			videoController.finishTranslate();
+			videoPlayer.finishTranslate();
 		}
 		
 	};
@@ -807,9 +835,17 @@ public class MapVideoLayout extends FrameLayout implements VideoControllerAPI{
 	}
 	
 	public enum ScreenType {
-		VIDEO_MAP, VIDEO_SHARE, VIDEO_SHARE_CONNECTION_REQUESTING, VIDEO_SHARE_MAP, VIDEO_SHARE_P2P, VIDEO_PUBLISHER_SHOW, VIDEO_WATCHING_AUDIO_CONNECTION;
+		VIDEO_MAP, 
+		VIDEO_SHARE,
+		VIDEO_SHARE_CONNECTION_REQUESTING, 
+		VIDEO_SHARE_MAP, 
+		VIDEO_SHARE_P2P_WATCHER, 
+		VIDEO_SHARE_P2P_PUBLISHER, 
+		VIDEO_PUBLISHER_SHOW, 
+		VIDEO_WATCHING_AUDIO_CONNECTION, 
+		INQUIRE_BIDING;
 	}
-	
+
 	enum TouchState {
 		IDLE, DRAGGING, FLYING;
 	}

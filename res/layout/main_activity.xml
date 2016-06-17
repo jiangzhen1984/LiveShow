@@ -4,13 +4,6 @@
     android:layout_height="match_parent" >
 
 
-    <include
-        android:id="@+id/title_bar_ly"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        layout="@layout/action_bar" />
-
     <FrameLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -25,6 +18,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         layout="@layout/bottom_button_layout" />
+    
+    
+    <include
+        android:id="@+id/title_bar_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/action_bar" />
+    
 
 
 </RelativeLayout>
