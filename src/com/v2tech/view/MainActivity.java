@@ -67,7 +67,6 @@ public class MainActivity extends BaseActivity implements
 	private void initMapviewLayout() {
 		mMapVideoLayout = new MapVideoLayout(this);
 
-		mMapVideoLayout.setPosInterface(presenter);
 		mMapVideoLayout.setRequestConnectLayoutListener(presenter);
 		mMapVideoLayout.setInterfactionBtnClickListener(presenter);
 		mMapVideoLayout.setLiveInformationLayoutListener(presenter);

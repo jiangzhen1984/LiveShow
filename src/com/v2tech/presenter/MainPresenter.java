@@ -66,8 +66,7 @@ import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
-
-MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
+		MarkerListener,
 		BottomButtonLayoutListener,
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
@@ -404,98 +403,98 @@ MapVideoLayout.LayoutPositionChangedListener, MarkerListener,
 
 	// /////////////MarkerListener
 
-	// //////////////////////////////////LayoutPositionChangedListener////////////////////////
-
-	@Override
-	public void onPreparedFlyingIn() {
-	}
-
-	@Override
-	public void onFlyingIn() {
-		if (isState(LOCAL_CAMERA_OPENING)) {
-			this.unsetState(LOCAL_CAMERA_OPENING);
-			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-					.getInstance().getCurrentUserId(), "", null);
-			duc.setSVHolder(ui.getCameraSurfaceView());
-			vs.requestCloseVideoDevice(duc, null);
-
-		}
-
-		if (isState(BOTTOM_LAYOUT_SHOW)) {
-			ui.showBottomLayout(true);
-			this.setState(BOTTOM_LAYOUT_SHOW);
-		}
-		this.setState(LIVER_SHOW_FLAG);
-	}
-
-	@Override
-	public void onPreparedFlyingOut() {
-	}
-
-	@Override
-	public void onFlyingOut() {
-		this.unsetState(LIVER_SHOW_FLAG);
-	}
-
-	@Override
-	public void onDrag() {
-		if (!cameraSurfaceViewMeasure) {
-			cameraSurfaceViewMeasure = true;
-		}
-		if (!isState(LOCAL_CAMERA_OPENING)) {
-
-			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-					.getInstance().getCurrentUserId(), "", null);
-			duc.setSVHolder(ui.getCameraSurfaceView());
-			VideoRecorder.VideoPreviewSurfaceHolder = ui.getCameraSurfaceView()
-					.getHolder();
-			vs.requestOpenVideoDevice(duc, null);
-			ui.showBottomLayout(false);
-			this.setState(LOCAL_CAMERA_OPENING);
-			this.unsetState(BOTTOM_LAYOUT_SHOW);
-		}
-
-	}
-
-	@Override
-	public void onVideoScreenClick() {
-		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
-			unsetState(VIDEO_SCREEN_BTN_FLAG);
-		} else {
-			setState(VIDEO_SCREEN_BTN_FLAG);
-		}
-		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
-			unsetState(VIDEO_BOTTOM_LY_FLAG);
-		} else {
-			setState(VIDEO_BOTTOM_LY_FLAG);
-		}
-		if (isState(FOLLOW_COUNT_SHOW_FLAG)) {
-			unsetState(FOLLOW_COUNT_SHOW_FLAG);
-		} else {
-			setState(FOLLOW_COUNT_SHOW_FLAG);
-		}
-
-		if (isState(LIVER_SHOW_FLAG)) {
-			unsetState(LIVER_SHOW_FLAG);
-		} else {
-			setState(LIVER_SHOW_FLAG);
-		}
-		if (isState(MESSAGE_MARQUEE_LY_SHOW)) {
-			unsetState(MESSAGE_MARQUEE_LY_SHOW);
-		} else {
-			setState(MESSAGE_MARQUEE_LY_SHOW);
-		}
-		ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG,
-				isState(VIDEO_SCREEN_BTN_FLAG));
-		ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG,
-				isState(VIDEO_BOTTOM_LY_FLAG));
-		ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG,
-				isState(FOLLOW_COUNT_SHOW_FLAG));
-		ui.showVideoScreentItem(LIVER_SHOW_FLAG, isState(LIVER_SHOW_FLAG));
-		ui.showVideoScreentItem(MESSAGE_MARQUEE_LY_SHOW,
-				isState(MESSAGE_MARQUEE_LY_SHOW));
-
-	}
+//	// //////////////////////////////////LayoutPositionChangedListener////////////////////////
+//
+//	@Override
+//	public void onPreparedFlyingIn() {
+//	}
+//
+//	@Override
+//	public void onFlyingIn() {
+//		if (isState(LOCAL_CAMERA_OPENING)) {
+//			this.unsetState(LOCAL_CAMERA_OPENING);
+//			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+//					.getInstance().getCurrentUserId(), "", null);
+//			duc.setSVHolder(ui.getCameraSurfaceView());
+//			vs.requestCloseVideoDevice(duc, null);
+//
+//		}
+//
+//		if (isState(BOTTOM_LAYOUT_SHOW)) {
+//			ui.showBottomLayout(true);
+//			this.setState(BOTTOM_LAYOUT_SHOW);
+//		}
+//		this.setState(LIVER_SHOW_FLAG);
+//	}
+//
+//	@Override
+//	public void onPreparedFlyingOut() {
+//	}
+//
+//	@Override
+//	public void onFlyingOut() {
+//		this.unsetState(LIVER_SHOW_FLAG);
+//	}
+//
+//	@Override
+//	public void onDrag() {
+//		if (!cameraSurfaceViewMeasure) {
+//			cameraSurfaceViewMeasure = true;
+//		}
+//		if (!isState(LOCAL_CAMERA_OPENING)) {
+//
+//			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+//					.getInstance().getCurrentUserId(), "", null);
+//			duc.setSVHolder(ui.getCameraSurfaceView());
+//			VideoRecorder.VideoPreviewSurfaceHolder = ui.getCameraSurfaceView()
+//					.getHolder();
+//			vs.requestOpenVideoDevice(duc, null);
+//			ui.showBottomLayout(false);
+//			this.setState(LOCAL_CAMERA_OPENING);
+//			this.unsetState(BOTTOM_LAYOUT_SHOW);
+//		}
+//
+//	}
+//
+//	@Override
+//	public void onVideoScreenClick() {
+//		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
+//			unsetState(VIDEO_SCREEN_BTN_FLAG);
+//		} else {
+//			setState(VIDEO_SCREEN_BTN_FLAG);
+//		}
+//		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
+//			unsetState(VIDEO_BOTTOM_LY_FLAG);
+//		} else {
+//			setState(VIDEO_BOTTOM_LY_FLAG);
+//		}
+//		if (isState(FOLLOW_COUNT_SHOW_FLAG)) {
+//			unsetState(FOLLOW_COUNT_SHOW_FLAG);
+//		} else {
+//			setState(FOLLOW_COUNT_SHOW_FLAG);
+//		}
+//
+//		if (isState(LIVER_SHOW_FLAG)) {
+//			unsetState(LIVER_SHOW_FLAG);
+//		} else {
+//			setState(LIVER_SHOW_FLAG);
+//		}
+//		if (isState(MESSAGE_MARQUEE_LY_SHOW)) {
+//			unsetState(MESSAGE_MARQUEE_LY_SHOW);
+//		} else {
+//			setState(MESSAGE_MARQUEE_LY_SHOW);
+//		}
+//		ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG,
+//				isState(VIDEO_SCREEN_BTN_FLAG));
+//		ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG,
+//				isState(VIDEO_BOTTOM_LY_FLAG));
+//		ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG,
+//				isState(FOLLOW_COUNT_SHOW_FLAG));
+//		ui.showVideoScreentItem(LIVER_SHOW_FLAG, isState(LIVER_SHOW_FLAG));
+//		ui.showVideoScreentItem(MESSAGE_MARQUEE_LY_SHOW,
+//				isState(MESSAGE_MARQUEE_LY_SHOW));
+//
+//	}
 
 	// ////////////////////////////////LayoutPositionChangedListener/////////////////
 
