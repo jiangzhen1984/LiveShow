@@ -26,6 +26,7 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BountyMarkerWidget;
 import com.v2tech.widget.InquiryBidWidget;
+import com.v2tech.widget.InquiryBidWidget.InquiryBidWidgetListener;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout;
@@ -389,6 +390,10 @@ public class MapVideoLayout extends FrameLayout {
 	
 	public void setVideoWatcherListLayoutListener(VideoWatcherListLayoutListener listener) {
 		this.liveWatcherLayout.setListener(listener);
+	}
+	
+	public void setInquiryBidWidgetListener(InquiryBidWidgetListener listener) {
+		this.inquiryBidWidget.setListener(listener);
 	}
 	
 	

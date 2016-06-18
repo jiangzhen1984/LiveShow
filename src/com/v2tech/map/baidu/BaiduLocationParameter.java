@@ -83,9 +83,8 @@ public class BaiduLocationParameter extends LocationParameter {
 	}
 
 
-
-	public void setEnableSelfLocation(boolean enableSelfLocation) {
-		this.enableSelfLocation = enableSelfLocation;
+	public  void enableMyLococation(boolean enable) {
+		this.enableSelfLocation = enable;
 	}
 
 

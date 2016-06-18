@@ -24,6 +24,7 @@ public class BaiduLocation extends MapLocation {
 		this.ll = ll;
 		this.level = level;
 	}
+	
 
 	public  double getLat() {
 		return ll.latitude;

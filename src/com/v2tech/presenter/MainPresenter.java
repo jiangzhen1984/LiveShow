@@ -21,7 +21,6 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.V2.jni.util.V2Log;
-import com.v2tech.map.LSLocation;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
@@ -46,6 +45,7 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.view.InquiryActionActivity;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
@@ -59,6 +59,7 @@ import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.msg.VMessageTextItem;
 import com.v2tech.widget.BottomButtonLayout.BottomButtonLayoutListener;
+import com.v2tech.widget.InquiryBidWidget.InquiryBidWidgetListener;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
@@ -77,7 +78,7 @@ public class MainPresenter extends BasePresenter implements
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
 		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,
 		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler,
-		LiveWathcingHandler, MapStatusListener {
+		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener {
 
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -406,12 +407,6 @@ public class MainPresenter extends BasePresenter implements
 		return true;
 	}
 
-	@Override
-	public void onLocated(MapLocation lo) {
-		this.currentLocation = lo;
-		this.updateMapCenter(lo, lo.getParameter());
-		reportLocation();
-	}
 
 	// /////////////MarkerListener
 
@@ -918,10 +913,34 @@ public class MainPresenter extends BasePresenter implements
 	
 	public void onMapStatusUpdated(MapStatus ms) {
 		MapLocation ml = ms.getCenter();
-		mapInstance.getLocationName(new LSLocation(ml.getLat(), ml.getLng()), new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
+		mapInstance.getLocationName(ml, new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
+	}
+	
+
+	@Override
+	public void onSelfLocationUpdated(MapLocation ml) {
+		this.currentLocation = ml;
+		this.updateMapCenter(ml, ml.getParameter());
+		reportLocation();
 	}
 	
 	///////////MapStatusListener///////////////////////////////////////////////////
+	
+	
+	///////////InquiryBidWidgetListener///////////////////////////////////////////////////
+	public void onInquiryLauchBtnClicked(View v) {
+		//TODO send inquiry
+		
+		MapLocation ml = mapInstance.getMapCenter();
+		//TODO 
+		Intent i = new Intent();
+		i.setClass(context, InquiryActionActivity.class);
+		i.putExtra("lat", ml.getLat());
+		i.putExtra("lng", ml.getLng());
+		context.startActivity(i, null);
+	}
+	
+	///////////InquiryBidWidgetListener///////////////////////////////////////////////////
 
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();

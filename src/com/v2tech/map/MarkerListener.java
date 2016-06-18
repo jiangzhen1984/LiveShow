@@ -5,6 +5,4 @@ public interface MarkerListener {
 	
 	public boolean onMarkerClickedListener(Marker m);
 	
-	
-	public void onLocated(MapLocation lo);
 }

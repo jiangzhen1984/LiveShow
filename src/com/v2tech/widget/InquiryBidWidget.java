@@ -14,6 +14,8 @@ public class InquiryBidWidget extends RelativeLayout implements OnClickListener 
 	private EditText tipsEdit;
 	private EditText wordEdit;
 	private View inquiryLaunchBtn;
+	
+	private InquiryBidWidgetListener listener;
 
 	public InquiryBidWidget(Context context) {
 		super(context);
@@ -57,15 +59,35 @@ public class InquiryBidWidget extends RelativeLayout implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
+		if (listener == null) {
+			return;
+		}
 		int id = v.getId();
 		switch(id) {
 		case R.id.inquiry_launch_btn:
+			listener.onInquiryLauchBtnClicked(v);
 			break;
 		}
 	}
+	
+	
+	
 
 	
+	public void setListener(InquiryBidWidgetListener listener) {
+		this.listener = listener;
+	}
+
+	public void enableLaunchBtn(boolean enable) {
+		inquiryLaunchBtn.setEnabled(enable);
+		wordEdit.setEnabled(enable);
+		tipsEdit.setEnabled(enable);
+	}
 	
+	
+	public interface InquiryBidWidgetListener {
+		public void onInquiryLauchBtnClicked(View v);
+	}
 	
 	
 }

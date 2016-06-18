@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity implements
 		mMapVideoLayout.setP2PVideoMainLayoutListener(presenter);
 		mMapVideoLayout.setMessageMarqueeLayoutListener(presenter);
 		mMapVideoLayout.setVideoShareBtnLayoutListener(presenter);
+		mMapVideoLayout.setInquiryBidWidgetListener(presenter);
 		
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(

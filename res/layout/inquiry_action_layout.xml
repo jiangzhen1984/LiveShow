@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/title_bar_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/action_bar" />
+
+    <FrameLayout
+        android:id="@+id/inquiry_action_layout_map_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" >
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/inquiry_map_location_tips_search_text_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/inquiry_action_layout_map_root"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/map_location_tips_widget_et_bg"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/map_location_tips_text"
+        android:textColor="#a0a0a0"
+        android:textSize="13.5sp" >
+    </EditText>
+
+    <Button
+        android:id="@+id/inquiry_action_accept_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:background="@drawable/accept_inqury_request_btn_bg"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/inquiry_action_accept_btn_text"
+        android:textColor="#ffffff" />
+
+    <LinearLayout
+         android:id="@+id/inquiry_action_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/inquiry_audio_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/inquiry_action_audio_btn_bg_selector"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/inquiry_action_audio_btn_text"
+            android:textColor="#ffffff"
+            android:textSize="13.5sp" />
+        
+        <Button
+            android:id="@+id/inquiry_video_share_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/inquiry_action_video_share_btn_bg_selector"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/inquiry_action_video_share_btn_text"
+            android:textColor="#000000"
+            android:textSize="13.5sp" />
+    </LinearLayout>
+
+</RelativeLayout>

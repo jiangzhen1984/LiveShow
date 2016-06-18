@@ -22,6 +22,8 @@ public interface MapAPI {
 	public MapLocation buildLocation(Object obj);
 	
 	
+	public MapLocation buildLocation(double lat, double lng);
+	
 	public void startLocate(LocationParameter parameter);
 	
 	
@@ -36,10 +38,13 @@ public interface MapAPI {
 	public void registerMakerListener(MarkerListener listener);
 	
 	
-	public void getLocationName(LSLocation location, MessageListener listener);
+	public void getLocationName(MapLocation location, MessageListener listener);
 	
 	
-	public LSLocation getMapCenter();
+	public MapLocation getMapCenter();
+	
+	
+	public void showRoadMap(MapLocation from, MapLocation to);
 	
 	
 	public void addMapStatusListener(MapStatusListener listener);

@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -31,7 +32,12 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.v2tech.map.LSLocation;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.WalkingRouteLine;
+import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
@@ -47,7 +53,7 @@ import com.v2tech.vo.Watcher;
 
 public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
-		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
+		OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener, OnGetRoutePlanResultListener {
 	
 	private static final int GET_ADDS_NAME = 1;
 	
@@ -61,6 +67,9 @@ public class BaiduMapImpl implements MapAPI,
 
 	private LocationClient locationClient;
 	private GeoCoder mSearchAPI;
+	private RoutePlanSearch roadMapQueryAPI;
+	
+	private WalkingRouteOverlay  lastOverlay;
 
 	// ///listener///
 	private MarkerListener markerListener;
@@ -72,6 +81,9 @@ public class BaiduMapImpl implements MapAPI,
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
 	//	mapView = new WeakReference<MapView>(mv);
 		this.mapImpl.setOnMapStatusChangeListener(this);
+		
+		roadMapQueryAPI = RoutePlanSearch.newInstance();
+		roadMapQueryAPI.setOnGetRoutePlanResultListener(this);
 	}
 
 	public BaiduMap getMapImpl() {
@@ -163,6 +175,10 @@ public class BaiduMapImpl implements MapAPI,
 			throw new RuntimeException(" obj is not latlng instance");
 		}
 	}
+	
+	public MapLocation buildLocation(double lat, double lng) {
+		return new BaiduLocation(new LatLng(lat, lng));
+	}
 
 	@Override
 	public void animationSearch(String text) {
@@ -217,9 +233,9 @@ public class BaiduMapImpl implements MapAPI,
 	}
 	
 	
-	public LSLocation getMapCenter() {
+	public MapLocation getMapCenter() {
 		LatLng tar = mapImpl.getMapStatus().target;
-		return new LSLocation(tar.latitude,tar.longitude); 
+		return new BaiduLocation(tar); 
 	}
 	
 	
@@ -268,6 +284,17 @@ public class BaiduMapImpl implements MapAPI,
 	}
 	
 	
+	@Override
+	public void showRoadMap(MapLocation from, MapLocation to) {
+		if (lastOverlay != null) {
+			lastOverlay.removeFromMap();
+		}
+		PlanNode stNode = PlanNode.withLocation(new LatLng(from.getLat(), from.getLng()));
+	    PlanNode enNode = PlanNode.withLocation(new LatLng(to.getLat(), to.getLng()));
+		roadMapQueryAPI.walkingSearch((new WalkingRoutePlanOption())
+                .from(stNode)
+                .to(enNode));
+	}
 	
 
 	// /////////////////////BaiduMap.OnMapStatusChangeListener
@@ -295,11 +322,11 @@ public class BaiduMapImpl implements MapAPI,
 	}
 	
 	
-	public void getLocationName(LSLocation location, MessageListener listener) {
+	public void getLocationName(MapLocation location, MessageListener listener) {
 		if (listener != null) {
 			pendingListener.put(GET_ADDS_NAME, new WeakReference<MessageListener>(listener));
 		}
-		mSearchAPI.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.lat, location.lng)));
+		mSearchAPI.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.getLat(), location.getLng())));
 	}
 
 	// //////////////////BaiduMap.OnMapStatusChangeListener
@@ -307,18 +334,24 @@ public class BaiduMapImpl implements MapAPI,
 	// /////////////////BDLocationListener
 	@Override
 	public void onReceiveLocation(BDLocation location) {
-		if (markerListener != null) {
-			LatLng ll = new LatLng(location.getLatitude(),
-					location.getLongitude());
-			markerListener.onLocated(new BaiduLocation(ll));
-			if(mapImpl.isMyLocationEnabled()) {
-//				MyLocationData locData = new MyLocationData.Builder()
-//				.accuracy(location.getRadius())
-//				// 此处设置开发者获取到的方向信息，顺时针0-360
-//				.direction(100).latitude(location.getLatitude())
-//				.longitude(location.getLongitude()).build();
-//				mapImpl.setMyLocationData(locData);
+		LatLng ll = new LatLng(location.getLatitude(),
+				location.getLongitude());
+		MapLocation ml = new BaiduLocation(ll);
+		if(mapImpl.isMyLocationEnabled()) {
+//			MyLocationData locData = new MyLocationData.Builder()
+//			.accuracy(location.getRadius())
+//			// 此处设置开发者获取到的方向信息，顺时针0-360
+//			.direction(100).latitude(location.getLatitude())
+//			.longitude(location.getLongitude()).build();
+//			mapImpl.setMyLocationData(locData);
+		}
+		
+		for (int i = 0; i < this.statusListener.size(); i++) {
+			WeakReference<MapStatusListener> wr = statusListener.get(i);
+			if (wr.get() == null) {
+				continue;
 			}
+			wr.get().onSelfLocationUpdated(ml);
 		}
 	}
 
@@ -345,5 +378,36 @@ public class BaiduMapImpl implements MapAPI,
 		
 	}
 	// ////////////////////// OnGetGeoCoderResultListener
+	
+	// ////////////////////// OnGetRoutePlanResultListener
+	@Override
+	public void onGetWalkingRouteResult(WalkingRouteResult result) {
+		
+        if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+            //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+            //result.getSuggestAddrInfo()
+            return;
+        }
+        if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+        	WalkingRouteLine route = result.getRouteLines().get(0);
+            WalkingRouteOverlay overlay = new RoadMapOverlay(mapImpl);
+            lastOverlay = overlay;
+            overlay.setData(route);
+            overlay.addToMap();
+            overlay.zoomToSpan();
+        }
+	}
+	
+	@Override
+	public void onGetTransitRouteResult(
+			com.baidu.mapapi.search.route.TransitRouteResult arg0) {
 
+	}
+
+	@Override
+	public void onGetDrivingRouteResult(
+			com.baidu.mapapi.search.route.DrivingRouteResult arg0) {
+
+	}
+	// ////////////////////// OnGetRoutePlanResultListener
 }
