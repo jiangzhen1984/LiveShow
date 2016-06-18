@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.InquiryBidWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:padding="15dp" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/inquiry_bid_text1"
+        android:textColor="#000000"
+        android:textSize="13.5sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="30dp"
+        android:text="@string/inquiry_bid_text2"
+        android:textColor="#000000"
+        android:textSize="13.5sp" />
+
+    <EditText
+        android:id="@+id/inquiry_bid_tips_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="30dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:background="@drawable/inquiry_edit_bg"
+        android:hint="@string/inquiry_bid_text1_hint"
+        android:ems="10" >
+    </EditText>
+
+    <EditText
+        android:id="@+id/inquiry_bid_word_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignLeft="@+id/inquiry_bid_tips_et"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/inquiry_edit_bg"
+        android:hint="@string/inquiry_bid_text2_hint"
+        android:ems="10" >
+    </EditText>
+
+    <Button
+        android:id="@+id/inquiry_launch_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/inquiry_bid_tips_et"
+        android:background="@drawable/btn_green_selector"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/textView2"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="#ffffff"
+        android:textSize="13.5sp"
+        android:text="@string/inquiry_bid_btn_text" />
+
+</com.v2tech.widget.InquiryBidWidget>

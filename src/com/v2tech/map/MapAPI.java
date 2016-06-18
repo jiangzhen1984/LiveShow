@@ -40,5 +40,11 @@ public interface MapAPI {
 	
 	
 	public LSLocation getMapCenter();
+	
+	
+	public void addMapStatusListener(MapStatusListener listener);
+	
+	
+	public void removeMapStatusListener(MapStatusListener listener);
 
 }

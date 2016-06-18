@@ -120,6 +120,13 @@
     <string name="voice_record_text_occupcation">占位占位占位占位占位</string>
     <string name="p2p_message_send_btn_text">发送</string>
     
+    <string name="inquiry_bid_text1">悬赏金额</string>
+    <string name="inquiry_bid_text1_hint">填写金额（元）</string>
+    <string name="inquiry_bid_text2">附言</string>
+    <string name="inquiry_bid_text2_hint">添加悬赏附言</string>
+    <string name="inquiry_bid_btn_text">立即悬赏</string>
+    <string name="map_location_tips_text">请输入关键字</string>
+    
    
     
 

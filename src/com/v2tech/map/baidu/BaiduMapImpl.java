@@ -1,6 +1,8 @@
 package com.v2tech.map.baidu;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import com.v2tech.map.LSLocation;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
+import com.v2tech.map.MapStatusListener;
 import com.v2tech.map.Marker;
 import com.v2tech.map.MarkerListener;
 import com.v2tech.map.Updater;
@@ -48,7 +51,9 @@ public class BaiduMapImpl implements MapAPI,
 	
 	private static final int GET_ADDS_NAME = 1;
 	
-	private static LongSparseArray<WeakReference<MessageListener>> pendingListener = new LongSparseArray<WeakReference<MessageListener>>();
+	private LongSparseArray<WeakReference<MessageListener>> pendingListener = new LongSparseArray<WeakReference<MessageListener>>();
+	
+	private List<WeakReference<MapStatusListener>> statusListener = new ArrayList<WeakReference<MapStatusListener>>();
 	
 	//private WeakReference<MapView> mapView;
 
@@ -216,6 +221,32 @@ public class BaiduMapImpl implements MapAPI,
 		LatLng tar = mapImpl.getMapStatus().target;
 		return new LSLocation(tar.latitude,tar.longitude); 
 	}
+	
+	
+	public void addMapStatusListener(MapStatusListener listener) {
+		statusListener.add(new WeakReference<MapStatusListener>(listener));
+	}
+	
+	
+	public void removeMapStatusListener(MapStatusListener listener) {
+		for (int i = 0; i < statusListener.size(); i++) {
+			WeakReference<MapStatusListener> wr = statusListener.get(i);
+			if (wr == null) {
+				continue;
+			}
+			if (wr.get() == null) {
+				statusListener.remove(i);
+				i--;
+				continue;
+			}
+			
+			if (wr.get() == listener) {
+				statusListener.remove(i);
+				break;
+			}
+		}
+	}
+	
 
 	class BaiduUpdater extends Updater {
 		MapStatusUpdate u;
@@ -247,6 +278,15 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onMapStatusChangeFinish(MapStatus status) {
+		V2Log.i("===>>>>>" + status.target+"  ===>"+ status.targetScreen);
+		BaiduMapStatus bms = new BaiduMapStatus(status);
+		for (int i = 0; i < statusListener.size(); i++) {
+			WeakReference<MapStatusListener> wr = statusListener.get(i);
+			if (wr.get() != null) {
+				wr.get().onMapStatusUpdated(bms);
+			}
+			
+		}
 	}
 
 	@Override

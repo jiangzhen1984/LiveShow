@@ -84,6 +84,7 @@ public class MainActivity extends BaseActivity implements
 	
 	private void initTitleBarButtonLayout() {
 		 this.mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
+		 mPersonalButton.setTag(MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL);
 		 this.mPersonalButton.setImageResource(R.drawable.user_icon);
 		 mPersonalButton.setOnClickListener(this);
 
@@ -180,7 +181,12 @@ public class MainActivity extends BaseActivity implements
 			presenter.videoShareButtonClicked();
 			break;
 		case R.id.title_bar_left_btn:
-			presenter.personelButtonClicked();
+			int tag = (Integer)v.getTag();
+			if (tag == MainPresenter.TITLE_BAR_BTN_TYPE_BACK) {
+				presenter.titleBackButtonClicked();
+			} else if (tag == MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL) {
+				presenter.personelButtonClicked();
+			}
 			break;
 		}
 	}
@@ -263,15 +269,6 @@ public class MainActivity extends BaseActivity implements
 
 	
 	
-
-
-	@Override
-	public void videoShareLayoutFlyout() {
-		//mMapVideoLayout.requestUpFlying();
-	}
-
-
-	
 	@Override
 	public SurfaceView getCameraSurfaceView() {
 		//return videoShareLayout.getLocalCameraView();
@@ -332,13 +329,10 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	
-	public void queuedWatchingMessage(CharSequence msg) {
+	public void queuedLiveMessage(CharSequence msg) {
 		mMapVideoLayout.addNewMessage(msg);
 	}
 	
-	public void queuedPublisingMessage(CharSequence msg) {
-		//videoShareLayout.addNewMessage(msg);
-	}
 	
 	public void updateBalanceSum(final float num) {
 		mMapVideoLayout.updateBalanceSum(num);
@@ -491,6 +485,26 @@ public class MainActivity extends BaseActivity implements
 	
 	public VideoPlayer getVideoPlayer() {
 		return mMapVideoLayout.getVideoPlayer();
+	}
+	
+	
+	public void updateTitleBarBtn(int type) {
+		mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
+		mPersonalButton.setTag(type);
+		if (type == MainPresenter.TITLE_BAR_BTN_TYPE_BACK) {
+			 mPersonalButton.setImageResource(R.drawable.title_bar_return_btn);
+		} else if (type == MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL) {
+			 mPersonalButton.setImageResource(R.drawable.user_icon);
+		}
+	}
+	
+	public void cancelInquireState() {
+		mMapVideoLayout.showInquiryWidget(false);
+	}
+	
+	
+	public void updateMapAddressText(String text) {
+		mMapVideoLayout.updateMapLocationAddress(text);
 	}
 	
 	/////////////////////////////////////////////////////////////

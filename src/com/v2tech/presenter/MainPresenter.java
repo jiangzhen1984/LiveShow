@@ -21,9 +21,12 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.map.LSLocation;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
+import com.v2tech.map.MapStatus;
+import com.v2tech.map.MapStatusListener;
 import com.v2tech.map.Marker;
 import com.v2tech.map.MarkerListener;
 import com.v2tech.service.AsyncResult;
@@ -74,7 +77,7 @@ public class MainPresenter extends BasePresenter implements
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
 		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,
 		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler,
-		LiveWathcingHandler {
+		LiveWathcingHandler, MapStatusListener {
 
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -88,6 +91,7 @@ public class MainPresenter extends BasePresenter implements
 	private static final int CANCEL_PUBLISHING_REQUEST_CALLBACK = 12;
 	private static final int WATCHER_DEVICE_LISTENER = 14;
 	private static final int WATCHER_LIST = 15;
+	private static final int QUERY_MAP_LOCATION_CALL_BACK = 16;
 
 	private static final int UI_HANDLE_UPDATE_VIDEO_SCREEN = 1;
 	private static final int UI_HANDLE_AUDIO_CALL_TIMEOUT = 3;
@@ -115,6 +119,10 @@ public class MainPresenter extends BasePresenter implements
 	
 	public static final int WATCHER_FLAG_PUBLISHER = 1;
 	public static final int WATCHER_FLAG_WATCHER = 2;
+	
+	
+	public static final int TITLE_BAR_BTN_TYPE_BACK = 1;
+	public static final int TITLE_BAR_BTN_TYPE_PERSONEL = 2;
 
 	private Context context;
 	private MainPresenterUI ui;
@@ -126,13 +134,13 @@ public class MainPresenter extends BasePresenter implements
 	private InquiryService is;
 
 	private int videoScreenState;
-	private boolean cameraSurfaceViewMeasure = false;
 
-	private MapLocation currentLocation;
 
 	// ///////////////////////////////
 	private MapAPI mapInstance;
 
+	private MapLocation currentLocation;
+	
 	private Handler uiHandler;
 
 	// ///////////////////////////////////////
@@ -172,8 +180,6 @@ public class MainPresenter extends BasePresenter implements
 
 		public void updateVideShareButtonText(boolean publish);
 
-		public void videoShareLayoutFlyout();
-
 		public SurfaceView getCameraSurfaceView();
 
 		public SurfaceView getP2PMainSurface();
@@ -186,10 +192,8 @@ public class MainPresenter extends BasePresenter implements
 
 		public void showDebugMsg(String msg);
 
-		public void queuedWatchingMessage(CharSequence msg);
+		public void queuedLiveMessage(CharSequence msg);
 		
-		public void queuedPublisingMessage(CharSequence msg);
-
 		public void updateWatchNum(int num);
 
 		public void updateRendNum(int num);
@@ -209,6 +213,9 @@ public class MainPresenter extends BasePresenter implements
 		public void closeVideo(boolean flag);
 
 		public void doFinish();
+		
+		// 1 for back btn 2 for personel btn
+		public void updateTitleBarBtn(int type);
 
 		// 1 for audio 2 for video
 		public void updateConnectLayoutBtnType(int type);
@@ -232,13 +239,16 @@ public class MainPresenter extends BasePresenter implements
 		public VideoPlayer getVideoPlayer();
 		
 		public void showMap(boolean flag);
+		
+		public void cancelInquireState();
+		
+		public void updateMapAddressText(String text);
 	}
 
 	public void videoShareButtonClicked() {
 		if (isState(PUBLISHING_FLAG)) {
 			unsetState(PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
-			ui.videoShareLayoutFlyout();
 			vs.quitConference(currentLive, new MessageListener(h,
 					CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
@@ -255,6 +265,12 @@ public class MainPresenter extends BasePresenter implements
 		} else {
 			ui.showPersonelUI();
 		}
+	}
+	
+	
+	public void titleBackButtonClicked() {
+		//FIXME check UI Type first
+		ui.cancelInquireState();
 	}
 
 	public void onKeyboardChildUIFinished(int ret, Intent data) {
@@ -310,6 +326,7 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onUIDestroyed() {
+		mapInstance.removeMapStatusListener(this);
 		us.clearCalledBack();
 		vs.clearCalledBack();
 		ls.clearCalledBack();
@@ -398,100 +415,6 @@ public class MainPresenter extends BasePresenter implements
 
 	// /////////////MarkerListener
 
-//	// //////////////////////////////////LayoutPositionChangedListener////////////////////////
-//
-//	@Override
-//	public void onPreparedFlyingIn() {
-//	}
-//
-//	@Override
-//	public void onFlyingIn() {
-//		if (isState(LOCAL_CAMERA_OPENING)) {
-//			this.unsetState(LOCAL_CAMERA_OPENING);
-//			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-//					.getInstance().getCurrentUserId(), "", null);
-//			duc.setSVHolder(ui.getCameraSurfaceView());
-//			vs.requestCloseVideoDevice(duc, null);
-//
-//		}
-//
-//		if (isState(BOTTOM_LAYOUT_SHOW)) {
-//			ui.showBottomLayout(true);
-//			this.setState(BOTTOM_LAYOUT_SHOW);
-//		}
-//		this.setState(LIVER_SHOW_FLAG);
-//	}
-//
-//	@Override
-//	public void onPreparedFlyingOut() {
-//	}
-//
-//	@Override
-//	public void onFlyingOut() {
-//		this.unsetState(LIVER_SHOW_FLAG);
-//	}
-//
-//	@Override
-//	public void onDrag() {
-//		if (!cameraSurfaceViewMeasure) {
-//			cameraSurfaceViewMeasure = true;
-//		}
-//		if (!isState(LOCAL_CAMERA_OPENING)) {
-//
-//			UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-//					.getInstance().getCurrentUserId(), "", null);
-//			duc.setSVHolder(ui.getCameraSurfaceView());
-//			VideoRecorder.VideoPreviewSurfaceHolder = ui.getCameraSurfaceView()
-//					.getHolder();
-//			vs.requestOpenVideoDevice(duc, null);
-//			ui.showBottomLayout(false);
-//			this.setState(LOCAL_CAMERA_OPENING);
-//			this.unsetState(BOTTOM_LAYOUT_SHOW);
-//		}
-//
-//	}
-//
-//	@Override
-//	public void onVideoScreenClick() {
-//		if (isState(VIDEO_SCREEN_BTN_FLAG)) {
-//			unsetState(VIDEO_SCREEN_BTN_FLAG);
-//		} else {
-//			setState(VIDEO_SCREEN_BTN_FLAG);
-//		}
-//		if (isState(VIDEO_BOTTOM_LY_FLAG)) {
-//			unsetState(VIDEO_BOTTOM_LY_FLAG);
-//		} else {
-//			setState(VIDEO_BOTTOM_LY_FLAG);
-//		}
-//		if (isState(FOLLOW_COUNT_SHOW_FLAG)) {
-//			unsetState(FOLLOW_COUNT_SHOW_FLAG);
-//		} else {
-//			setState(FOLLOW_COUNT_SHOW_FLAG);
-//		}
-//
-//		if (isState(LIVER_SHOW_FLAG)) {
-//			unsetState(LIVER_SHOW_FLAG);
-//		} else {
-//			setState(LIVER_SHOW_FLAG);
-//		}
-//		if (isState(MESSAGE_MARQUEE_LY_SHOW)) {
-//			unsetState(MESSAGE_MARQUEE_LY_SHOW);
-//		} else {
-//			setState(MESSAGE_MARQUEE_LY_SHOW);
-//		}
-//		ui.showVideoScreentItem(VIDEO_SCREEN_BTN_FLAG,
-//				isState(VIDEO_SCREEN_BTN_FLAG));
-//		ui.showVideoScreentItem(VIDEO_BOTTOM_LY_FLAG,
-//				isState(VIDEO_BOTTOM_LY_FLAG));
-//		ui.showVideoScreentItem(FOLLOW_COUNT_SHOW_FLAG,
-//				isState(FOLLOW_COUNT_SHOW_FLAG));
-//		ui.showVideoScreentItem(LIVER_SHOW_FLAG, isState(LIVER_SHOW_FLAG));
-//		ui.showVideoScreentItem(MESSAGE_MARQUEE_LY_SHOW,
-//				isState(MESSAGE_MARQUEE_LY_SHOW));
-//
-//	}
-
-	// ////////////////////////////////LayoutPositionChangedListener/////////////////
 
 	// //////////////VideoWatcherListLayoutListener
 
@@ -869,13 +792,7 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	public void onLiveMessage(long liveId, long uid, VMessage vm) {
-		if (isState(WATCHING_FLAG) ) {
-			ui.queuedWatchingMessage(MessageUtil.buildContent(context, vm));
-			return;
-		} else if (isState(PUBLISHING_FLAG)) {
-			ui.queuedPublisingMessage(MessageUtil.buildContent(context, vm));
-		}
-		
+		ui.queuedLiveMessage(MessageUtil.buildContent(context, vm));
 	}
 
 	public void onP2PMessage(VMessage vm) {
@@ -947,12 +864,25 @@ public class MainPresenter extends BasePresenter implements
 	public void onUITypeChanged(ScreenType screenType) {
 		switch (screenType) {
 		case INQUIRE_BIDING:
+			ui.showBottomLayout(false);
+			this.unsetState(BOTTOM_LAYOUT_SHOW);
+			//Update title to back
+			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_BACK);
+			mapInstance.getLocationName(mapInstance.getMapCenter(), new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
 			break;
 		case VIDEO_MAP:
+			if (isState(LOCAL_CAMERA_OPENING)) {
+				UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+						.getInstance().getCurrentUserId(), "", null);
+				vs.requestCloseVideoDevice(duc, null);
+				unsetState(LOCAL_CAMERA_OPENING);
+						
+			}
 			if (isState(PUBLISHING_FLAG)) {
 				videoShareButtonClicked();
 			}
 			setState(WATCHING_FLAG);
+			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_PERSONEL);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			break;
@@ -982,6 +912,16 @@ public class MainPresenter extends BasePresenter implements
 	}
 	///////////UITypeStatusChangedListener///////////////////////////////////////////////////
 	
+	
+	
+	///////////MapStatusListener///////////////////////////////////////////////////
+	
+	public void onMapStatusUpdated(MapStatus ms) {
+		MapLocation ml = ms.getCenter();
+		mapInstance.getLocationName(new LSLocation(ml.getLat(), ml.getLng()), new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
+	}
+	
+	///////////MapStatusListener///////////////////////////////////////////////////
 
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();
@@ -1043,6 +983,7 @@ public class MainPresenter extends BasePresenter implements
 
 		mapInstance = ui.getMainMap();
 		mapInstance.registerMakerListener(this);
+		mapInstance.addMapStatusListener(this);
 
 	}
 
@@ -1088,7 +1029,7 @@ public class MainPresenter extends BasePresenter implements
 				System.currentTimeMillis()));
 		new VMessageTextItem(vmsg, text);
 		vs.sendMessage(vmsg);
-		ui.queuedWatchingMessage(text);
+		ui.queuedLiveMessage(text);
 	}
 
 	private void handSearchLiveCallback(SearchLiveResponse p) {
@@ -1175,7 +1116,6 @@ public class MainPresenter extends BasePresenter implements
 				return;
 			}
 			if (uid == this.currentLive.getPublisher().getmUserId()) {
-				//TODO update
 				if (vpController == null) {
 					vpController = ui.getVideoPlayer();
 				}
@@ -1285,6 +1225,9 @@ public class MainPresenter extends BasePresenter implements
 				break;
 			case UI_HANDLE_AUDIO_CALL_TIMEOUT:
 				mp.handleRequestTimeOut();
+				break;
+			case QUERY_MAP_LOCATION_CALL_BACK:
+				mp.ui.updateMapAddressText(((AsyncResult)msg.obj).getResult().toString());
 				break;
 			}
 		}
