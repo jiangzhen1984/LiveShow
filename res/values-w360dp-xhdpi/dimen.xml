@@ -48,5 +48,9 @@
     
      <dimen name="liver_interaction_personel_btn_margin_hor">10dp</dimen>
      <dimen name="liver_interaction_personel_btn_text_size">16sp</dimen>
+     <dimen name="p2p_video_btn_margin_bottom">40dp</dimen>
+     <dimen name="p2p_video_btn_margin_left">40dp</dimen>
+     <dimen name="p2p_video_btn_margin_right">40dp</dimen>
+      <dimen name="p2p_video_name_text_size">13.5sp</dimen>
 
 </resources>

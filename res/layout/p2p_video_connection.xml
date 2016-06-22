@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/title_bar_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/action_bar" />
+
+    <RelativeLayout
+        android:id="@+id/p2p_video_ringing_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/p2p_video_calling_ly_bg" >
+
+        <ImageView
+            android:id="@+id/p2p_video_ringing_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/avatar_female" />
+
+        <TextView
+            android:id="@+id/p2p_video_ringing_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/p2p_video_ringing_avatar"
+            android:layout_centerHorizontal="true"
+            android:text="TextView"
+            android:textColor="#000000"
+            android:textSize="@dimen/p2p_video_name_text_size" />
+
+        <ImageView
+            android:id="@+id/p2p_video_ringing_hangoff_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
+            android:layout_marginLeft="@dimen/p2p_video_btn_margin_left"
+            android:src="@drawable/p2p_video_hangoff_btn" />
+
+        <ImageView
+            android:id="@+id/p2p_video_ringing_accept_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
+            android:layout_marginRight="@dimen/p2p_video_btn_margin_right"
+            android:src="@drawable/p2p_video_accept_btn" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/p2p_video_calling_connection_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar_ly"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5" >
+
+            <SurfaceView
+                android:id="@+id/p2p_video_remote_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@color/p2p_video_calling_ly_bg" >
+
+                <ImageView
+                    android:id="@+id/p2p_video_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/avatar_female" />
+
+                <TextView
+                    android:id="@+id/p2p_video_calling_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/p2p_video_avatar"
+                    android:layout_centerHorizontal="true"
+                    android:text="TextView"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/p2p_video_name_text_size" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5" >
+
+            <SurfaceView
+                android:id="@+id/p2p_video_local_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/p2p_video_connection_hangoff_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
+                android:layout_marginLeft="@dimen/p2p_video_btn_margin_left"
+                android:src="@drawable/p2p_video_hangoff_btn" />
+
+            <ImageView
+                android:id="@+id/p2p_video_connection_accept_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
+                android:layout_marginRight="@dimen/p2p_video_btn_margin_right"
+                android:src="@drawable/p2p_video_accept_btn" />
+
+            <ImageView
+                android:id="@+id/p2p_video_waiting_hangoff_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
+                android:src="@drawable/p2p_video_hangoff_btn" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

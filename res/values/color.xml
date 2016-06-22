@@ -57,5 +57,7 @@
     <color name="p2p_audio_watcher_ly_bg">#f0eff5</color>
     <color name="liver_iteraction_personel_text_color">#a0a0a0</color>
     <color name="map_location_tips_widget_bg">#f0eff5</color>
+    
+    <color name="p2p_video_calling_ly_bg">#f0eff5</color>
 
 </resources>

@@ -53,7 +53,7 @@
         android:textColor="#ffffff" />
 
     <LinearLayout
-         android:id="@+id/inquiry_action_btn_layout"
+        android:id="@+id/inquiry_action_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -62,12 +62,25 @@
         android:layout_marginLeft="35dp"
         android:layout_marginRight="35dp"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/inquiry_audio_btn"
-            android:layout_width="match_parent"
+            android:id="@+id/inquiry_video_share_btn"
+             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="@drawable/inquiry_action_video_share_btn_bg_selector"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/inquiry_action_video_share_btn_text"
+            android:textColor="#000000"
+            android:textSize="13.5sp" />
+        
+        <Button
+            android:id="@+id/inquiry_audio_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
             android:background="@drawable/inquiry_action_audio_btn_bg_selector"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
@@ -75,17 +88,14 @@
             android:textColor="#ffffff"
             android:textSize="13.5sp" />
         
-        <Button
-            android:id="@+id/inquiry_video_share_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
-            android:background="@drawable/inquiry_action_video_share_btn_bg_selector"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/inquiry_action_video_share_btn_text"
-            android:textColor="#000000"
-            android:textSize="13.5sp" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/inquiry_map_location_tips_search_text_et"
+        android:layout_alignBaseline="@+id/inquiry_map_location_tips_search_text_et"
+        android:src="@drawable/location_icon_gree" />
 
 </RelativeLayout>

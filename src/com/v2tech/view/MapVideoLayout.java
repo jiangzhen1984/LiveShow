@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMapOptions;
@@ -77,6 +78,7 @@ public class MapVideoLayout extends FrameLayout {
 	private InquiryBidWidget      inquiryBidWidget;
 	private MapLocationTipsWidget mapLocationTipsWidget;
 	private BountyMarkerWidget bountyMarker;
+	private View inquiryCloseBtn;
 	
 	
 	private ScreenType st = ScreenType.VIDEO_MAP;
@@ -142,6 +144,9 @@ public class MapVideoLayout extends FrameLayout {
 		bountyMarker = (BountyMarkerWidget)LayoutInflater.from(getContext()).inflate(R.layout.bounty_marker_layout, (ViewGroup)null);
 		inquiryBidWidget = (InquiryBidWidget)LayoutInflater.from(getContext()).inflate(R.layout.inquiry_bid_layout, (ViewGroup)null);
 		mapLocationTipsWidget = (MapLocationTipsWidget)LayoutInflater.from(getContext()).inflate(R.layout.map_location_tips_widget, (ViewGroup)null);
+		inquiryCloseBtn = new ImageView(getContext());
+		((ImageView)inquiryCloseBtn).setImageResource(R.drawable.inquiry_close_btn);
+		inquiryCloseBtn.setOnClickListener(clickListener);
 		
 		
 		this.addView(shareSurfaceView, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
@@ -162,6 +167,7 @@ public class MapVideoLayout extends FrameLayout {
 		this.addView(bountyMarker, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.addView(inquiryBidWidget, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(mapLocationTipsWidget, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		this.addView(inquiryCloseBtn, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -582,6 +588,7 @@ public class MapVideoLayout extends FrameLayout {
 				translateTopView(lierInteractionLayout, dy);
 				translateTopView(liveWatcherLayout, dy);
 				bountyMarker.offsetTopAndBottom(dy);
+				inquiryCloseBtn.offsetTopAndBottom(dy);
 				mMapView.offsetTopAndBottom(dy);
 			}
 			break;
@@ -861,6 +868,8 @@ public class MapVideoLayout extends FrameLayout {
 			inquiryBidWidget.layout(left, bottom, right, bottom + inquiryBidWidget.getMeasuredHeight());
 			bountyMarker.layout(left, bottom, right, bottom + bountyMarker.getMeasuredHeight());
 			mapLocationTipsWidget.layout(left, -mapLocationTipsWidget.getMeasuredHeight(), right, 0);
+			bountyMarker.layout(left, bottom, right, bottom + bountyMarker.getMeasuredHeight());
+			inquiryCloseBtn.layout(left, bottom, right, bottom + inquiryCloseBtn.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_SHARE) {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			tsv.layout(left, bottom, right, bottom + tsv.getMeasuredHeight());
@@ -909,6 +918,12 @@ public class MapVideoLayout extends FrameLayout {
 			int bto = mMapView.getTop() + (mMapView.getBottom() - mMapView.getTop() ) / 2 - bh;
 			int btm = bto + bh;
 			bountyMarker.layout(bl, bto, br, btm);
+			
+
+			int irleft = left + (right - left - inquiryCloseBtn.getMeasuredWidth()) / 2;
+			int irTop = mMapView.getBottom() - inquiryCloseBtn.getMeasuredHeight() - 30;
+			inquiryCloseBtn.layout(irleft , irTop , irleft +inquiryCloseBtn.getMeasuredWidth() , irTop + inquiryCloseBtn.getMeasuredHeight());
+			
 		} else if (st == ScreenType.VIDEO_SHARE_MAP) {
 			
 		}
@@ -951,6 +966,21 @@ public class MapVideoLayout extends FrameLayout {
 		@Override
 		public void onFinishTranslate() {
 			videoPlayer.finishTranslate();
+		}
+		
+	};
+	
+	
+	private OnClickListener clickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (v == inquiryCloseBtn) {
+				// fake UI behavior for simulate touch move up.
+				turnUITypeAnimation(ScreenType.INQUIRE_BIDING,
+						ScreenType.VIDEO_MAP,
+						PostState.GO_NEXT, getBottom() - mMapView.getBottom());
+			}
 		}
 		
 	};

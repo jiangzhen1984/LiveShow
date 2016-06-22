@@ -41,10 +41,10 @@
                 android:id="@+id/liver_interaction_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/liver_iteraction_personel_text_color"
                 android:layout_gravity="center"
-                android:textSize="@dimen/liver_interaction_btn_text_size"
-                android:text="@string/liver_interaction_follow" />
+                android:text="@string/liver_interaction_follow"
+                android:textColor="@color/liver_iteraction_personel_text_color"
+                android:textSize="@dimen/liver_interaction_btn_text_size" />
         </LinearLayout>
 
         <LinearLayout
@@ -132,8 +132,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/liver_interaction_text_margin_left"
-                    android:textColor="@color/liver_iteraction_personel_text_color"
-                    android:text="|" />
+                    android:text="|"
+                    android:textColor="@color/liver_iteraction_personel_text_color" />
 
                 <TextView
                     android:id="@+id/textView6"
@@ -164,8 +164,8 @@
                     android:id="@+id/liver_interaction_fans"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/liver_iteraction_personel_text_color"
                     android:text="56"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
                     android:textSize="@dimen/liver_interaction_text_size" />
 
                 <TextView
@@ -180,8 +180,8 @@
                     android:id="@+id/liver_interaction_follows"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/liver_iteraction_personel_text_color"
                     android:text="732"
+                    android:textColor="@color/liver_iteraction_personel_text_color"
                     android:textSize="@dimen/liver_interaction_text_size" />
             </LinearLayout>
         </LinearLayout>
@@ -249,40 +249,57 @@
         android:background="@color/liver_iteraction_personel_box_bg"
         android:padding="5dp" >
 
-        <ImageView
-            android:id="@+id/liver_interaction_chating_btn_iv"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/liver_interaction_chatting_btn_margin_top"
-            android:src="@drawable/liver_interaction_chating_btn" />
+            android:paddingTop="35dp"
+            android:paddingBottom="35dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/liver_interaction_video_call_btn_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/liver_interaction_btn_margin_hor"
-            android:layout_marginTop="@dimen/liver_interaction_btn_margin_top"
-            android:layout_toLeftOf="@+id/liver_interaction_chating_btn_iv"
-            android:src="@drawable/liver_interaction_video_call_avi_btn" />
+            <TextView
+                android:id="@+id/liver_interaction_video_call_btn_iv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                android:layout_weight=".3"
+                android:background="@drawable/liver_interaction_video_call_avi_btn"
+                android:gravity="center"
+                android:text="@string/liver_interaction_personel_video_call_btn_text"
+                android:textColor="#000000"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13.5sp" />
 
-        <ImageView
-            android:id="@+id/liver_interaction_msg_btn_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/liver_interaction_btn_margin_hor"
-            android:layout_marginTop="@dimen/liver_interaction_btn_margin_top"
-            android:layout_toRightOf="@+id/liver_interaction_chating_btn_iv"
-            android:src="@drawable/liver_interaction_msg_btn" />
+            <TextView
+                android:id="@+id/liver_interaction_chating_btn_iv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_weight=".4"
+                android:background="@drawable/liver_interaction_chating_btn"
+                android:gravity="center"
+                android:text="@string/liver_interaction_personel_audio_call_btn_text"
+                android:textColor="#ffffff"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13.5sp" />
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/liver_interaction_video_call_btn_iv"
-            android:layout_marginTop="10dp"
-            android:text=" " />
+            <TextView
+                android:id="@+id/liver_interaction_msg_btn_iv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:layout_weight=".3"
+                android:background="@drawable/liver_interaction_msg_btn"
+                android:gravity="center"
+                android:text="@string/liver_interaction_personel_message_send_btn_text"
+                android:textColor="#000000"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="13.5sp" />
+        </LinearLayout>
     </RelativeLayout>
 
 </com.v2tech.widget.LiverInteractionLayout>
