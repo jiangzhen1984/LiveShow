@@ -46,6 +46,7 @@ import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.InquiryActionActivity;
+import com.v2tech.view.MainApplication;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
@@ -975,6 +976,7 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void doInitInBack() {
+		((MainApplication)context.getApplicationContext()).onMainCreate();
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();

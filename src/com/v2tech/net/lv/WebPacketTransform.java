@@ -16,7 +16,7 @@ import com.v2tech.net.pkt.Transformer;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "1.0.1";
+	private static final String VERSION = "2.0.0";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){

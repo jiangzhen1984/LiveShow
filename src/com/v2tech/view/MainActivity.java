@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity implements
 
 		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
 		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
+		presenter.onUICreated();
 
 	}
 

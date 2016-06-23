@@ -148,7 +148,7 @@ public class UserService extends AbstractHandler {
 				V2Log.e("Loged in failed ");
 			}
 		}
-	}
+ 	}
 
 	public void logout(MessageListener caller, boolean forlogin) {
 		DeamonWorker.getInstance().requestAsync(

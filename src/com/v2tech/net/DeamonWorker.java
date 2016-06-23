@@ -93,13 +93,12 @@ public class DeamonWorker implements Runnable, NetConnector,
 				updateWorkerState(WorkerState.STOPPED);
 				return;
 			}
-
+			updateConnectionState(ConnectionState.CONNECTED);
 			while (st == WorkerState.RUNNING) {
-
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
 					WebPackage.Packet data = packetTransform.serialize(lb.req);
-					Log.e("DeamonWorker", "write==>" + data);
+					Log.i("DeamonWorker", "write==>" + data);
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized (lb) {
@@ -176,6 +175,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 			throw new IllegalArgumentException("Indication not allowed");
 		}
 		if (cs != ConnectionState.CONNECTED) {
+			V2Log.w("====> no network:" + cs);
 			ResponsePacket rp = new ResponsePacket();
 			rp.getHeader().setError(true);
 			rp.setRequestId(packet.getId());
@@ -321,6 +321,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 	private void updateConnectionState(ConnectionState ws) {
 		synchronized (csLock) {
+			Log.i("DeamonWorker", " old cs:" + cs+"   new cs:"+ws);
 			cs = ws;
 		}
 	}
