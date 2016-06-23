@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +37,7 @@ import com.v2tech.service.P2PMessageService;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.view.P2PVideoActivity;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAbstractItem;
@@ -236,6 +238,15 @@ public class P2PMessagePresenter extends BasePresenter implements
 			additonState &= (~TYPE_SHOW_VOICE_LAYOUT);
 			additonState |= TYPE_SHOW_TEXT_LAYOUT;
 		}
+	}
+	
+	
+	public void videoCallBtnClicked() {
+		Intent i = new Intent();
+		i.setClass(context, P2PVideoActivity.class);
+		//0 for calling
+		i.putExtra("type", 0);
+		context.startActivity(i);
 	}
 
 	public void onRecordBtnTouchDown(MotionEvent ev) {

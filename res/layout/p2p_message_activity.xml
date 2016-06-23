@@ -125,7 +125,7 @@
                 android:src="@drawable/p2p_message_take_photo_btn" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/p2p_message_video_connection_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/p2p_message_video_btn" />

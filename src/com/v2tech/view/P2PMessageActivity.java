@@ -49,6 +49,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private VoiceRecordDialogWidget voiceDialogWidget;
 	private View sendBtn;
 	private View root;
+	private View videoConnectionBtn;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +66,13 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		switcherBtn= (ImageView)findViewById(R.id.p2p_message_switcher_btn);
 		voiceRecordBtn= (TextView)findViewById(R.id.p2p_message_voice_record_btn);
 		sendBtn = findViewById(R.id.p2p_message_send_btn);
+		videoConnectionBtn = findViewById(R.id.p2p_message_video_connection_btn);
 		
 		switcherBtn.setOnClickListener(this);
 		emojiBtn.setOnClickListener(this);
 		plusBtn.setOnClickListener(this);
 		sendBtn.setOnClickListener(this);
+		videoConnectionBtn.setOnClickListener(this);
 		voiceRecordBtn.setOnTouchListener(touchListener);
 		
 		messageEt.addTextChangedListener(textWatcher);
@@ -388,6 +391,9 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			break;
 		case R.id.p2p_message_send_btn:
 			presenter.sendBtnClicked();
+			break;
+		case R.id.p2p_message_video_connection_btn:
+			presenter.videoCallBtnClicked();
 			break;
 		}
 		

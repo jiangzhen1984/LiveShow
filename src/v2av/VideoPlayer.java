@@ -206,6 +206,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		if (holder == null) {
+			V2Log.e("holder is null");
+			return;
+		}
 		Canvas hc = holder.lockCanvas();
 		int width = hc.getWidth();
 		int height = hc.getHeight();
@@ -233,7 +237,9 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		content1TarRect = new Rect(0, 0, width, height);
 		content2SrcRect = new Rect(0, 0, width, height);
 		content2TarRect = new Rect(0, 0, width, height);
-		setItemIndex(0);
+		if (screens != null && screens.length > 0) {
+			setItemIndex(0);
+		}
 		
 	}
 

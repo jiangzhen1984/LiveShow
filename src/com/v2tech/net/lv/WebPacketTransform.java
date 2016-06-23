@@ -16,6 +16,8 @@ import com.v2tech.net.pkt.Transformer;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
+	private static final String VERSION = "1.0.1";
+	
 	@Override
     public WebPackage.Packet serialize(Packet p){
         if (p instanceof LoginReqPacket) {
@@ -112,6 +114,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("login");
+        packetBuilder.setVersion(VERSION);
         if (p.isAs()) {
             packetBuilder.setOperateType("visitor");
         } else {
@@ -188,6 +191,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("getSMScode");
         packetBuilder.setOperateType("login");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setNormal(p.phone);
@@ -207,6 +211,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("followUser");
+        packetBuilder.setVersion(VERSION);
         if (p.add) {
             packetBuilder.setOperateType("add");
         } else {
@@ -229,6 +234,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setMethod("queryVideoList");
         packetBuilder.setFrom(String.valueOf(p.uid));
         packetBuilder.setOperateType("map");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setFrom(1);
@@ -279,6 +285,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("watchVideo");
         packetBuilder.setFrom(String.valueOf(p.uid));
+        packetBuilder.setVersion(VERSION);
+        
         if (p.type == LiveWatchingReqPacket.WATCHING) {
             packetBuilder.setOperateType("enter");
         } else {
@@ -299,6 +307,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("mapPosition");
         packetBuilder.setFrom(String.valueOf(p.uid));
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.Position.Builder position = WebPackage.Position.newBuilder();
@@ -316,7 +325,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setMethod("publicVideo");
         packetBuilder.setFrom(String.valueOf(p.uid));
         packetBuilder.setOperateType("public");
-
+        packetBuilder.setVersion(VERSION);
+        
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.Video.Builder video = WebPackage.Video.newBuilder();
         video.setVideoNum(String.valueOf(p.lid));
@@ -372,6 +382,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("logout");
+        packetBuilder.setVersion(VERSION);
+        
         return packetBuilder.build();
     }
 
@@ -380,6 +392,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("getFansList");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setFrom(1);
@@ -393,6 +406,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("getFollowList");
+        packetBuilder.setVersion(VERSION);
+        
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setFrom(p.start);
         data.setTo(p.count);
@@ -429,6 +444,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("likeVideo");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setNormal(String.valueOf(p.nvid));
@@ -441,6 +457,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("getUserInVideo");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         data.setFrom(p.start);
@@ -510,6 +527,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("handleV2ID");
         packetBuilder.setOperateType("set");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.User.Builder user = WebPackage.User.newBuilder();
@@ -524,6 +542,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setPacketType(WebPackage.Packet.type.iq);
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("v2NameAndPwd");
+        packetBuilder.setVersion(VERSION);
 
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.User.Builder user = WebPackage.User.newBuilder();
@@ -540,6 +559,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("gratuity");
         packetBuilder.setOperateType("normal");
+        packetBuilder.setVersion(VERSION);
+        
 
         WebPackage.Gratuity.Builder bid = WebPackage.Gratuity.newBuilder();
         bid.setAmount(p.award);

@@ -886,12 +886,13 @@ public class MainPresenter extends BasePresenter implements
 			.getInstance().getCurrentUserId(), "", null);
 			vs.requestOpenVideoDevice(duc, null);
 			ui.showBottomLayout(false);
-			this.setState(LOCAL_CAMERA_OPENING);
+			this.setState(LOCAL_CAMERA_OPENING | VIDEO_SHARE_BTN_SHOW);
 			this.unsetState(BOTTOM_LAYOUT_SHOW);
 			break;
 		case VIDEO_SHARE_CONNECTION_REQUESTING:
 			break;
 		case VIDEO_SHARE_MAP:
+			this.unsetState(VIDEO_SHARE_BTN_SHOW);
 			break;
 		case VIDEO_SHARE_P2P_PUBLISHER:
 			break;

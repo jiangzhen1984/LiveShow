@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,20 +15,22 @@ import android.net.Uri;
 
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
+import com.V2.jni.VideoRequest;
 import com.V2.jni.util.V2Log;
 import com.v2tech.db.MessageDescriptor;
 import com.v2tech.db.MessageDescriptor.P2PMessage;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.vo.User;
-import com.v2tech.vo.msg.VMessageSession;
+import com.v2tech.vo.UserChattingObject;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAbstractItem;
 import com.v2tech.vo.msg.VMessageAudioItem;
 import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageImageItem;
+import com.v2tech.vo.msg.VMessageSession;
 import com.v2tech.vo.msg.VMessageTextItem;
 
-public class P2PMessageService extends AbstractHandler {
+public class P2PMessageService extends DeviceService {
 	
 	private WeakReference<Context> wfCtx;
 	
@@ -287,6 +290,32 @@ public class P2PMessageService extends AbstractHandler {
 			int ret = wfCtx.get().getContentResolver().update(uri, cv, null, null);
 			V2Log.i("==> update message: "+id+"  with flag :" + readFlag+"  ret:"+ ret);
 		}
+	}
+	
+	
+	
+	public String startVideoCall(UserChattingObject ucd,
+			MessageListener listener) {
+		UUID uuid = UUID.randomUUID();
+		VideoRequest.getInstance().VideoInviteChat(uuid.toString(),
+				ucd.getUser().getmUserId(), ucd.getDeviceId());
+		ucd.setSzSessionID(uuid.toString());
+		return uuid.toString();
+	}
+
+	public void answerCalling(UserChattingObject ucd, MessageListener listener) {
+		VideoRequest.getInstance().VideoAcceptChat(ucd.getSzSessionID(),
+				ucd.getUser().getmUserId(), ucd.getDeviceId());
+	}
+
+	public void declineCalling(UserChattingObject ucd, MessageListener listener) {
+		VideoRequest.getInstance().VideoRefuseChat(ucd.getSzSessionID(),
+				ucd.getUser().getmUserId(), ucd.getDeviceId());
+	}
+	
+	public void cancelCalling(UserChattingObject ucd, MessageListener listener) {
+		VideoRequest.getInstance().VideoCancelChat(ucd.getSzSessionID(),
+				ucd.getUser().getmUserId(), ucd.getDeviceId());
 	}
 
 	@Override

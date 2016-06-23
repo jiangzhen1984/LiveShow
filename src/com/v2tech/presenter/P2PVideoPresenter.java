@@ -1,15 +1,45 @@
 package com.v2tech.presenter;
 
+import java.lang.ref.WeakReference;
+
+import v2av.VideoPlayer;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+
+import com.V2.jni.util.V2Log;
+import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.MessageListener;
+import com.v2tech.service.P2PMessageService;
+import com.v2tech.vo.User;
+import com.v2tech.vo.UserChattingObject;
+import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.group.Group.GroupType;
 
 public class P2PVideoPresenter extends BasePresenter {
 	
+	public static final int TYPE_USER_ID = 1;
+	public static final int TYPE_USER_DEVICE_ID = 2;
+	
+	private static final int START_VIDEO_CALL_CALLBACK = 1;
+	private static final int ANSWER_VIDEO_CALL_CALLBACK = 2;
 	
 	private Context context;
 	private P2PVideoPresenterUI ui;
 	private UIType uiType;
 	
+	private P2PMessageService servcie;
+	private UserChattingObject uco;
+	private LocalHandler localHandler;
+	
 	public interface P2PVideoPresenterUI {
+		
+		public long getUserId();
+		
+		public String getUserName();
+		
+		public String getRingingSession();
+		
 		public int getStartType();
 		
 		public void showCallingLayout();
@@ -17,12 +47,17 @@ public class P2PVideoPresenter extends BasePresenter {
 		public void showConnectedLayout();
 		
 		public void showRingingLayout();
+		
+		public VideoPlayer getRemoteVideoPlayer();
+		
 	}
 
 	public P2PVideoPresenter(Context context, P2PVideoPresenterUI ui) {
 		super();
 		this.context = context;
 		this.ui = ui;
+		servcie = new P2PMessageService();
+		localHandler = new LocalHandler(new WeakReference<P2PVideoPresenter>(this));
 	}
 
 	
@@ -31,33 +66,64 @@ public class P2PVideoPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
-		int type = ui.getStartType();
+		int flag = UserChattingObject.VIDEO_CALL;
+		
+		
+	
+		int type = 0 ;//ui.getStartType();
 		if (type == UIType.CALLING.ordinal()) {
 			uiType = UIType.CALLING;
+			flag |=UserChattingObject.OUTING_CALL;
+			uco = new UserChattingObject(new User(ui.getUserId(), ui.getUserName())  , flag);
+			uco.setVp(ui.getRemoteVideoPlayer());
+			uco.setSzSessionID(ui.getRingingSession());
 			updateUIOnCalling();
 		} else if (type == UIType.CONNECTED.ordinal()) {
 			uiType = UIType.CONNECTED;
+			flag |=UserChattingObject.INCOMING_CALL;
+			uco = new UserChattingObject(new User(ui.getUserId(), ui.getUserName())  , flag);
+			uco.setVp(ui.getRemoteVideoPlayer());
 			updateUIOnConnected();
 		} else if (type == UIType.RINGING.ordinal()) {
 			uiType = UIType.RINGING;
+			flag |=UserChattingObject.INCOMING_CALL;
+			uco = new UserChattingObject(new User(ui.getUserId(), ui.getUserName())  , flag);
+			uco.setVp(ui.getRemoteVideoPlayer());
 			updateUIOnRinging();
 		}
 	}
+	
+	
 
 
 	
+	@Override
+	public void onUIDestroyed() {
+		super.onUIDestroyed();
+		servcie.clearCalledBack();
+	}
+
+
+
+
 	public void onHangoffBtnClicked() {
 		switch (uiType) {
 		case CONNECTED:
+			UserDeviceConfig duc = new UserDeviceConfig(
+					GroupType.CHATING.intValue(), 0, uco.getUser().getmUserId(),
+					uco.getDeviceId(), ui.getRemoteVideoPlayer());
+			servcie.requestCloseVideoDevice(duc, null);
 		case CALLING:
-			//TODO close device
-			//TODO send hangoff message
+			duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance()
+					.getCurrentUserId(), "", null);
+			servcie.requestCloseVideoDevice(duc, null);
 			break;
 		case RINGING:
 			break;
 		default:
 			break;
 		}
+		servcie.cancelCalling(uco, null);
 	}
 
 	public void onAcceptBtnClicked() {
@@ -65,13 +131,18 @@ public class P2PVideoPresenter extends BasePresenter {
 			throw new RuntimeException(" not support ui type: " + uiType);
 		}
 		uiType = UIType.CONNECTED;
+		servcie.answerCalling(uco, new MessageListener(localHandler, ANSWER_VIDEO_CALL_CALLBACK, null));
 		updateUIOnConnected();
 	}
 	
 	
 	private void updateUIOnCalling() {
 		ui.showCallingLayout();
-		//TODO open local camera
+		
+		UserDeviceConfig duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance()
+						.getCurrentUserId(), "", null);
+		servcie.requestOpenVideoDevice(duc, null);
+		servcie.startVideoCall(uco, new MessageListener(localHandler, START_VIDEO_CALL_CALLBACK, null));
 	}
 	
 	private void updateUIOnRinging() {
@@ -79,8 +150,54 @@ public class P2PVideoPresenter extends BasePresenter {
 	}
 	
 	private void updateUIOnConnected() {
-		ui.showRingingLayout();
+		ui.showConnectedLayout();
+		if (uiType == UIType.RINGING) {
+			//open local device
+			UserDeviceConfig duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance()
+					.getCurrentUserId(), "", null);
+			servcie.requestOpenVideoDevice(duc, null);
+		}
+		//open remote device
+		UserDeviceConfig duc = new UserDeviceConfig(
+				GroupType.CHATING.intValue(), 0, uco.getUser().getmUserId(),
+				uco.getDeviceId(), ui.getRemoteVideoPlayer());
+		servcie.requestOpenVideoDevice(duc, null);
 	}
+	
+	
+	
+	class LocalHandler extends Handler {
+		WeakReference<P2PVideoPresenter> wr;
+
+		public LocalHandler(WeakReference<P2PVideoPresenter> wr) {
+			super();
+			this.wr = wr;
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			if (wr.get() == null) {
+				V2Log.w("===> no reference of P2PVideoPresenter");
+				return;
+			}
+			int what = msg.what;
+			switch (what) {
+			case START_VIDEO_CALL_CALLBACK:
+				//TODO if error notify user
+				break;
+			case ANSWER_VIDEO_CALL_CALLBACK:
+				//TODO if error notify user
+				
+				updateUIOnConnected();
+				synchronized(uiType) {
+					uiType = UIType.CONNECTED;
+				}
+				break;
+			}
+		}
+		
+	}
+	
 
 	enum UIType {
 		CALLING, RINGING, CONNECTED;

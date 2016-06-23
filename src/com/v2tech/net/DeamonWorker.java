@@ -175,6 +175,12 @@ public class DeamonWorker implements Runnable, NetConnector,
 		if (packet instanceof IndicationPacket) {
 			throw new IllegalArgumentException("Indication not allowed");
 		}
+		if (cs != ConnectionState.CONNECTED) {
+			ResponsePacket rp = new ResponsePacket();
+			rp.getHeader().setError(true);
+			rp.setRequestId(packet.getId());
+			return rp;
+		}
 		LocalBind ll = new LocalBind(packet);
 		ll.sync = true;
 		boolean ret = false;
@@ -202,6 +208,15 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 	@Override
 	public void requestAsync(PacketProxy packet) {
+		if (cs != ConnectionState.CONNECTED) {
+			if (packet.getListener() != null) {
+				ResponsePacket rp = new ResponsePacket();
+				rp.getHeader().setError(true);
+				rp.setRequestId(packet.getId());
+				packet.getListener().onResponse(rp);
+			}
+		}
+		
 		LocalBind ll = new LocalBind(packet);
 		boolean ret = false;
 		ret = pending.offer(ll);

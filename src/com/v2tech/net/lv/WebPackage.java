@@ -44,6 +44,10 @@ public final class WebPackage {
     boolean hasData();
     com.v2tech.net.lv.WebPackage.Data getData();
     com.v2tech.net.lv.WebPackage.DataOrBuilder getDataOrBuilder();
+    
+    // optional string version = 9;
+    boolean hasVersion();
+    String getVersion();
   }
   public static final class Packet extends
       com.google.protobuf.GeneratedMessage
@@ -345,6 +349,38 @@ public final class WebPackage {
       return data_;
     }
     
+    // optional string version = 9;
+    public static final int VERSION_FIELD_NUMBER = 9;
+    private java.lang.Object version_;
+    public boolean hasVersion() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public String getVersion() {
+      java.lang.Object ref = version_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          version_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getVersionBytes() {
+      java.lang.Object ref = version_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        version_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       packetType_ = com.v2tech.net.lv.WebPackage.Packet.type.iq;
       from_ = "";
@@ -354,6 +390,7 @@ public final class WebPackage {
       operateType_ = "";
       result_ = com.v2tech.net.lv.WebPackage.Result.getDefaultInstance();
       data_ = com.v2tech.net.lv.WebPackage.Data.getDefaultInstance();
+      version_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -395,6 +432,9 @@ public final class WebPackage {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeMessage(8, data_);
       }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getVersionBytes());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -435,6 +475,10 @@ public final class WebPackage {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, data_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getVersionBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -586,6 +630,8 @@ public final class WebPackage {
           dataBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000080);
+        version_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
       
@@ -664,6 +710,10 @@ public final class WebPackage {
         } else {
           result.data_ = dataBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.version_ = version_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -703,6 +753,9 @@ public final class WebPackage {
         }
         if (other.hasData()) {
           mergeData(other.getData());
+        }
+        if (other.hasVersion()) {
+          setVersion(other.getVersion());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -791,6 +844,11 @@ public final class WebPackage {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setData(subBuilder.buildPartial());
+              break;
+            }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              version_ = input.readBytes();
               break;
             }
           }
@@ -1181,6 +1239,42 @@ public final class WebPackage {
           data_ = null;
         }
         return dataBuilder_;
+      }
+      
+      // optional string version = 9;
+      private java.lang.Object version_ = "";
+      public boolean hasVersion() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public String getVersion() {
+        java.lang.Object ref = version_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          version_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setVersion(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        version_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearVersion() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        version_ = getDefaultInstance().getVersion();
+        onChanged();
+        return this;
+      }
+      void setVersion(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000100;
+        version_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:Packet)
@@ -1688,6 +1782,16 @@ public final class WebPackage {
         getGratuityOrBuilderList();
     com.v2tech.net.lv.WebPackage.GratuityOrBuilder getGratuityOrBuilder(
         int index);
+    
+    // repeated .Reward reward = 10;
+    java.util.List<com.v2tech.net.lv.WebPackage.Reward> 
+        getRewardList();
+    com.v2tech.net.lv.WebPackage.Reward getReward(int index);
+    int getRewardCount();
+    java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder> 
+        getRewardOrBuilderList();
+    com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
+        int index);
   }
   public static final class Data extends
       com.google.protobuf.GeneratedMessage
@@ -1874,6 +1978,27 @@ public final class WebPackage {
       return gratuity_.get(index);
     }
     
+    // repeated .Reward reward = 10;
+    public static final int REWARD_FIELD_NUMBER = 10;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Reward> reward_;
+    public java.util.List<com.v2tech.net.lv.WebPackage.Reward> getRewardList() {
+      return reward_;
+    }
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder> 
+        getRewardOrBuilderList() {
+      return reward_;
+    }
+    public int getRewardCount() {
+      return reward_.size();
+    }
+    public com.v2tech.net.lv.WebPackage.Reward getReward(int index) {
+      return reward_.get(index);
+    }
+    public com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
+        int index) {
+      return reward_.get(index);
+    }
+    
     private void initFields() {
       normal_ = "";
       byteDate_ = com.google.protobuf.ByteString.EMPTY;
@@ -1884,6 +2009,7 @@ public final class WebPackage {
       user_ = java.util.Collections.emptyList();
       video_ = java.util.Collections.emptyList();
       gratuity_ = java.util.Collections.emptyList();
+      reward_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1923,6 +2049,9 @@ public final class WebPackage {
       }
       for (int i = 0; i < gratuity_.size(); i++) {
         output.writeMessage(9, gratuity_.get(i));
+      }
+      for (int i = 0; i < reward_.size(); i++) {
+        output.writeMessage(10, reward_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1968,6 +2097,10 @@ public final class WebPackage {
       for (int i = 0; i < gratuity_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, gratuity_.get(i));
+      }
+      for (int i = 0; i < reward_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, reward_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2089,6 +2222,7 @@ public final class WebPackage {
           getUserFieldBuilder();
           getVideoFieldBuilder();
           getGratuityFieldBuilder();
+          getRewardFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2130,6 +2264,12 @@ public final class WebPackage {
           bitField0_ = (bitField0_ & ~0x00000100);
         } else {
           gratuityBuilder_.clear();
+        }
+        if (rewardBuilder_ == null) {
+          reward_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000200);
+        } else {
+          rewardBuilder_.clear();
         }
         return this;
       }
@@ -2224,6 +2364,15 @@ public final class WebPackage {
           result.gratuity_ = gratuity_;
         } else {
           result.gratuity_ = gratuityBuilder_.build();
+        }
+        if (rewardBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) == 0x00000200)) {
+            reward_ = java.util.Collections.unmodifiableList(reward_);
+            bitField0_ = (bitField0_ & ~0x00000200);
+          }
+          result.reward_ = reward_;
+        } else {
+          result.reward_ = rewardBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -2360,6 +2509,32 @@ public final class WebPackage {
             }
           }
         }
+        if (rewardBuilder_ == null) {
+          if (!other.reward_.isEmpty()) {
+            if (reward_.isEmpty()) {
+              reward_ = other.reward_;
+              bitField0_ = (bitField0_ & ~0x00000200);
+            } else {
+              ensureRewardIsMutable();
+              reward_.addAll(other.reward_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.reward_.isEmpty()) {
+            if (rewardBuilder_.isEmpty()) {
+              rewardBuilder_.dispose();
+              rewardBuilder_ = null;
+              reward_ = other.reward_;
+              bitField0_ = (bitField0_ & ~0x00000200);
+              rewardBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getRewardFieldBuilder() : null;
+            } else {
+              rewardBuilder_.addAllMessages(other.reward_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2438,6 +2613,12 @@ public final class WebPackage {
               com.v2tech.net.lv.WebPackage.Gratuity.Builder subBuilder = com.v2tech.net.lv.WebPackage.Gratuity.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addGratuity(subBuilder.buildPartial());
+              break;
+            }
+            case 82: {
+              com.v2tech.net.lv.WebPackage.Reward.Builder subBuilder = com.v2tech.net.lv.WebPackage.Reward.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addReward(subBuilder.buildPartial());
               break;
             }
           }
@@ -3313,6 +3494,192 @@ public final class WebPackage {
         return gratuityBuilder_;
       }
       
+      // repeated .Reward reward = 10;
+      private java.util.List<com.v2tech.net.lv.WebPackage.Reward> reward_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardIsMutable() {
+        if (!((bitField0_ & 0x00000200) == 0x00000200)) {
+          reward_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Reward>(reward_);
+          bitField0_ |= 0x00000200;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder> rewardBuilder_;
+      
+      public java.util.List<com.v2tech.net.lv.WebPackage.Reward> getRewardList() {
+        if (rewardBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(reward_);
+        } else {
+          return rewardBuilder_.getMessageList();
+        }
+      }
+      public int getRewardCount() {
+        if (rewardBuilder_ == null) {
+          return reward_.size();
+        } else {
+          return rewardBuilder_.getCount();
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.Reward getReward(int index) {
+        if (rewardBuilder_ == null) {
+          return reward_.get(index);
+        } else {
+          return rewardBuilder_.getMessage(index);
+        }
+      }
+      public Builder setReward(
+          int index, com.v2tech.net.lv.WebPackage.Reward value) {
+        if (rewardBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardIsMutable();
+          reward_.set(index, value);
+          onChanged();
+        } else {
+          rewardBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setReward(
+          int index, com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
+        if (rewardBuilder_ == null) {
+          ensureRewardIsMutable();
+          reward_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addReward(com.v2tech.net.lv.WebPackage.Reward value) {
+        if (rewardBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardIsMutable();
+          reward_.add(value);
+          onChanged();
+        } else {
+          rewardBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addReward(
+          int index, com.v2tech.net.lv.WebPackage.Reward value) {
+        if (rewardBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardIsMutable();
+          reward_.add(index, value);
+          onChanged();
+        } else {
+          rewardBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addReward(
+          com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
+        if (rewardBuilder_ == null) {
+          ensureRewardIsMutable();
+          reward_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addReward(
+          int index, com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
+        if (rewardBuilder_ == null) {
+          ensureRewardIsMutable();
+          reward_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllReward(
+          java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Reward> values) {
+        if (rewardBuilder_ == null) {
+          ensureRewardIsMutable();
+          super.addAll(values, reward_);
+          onChanged();
+        } else {
+          rewardBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearReward() {
+        if (rewardBuilder_ == null) {
+          reward_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000200);
+          onChanged();
+        } else {
+          rewardBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeReward(int index) {
+        if (rewardBuilder_ == null) {
+          ensureRewardIsMutable();
+          reward_.remove(index);
+          onChanged();
+        } else {
+          rewardBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.v2tech.net.lv.WebPackage.Reward.Builder getRewardBuilder(
+          int index) {
+        return getRewardFieldBuilder().getBuilder(index);
+      }
+      public com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
+          int index) {
+        if (rewardBuilder_ == null) {
+          return reward_.get(index);  } else {
+          return rewardBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder> 
+           getRewardOrBuilderList() {
+        if (rewardBuilder_ != null) {
+          return rewardBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(reward_);
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.Reward.Builder addRewardBuilder() {
+        return getRewardFieldBuilder().addBuilder(
+            com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance());
+      }
+      public com.v2tech.net.lv.WebPackage.Reward.Builder addRewardBuilder(
+          int index) {
+        return getRewardFieldBuilder().addBuilder(
+            index, com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance());
+      }
+      public java.util.List<com.v2tech.net.lv.WebPackage.Reward.Builder> 
+           getRewardBuilderList() {
+        return getRewardFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder> 
+          getRewardFieldBuilder() {
+        if (rewardBuilder_ == null) {
+          rewardBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder>(
+                  reward_,
+                  ((bitField0_ & 0x00000200) == 0x00000200),
+                  getParentForChildren(),
+                  isClean());
+          reward_ = null;
+        }
+        return rewardBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:Data)
     }
     
@@ -3407,6 +3774,10 @@ public final class WebPackage {
     // optional string v2Pwd = 20;
     boolean hasV2Pwd();
     String getV2Pwd();
+    
+    // optional int32 videoCount = 21;
+    boolean hasVideoCount();
+    int getVideoCount();
   }
   public static final class User extends
       com.google.protobuf.GeneratedMessage
@@ -3926,6 +4297,16 @@ public final class WebPackage {
       }
     }
     
+    // optional int32 videoCount = 21;
+    public static final int VIDEOCOUNT_FIELD_NUMBER = 21;
+    private int videoCount_;
+    public boolean hasVideoCount() {
+      return ((bitField0_ & 0x00100000) == 0x00100000);
+    }
+    public int getVideoCount() {
+      return videoCount_;
+    }
+    
     private void initFields() {
       id_ = 0;
       phone_ = "";
@@ -3947,6 +4328,7 @@ public final class WebPackage {
       v2ID_ = "";
       v2UserName_ = "";
       v2Pwd_ = "";
+      videoCount_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4019,6 +4401,9 @@ public final class WebPackage {
       }
       if (((bitField0_ & 0x00080000) == 0x00080000)) {
         output.writeBytes(20, getV2PwdBytes());
+      }
+      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+        output.writeInt32(21, videoCount_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4108,6 +4493,10 @@ public final class WebPackage {
       if (((bitField0_ & 0x00080000) == 0x00080000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(20, getV2PwdBytes());
+      }
+      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(21, videoCount_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4278,6 +4667,8 @@ public final class WebPackage {
         bitField0_ = (bitField0_ & ~0x00040000);
         v2Pwd_ = "";
         bitField0_ = (bitField0_ & ~0x00080000);
+        videoCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00100000);
         return this;
       }
       
@@ -4400,6 +4791,10 @@ public final class WebPackage {
           to_bitField0_ |= 0x00080000;
         }
         result.v2Pwd_ = v2Pwd_;
+        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
+          to_bitField0_ |= 0x00100000;
+        }
+        result.videoCount_ = videoCount_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4475,6 +4870,9 @@ public final class WebPackage {
         }
         if (other.hasV2Pwd()) {
           setV2Pwd(other.getV2Pwd());
+        }
+        if (other.hasVideoCount()) {
+          setVideoCount(other.getVideoCount());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4609,6 +5007,11 @@ public final class WebPackage {
             case 162: {
               bitField0_ |= 0x00080000;
               v2Pwd_ = input.readBytes();
+              break;
+            }
+            case 168: {
+              bitField0_ |= 0x00100000;
+              videoCount_ = input.readInt32();
               break;
             }
           }
@@ -5299,6 +5702,27 @@ public final class WebPackage {
         bitField0_ |= 0x00080000;
         v2Pwd_ = value;
         onChanged();
+      }
+      
+      // optional int32 videoCount = 21;
+      private int videoCount_ ;
+      public boolean hasVideoCount() {
+        return ((bitField0_ & 0x00100000) == 0x00100000);
+      }
+      public int getVideoCount() {
+        return videoCount_;
+      }
+      public Builder setVideoCount(int value) {
+        bitField0_ |= 0x00100000;
+        videoCount_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearVideoCount() {
+        bitField0_ = (bitField0_ & ~0x00100000);
+        videoCount_ = 0;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:User)
@@ -7559,6 +7983,1735 @@ public final class WebPackage {
     // @@protoc_insertion_point(class_scope:Gratuity)
   }
   
+  public interface RewardOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional int32 id = 1;
+    boolean hasId();
+    int getId();
+    
+    // optional int32 powerTime = 2;
+    boolean hasPowerTime();
+    int getPowerTime();
+    
+    // optional int64 releaseTime = 3;
+    boolean hasReleaseTime();
+    long getReleaseTime();
+    
+    // repeated .Gift gift = 4;
+    java.util.List<com.v2tech.net.lv.WebPackage.Gift> 
+        getGiftList();
+    com.v2tech.net.lv.WebPackage.Gift getGift(int index);
+    int getGiftCount();
+    java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder> 
+        getGiftOrBuilderList();
+    com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
+        int index);
+    
+    // optional int32 fromUserID = 5;
+    boolean hasFromUserID();
+    int getFromUserID();
+    
+    // optional int32 answerUserID = 6;
+    boolean hasAnswerUserID();
+    int getAnswerUserID();
+    
+    // optional .Reward.Operate operate = 7;
+    boolean hasOperate();
+    com.v2tech.net.lv.WebPackage.Reward.Operate getOperate();
+    
+    // optional string desc = 8;
+    boolean hasDesc();
+    String getDesc();
+    
+    // optional .Position position = 9;
+    boolean hasPosition();
+    com.v2tech.net.lv.WebPackage.Position getPosition();
+    com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder();
+    
+    // optional int32 pushSum = 10;
+    boolean hasPushSum();
+    int getPushSum();
+  }
+  public static final class Reward extends
+      com.google.protobuf.GeneratedMessage
+      implements RewardOrBuilder {
+    // Use Reward.newBuilder() to construct.
+    private Reward(Builder builder) {
+      super(builder);
+    }
+    private Reward(boolean noInit) {}
+    
+    private static final Reward defaultInstance;
+    public static Reward getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Reward getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_Reward_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_Reward_fieldAccessorTable;
+    }
+    
+    public enum Operate
+        implements com.google.protobuf.ProtocolMessageEnum {
+      release(0, 0),
+      edit(1, 1),
+      cancle(2, 2),
+      pay(3, 3),
+      answer(4, 4),
+      ;
+      
+      public static final int release_VALUE = 0;
+      public static final int edit_VALUE = 1;
+      public static final int cancle_VALUE = 2;
+      public static final int pay_VALUE = 3;
+      public static final int answer_VALUE = 4;
+      
+      
+      public final int getNumber() { return value; }
+      
+      public static Operate valueOf(int value) {
+        switch (value) {
+          case 0: return release;
+          case 1: return edit;
+          case 2: return cancle;
+          case 3: return pay;
+          case 4: return answer;
+          default: return null;
+        }
+      }
+      
+      public static com.google.protobuf.Internal.EnumLiteMap<Operate>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<Operate>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Operate>() {
+              public Operate findValueByNumber(int number) {
+                return Operate.valueOf(number);
+              }
+            };
+      
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.v2tech.net.lv.WebPackage.Reward.getDescriptor().getEnumTypes().get(0);
+      }
+      
+      private static final Operate[] VALUES = {
+        release, edit, cancle, pay, answer, 
+      };
+      
+      public static Operate valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+      
+      private final int index;
+      private final int value;
+      
+      private Operate(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+      
+      // @@protoc_insertion_point(enum_scope:Reward.Operate)
+    }
+    
+    private int bitField0_;
+    // optional int32 id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getId() {
+      return id_;
+    }
+    
+    // optional int32 powerTime = 2;
+    public static final int POWERTIME_FIELD_NUMBER = 2;
+    private int powerTime_;
+    public boolean hasPowerTime() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getPowerTime() {
+      return powerTime_;
+    }
+    
+    // optional int64 releaseTime = 3;
+    public static final int RELEASETIME_FIELD_NUMBER = 3;
+    private long releaseTime_;
+    public boolean hasReleaseTime() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public long getReleaseTime() {
+      return releaseTime_;
+    }
+    
+    // repeated .Gift gift = 4;
+    public static final int GIFT_FIELD_NUMBER = 4;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_;
+    public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
+      return gift_;
+    }
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder> 
+        getGiftOrBuilderList() {
+      return gift_;
+    }
+    public int getGiftCount() {
+      return gift_.size();
+    }
+    public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
+      return gift_.get(index);
+    }
+    public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
+        int index) {
+      return gift_.get(index);
+    }
+    
+    // optional int32 fromUserID = 5;
+    public static final int FROMUSERID_FIELD_NUMBER = 5;
+    private int fromUserID_;
+    public boolean hasFromUserID() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public int getFromUserID() {
+      return fromUserID_;
+    }
+    
+    // optional int32 answerUserID = 6;
+    public static final int ANSWERUSERID_FIELD_NUMBER = 6;
+    private int answerUserID_;
+    public boolean hasAnswerUserID() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public int getAnswerUserID() {
+      return answerUserID_;
+    }
+    
+    // optional .Reward.Operate operate = 7;
+    public static final int OPERATE_FIELD_NUMBER = 7;
+    private com.v2tech.net.lv.WebPackage.Reward.Operate operate_;
+    public boolean hasOperate() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+      return operate_;
+    }
+    
+    // optional string desc = 8;
+    public static final int DESC_FIELD_NUMBER = 8;
+    private java.lang.Object desc_;
+    public boolean hasDesc() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public String getDesc() {
+      java.lang.Object ref = desc_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          desc_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getDescBytes() {
+      java.lang.Object ref = desc_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        desc_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional .Position position = 9;
+    public static final int POSITION_FIELD_NUMBER = 9;
+    private com.v2tech.net.lv.WebPackage.Position position_;
+    public boolean hasPosition() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    public com.v2tech.net.lv.WebPackage.Position getPosition() {
+      return position_;
+    }
+    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
+      return position_;
+    }
+    
+    // optional int32 pushSum = 10;
+    public static final int PUSHSUM_FIELD_NUMBER = 10;
+    private int pushSum_;
+    public boolean hasPushSum() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public int getPushSum() {
+      return pushSum_;
+    }
+    
+    private void initFields() {
+      id_ = 0;
+      powerTime_ = 0;
+      releaseTime_ = 0L;
+      gift_ = java.util.Collections.emptyList();
+      fromUserID_ = 0;
+      answerUserID_ = 0;
+      operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
+      desc_ = "";
+      position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+      pushSum_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, powerTime_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt64(3, releaseTime_);
+      }
+      for (int i = 0; i < gift_.size(); i++) {
+        output.writeMessage(4, gift_.get(i));
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(5, fromUserID_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(6, answerUserID_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeEnum(7, operate_.getNumber());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBytes(8, getDescBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeMessage(9, position_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt32(10, pushSum_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, powerTime_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, releaseTime_);
+      }
+      for (int i = 0; i < gift_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, gift_.get(i));
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, fromUserID_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, answerUserID_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(7, operate_.getNumber());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getDescBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, position_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, pushSum_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Reward prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.v2tech.net.lv.WebPackage.RewardOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.v2tech.net.lv.WebPackage.internal_static_Reward_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.v2tech.net.lv.WebPackage.internal_static_Reward_fieldAccessorTable;
+      }
+      
+      // Construct using com.v2tech.net.lv.WebPackage.Reward.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getGiftFieldBuilder();
+          getPositionFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        powerTime_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        releaseTime_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (giftBuilder_ == null) {
+          gift_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          giftBuilder_.clear();
+        }
+        fromUserID_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        answerUserID_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        desc_ = "";
+        bitField0_ = (bitField0_ & ~0x00000080);
+        if (positionBuilder_ == null) {
+          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+        } else {
+          positionBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        pushSum_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.v2tech.net.lv.WebPackage.Reward.getDescriptor();
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Reward getDefaultInstanceForType() {
+        return com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance();
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Reward build() {
+        com.v2tech.net.lv.WebPackage.Reward result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.v2tech.net.lv.WebPackage.Reward buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.v2tech.net.lv.WebPackage.Reward result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Reward buildPartial() {
+        com.v2tech.net.lv.WebPackage.Reward result = new com.v2tech.net.lv.WebPackage.Reward(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.id_ = id_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.powerTime_ = powerTime_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.releaseTime_ = releaseTime_;
+        if (giftBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            gift_ = java.util.Collections.unmodifiableList(gift_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.gift_ = gift_;
+        } else {
+          result.gift_ = giftBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.fromUserID_ = fromUserID_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.answerUserID_ = answerUserID_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.operate_ = operate_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.desc_ = desc_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        if (positionBuilder_ == null) {
+          result.position_ = position_;
+        } else {
+          result.position_ = positionBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.pushSum_ = pushSum_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.v2tech.net.lv.WebPackage.Reward) {
+          return mergeFrom((com.v2tech.net.lv.WebPackage.Reward)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Reward other) {
+        if (other == com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          setId(other.getId());
+        }
+        if (other.hasPowerTime()) {
+          setPowerTime(other.getPowerTime());
+        }
+        if (other.hasReleaseTime()) {
+          setReleaseTime(other.getReleaseTime());
+        }
+        if (giftBuilder_ == null) {
+          if (!other.gift_.isEmpty()) {
+            if (gift_.isEmpty()) {
+              gift_ = other.gift_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureGiftIsMutable();
+              gift_.addAll(other.gift_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.gift_.isEmpty()) {
+            if (giftBuilder_.isEmpty()) {
+              giftBuilder_.dispose();
+              giftBuilder_ = null;
+              gift_ = other.gift_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              giftBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getGiftFieldBuilder() : null;
+            } else {
+              giftBuilder_.addAllMessages(other.gift_);
+            }
+          }
+        }
+        if (other.hasFromUserID()) {
+          setFromUserID(other.getFromUserID());
+        }
+        if (other.hasAnswerUserID()) {
+          setAnswerUserID(other.getAnswerUserID());
+        }
+        if (other.hasOperate()) {
+          setOperate(other.getOperate());
+        }
+        if (other.hasDesc()) {
+          setDesc(other.getDesc());
+        }
+        if (other.hasPosition()) {
+          mergePosition(other.getPosition());
+        }
+        if (other.hasPushSum()) {
+          setPushSum(other.getPushSum());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              powerTime_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              releaseTime_ = input.readInt64();
+              break;
+            }
+            case 34: {
+              com.v2tech.net.lv.WebPackage.Gift.Builder subBuilder = com.v2tech.net.lv.WebPackage.Gift.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addGift(subBuilder.buildPartial());
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              fromUserID_ = input.readInt32();
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              answerUserID_ = input.readInt32();
+              break;
+            }
+            case 56: {
+              int rawValue = input.readEnum();
+              com.v2tech.net.lv.WebPackage.Reward.Operate value = com.v2tech.net.lv.WebPackage.Reward.Operate.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(7, rawValue);
+              } else {
+                bitField0_ |= 0x00000040;
+                operate_ = value;
+              }
+              break;
+            }
+            case 66: {
+              bitField0_ |= 0x00000080;
+              desc_ = input.readBytes();
+              break;
+            }
+            case 74: {
+              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = com.v2tech.net.lv.WebPackage.Position.newBuilder();
+              if (hasPosition()) {
+                subBuilder.mergeFrom(getPosition());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setPosition(subBuilder.buildPartial());
+              break;
+            }
+            case 80: {
+              bitField0_ |= 0x00000200;
+              pushSum_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional int32 id = 1;
+      private int id_ ;
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getId() {
+        return id_;
+      }
+      public Builder setId(int value) {
+        bitField0_ |= 0x00000001;
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 powerTime = 2;
+      private int powerTime_ ;
+      public boolean hasPowerTime() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getPowerTime() {
+        return powerTime_;
+      }
+      public Builder setPowerTime(int value) {
+        bitField0_ |= 0x00000002;
+        powerTime_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPowerTime() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        powerTime_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int64 releaseTime = 3;
+      private long releaseTime_ ;
+      public boolean hasReleaseTime() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public long getReleaseTime() {
+        return releaseTime_;
+      }
+      public Builder setReleaseTime(long value) {
+        bitField0_ |= 0x00000004;
+        releaseTime_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearReleaseTime() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        releaseTime_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // repeated .Gift gift = 4;
+      private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_ =
+        java.util.Collections.emptyList();
+      private void ensureGiftIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          gift_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Gift>(gift_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder> giftBuilder_;
+      
+      public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
+        if (giftBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(gift_);
+        } else {
+          return giftBuilder_.getMessageList();
+        }
+      }
+      public int getGiftCount() {
+        if (giftBuilder_ == null) {
+          return gift_.size();
+        } else {
+          return giftBuilder_.getCount();
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
+        if (giftBuilder_ == null) {
+          return gift_.get(index);
+        } else {
+          return giftBuilder_.getMessage(index);
+        }
+      }
+      public Builder setGift(
+          int index, com.v2tech.net.lv.WebPackage.Gift value) {
+        if (giftBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGiftIsMutable();
+          gift_.set(index, value);
+          onChanged();
+        } else {
+          giftBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setGift(
+          int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
+        if (giftBuilder_ == null) {
+          ensureGiftIsMutable();
+          gift_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          giftBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addGift(com.v2tech.net.lv.WebPackage.Gift value) {
+        if (giftBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGiftIsMutable();
+          gift_.add(value);
+          onChanged();
+        } else {
+          giftBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addGift(
+          int index, com.v2tech.net.lv.WebPackage.Gift value) {
+        if (giftBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGiftIsMutable();
+          gift_.add(index, value);
+          onChanged();
+        } else {
+          giftBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addGift(
+          com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
+        if (giftBuilder_ == null) {
+          ensureGiftIsMutable();
+          gift_.add(builderForValue.build());
+          onChanged();
+        } else {
+          giftBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addGift(
+          int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
+        if (giftBuilder_ == null) {
+          ensureGiftIsMutable();
+          gift_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          giftBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllGift(
+          java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Gift> values) {
+        if (giftBuilder_ == null) {
+          ensureGiftIsMutable();
+          super.addAll(values, gift_);
+          onChanged();
+        } else {
+          giftBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearGift() {
+        if (giftBuilder_ == null) {
+          gift_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          giftBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeGift(int index) {
+        if (giftBuilder_ == null) {
+          ensureGiftIsMutable();
+          gift_.remove(index);
+          onChanged();
+        } else {
+          giftBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.v2tech.net.lv.WebPackage.Gift.Builder getGiftBuilder(
+          int index) {
+        return getGiftFieldBuilder().getBuilder(index);
+      }
+      public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
+          int index) {
+        if (giftBuilder_ == null) {
+          return gift_.get(index);  } else {
+          return giftBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder> 
+           getGiftOrBuilderList() {
+        if (giftBuilder_ != null) {
+          return giftBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(gift_);
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder() {
+        return getGiftFieldBuilder().addBuilder(
+            com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
+      }
+      public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder(
+          int index) {
+        return getGiftFieldBuilder().addBuilder(
+            index, com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
+      }
+      public java.util.List<com.v2tech.net.lv.WebPackage.Gift.Builder> 
+           getGiftBuilderList() {
+        return getGiftFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder> 
+          getGiftFieldBuilder() {
+        if (giftBuilder_ == null) {
+          giftBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder>(
+                  gift_,
+                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  getParentForChildren(),
+                  isClean());
+          gift_ = null;
+        }
+        return giftBuilder_;
+      }
+      
+      // optional int32 fromUserID = 5;
+      private int fromUserID_ ;
+      public boolean hasFromUserID() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public int getFromUserID() {
+        return fromUserID_;
+      }
+      public Builder setFromUserID(int value) {
+        bitField0_ |= 0x00000010;
+        fromUserID_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFromUserID() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        fromUserID_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 answerUserID = 6;
+      private int answerUserID_ ;
+      public boolean hasAnswerUserID() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public int getAnswerUserID() {
+        return answerUserID_;
+      }
+      public Builder setAnswerUserID(int value) {
+        bitField0_ |= 0x00000020;
+        answerUserID_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAnswerUserID() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        answerUserID_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional .Reward.Operate operate = 7;
+      private com.v2tech.net.lv.WebPackage.Reward.Operate operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
+      public boolean hasOperate() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+        return operate_;
+      }
+      public Builder setOperate(com.v2tech.net.lv.WebPackage.Reward.Operate value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000040;
+        operate_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearOperate() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
+        onChanged();
+        return this;
+      }
+      
+      // optional string desc = 8;
+      private java.lang.Object desc_ = "";
+      public boolean hasDesc() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public String getDesc() {
+        java.lang.Object ref = desc_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          desc_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setDesc(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        desc_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearDesc() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        desc_ = getDefaultInstance().getDesc();
+        onChanged();
+        return this;
+      }
+      void setDesc(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000080;
+        desc_ = value;
+        onChanged();
+      }
+      
+      // optional .Position position = 9;
+      private com.v2tech.net.lv.WebPackage.Position position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> positionBuilder_;
+      public boolean hasPosition() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public com.v2tech.net.lv.WebPackage.Position getPosition() {
+        if (positionBuilder_ == null) {
+          return position_;
+        } else {
+          return positionBuilder_.getMessage();
+        }
+      }
+      public Builder setPosition(com.v2tech.net.lv.WebPackage.Position value) {
+        if (positionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          position_ = value;
+          onChanged();
+        } else {
+          positionBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder setPosition(
+          com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
+        if (positionBuilder_ == null) {
+          position_ = builderForValue.build();
+          onChanged();
+        } else {
+          positionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder mergePosition(com.v2tech.net.lv.WebPackage.Position value) {
+        if (positionBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              position_ != com.v2tech.net.lv.WebPackage.Position.getDefaultInstance()) {
+            position_ =
+              com.v2tech.net.lv.WebPackage.Position.newBuilder(position_).mergeFrom(value).buildPartial();
+          } else {
+            position_ = value;
+          }
+          onChanged();
+        } else {
+          positionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder clearPosition() {
+        if (positionBuilder_ == null) {
+          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+          onChanged();
+        } else {
+          positionBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      public com.v2tech.net.lv.WebPackage.Position.Builder getPositionBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getPositionFieldBuilder().getBuilder();
+      }
+      public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
+        if (positionBuilder_ != null) {
+          return positionBuilder_.getMessageOrBuilder();
+        } else {
+          return position_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> 
+          getPositionFieldBuilder() {
+        if (positionBuilder_ == null) {
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>(
+                  position_,
+                  getParentForChildren(),
+                  isClean());
+          position_ = null;
+        }
+        return positionBuilder_;
+      }
+      
+      // optional int32 pushSum = 10;
+      private int pushSum_ ;
+      public boolean hasPushSum() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      public int getPushSum() {
+        return pushSum_;
+      }
+      public Builder setPushSum(int value) {
+        bitField0_ |= 0x00000200;
+        pushSum_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPushSum() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        pushSum_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:Reward)
+    }
+    
+    static {
+      defaultInstance = new Reward(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:Reward)
+  }
+  
+  public interface GiftOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional int32 giftType = 1;
+    boolean hasGiftType();
+    int getGiftType();
+    
+    // optional float amount = 2;
+    boolean hasAmount();
+    float getAmount();
+    
+    // optional float sumOrRemain = 3;
+    boolean hasSumOrRemain();
+    float getSumOrRemain();
+  }
+  public static final class Gift extends
+      com.google.protobuf.GeneratedMessage
+      implements GiftOrBuilder {
+    // Use Gift.newBuilder() to construct.
+    private Gift(Builder builder) {
+      super(builder);
+    }
+    private Gift(boolean noInit) {}
+    
+    private static final Gift defaultInstance;
+    public static Gift getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Gift getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_Gift_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_Gift_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional int32 giftType = 1;
+    public static final int GIFTTYPE_FIELD_NUMBER = 1;
+    private int giftType_;
+    public boolean hasGiftType() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getGiftType() {
+      return giftType_;
+    }
+    
+    // optional float amount = 2;
+    public static final int AMOUNT_FIELD_NUMBER = 2;
+    private float amount_;
+    public boolean hasAmount() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public float getAmount() {
+      return amount_;
+    }
+    
+    // optional float sumOrRemain = 3;
+    public static final int SUMORREMAIN_FIELD_NUMBER = 3;
+    private float sumOrRemain_;
+    public boolean hasSumOrRemain() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public float getSumOrRemain() {
+      return sumOrRemain_;
+    }
+    
+    private void initFields() {
+      giftType_ = 0;
+      amount_ = 0F;
+      sumOrRemain_ = 0F;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, giftType_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeFloat(2, amount_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeFloat(3, sumOrRemain_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, giftType_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, amount_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(3, sumOrRemain_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Gift prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.v2tech.net.lv.WebPackage.GiftOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.v2tech.net.lv.WebPackage.internal_static_Gift_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.v2tech.net.lv.WebPackage.internal_static_Gift_fieldAccessorTable;
+      }
+      
+      // Construct using com.v2tech.net.lv.WebPackage.Gift.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        giftType_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        amount_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        sumOrRemain_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.v2tech.net.lv.WebPackage.Gift.getDescriptor();
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Gift getDefaultInstanceForType() {
+        return com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance();
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Gift build() {
+        com.v2tech.net.lv.WebPackage.Gift result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.v2tech.net.lv.WebPackage.Gift buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.v2tech.net.lv.WebPackage.Gift result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.v2tech.net.lv.WebPackage.Gift buildPartial() {
+        com.v2tech.net.lv.WebPackage.Gift result = new com.v2tech.net.lv.WebPackage.Gift(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.giftType_ = giftType_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.amount_ = amount_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.sumOrRemain_ = sumOrRemain_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.v2tech.net.lv.WebPackage.Gift) {
+          return mergeFrom((com.v2tech.net.lv.WebPackage.Gift)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Gift other) {
+        if (other == com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance()) return this;
+        if (other.hasGiftType()) {
+          setGiftType(other.getGiftType());
+        }
+        if (other.hasAmount()) {
+          setAmount(other.getAmount());
+        }
+        if (other.hasSumOrRemain()) {
+          setSumOrRemain(other.getSumOrRemain());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              giftType_ = input.readInt32();
+              break;
+            }
+            case 21: {
+              bitField0_ |= 0x00000002;
+              amount_ = input.readFloat();
+              break;
+            }
+            case 29: {
+              bitField0_ |= 0x00000004;
+              sumOrRemain_ = input.readFloat();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional int32 giftType = 1;
+      private int giftType_ ;
+      public boolean hasGiftType() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getGiftType() {
+        return giftType_;
+      }
+      public Builder setGiftType(int value) {
+        bitField0_ |= 0x00000001;
+        giftType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearGiftType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        giftType_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional float amount = 2;
+      private float amount_ ;
+      public boolean hasAmount() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public float getAmount() {
+        return amount_;
+      }
+      public Builder setAmount(float value) {
+        bitField0_ |= 0x00000002;
+        amount_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAmount() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        amount_ = 0F;
+        onChanged();
+        return this;
+      }
+      
+      // optional float sumOrRemain = 3;
+      private float sumOrRemain_ ;
+      public boolean hasSumOrRemain() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public float getSumOrRemain() {
+        return sumOrRemain_;
+      }
+      public Builder setSumOrRemain(float value) {
+        bitField0_ |= 0x00000004;
+        sumOrRemain_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSumOrRemain() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        sumOrRemain_ = 0F;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:Gift)
+    }
+    
+    static {
+      defaultInstance = new Gift(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:Gift)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_Packet_descriptor;
   private static
@@ -7594,6 +9747,16 @@ public final class WebPackage {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Gratuity_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Reward_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Reward_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Gift_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Gift_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7603,40 +9766,50 @@ public final class WebPackage {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014packet.proto\"\322\001\n\006Packet\022 \n\npacketType\030" +
+      "\n\014packet.proto\"\343\001\n\006Packet\022 \n\npacketType\030" +
       "\001 \002(\0162\014.Packet.type\022\014\n\004from\030\002 \001(\t\022\n\n\002to\030" +
       "\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006method\030\005 \001(\t\022\023\n\013ope" +
       "rateType\030\006 \001(\t\022\027\n\006result\030\007 \001(\0132\007.Result\022" +
-      "\023\n\004data\030\010 \001(\0132\005.Data\"-\n\004type\022\006\n\002iq\020\000\022\007\n\003" +
-      "msg\020\001\022\n\n\006buffer\020\002\022\010\n\004beat\020\003\"\'\n\006Result\022\016\n" +
-      "\006result\030\001 \001(\010\022\r\n\005error\030\002 \001(\t\"\265\001\n\004Data\022\016\n" +
-      "\006normal\030\001 \001(\t\022\020\n\010byteDate\030\002 \001(\014\022\013\n\003sum\030\003" +
-      " \001(\005\022\014\n\004from\030\004 \001(\005\022\n\n\002to\030\005 \001(\005\022\033\n\010positi" +
-      "on\030\006 \003(\0132\t.Position\022\023\n\004user\030\007 \003(\0132\005.User",
-      "\022\025\n\005video\030\010 \003(\0132\006.Video\022\033\n\010gratuity\030\t \003(" +
-      "\0132\t.Gratuity\"\345\002\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005pho" +
-      "ne\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004 \001(\t\022\022\n\np" +
-      "wd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001(\t\022\017\n\007hea" +
-      "durl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n\003sex\030\t \001(" +
-      "\005\022\017\n\007address\030\n \001(\t\022\022\n\nexperience\030\013 \001(\005\022\021" +
-      "\n\tfansCount\030\014 \001(\005\022\023\n\013followCount\030\r \001(\005\022\033" +
-      "\n\010position\030\016 \001(\0132\t.Position\022\020\n\010deviceID\030" +
-      "\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010descName\030\021 " +
-      "\001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName\030\023 \001(\t\022\r\n",
-      "\005v2Pwd\030\024 \001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 " +
-      "\001(\001\022\020\n\010latitude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\321\001" +
-      "\n\005Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n" +
-      "\006userId\030\003 \001(\005\022\033\n\010position\030\004 \001(\0132\t.Positi" +
-      "on\022\013\n\003sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tli" +
-      "keCount\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006" +
-      "degree\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSM" +
-      "ode\030\013 \001(\010\"\325\001\n\010Gratuity\022\020\n\010giftType\030\001 \001(\005" +
-      "\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserID\030\003 \001(\005\022\016" +
-      "\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002\022 \n\006a",
-      "nswer\030\006 \001(\0162\020.Gratuity.Answer\022\017\n\007videoId" +
-      "\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n\n\006accept\020" +
-      "\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003B\037\n\021com.v2tech." +
-      "net.lvB\nWebPackage"
+      "\023\n\004data\030\010 \001(\0132\005.Data\022\017\n\007version\030\t \001(\t\"-\n" +
+      "\004type\022\006\n\002iq\020\000\022\007\n\003msg\020\001\022\n\n\006buffer\020\002\022\010\n\004be" +
+      "at\020\003\"\'\n\006Result\022\016\n\006result\030\001 \001(\010\022\r\n\005error\030" +
+      "\002 \001(\t\"\316\001\n\004Data\022\016\n\006normal\030\001 \001(\t\022\020\n\010byteDa" +
+      "te\030\002 \001(\014\022\013\n\003sum\030\003 \001(\005\022\014\n\004from\030\004 \001(\005\022\n\n\002t" +
+      "o\030\005 \001(\005\022\033\n\010position\030\006 \003(\0132\t.Position\022\023\n\004",
+      "user\030\007 \003(\0132\005.User\022\025\n\005video\030\010 \003(\0132\006.Video" +
+      "\022\033\n\010gratuity\030\t \003(\0132\t.Gratuity\022\027\n\006reward\030" +
+      "\n \003(\0132\007.Reward\"\371\002\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005p" +
+      "hone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004 \001(\t\022\022\n" +
+      "\npwd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001(\t\022\017\n\007h" +
+      "eadurl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n\003sex\030\t " +
+      "\001(\005\022\017\n\007address\030\n \001(\t\022\022\n\nexperience\030\013 \001(\005" +
+      "\022\021\n\tfansCount\030\014 \001(\005\022\023\n\013followCount\030\r \001(\005" +
+      "\022\033\n\010position\030\016 \001(\0132\t.Position\022\020\n\010deviceI" +
+      "D\030\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010descName\030",
+      "\021 \001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName\030\023 \001(\t\022" +
+      "\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(\005\"?\n\010Po" +
+      "sition\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010latitude\030\002 " +
+      "\001(\001\022\016\n\006radius\030\003 \001(\005\"\321\001\n\005Video\022\n\n\002id\030\001 \001(" +
+      "\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003 \001(\005\022\033\n\010p" +
+      "osition\030\004 \001(\0132\t.Position\022\013\n\003sum\030\005 \001(\005\022\021\n" +
+      "\tuserCount\030\006 \001(\005\022\021\n\tlikeCount\030\007 \001(\005\022\025\n\rg" +
+      "ratuityCount\030\010 \001(\002\022\016\n\006degree\030\t \001(\005\022\022\n\nre" +
+      "sultType\030\n \001(\005\022\017\n\007HLSMode\030\013 \001(\010\"\325\001\n\010Grat" +
+      "uity\022\020\n\010giftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005",
+      "\022\022\n\nfromUserID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013" +
+      "sumOrRemain\030\005 \001(\002\022 \n\006answer\030\006 \001(\0162\020.Grat" +
+      "uity.Answer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013" +
+      "\n\007receive\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006c" +
+      "ancel\020\003\"\234\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerT" +
+      "ime\030\002 \001(\005\022\023\n\013releaseTime\030\003 \001(\003\022\023\n\004gift\030\004" +
+      " \003(\0132\005.Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014answe" +
+      "rUserID\030\006 \001(\005\022 \n\007operate\030\007 \001(\0162\017.Reward." +
+      "Operate\022\014\n\004desc\030\010 \001(\t\022\033\n\010position\030\t \001(\0132" +
+      "\t.Position\022\017\n\007pushSum\030\n \001(\005\"A\n\007Operate\022\013",
+      "\n\007release\020\000\022\010\n\004edit\020\001\022\n\n\006cancle\020\002\022\007\n\003pay" +
+      "\020\003\022\n\n\006answer\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001(\005" +
+      "\022\016\n\006amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002B\037\n" +
+      "\021com.v2tech.net.lvB\nWebPackage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7648,7 +9821,7 @@ public final class WebPackage {
           internal_static_Packet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Packet_descriptor,
-              new java.lang.String[] { "PacketType", "From", "To", "Id", "Method", "OperateType", "Result", "Data", },
+              new java.lang.String[] { "PacketType", "From", "To", "Id", "Method", "OperateType", "Result", "Data", "Version", },
               com.v2tech.net.lv.WebPackage.Packet.class,
               com.v2tech.net.lv.WebPackage.Packet.Builder.class);
           internal_static_Result_descriptor =
@@ -7664,7 +9837,7 @@ public final class WebPackage {
           internal_static_Data_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Data_descriptor,
-              new java.lang.String[] { "Normal", "ByteDate", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", },
+              new java.lang.String[] { "Normal", "ByteDate", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", "Reward", },
               com.v2tech.net.lv.WebPackage.Data.class,
               com.v2tech.net.lv.WebPackage.Data.Builder.class);
           internal_static_User_descriptor =
@@ -7672,7 +9845,7 @@ public final class WebPackage {
           internal_static_User_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_User_descriptor,
-              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", },
+              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", "VideoCount", },
               com.v2tech.net.lv.WebPackage.User.class,
               com.v2tech.net.lv.WebPackage.User.Builder.class);
           internal_static_Position_descriptor =
@@ -7699,6 +9872,22 @@ public final class WebPackage {
               new java.lang.String[] { "GiftType", "ToUserID", "FromUserID", "Amount", "SumOrRemain", "Answer", "VideoId", },
               com.v2tech.net.lv.WebPackage.Gratuity.class,
               com.v2tech.net.lv.WebPackage.Gratuity.Builder.class);
+          internal_static_Reward_descriptor =
+            getDescriptor().getMessageTypes().get(7);
+          internal_static_Reward_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Reward_descriptor,
+              new java.lang.String[] { "Id", "PowerTime", "ReleaseTime", "Gift", "FromUserID", "AnswerUserID", "Operate", "Desc", "Position", "PushSum", },
+              com.v2tech.net.lv.WebPackage.Reward.class,
+              com.v2tech.net.lv.WebPackage.Reward.Builder.class);
+          internal_static_Gift_descriptor =
+            getDescriptor().getMessageTypes().get(8);
+          internal_static_Gift_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Gift_descriptor,
+              new java.lang.String[] { "GiftType", "Amount", "SumOrRemain", },
+              com.v2tech.net.lv.WebPackage.Gift.class,
+              com.v2tech.net.lv.WebPackage.Gift.Builder.class);
           return null;
         }
       };
