@@ -1,12 +1,14 @@
 package com.v2tech.presenter;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import v2av.VideoPlayer;
+import v2av.VideoPlayer.ViewItemListener;
 import v2av.VideoRecorder;
 import android.app.Activity;
 import android.content.Context;
@@ -45,15 +47,17 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.view.InquiryActionActivity;
 import com.v2tech.view.MainApplication;
+import com.v2tech.view.MapVideoLayout.ButtonClickListener;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.vo.AttendDeviceIndication;
 import com.v2tech.vo.Live;
+import com.v2tech.vo.PublishingLive;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserDeviceConfig;
+import com.v2tech.vo.ViewLive;
 import com.v2tech.vo.Watcher;
 import com.v2tech.vo.conference.ConferenceGroup;
 import com.v2tech.vo.msg.VMessage;
@@ -73,11 +77,11 @@ import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
 		MarkerListener,UITypeStatusChangedListener, 
-		BottomButtonLayoutListener,
+		BottomButtonLayoutListener,ButtonClickListener, 
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
-		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,
+		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,ViewItemListener,
 		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler,
 		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener {
 
@@ -132,7 +136,6 @@ public class MainPresenter extends BasePresenter implements
 	private ConferenceService vs;
 	private LiveService ls;
 	private Handler h;
-	private Live currentLive;
 	private InquiryService is;
 
 	private int videoScreenState;
@@ -151,6 +154,11 @@ public class MainPresenter extends BasePresenter implements
 	
 	private VideoPlayer  vpController;
 	
+	private List<ViewLive> viewLiveList;
+	
+	private ViewLive currentViewLive;
+	private PublishingLive publishingLive;
+	
 	// /////
 
 	public MainPresenter(Context context, MainPresenterUI ui) {
@@ -162,6 +170,7 @@ public class MainPresenter extends BasePresenter implements
 				| MESSAGE_MARQUEE_ENABLE | VIDEO_SHARE_BTN_SHOW | MESSAGE_MARQUEE_LY_SHOW);
 
 		uiHandler = new UiHandler(this, ui);
+		viewLiveList = new ArrayList<ViewLive>(20);
 	}
 
 	public interface MainPresenterUI {
@@ -245,13 +254,15 @@ public class MainPresenter extends BasePresenter implements
 		public void cancelInquireState();
 		
 		public void updateMapAddressText(String text);
+		
+		public String getInquiryAward();
 	}
 
 	public void videoShareButtonClicked() {
 		if (isState(PUBLISHING_FLAG)) {
 			unsetState(PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
-			vs.quitConference(currentLive, new MessageListener(h,
+			vs.quitConference(currentViewLive.live, new MessageListener(h,
 					CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
 			setState(PUBLISHING_FLAG);
@@ -389,10 +400,11 @@ public class MainPresenter extends BasePresenter implements
 			return false;
 		}
 		if (isState(WATCHING_FLAG)) {
-			// TODO check window count
-
 			// quit from old
-			vs.requestExitConference(currentLive, null);
+			currentViewLive.playing = false;
+			currentViewLive.showing = false;
+			currentViewLive.surfaveViewIdx = -1;
+			vs.requestExitConference(currentViewLive.live, null);
 			unsetState(WATCHING_FLAG);
 		}
 
@@ -401,8 +413,14 @@ public class MainPresenter extends BasePresenter implements
 		if (l != null) {
 			vs.requestEnterConference(l, new MessageListener(h,
 					WATCHING_REQUEST_CALLBACK, null));
-			currentLive = l;
-			ui.showDebugMsg(currentLive.getLid() + "");
+			ViewLive vl= findViewLive(l);
+			if (vl == null) {
+				throw new RuntimeException(" no viewlive :" + l);
+			}
+			this.currentViewLive = vl;
+			currentViewLive.playing = true;
+			currentViewLive.showing = true;
+			currentViewLive.surfaveViewIdx = vpController.getCurrentItemIdx();
 			updateLiveScreen(l);
 		}
 		return true;
@@ -422,26 +440,19 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onLiveInfoTipsBtnClicked(View v) {
-		is.startInquiry(20.0F, 0d, 0D);
-		if (currentLive == null) {
-			return;
-		}
-
-		// TODO add tips call
-		currentLive.isInchr = !currentLive.isInchr;
-		updateLiveScreen(currentLive);
+		V2Log.i("====> onLiveInfoTipsBtnClicked");
 	}
 
 	@Override
 	public void onLiveInfoRecommandBtnClicked(View v) {
-		if (currentLive == null) {
+		if (currentViewLive == null) {
 			// TODO show incorrect UI
 			return;
 		}
-		ls.recommend(currentLive, currentLive.isRend());
-		currentLive.setRend(!currentLive.isRend());
-		currentLive.rendCount += (currentLive.isRend() ? 1 : -1);
-		updateLiveScreen(currentLive);
+		ls.recommend(currentViewLive.live, currentViewLive.live.isRend());
+		currentViewLive.live.setRend(!currentViewLive.live.isRend());
+		currentViewLive.live.rendCount += (currentViewLive.live.isRend() ? 1 : -1);
+		updateLiveScreen(currentViewLive.live);
 	}
 
 	// //////////////////LiveInformationLayoutListener
@@ -511,16 +522,16 @@ public class MainPresenter extends BasePresenter implements
 				return;
 			}
 			UserDeviceConfig udc = u.ll.iterator().next();
-			udc.setGroupID(this.currentLive.getLid());
+			udc.setGroupID(this.currentViewLive.live.getLid());
 			udc.setGroupType(4);
 			VideoPlayer vp = new VideoPlayer();
 			vp.SetSurface(ui.getP2PMainSurface().getHolder());
 			udc.setVp(vp);
 			vs.requestOpenVideoDevice(
-					new ConferenceGroup(this.currentLive.getLid(), "", null,
+					new ConferenceGroup(this.currentViewLive.live.getLid(), "", null,
 							null, null), udc, null);
 
-			this.requestConnection(this.currentLive.getLid(),
+			this.requestConnection(this.currentViewLive.live.getLid(),
 					VMessageAudioVideoRequestItem.TYPE_VIDEO,
 					VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 
@@ -528,7 +539,7 @@ public class MainPresenter extends BasePresenter implements
 			setState(AUDIO_P2P_SHOW);
 			unsetState(AUDIO_CALL_REQUEST_SHOW);
 			ui.showMap(true);
-			this.requestConnection(this.currentLive.getLid(),
+			this.requestConnection(this.currentViewLive.live.getLid(),
 					VMessageAudioVideoRequestItem.TYPE_AUDIO,
 					VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 		}
@@ -557,7 +568,7 @@ public class MainPresenter extends BasePresenter implements
 		uiHandler.sendMessageDelayed(timout, 5000);
 		setState(PROGRESS_DIALOG_SOWN);
 
-		requestConnection(this.currentLive.getLid(),
+		requestConnection(this.currentViewLive.live.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_AUDIO,
 				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
@@ -568,7 +579,7 @@ public class MainPresenter extends BasePresenter implements
 			// TODO show incorrect UI
 			return;
 		}
-		requestConnection(this.currentLive.getLid(),
+		requestConnection(this.currentViewLive.live.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_VIDEO,
 				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 	}
@@ -581,18 +592,18 @@ public class MainPresenter extends BasePresenter implements
 		}
 
 		Intent i = new Intent();
-		i.putExtra("chatuserid", this.currentLive.getPublisher().getmUserId());
+		i.putExtra("chatuserid", this.currentViewLive.live.getPublisher().getmUserId());
 		i.setClass(context, P2PMessageActivity.class);
 		context.startActivity(i);
 	}
 
 	@Override
 	public void onFollowBtnClick(View v) {
-		if (currentLive == null) {
+		if (currentViewLive == null) {
 			return;
 		}
 		// TODO check friend status
-		us.followUser(currentLive.getPublisher(), true);
+		us.followUser(currentViewLive.live.getPublisher(), true);
 		ui.updateInterfactionFollowBtn(true);
 	}
 
@@ -612,13 +623,13 @@ public class MainPresenter extends BasePresenter implements
 		} else if (isState(AUDIO_P2P_SHOW)) {
 			type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
 		}
-		requestConnection(this.currentLive.getLid(), type,
+		requestConnection(this.currentViewLive.live.getLid(), type,
 				VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
-		if (currentLive.getPublisher().getmUserId() != GlobalHolder
+		if (currentViewLive.live.getPublisher().getmUserId() != GlobalHolder
 				.getInstance().getCurrentUserId()) {
 
 			UserDeviceConfig duc = new UserDeviceConfig(4,
-					this.currentLive.getLid(), GlobalHolder.getInstance()
+					this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 							.getCurrentUserId(), "", null);
 			vs.requestCloseVideoDevice(duc, null);
 		} else {
@@ -647,7 +658,6 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onTipsBtnClicked(View view) {
-		is.startInquiry(20.0F, 0d, 0D);
 	}
 
 	// ///////////P2PAudioWatcherLayoutListener
@@ -657,7 +667,7 @@ public class MainPresenter extends BasePresenter implements
 	public void onDeclineBtn(View view) {
 		unsetState(AUDIO_P2P_SHOW);
 		ui.showMap(false);
-		this.requestConnection(this.currentLive.getLid(),
+		this.requestConnection(this.currentViewLive.live.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_AUDIO,
 				VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
 	}
@@ -687,9 +697,9 @@ public class MainPresenter extends BasePresenter implements
 			ui.showMap(true);
 
 			// TODO add watcher list marker to map
-			if (currentLive != null) {
-				ls.getWatcherList(currentLive, new MessageListener(h,
-						WATCHER_LIST, currentLive));
+			if (currentViewLive != null) {
+				ls.getWatcherList(currentViewLive.live, new MessageListener(h,
+						WATCHER_LIST, currentViewLive.live));
 			}
 		}
 	}
@@ -752,9 +762,8 @@ public class MainPresenter extends BasePresenter implements
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
 			ui.showWatcherP2PVideoLayout(true);
 			UserDeviceConfig duc = new UserDeviceConfig(4,
-					this.currentLive.getLid(), GlobalHolder.getInstance()
+					this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 							.getCurrentUserId(), "", null);
-			ui.getP2PMainWatherSurface().setZOrderMediaOverlay(true);
 			VideoRecorder.VideoPreviewSurfaceHolder = ui
 					.getP2PMainWatherSurface().getHolder();
 			VideoRecorder.VideoPreviewSurfaceHolder
@@ -765,10 +774,10 @@ public class MainPresenter extends BasePresenter implements
 			vs.requestOpenVideoDevice(duc, null);
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
 			ui.showWatcherP2PVideoLayout(false);
-			if (uid != currentLive.getPublisher().getmUserId()) {
+			if (uid != currentViewLive.live.getPublisher().getmUserId()) {
 				// close local device
 				UserDeviceConfig duc = new UserDeviceConfig(4,
-						this.currentLive.getLid(), GlobalHolder.getInstance()
+						this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 								.getCurrentUserId(), "", null);
 				vs.requestCloseVideoDevice(duc, null);
 			} else {
@@ -776,7 +785,7 @@ public class MainPresenter extends BasePresenter implements
 				VideoPlayer vp = new VideoPlayer();
 				vp.SetSurface(ui.getP2PMainSurface().getHolder());
 				UserDeviceConfig duc = new UserDeviceConfig(0,
-						this.currentLive.getLid(), uid, GlobalHolder
+						this.currentViewLive.live.getLid(), uid, GlobalHolder
 								.getInstance().getUser(uid).ll.iterator()
 								.next().getDeviceID(), vp);
 				vs.requestCloseVideoDevice(duc, null);
@@ -931,18 +940,56 @@ public class MainPresenter extends BasePresenter implements
 	
 	///////////InquiryBidWidgetListener///////////////////////////////////////////////////
 	public void onInquiryLauchBtnClicked(View v) {
-		//TODO send inquiry
-		
 		MapLocation ml = mapInstance.getMapCenter();
-		//TODO 
-		Intent i = new Intent();
-		i.setClass(context, InquiryActionActivity.class);
-		i.putExtra("lat", ml.getLat());
-		i.putExtra("lng", ml.getLng());
-		context.startActivity(i, null);
+		String award = ui.getInquiryAward();
+		//TODO check award available
+		
+		long inquiryId = is.startInquiry(Float.parseFloat(award), ml.getLat(), ml.getLng(), null);
+		if (inquiryId < 0) {
+			//TODO notify user
+		}
 	}
 	
 	///////////InquiryBidWidgetListener///////////////////////////////////////////////////
+	
+	
+	///////////ButtonClickListener///////////////////////////////////////////////////
+	
+	public void onCameraBtnClicked(View view) {
+		UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+				.getInstance().getCurrentUserId(), "", null);
+		vs.switchCamera(duc);
+	}
+	
+	///////////ButtonClickListener///////////////////////////////////////////////////
+	
+	
+	
+	
+	///////////ViewItemListener///////////////////////////////////////////////////
+	@Override
+	public void onCurrentItemChanged(int current, int newIdx) {
+			for (ViewLive vl : viewLiveList) {
+				if (vl.surfaveViewIdx == current) {
+					vs.requestExitConference(vl.live, null);
+					vl.showing = false;
+				}
+				if (vl.surfaveViewIdx == newIdx) {
+					if (vl.playing) {
+						vs.requestEnterConference(vl.live, new MessageListener(h,
+								WATCHING_REQUEST_CALLBACK, null));
+						vl.showing = true;
+					}
+					this.currentViewLive = vl;
+				}
+			}
+	}
+	
+	///////////ViewItemListener///////////////////////////////////////////////////
+	
+	
+	
+	
 
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();
@@ -1017,10 +1064,9 @@ public class MainPresenter extends BasePresenter implements
 		V2Log.e("==> CREATE VIDEO SHARE:" + resp.getResult());
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			RequestConfCreateResponse rcr = (RequestConfCreateResponse) resp;
-			currentLive.setLid(rcr.getConfId());
-			ui.showDebugMsg(this.currentLive.getLid() + "");
+			publishingLive.setLid(rcr.getConfId());
 			videoScreenState |= PUBLISHING_FLAG;
-			ls.reportLiveStatus(this.currentLive, null);
+			ls.reportLiveStatus(publishingLive, null);
 		} else {
 			ui.showDebugMsg("create error");
 		}
@@ -1034,19 +1080,19 @@ public class MainPresenter extends BasePresenter implements
 
 	private void createVideoShareInBack() {
 		// TODO if no location how to?
-		currentLive = new Live(GlobalHolder.getInstance().getCurrentUser(), 0,
+		publishingLive = new PublishingLive(GlobalHolder.getInstance().getCurrentUser(), 0,
 				currentLocation.getLat(), currentLocation.getLng());
-		vs.createConference(currentLive, new MessageListener(h,
+		vs.createConference(publishingLive, new MessageListener(h,
 				CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
 
 	private void sendMessage(String text) {
-		if (currentLive == null) {
+		if (currentViewLive == null) {
 			ui.showError(1);
 			return;
 		}
 		// 4 for group type
-		VMessage vmsg = new VMessage(4, currentLive.getLid(), GlobalHolder
+		VMessage vmsg = new VMessage(4, currentViewLive.live.getLid(), GlobalHolder
 				.getInstance().getCurrentUser(), new Date(
 				System.currentTimeMillis()));
 		new VMessageTextItem(vmsg, text);
@@ -1085,16 +1131,7 @@ public class MainPresenter extends BasePresenter implements
 		Marker m = mapInstance.buildMarker(live);
 		mapInstance.addMarker(m);
 		cacheMarker.put(live, m);
-
-		this.uiHandler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				handleLiveFinished(live);
-
-			}
-
-		}, 2000);
+		viewLiveList.add(new ViewLive(live, m));
 	}
 
 	private void addWatcherMarker(Watcher watcher) {
@@ -1108,16 +1145,16 @@ public class MainPresenter extends BasePresenter implements
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			setState(WATCHING_FLAG);
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
-			if (this.currentLive.getPublisher() == null) {
-				this.currentLive.setPublisher(new User(rer.getConf()
+			if (this.currentViewLive.live.getPublisher() == null) {
+				this.currentViewLive.live.setPublisher(new User(rer.getConf()
 						.getChairman()));
 			} else {
-				this.currentLive.getPublisher().setmUserId(
+				this.currentViewLive.live.getPublisher().setmUserId(
 						(rer.getConf().getChairman()));
 			}
 
 			Message.obtain(uiHandler, UI_HANDLE_UPDATE_VIDEO_SCREEN,
-					currentLive).sendToTarget();
+					currentViewLive.live).sendToTarget();
 			pending = true;
 		} else {
 			pending = false;
@@ -1137,22 +1174,22 @@ public class MainPresenter extends BasePresenter implements
 				pending = false;
 				return;
 			}
-			if (uid == this.currentLive.getPublisher().getmUserId()) {
+			if (uid == this.currentViewLive.live.getPublisher().getmUserId()) {
 				if (vpController == null) {
 					vpController = ui.getVideoPlayer();
 				}
 				UserDeviceConfig udc = new UserDeviceConfig(0,
-						this.currentLive.getLid(), currentLive.getPublisher()
+						this.currentViewLive.live.getLid(), currentViewLive.live.getPublisher()
 								.getmUserId(), ll.get(0).getDeviceID(), vpController);
 				vs.requestOpenVideoDevice(
-						new ConferenceGroup(this.currentLive.getLid(), null,
+						new ConferenceGroup(this.currentViewLive.live.getLid(), null,
 								null, null, null), udc, null);
 				pending = false;
 
 			} else {
 				V2Log.e("=====got remote user id : " + uid
 						+ "   chair man userid:"
-						+ this.currentLive.getPublisher().getmUserId());
+						+ this.currentViewLive.live.getPublisher().getmUserId());
 			}
 
 		}
@@ -1160,8 +1197,8 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void handleWatcherListRespone(AsyncResult ar) {
-		if (ar.getUserObject() != currentLive) {
-			V2Log.e("==== liver changed state " + currentLive + "====> origin"
+		if (ar.getUserObject() != currentViewLive.live) {
+			V2Log.e("==== liver changed state " + currentViewLive.live + "====> origin"
 					+ ar.getUserObject());
 			return;
 		}
@@ -1169,6 +1206,15 @@ public class MainPresenter extends BasePresenter implements
 		for (Watcher w : watcherList) {
 			addWatcherMarker(w);
 		}
+	}
+	
+	private ViewLive findViewLive(Live l) {
+		for (ViewLive vl : viewLiveList) {
+			if (vl.live == l) {
+				return vl;
+			}
+		}
+		return null;
 	}
 
 	public void handleRequestTimeOut() {
@@ -1254,5 +1300,8 @@ public class MainPresenter extends BasePresenter implements
 			}
 		}
 	}
+	
+	
+	
 
 }

@@ -59,7 +59,7 @@ public class UserService extends AbstractHandler {
 	public void login(String mail, String passwd, MessageListener caller) {
 		ResponsePacket p = DeamonWorker.getInstance().request(
 				new LoginReqPacket(false, mail, null, passwd, true));
-		V2Log.e("===> login to user " + p.getHeader().isError());
+		V2Log.e("===> login to user error flag : " + p.getHeader().isError());
 		if (!p.getHeader().isError()) {
 			LoginRespPacket lrp = (LoginRespPacket) p;
 			User loginUser = new User(0);

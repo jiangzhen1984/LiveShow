@@ -4,6 +4,7 @@ import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
 import com.v2tech.net.lv.InquiryIndPacket;
 import com.v2tech.net.lv.InquiryReqPacket;
+import com.v2tech.net.lv.InquiryRespPacket;
 import com.v2tech.net.pkt.IndicationPacket;
 import com.v2tech.net.pkt.ResponsePacket;
 
@@ -19,17 +20,18 @@ public class InquiryService extends AbstractHandler {
 	}
 
 
-	public long startInquiry(float amount, double lat, double lng){
+	public long startInquiry(float amount, double lat, double lng, String desc){
 		InquiryReqPacket ir = new InquiryReqPacket();
 		ir.award = amount;
-		ir.currentUserId = GlobalHolder.getInstance().getCurrentUserId();
 		ir.type = InquiryReqPacket.TYPE_NEW;
+		ir.lat = lat;
+		ir.lng = lng;
 		ResponsePacket rp = DeamonWorker.getInstance().request(ir);
 		if (rp.getHeader().isError()) {
 			return -1;
 		} else {
 			DeamonWorker.getInstance().addNotificationListener(listener);
-			return System.currentTimeMillis();
+			return ((InquiryRespPacket)rp).inquireId;
 		}
 	}
 	
@@ -40,8 +42,8 @@ public class InquiryService extends AbstractHandler {
 	
 	public void cancelInquiry(long id) {
 		InquiryReqPacket ir = new InquiryReqPacket();
-		ir.currentUserId = GlobalHolder.getInstance().getCurrentUserId();
 		ir.type = InquiryReqPacket.TYPE_CANCEL;
+		ir.inquireId = id;
 		
 		DeamonWorker.getInstance().request(ir);
 		DeamonWorker.getInstance().removeNotificationListener(listener);

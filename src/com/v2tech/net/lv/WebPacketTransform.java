@@ -16,7 +16,7 @@ import com.v2tech.net.pkt.Transformer;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "2.0.0";
+	private static final String VERSION = "2.1.0";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){
@@ -98,11 +98,11 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             return extraWatcherListQueryResponse(webPackage);
         } else if ("getFollowList".equalsIgnoreCase(type)) {
             return extraFollowsQueryResponse(webPackage);
-        } else if ("gratuity".equalsIgnoreCase(type)) {
+        } else if ("reward".equalsIgnoreCase(type)) {
         	if (ind) {
         		return extraInquiryIndication(webPackage);
         	} else {
-        		return extraCommonResponse(webPackage);
+        		return extraInquiryResponse(webPackage);
         	}
         }  else {
             return null;
@@ -145,7 +145,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraLoginResponse(WebPackage.Packet webPackage) {
         LoginRespPacket lrp = new LoginRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        lrp.setErrorFlag(webPackage.getResult().hasError());
+        lrp.getHeader().setErrorMsg(webPackage.getResult().getError());
 
         if (!lrp.getHeader().isError()) {
         	if (webPackage.getData().getUserCount() <= 0) {
@@ -202,7 +203,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraCommonResponse(WebPackage.Packet webPackage) {
         ResponsePacket lrp = new ResponsePacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        lrp.setErrorFlag(webPackage.getResult().hasError());
+        lrp.getHeader().setErrorMsg(webPackage.getResult().getError());
         return lrp;
     }
 
@@ -357,7 +359,11 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     
     private Packet extraWatchVideoIndication(WebPackage.Packet webPackage) {
         long uid = webPackage.getData().getUser(0).getId();
-        long lid = webPackage.getData().getVideo(0).getId();
+        long lid = 0;
+        
+        if (webPackage.getData().getVideoCount() > 0) {
+        	lid = webPackage.getData().getVideo(0).getId();
+        }
         int type = Integer.parseInt(webPackage.getData().getNormal());
         LiveWatchingIndPacket lrp = new LiveWatchingIndPacket(uid, lid, type);    
         lrp.setErrorFlag(!webPackage.getResult().getResult());
@@ -554,26 +560,47 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     }
     
     private WebPackage.Packet serializeInquiryRequest(InquiryReqPacket p) {
-        WebPackage.Packet.Builder packetBuilder = WebPackage.Packet.newBuilder();
-        packetBuilder.setPacketType(WebPackage.Packet.type.iq);
-        packetBuilder.setId(String.valueOf(p.getId()));
-        packetBuilder.setMethod("gratuity");
-        packetBuilder.setOperateType("normal");
-        packetBuilder.setVersion(VERSION);
-        
 
-        WebPackage.Gratuity.Builder bid = WebPackage.Gratuity.newBuilder();
-        bid.setAmount(p.award);
-        bid.setFromUserID((int)p.currentUserId);
-        if (p.type == InquiryReqPacket.TYPE_CANCEL) {
-        	bid.setAnswer(WebPackage.Gratuity.Answer.cancel);
-        }
+		WebPackage.Packet.Builder packet = WebPackage.Packet.newBuilder();
+		packet.setPacketType(WebPackage.Packet.type.iq);
+		packet.setId(String.valueOf(p.getId()));
+		packet.setVersion(VERSION);
+		packet.setMethod("reward");
+		switch (p.type) {
+		case InquiryReqPacket.TYPE_NEW:
+			packet.setOperateType("release");
+			break;
+		case InquiryReqPacket.TYPE_UPDATE_AWARD:
+			packet.setOperateType("edit");
+			break;
+		case InquiryReqPacket.TYPE_CANCEL:
+			packet.setOperateType("cancle");
+			break;
+		}
+
+		WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
+		WebPackage.Reward.Builder reward = WebPackage.Reward.newBuilder();
+		WebPackage.Gift.Builder gift = WebPackage.Gift.newBuilder();
+		gift.setAmount(p.award);
+		gift.setGiftType(1);
+		reward.addGift(gift);
+		if (p.desc != null) {
+			reward.setDesc(p.desc);
+		}
+		WebPackage.Position.Builder position = WebPackage.Position.newBuilder();
+		position.setLongitude(p.lat);
+		position.setLatitude(p.lng);
+		position.setRadius(500);
+		reward.setPosition(position);
+		if (p.type == InquiryReqPacket.TYPE_UPDATE_AWARD) {
+			reward.setId((int)p.inquireId);
+		}
+
+		data.addReward(reward);
+		packet.setData(data);
         
-        WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
-        data.addGratuity(bid);
         
-        
-        return packetBuilder.build();
+        return packet.build();
     }
     
     
@@ -583,9 +610,22 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         lrp.setErrorFlag(!webPackage.getResult().getResult());
         long uid = webPackage.getData().getUserList().get(0).getId();
 		V2Log.i("====> get inquiry indiction : " + uid + "  type:  "
-				+ webPackage.getData().getGratuity(0).getAnswer().ordinal());
+				+ webPackage.getData().getRewardCount());
         return lrp;
     }
     
+    
+    private Packet extraInquiryResponse(WebPackage.Packet webPackage) {
+    	InquiryRespPacket lrp = new InquiryRespPacket();
+        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (webPackage.getData().getRewardCount() < 0) {
+        	 lrp.setErrorFlag(true);
+        	 V2Log.e("Award failed no award data");
+        	 return lrp;
+        }
+        
+        lrp.inquireId = webPackage.getData().getReward(0).getId();
+        return lrp;
+    }
     
 }

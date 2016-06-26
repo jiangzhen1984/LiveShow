@@ -1,5 +1,6 @@
 package com.v2tech.service;
 
+import v2av.VideoCaptureDevInfo;
 import android.os.Message;
 
 import com.V2.jni.VideoRequest;
@@ -207,6 +208,17 @@ public class DeviceService extends AbstractHandler {
 		initTimeoutMessage(JNI_UPDATE_CAMERA_PAR, DEFAULT_TIME_OUT_SECS, caller);
 //		VideoRequest.getInstance().(cc.getDeviceId(),
 //				cc.getCameraIndex(), cc.getFrameRate(), cc.getBitRate());
+	}
+	
+	public void switchCamera(UserDeviceConfig userDevice) {
+		this.requestCloseVideoDevice(userDevice, null);
+		VideoCaptureDevInfo.CreateVideoCaptureDevInfo().reverseCamera();
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		this.requestOpenVideoDevice(userDevice, null);
 	}
 
 	@Override

@@ -16,6 +16,8 @@ public final class Header {
 
 	public int error;
 	
+	public String errorMsg;
+	
 	
 	public Header() {
 		super();
@@ -40,5 +42,17 @@ public final class Header {
 		setError(true);
 		error |= err;
 	}
+
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+	
+	
 	
 }

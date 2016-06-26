@@ -29,7 +29,7 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.Watcher;
 
-public class LiveService extends AbstractHandler {
+public class LiveService extends DeviceService {
 	
 	
 	private static final int REQUEST_PUBLISH = 101;

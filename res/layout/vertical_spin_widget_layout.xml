@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.VerticalSpinWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+      android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/voice_volumn_maximum_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/voice_volumn_max" >
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/voice_volumn_current_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/voice_volumn_current" >
+    </FrameLayout>
+
+</com.v2tech.widget.VerticalSpinWidget>

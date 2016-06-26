@@ -50,6 +50,13 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	private boolean mIsSuspended;
 
 	private ByteBuffer _playBuffer;
+	
+	private ViewItemListener itemListener;
+	
+	
+	public interface ViewItemListener {
+		public void onCurrentItemChanged(int current, int newIdx);
+	}
 
 
 	public VideoPlayer() {
@@ -79,8 +86,24 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	public void SetSurface(SurfaceHolder holder) {
 		mSurfaceH = holder;
 	}
+	
+	
 
 
+
+	public ViewItemListener getItemListener() {
+		return itemListener;
+	}
+
+
+	public void setItemListener(ViewItemListener itemListener) {
+		this.itemListener = itemListener;
+	}
+
+	
+	public int getCurrentItemIdx() {
+		return this.currentIndex;
+	}
 
 	void Release() {
 		recycleBitmap();
@@ -167,6 +190,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		}
 		if (!renderingVideo) {
 			postInvalidate();
+		}
+		
+		if (itemListener != null && currentIndex != nextIndex) {
+			itemListener.onCurrentItemChanged(currentIndex, nextIndex);
 		}
 		
 	}

@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements
 		mMapVideoLayout.setMessageMarqueeLayoutListener(presenter);
 		mMapVideoLayout.setVideoShareBtnLayoutListener(presenter);
 		mMapVideoLayout.setInquiryBidWidgetListener(presenter);
+		mMapVideoLayout.setBtnClickListener(presenter);
 		
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
@@ -507,6 +508,11 @@ public class MainActivity extends BaseActivity implements
 	
 	public void updateMapAddressText(String text) {
 		mMapVideoLayout.updateMapLocationAddress(text);
+	}
+	
+	
+	public String getInquiryAward() {
+		return mMapVideoLayout.getInquiryAward();
 	}
 	
 	/////////////////////////////////////////////////////////////

@@ -470,7 +470,10 @@ public class DeamonWorker implements Runnable, NetConnector,
 					return;
 				}
 				LocalBind lb = findRequestBind((ResponsePacket) p);
-				Log.e("ReaderChannel", "local bind:" + lb);
+				Log.i("ReaderChannel", "local bind:" + lb);
+				if (p.getHeader().isError()) {
+					Log.e("ReaderChannel", "error message:" + p.getHeader().getErrorMsg());
+				}
 				if (lb != null) {
 					lb.respontime = System.currentTimeMillis();
 					handleResponseBind(lb, p);

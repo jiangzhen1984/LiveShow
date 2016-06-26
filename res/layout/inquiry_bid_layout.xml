@@ -37,8 +37,10 @@
         android:layout_marginRight="30dp"
         android:layout_toRightOf="@+id/textView1"
         android:background="@drawable/inquiry_edit_bg"
+        android:ems="10"
         android:hint="@string/inquiry_bid_text1_hint"
-        android:ems="10" >
+        android:inputType="numberDecimal" >
+
     </EditText>
 
     <EditText

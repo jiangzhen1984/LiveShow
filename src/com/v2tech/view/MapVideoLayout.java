@@ -43,6 +43,7 @@ import com.v2tech.widget.RequestConnectLayout;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.TouchSurfaceView;
 import com.v2tech.widget.TouchSurfaceView.Translate;
+import com.v2tech.widget.VerticalSpinWidget;
 import com.v2tech.widget.VideoShareBtnLayout;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoWatcherListLayout;
@@ -60,6 +61,7 @@ public class MapVideoLayout extends FrameLayout {
 	private int borderY;
 	
 	private UITypeStatusChangedListener uiTypeListener;
+	private ButtonClickListener  btnClickListener;
 	
 	private VideoController videoController;
 	private VideoPlayer videoPlayer;
@@ -80,6 +82,9 @@ public class MapVideoLayout extends FrameLayout {
 	private BountyMarkerWidget bountyMarker;
 	private View inquiryCloseBtn;
 	private View returnBtnView;
+	private View localCameraSwitchBtn;
+	private VerticalSpinWidget volumnWidget;
+	private View volumneIcon;
 	
 	
 	private ScreenType st = ScreenType.VIDEO_MAP;
@@ -154,6 +159,17 @@ public class MapVideoLayout extends FrameLayout {
 		returnBtnView.setOnClickListener(clickListener);
 		
 		
+		localCameraSwitchBtn = new ImageView(getContext());
+		((ImageView)localCameraSwitchBtn).setImageResource(R.drawable.converse_camera_button);
+		localCameraSwitchBtn.setOnClickListener(clickListener);
+		
+		volumnWidget = (VerticalSpinWidget)LayoutInflater.from(getContext()).inflate(R.layout.vertical_spin_widget_layout, (ViewGroup)null);
+		volumnWidget.setCent(0.5F);
+		
+		volumneIcon= new ImageView(getContext());
+		((ImageView)volumneIcon).setImageResource(R.drawable.voice_volumn_icon);
+		
+		
 		this.addView(shareSurfaceView, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
 		this.addView(videoShareBtnLayout, -1, generateDefaultLayoutParams());
 		
@@ -177,6 +193,22 @@ public class MapVideoLayout extends FrameLayout {
 		lp.topMargin = 40;
 		lp.rightMargin = 40;
 		this.addView(returnBtnView, -1,  lp);
+		
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.topMargin = 40;
+		lp.rightMargin = 40;
+		this.addView(localCameraSwitchBtn, -1,  lp);
+		
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+		lp.topMargin = 40;
+		lp.leftMargin = 20;
+		lp.bottomMargin = 40;
+		this.addView(volumnWidget, -1,  lp);
+		
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.leftMargin = 40;
+		this.addView(volumneIcon, -1,  lp);
+		
 		
 		
 		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -360,9 +392,12 @@ public class MapVideoLayout extends FrameLayout {
 
 	
 	
-	
 	public SurfaceView getP2PWatcherSurfaceView() {
 		return p2pVideoLayout.getSurfaceView();
+	}
+	
+	public String getInquiryAward() {
+		return inquiryBidWidget.getTipsEditText().getEditableText().toString();
 	}
 	
 	
@@ -439,6 +474,13 @@ public class MapVideoLayout extends FrameLayout {
 
 
 
+	public ButtonClickListener getBtnClickListener() {
+		return btnClickListener;
+	}
+
+	public void setBtnClickListener(ButtonClickListener btnClickListener) {
+		this.btnClickListener = btnClickListener;
+	}
 
 
 
@@ -506,10 +548,13 @@ public class MapVideoLayout extends FrameLayout {
 
 		switch (st) {
 		case VIDEO_MAP:
-			ret = (x >= (int) tsv.getLeft()
-					&& tsv.getRight() >= x
-					&& (int) tsv.getTop() <= y && tsv
-					.getBottom() >= y);
+			ret = (x >= (int) tsv.getLeft() && tsv.getRight() >= x
+					&& (int) tsv.getTop() <= y && tsv.getBottom() >= y)
+					//check volume touch event
+					&& !(x > volumnWidget.getLeft()
+							&& x < volumnWidget.getRight()
+							&& y > volumnWidget.getTop() && y < volumnWidget
+							.getBottom());
 			break;
 		case VIDEO_SHARE:
 			ret = true;
@@ -704,6 +749,7 @@ public class MapVideoLayout extends FrameLayout {
 		mMapView.offsetTopAndBottom(offset);
 		//for inquiry bid
 		if (tsv.getTop() < 0) {
+			V2Log.i("===>" + inquiryBidWidget.getTop() +"   left:" + inquiryBidWidget.getLeft() +"   right:" + inquiryBidWidget.getRight() +"   bottom:" + inquiryBidWidget.getBottom());
 			shareSurfaceView.offsetTopAndBottom(offset);
 			videoShareBtnLayout.offsetTopAndBottom(offset);
 			
@@ -711,6 +757,8 @@ public class MapVideoLayout extends FrameLayout {
 			liveWatcherLayout.offsetTopAndBottom(offset);
 			mMsgLayout.offsetTopAndBottom(offset);
 			inquiryBidWidget.offsetTopAndBottom(offset);
+			volumnWidget.offsetTopAndBottom(offset);
+			volumneIcon.offsetTopAndBottom(offset);
 		}
 	}
 	
@@ -893,6 +941,28 @@ public class MapVideoLayout extends FrameLayout {
 			bountyMarker.layout(left, bottom, right, bottom + bountyMarker.getMeasuredHeight());
 			inquiryCloseBtn.layout(left, bottom, right, bottom + inquiryCloseBtn.getMeasuredHeight());
 			returnBtnView.layout(left, bottom, right, bottom + returnBtnView.getMeasuredHeight());
+			localCameraSwitchBtn.layout(left, bottom, right, bottom + localCameraSwitchBtn.getMeasuredHeight());
+			
+			LayoutParams lp = (LayoutParams) volumneIcon.getLayoutParams();
+			volumneIcon
+					.layout(left + lp.leftMargin,
+							bottomChildTop - liveWatcherLayout.getMeasuredHeight()
+									- lp.bottomMargin
+									- volumneIcon.getMeasuredHeight(),
+							left + lp.leftMargin
+									+ volumneIcon.getMeasuredWidth(), bottomChildTop
+									- liveWatcherLayout.getMeasuredHeight()
+									- lp.bottomMargin);
+
+			 lp = (LayoutParams) volumnWidget.getLayoutParams();
+			int vwbottom =   bottomChildTop
+					- lp.bottomMargin
+					- volumneIcon.getMeasuredHeight()
+					- liveWatcherLayout.getMeasuredHeight();
+			volumnWidget.layout(left + lp.leftMargin, top + lp.topMargin
+					+ mMsgLayout.getMeasuredHeight(),
+					left + volumnWidget.getMeasuredWidth() + lp.leftMargin, vwbottom);			
+			
 		} else if (st == ScreenType.VIDEO_SHARE) {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			tsv.layout(left, bottom, right, bottom + tsv.getMeasuredHeight());
@@ -902,12 +972,22 @@ public class MapVideoLayout extends FrameLayout {
 			lierInteractionLayout.layout(left,bottom, right, bottom + lierInteractionLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
 			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
+			inquiryBidWidget.layout(left, bottom, right, bottom + inquiryBidWidget.getMeasuredHeight());
 			p2pVideoLayout.layout(left,bottom , right, bottom + p2pVideoLayout.getMeasuredHeight());
+			volumnWidget.layout(left,bottom , right, bottom + volumnWidget.getMeasuredHeight());
+			volumneIcon.layout(left,bottom , right, bottom + volumneIcon.getMeasuredHeight());
+			
 			LayoutParams lp = (LayoutParams) returnBtnView.getLayoutParams();
 			returnBtnView.layout(right - returnBtnView.getMeasuredWidth()
 					- lp.rightMargin, bottom + lp.topMargin, right
 					- lp.rightMargin,
 					bottom + returnBtnView.getMeasuredHeight() +lp.topMargin
+							);
+			 lp = (LayoutParams) localCameraSwitchBtn.getLayoutParams();
+			localCameraSwitchBtn.layout(right - localCameraSwitchBtn.getMeasuredWidth()
+					- lp.rightMargin, top + lp.topMargin, right
+					- lp.rightMargin,
+					top + localCameraSwitchBtn.getMeasuredHeight() +lp.topMargin
 							);
 			
 		} else if (st ==  ScreenType.VIDEO_PUBLISHER_SHOW) {
@@ -977,6 +1057,10 @@ public class MapVideoLayout extends FrameLayout {
 		public void onUITypeChanged(ScreenType screenType);
 	}
 	
+	public interface ButtonClickListener {
+		public void onCameraBtnClicked(View view);
+	}
+	
 	
 	private Translate touchSurfaceViewTranslate = new Translate() {
 
@@ -1016,6 +1100,10 @@ public class MapVideoLayout extends FrameLayout {
 				turnUITypeAnimation(ScreenType.VIDEO_SHARE_MAP,
 						ScreenType.VIDEO_SHARE,
 						PostState.GO_NEXT, mMapView.getBottom() - mMapView.getTop());
+			} else if (v == localCameraSwitchBtn) {
+				if (btnClickListener != null) {
+					btnClickListener.onCameraBtnClicked(v);
+				}
 			}
 		}
 		

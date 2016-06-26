@@ -15,19 +15,19 @@ public class Live implements Serializable, Comparable<Live>{
 	 */
 	private static final long serialVersionUID = 5215649680130458839L;
 
-	private long lid;
+	protected long lid;
 	
-	private User publisher;
+	protected User publisher;
 	
-	private String url;
+	protected String url;
 	
-	private double lat;
+	protected double lat;
 	
-	private double lng;
+	protected double lng;
 	
-	private boolean canRemove;
+	protected boolean canRemove;
 	
-	private boolean rend;
+	protected boolean rend;
 	
 	public boolean isInchr;
 	
@@ -37,9 +37,9 @@ public class Live implements Serializable, Comparable<Live>{
 	
 	public float balanceSum;
 	
-	private long nid;
+	protected long nid;
 	
-	private List<User> watcher;
+	protected List<User> watcher;
 	
 	
 	public Live(User publisher, long lid, double lat, double lng) {

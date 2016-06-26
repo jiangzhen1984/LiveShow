@@ -84,6 +84,7 @@ public class TouchSurfaceView extends SurfaceView {
 		public void onFinishTranslate();
 	}
 	
+	
 
 	public Translate getTranslate() {
 		return translate;
