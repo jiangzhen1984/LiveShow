@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.v2tech.widget.VideoShareRightWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+    <LinearLayout
+        android:id="@+id/video_right_border_rd_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".3"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/recommendation_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0"
+            android:textColor="@color/video_right_border_text_color"
+            android:textSize="@dimen/video_right_border_text_size" />
+
+        <ImageView
+            android:id="@+id/recommendation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/recommendation_button"
+            android:tag="0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/video_right_border_tips_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".3"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tips_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0"
+            android:textColor="@color/video_right_border_text_color"
+            android:textSize="@dimen/video_right_border_text_size" />
+
+        <ImageView
+            android:id="@+id/tips_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/follow_button"
+            android:tag="0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/video_right_border_share_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".3"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/camera_switch_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/p2p_switch_camera_icon" />
+    </LinearLayout>
+
+
+</com.v2tech.widget.VideoShareRightWidget>

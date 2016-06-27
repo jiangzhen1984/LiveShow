@@ -46,12 +46,14 @@ import com.v2tech.widget.TouchSurfaceView.Translate;
 import com.v2tech.widget.VerticalSpinWidget;
 import com.v2tech.widget.VideoShareBtnLayout;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
+import com.v2tech.widget.VideoShareRightWidget;
+import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MapVideoLayout extends FrameLayout {
 	
-	private static int VIDEO_SURFACE_HEIGHT = 684;
+	private static int VIDEO_SURFACE_HEIGHT = 774;
 
 	private static int FLYING_SLOP = 180;
 	
@@ -61,7 +63,6 @@ public class MapVideoLayout extends FrameLayout {
 	private int borderY;
 	
 	private UITypeStatusChangedListener uiTypeListener;
-	private ButtonClickListener  btnClickListener;
 	
 	private VideoController videoController;
 	private VideoPlayer videoPlayer;
@@ -82,7 +83,7 @@ public class MapVideoLayout extends FrameLayout {
 	private BountyMarkerWidget bountyMarker;
 	private View inquiryCloseBtn;
 	private View returnBtnView;
-	private View localCameraSwitchBtn;
+	private VideoShareRightWidget videoShareRightWidet;
 	private VerticalSpinWidget volumnWidget;
 	private View volumneIcon;
 	
@@ -159,9 +160,8 @@ public class MapVideoLayout extends FrameLayout {
 		returnBtnView.setOnClickListener(clickListener);
 		
 		
-		localCameraSwitchBtn = new ImageView(getContext());
-		((ImageView)localCameraSwitchBtn).setImageResource(R.drawable.converse_camera_button);
-		localCameraSwitchBtn.setOnClickListener(clickListener);
+		videoShareRightWidet = (VideoShareRightWidget)LayoutInflater.from(getContext()).inflate(R.layout.video_share_right_widget_layout, (ViewGroup)null);
+		
 		
 		volumnWidget = (VerticalSpinWidget)LayoutInflater.from(getContext()).inflate(R.layout.vertical_spin_widget_layout, (ViewGroup)null);
 		volumnWidget.setCent(0.5F);
@@ -194,10 +194,11 @@ public class MapVideoLayout extends FrameLayout {
 		lp.rightMargin = 40;
 		this.addView(returnBtnView, -1,  lp);
 		
-		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, VIDEO_SURFACE_HEIGHT);
 		lp.topMargin = 40;
 		lp.rightMargin = 40;
-		this.addView(localCameraSwitchBtn, -1,  lp);
+		lp.bottomMargin = 40;
+		this.addView(videoShareRightWidet, -1,  lp);
 		
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 		lp.topMargin = 40;
@@ -263,11 +264,9 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
     public void showRedBtm(boolean flag) {
-		//TODO add implments
 	}
 	
 	public void showIncharBtm(boolean flag) {
-		//TODO add implments
 	}
 	
 	public void updateVideoShareBtnBackground(int res) {
@@ -472,16 +471,9 @@ public class MapVideoLayout extends FrameLayout {
 	}
 
 
-
-
-	public ButtonClickListener getBtnClickListener() {
-		return btnClickListener;
+	public void setVideoShareRightWidgetListener(VideoShareRightWidgetListener listener) {
+		this.videoShareRightWidet.setListener(listener);
 	}
-
-	public void setBtnClickListener(ButtonClickListener btnClickListener) {
-		this.btnClickListener = btnClickListener;
-	}
-
 
 
 	private int mInitY;
@@ -941,7 +933,7 @@ public class MapVideoLayout extends FrameLayout {
 			bountyMarker.layout(left, bottom, right, bottom + bountyMarker.getMeasuredHeight());
 			inquiryCloseBtn.layout(left, bottom, right, bottom + inquiryCloseBtn.getMeasuredHeight());
 			returnBtnView.layout(left, bottom, right, bottom + returnBtnView.getMeasuredHeight());
-			localCameraSwitchBtn.layout(left, bottom, right, bottom + localCameraSwitchBtn.getMeasuredHeight());
+			videoShareRightWidet.layout(left, bottom, right, bottom + videoShareRightWidet.getMeasuredHeight());
 			
 			LayoutParams lp = (LayoutParams) volumneIcon.getLayoutParams();
 			volumneIcon
@@ -983,12 +975,11 @@ public class MapVideoLayout extends FrameLayout {
 					- lp.rightMargin,
 					bottom + returnBtnView.getMeasuredHeight() +lp.topMargin
 							);
-			 lp = (LayoutParams) localCameraSwitchBtn.getLayoutParams();
-			localCameraSwitchBtn.layout(right - localCameraSwitchBtn.getMeasuredWidth()
-					- lp.rightMargin, top + lp.topMargin, right
-					- lp.rightMargin,
-					top + localCameraSwitchBtn.getMeasuredHeight() +lp.topMargin
-							);
+			 lp = (LayoutParams) videoShareRightWidet.getLayoutParams();
+			videoShareRightWidet.layout(
+					right - videoShareRightWidet.getMeasuredWidth()
+							- lp.rightMargin,  lp.topMargin, right
+							- lp.rightMargin, borderY - lp.bottomMargin);
 			
 		} else if (st ==  ScreenType.VIDEO_PUBLISHER_SHOW) {
 			borderY = tsv.getMeasuredHeight();
@@ -1043,10 +1034,16 @@ public class MapVideoLayout extends FrameLayout {
 		mMsgLayout.layout(left, tsv.getTop() + lp.topMargin, right, tsv.getTop() + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
-			liveInformationLayout.layout(right - liveInformationLayout.getMeasuredWidth(), tsv.getTop(), right, tsv.getBottom());
-		} 
+			liveInformationLayout.layout(
+					right - liveInformationLayout.getMeasuredWidth(),
+					tsv.getTop(), right, tsv.getBottom());
+		}
 		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
-			liveWatcherLayout.layout(left, bottomChildTop - liveWatcherLayout.getMeasuredHeight() - tsv.getTop() , right - liveInformationLayout.getMeasuredWidth(), tsv.getBottom());
+			liveWatcherLayout.layout(left,
+					bottomChildTop - liveWatcherLayout.getMeasuredHeight()
+							- tsv.getTop(),
+					right - liveInformationLayout.getMeasuredWidth(),
+					tsv.getBottom());
 		}
 		
 	}
@@ -1055,10 +1052,6 @@ public class MapVideoLayout extends FrameLayout {
 	
 	public interface UITypeStatusChangedListener {
 		public void onUITypeChanged(ScreenType screenType);
-	}
-	
-	public interface ButtonClickListener {
-		public void onCameraBtnClicked(View view);
 	}
 	
 	
@@ -1100,10 +1093,6 @@ public class MapVideoLayout extends FrameLayout {
 				turnUITypeAnimation(ScreenType.VIDEO_SHARE_MAP,
 						ScreenType.VIDEO_SHARE,
 						PostState.GO_NEXT, mMapView.getBottom() - mMapView.getTop());
-			} else if (v == localCameraSwitchBtn) {
-				if (btnClickListener != null) {
-					btnClickListener.onCameraBtnClicked(v);
-				}
 			}
 		}
 		

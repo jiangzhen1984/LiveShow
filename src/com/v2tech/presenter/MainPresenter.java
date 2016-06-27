@@ -48,7 +48,6 @@ import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.MainApplication;
-import com.v2tech.view.MapVideoLayout.ButtonClickListener;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
@@ -73,11 +72,12 @@ import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
+import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
 public class MainPresenter extends BasePresenter implements
 		MarkerListener,UITypeStatusChangedListener, 
-		BottomButtonLayoutListener,ButtonClickListener, 
+		BottomButtonLayoutListener,VideoShareRightWidgetListener, 
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
@@ -953,15 +953,15 @@ public class MainPresenter extends BasePresenter implements
 	///////////InquiryBidWidgetListener///////////////////////////////////////////////////
 	
 	
-	///////////ButtonClickListener///////////////////////////////////////////////////
-	
-	public void onCameraBtnClicked(View view) {
+	///////////VideoShareRightWidgetListener///////////////////////////////////////////////////
+	@Override
+	public void onCameraSwitchBtnClick(View v) {
 		UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
 				.getInstance().getCurrentUserId(), "", null);
 		vs.switchCamera(duc);
 	}
 	
-	///////////ButtonClickListener///////////////////////////////////////////////////
+	///////////VideoShareRightWidgetListener///////////////////////////////////////////////////
 	
 	
 	

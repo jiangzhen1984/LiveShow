@@ -2,6 +2,8 @@ package com.v2tech.vo.msg;
 
 import java.util.Date;
 
+import org.json.JSONObject;
+
 public class VMessageSession {
 
 	public long id;
@@ -19,4 +21,11 @@ public class VMessageSession {
 	public CharSequence content;
 	
 	public Date timestamp;
+	
+	public boolean isSystem;
+	
+	public int systemType;
+	
+	
+	public JSONObject contentJson;
 }

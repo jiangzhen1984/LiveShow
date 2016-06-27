@@ -13,6 +13,7 @@ import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.NotificationListener;
+import com.v2tech.net.lv.InquiryIndPacket;
 import com.v2tech.net.lv.LivePublishIndPacket;
 import com.v2tech.net.lv.LiveWatchingIndPacket;
 import com.v2tech.net.lv.LiveWatchingReqPacket;
@@ -31,6 +32,7 @@ public class NotificationService extends Service {
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_LEAVE = "com.v2tech.live_leave";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING = "com.v2tech.live_watching";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_MESSAGE = "com.v2tech.live_message";
+	private static final String NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW = "com.v2tech.inquiry_new";
 
 	
 	
@@ -98,6 +100,11 @@ public class NotificationService extends Service {
 							new Serializable[] { lwip.nid, u,
 									LiveWatchingReqPacket.CANCEL });
 				}
+			} else if (ip instanceof InquiryIndPacket) {
+				InquiryIndPacket  lwip =(InquiryIndPacket) ip;
+				sendBroadCast(NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW,
+						new String[] { "irid", "iuid", "award" ,"lat", "lng"},
+						new Serializable[] { lwip.inquireId, lwip.inquiryUserId, lwip.award, lwip.lat, lwip.lng});
 			}
 
 		}

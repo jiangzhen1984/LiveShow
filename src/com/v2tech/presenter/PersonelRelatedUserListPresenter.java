@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +32,7 @@ import com.v2tech.service.P2PMessageService;
 import com.v2tech.service.UserService;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.view.FansFollowActivity;
+import com.v2tech.view.InquiryActionActivity;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessageSession;
 
@@ -100,12 +104,30 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	
 	public void onListItemClicked(Object tag) {
-		Item item = (Item)tag;
-		Intent i = new Intent();
-		i.putExtra("user", item.u);
-		i.setClass(context, FansFollowActivity.class);
-		i.putExtra("type", type);
-		context.startActivity(i);
+		if (tag instanceof SystemItem) {
+			SystemItem si = (SystemItem)tag;
+			double lat;
+			try {
+				lat = si.content.getDouble("lat");
+				double lng = si.content.getDouble("lng");
+				Intent i = new Intent();
+				i.putExtra("lat", lat);
+				i.putExtra("lng", lng);
+				i.setClass(context, InquiryActionActivity.class);
+				context.startActivity(i);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				//TODO notify user
+			}
+			
+		} else {
+			Item item = (Item)tag;
+			Intent i = new Intent();
+			i.putExtra("user", item.u);
+			i.setClass(context, FansFollowActivity.class);
+			i.putExtra("type", type);
+			context.startActivity(i);
+		}
 	}
 	
 	
@@ -436,13 +458,20 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		
 		itemList  = new ArrayList<Item>(sessList.size());
 		for (VMessageSession vs : sessList) {
-			Item item = new Item();
-			itemList.add(item);
-			item.id = vs.id;
-			item.name = vs.fromName;
-			item.sn = vs.content;
-			item.time = format.format(vs.timestamp);
-			item.u = new User(vs.fromUid);
+			if (vs.isSystem) {
+				SystemItem si = new SystemItem();
+				si.id = vs.id;
+				si.content = vs.contentJson;
+				itemList.add(si);
+			} else {
+				Item item = new Item();
+				itemList.add(item);
+				item.id = vs.id;
+				item.name = vs.fromName;
+				item.sn = vs.content;
+				item.time = format.format(vs.timestamp);
+				item.u = new User(vs.fromUid);
+			}
 		}
 	}
 	
@@ -501,5 +530,9 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		public CharSequence time;
 		public int underCount;
 		public User u;
+	}
+	
+	class SystemItem extends Item {
+		JSONObject content;
 	}
 }

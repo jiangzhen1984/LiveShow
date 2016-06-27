@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -270,7 +274,16 @@ public class P2PMessageService extends DeviceService {
 					sess.content = MessageUtil.buildContent(ctx, vm);
 				}
 			} else if (type == com.v2tech.db.MessageDescriptor.MessageSession.MES_TYPE_SYSTEM) {
-				//TODO load system message
+				sess.fromName = "";
+				sess.content = name;
+				sess.isSystem = true;
+				JSONTokener jsonParser = new JSONTokener(sess.content.toString());
+				try {
+					JSONObject obj = (JSONObject) jsonParser.nextValue();
+					sess.contentJson = obj;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 			
 		}

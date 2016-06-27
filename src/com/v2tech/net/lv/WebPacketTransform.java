@@ -610,9 +610,18 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraInquiryIndication(WebPackage.Packet webPackage) {
     	InquiryIndPacket lrp = new InquiryIndPacket();
         lrp.setErrorFlag(!webPackage.getResult().getResult());
-        long uid = webPackage.getData().getRewardList().get(0).getFromUserID();
-		V2Log.i("====> get inquiry indiction : " + uid + "  type:  "
-				+ webPackage.getData().getRewardCount());
+        if (webPackage.getData().getRewardCount() > 0) {
+        	com.v2tech.net.lv.WebPackage.Reward re = webPackage.getData().getRewardList().get(0);
+        	lrp.inquiryUserId = re.getFromUserID();
+        	lrp.inquireId = re.getId();
+        	lrp.award= re.getGift(0).getAmount();
+        	com.v2tech.net.lv.WebPackage.Position po = re.getPosition();
+        	lrp.lat = po.getLatitude();
+        	lrp.lng = po.getLongitude();
+        } else {
+        	 lrp.setErrorFlag(true);
+        	 V2Log.e(" No availeable award for inquiry indication ");
+        }
         return lrp;
     }
     

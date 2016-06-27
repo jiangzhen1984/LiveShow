@@ -18,7 +18,6 @@ public class ReceiverLiveStatus extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		V2Log.i("===> receive broadcast : "+ action);
 		if ("com.v2tech.notification_action".equals(action)) {
 			handleNotification(intent);
 		}
