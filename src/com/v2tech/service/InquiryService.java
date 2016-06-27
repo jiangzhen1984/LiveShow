@@ -26,6 +26,7 @@ public class InquiryService extends AbstractHandler {
 		ir.type = InquiryReqPacket.TYPE_NEW;
 		ir.lat = lat;
 		ir.lng = lng;
+		ir.inquiryUserId = GlobalHolder.getInstance().getCurrentUserId();
 		ResponsePacket rp = DeamonWorker.getInstance().request(ir);
 		if (rp.getHeader().isError()) {
 			return -1;

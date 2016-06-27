@@ -14,6 +14,7 @@ public class InquiryReqPacket extends RequestPacket {
 	public int type;
 	public float award;
 	public String desc;
+	public long inquiryUserId;
 	
 	public double lat;
 	public double lng;

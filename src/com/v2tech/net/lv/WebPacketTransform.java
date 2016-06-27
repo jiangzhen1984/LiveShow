@@ -58,6 +58,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     }
 
     public Packet unserialize(WebPackage.Packet webPackage){
+    	V2Log.i(webPackage.toString());
         boolean ind = false;
         String from = webPackage.getFrom();
         if("pushServer".equals(from)){
@@ -584,12 +585,13 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 		gift.setAmount(p.award);
 		gift.setGiftType(1);
 		reward.addGift(gift);
+		reward.setFromUserID((int)p.inquiryUserId);
 		if (p.desc != null) {
 			reward.setDesc(p.desc);
 		}
 		WebPackage.Position.Builder position = WebPackage.Position.newBuilder();
-		position.setLongitude(p.lat);
-		position.setLatitude(p.lng);
+		position.setLongitude(p.lng);
+		position.setLatitude(p.lat);
 		position.setRadius(500);
 		reward.setPosition(position);
 		if (p.type == InquiryReqPacket.TYPE_UPDATE_AWARD) {
@@ -608,7 +610,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraInquiryIndication(WebPackage.Packet webPackage) {
     	InquiryIndPacket lrp = new InquiryIndPacket();
         lrp.setErrorFlag(!webPackage.getResult().getResult());
-        long uid = webPackage.getData().getUserList().get(0).getId();
+        long uid = webPackage.getData().getRewardList().get(0).getFromUserID();
 		V2Log.i("====> get inquiry indiction : " + uid + "  type:  "
 				+ webPackage.getData().getRewardCount());
         return lrp;
