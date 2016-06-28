@@ -34,6 +34,7 @@ import com.v2tech.v2liveshow.R;
 import com.v2tech.view.FansFollowActivity;
 import com.v2tech.view.InquiryActionActivity;
 import com.v2tech.vo.User;
+import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.vo.msg.VMessageSession;
 
 public class PersonelRelatedUserListPresenter extends BasePresenter implements UserListFragmentClickListener {
@@ -106,13 +107,19 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	public void onListItemClicked(Object tag) {
 		if (tag instanceof SystemItem) {
 			SystemItem si = (SystemItem)tag;
-			double lat;
+			
 			try {
-				lat = si.content.getDouble("lat");
+				double lat = si.content.getDouble("lat");
 				double lng = si.content.getDouble("lng");
 				Intent i = new Intent();
 				i.putExtra("lat", lat);
 				i.putExtra("lng", lng);
+				InquiryData id = new InquiryData();
+				id.targetLat = lat;
+				id.targetLng = lng;
+				id.id = si.content.getLong("irid");
+				id.sponsor = new User (si.content.getLong("userid"));
+				i.putExtra("inquiry", id);
 				i.setClass(context, InquiryActionActivity.class);
 				context.startActivity(i);
 			} catch (JSONException e) {

@@ -20,6 +20,7 @@ import android.net.Uri;
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.VideoRequest;
+import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.util.V2Log;
 import com.v2tech.db.MessageDescriptor;
 import com.v2tech.db.MessageDescriptor.P2PMessage;
@@ -40,6 +41,8 @@ public class P2PMessageService extends DeviceService {
 	
 	private LocalChatCB chatCB;
 	
+	private LocalVideoRequestCB lvrCB;
+	
 	private Map<String, WeakReference<MessageListener>> pendingListener;
 	
 	public P2PMessageService() {
@@ -47,6 +50,8 @@ public class P2PMessageService extends DeviceService {
 		chatCB = new LocalChatCB();
 		ChatRequest.getInstance().addChatRequestCallback(chatCB);
 		pendingListener = new HashMap<String, WeakReference<MessageListener>>();
+		lvrCB = new LocalVideoRequestCB();
+		VideoRequest.getInstance().addCallback(lvrCB);
 	}
 	
 	
@@ -335,9 +340,29 @@ public class P2PMessageService extends DeviceService {
 	public void clearCalledBack() {
 		ChatRequest.getInstance().removeChatRequestCallback(chatCB);
 		pendingListener.clear();
+		VideoRequest.getInstance().removeCallback(lvrCB);
+	}
+	
+	
+	
+	private VideoEventListener listener;
+	
+	public interface VideoEventListener {
+		public void onAccepted();
+		
+		public void onDeclined();
+		
 	}
 
 	
+	public void registerVideoEvent(VideoEventListener listener) {
+		this.listener = listener;
+	}
+	
+	
+	public void unRegisterVideoEvent(VideoEventListener listener) {
+		this.listener = null;
+	}
 	
 	class LocalChatCB extends ChatRequestCallbackAdapter {
 
@@ -358,6 +383,33 @@ public class P2PMessageService extends DeviceService {
 				//TODO send response
 			}
 		}
+		
+	}
+	
+	
+	class LocalVideoRequestCB extends VideoRequestCallbackAdapter {
+
+		@Override
+		public void OnVideoChatAccepted(String szSessionID, long nFromUserID,
+				String szDeviceID) {
+			V2Log.i("OnVideoChatAccepted==== >"  +szSessionID +"  szDeviceID: " + szDeviceID+"  nFromUserID:"+ nFromUserID);
+			listener.onAccepted();
+		}
+
+		@Override
+		public void OnVideoChatClosed(String szSessionID, long nFromUserID,
+				String szDeviceID) {
+			super.OnVideoChatClosed(szSessionID, nFromUserID, szDeviceID);
+			
+		}
+
+		@Override
+		public void OnVideoChatRefused(String szSessionID, long nFromUserID,
+				String szDeviceID) {
+			listener.onDeclined();
+		}
+		
+		
 		
 	}
 }

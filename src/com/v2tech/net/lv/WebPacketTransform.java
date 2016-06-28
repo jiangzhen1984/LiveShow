@@ -50,6 +50,8 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             return serializeV2AccountReprotRequest((V2AccountReprotReqPacket) p);
         }else if (p instanceof InquiryReqPacket) {
             return serializeInquiryRequest((InquiryReqPacket) p);
+        }else if (p instanceof UpdateUserDeviceReqPacket) {
+            return serializeUpdateUserDeviceRequest((UpdateUserDeviceReqPacket) p);
         }else if (p instanceof PacketProxy) {
             return serialize(((PacketProxy) p).getPacket());
         } else {
@@ -577,6 +579,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 		case InquiryReqPacket.TYPE_CANCEL:
 			packet.setOperateType("cancle");
 			break;
+		case  InquiryReqPacket.TYPE_ACCEPT:
+			packet.setOperateType("answer");
+			break;
 		}
 
 		WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
@@ -594,7 +599,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 		position.setLatitude(p.lat);
 		position.setRadius(500);
 		reward.setPosition(position);
-		if (p.type == InquiryReqPacket.TYPE_UPDATE_AWARD) {
+		if (p.type != InquiryReqPacket.TYPE_NEW) {
 			reward.setId((int)p.inquireId);
 		}
 
@@ -628,6 +633,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     
     private Packet extraInquiryResponse(WebPackage.Packet webPackage) {
     	InquiryRespPacket lrp = new InquiryRespPacket();
+    	if (webPackage.getResult().hasError()) {
+    		V2Log.e("===>>>" + webPackage.getResult().getError());
+    	}
         lrp.setErrorFlag(!webPackage.getResult().getResult());
         if (webPackage.getData().getRewardCount() < 0) {
         	 lrp.setErrorFlag(true);
@@ -638,5 +646,30 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         lrp.inquireId = webPackage.getData().getReward(0).getId();
         return lrp;
     }
+    
+    
+    
+    private WebPackage.Packet serializeUpdateUserDeviceRequest(UpdateUserDeviceReqPacket p) {
+
+		WebPackage.Packet.Builder packet = WebPackage.Packet.newBuilder();
+		packet.setPacketType(WebPackage.Packet.type.iq);
+		packet.setId(String.valueOf(p.getId()));
+		packet.setVersion(VERSION);
+		packet.setMethod("V2DeviceID");
+		packet.setOperateType("set");//获取他人信息时为get
+		WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
+		WebPackage.User.Builder user = WebPackage.User.newBuilder();
+		if (p.deviceId != null) {
+			user.setV2DeviceID1(p.deviceId);
+		}
+		if (p.deviceId1 != null) {
+			user.setV2DeviceID2(p.deviceId1);
+		}
+		data.addUser(user);
+		packet.setData(data);
+        
+        return packet.build();
+    }
+    
     
 }

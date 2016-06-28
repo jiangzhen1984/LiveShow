@@ -15,6 +15,7 @@ import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.InquiryActionPresenter;
 import com.v2tech.presenter.InquiryActionPresenter.InquiryActionPresenterUI;
 import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.inquiry.InquiryData;
 
 public class InquiryActionActivity extends BaseActivity implements InquiryActionPresenterUI, OnClickListener {
 	
@@ -57,13 +58,11 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 		
 		mapApi = new BaiduMapImpl(mapView.getMap(), mapView);
 		presenter = new InquiryActionPresenter(this, this);
-		presenter.onUICreated();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		presenter.onUIDestroyed();
 	}
 
 	@Override
@@ -114,5 +113,10 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 	
 	public void showTargetAddress(String str) {
 		addressText.setText(str);
+	}
+	
+	
+	public InquiryData getInquiryDataFromUI() {
+		return (InquiryData)getIntent().getExtras().get("inquiry");
 	}
 }

@@ -13,7 +13,9 @@ import com.v2tech.map.MapLocation;
 import com.v2tech.map.MapStatus;
 import com.v2tech.map.MapStatusListener;
 import com.v2tech.service.AsyncResult;
+import com.v2tech.service.InquiryService;
 import com.v2tech.service.MessageListener;
+import com.v2tech.vo.inquiry.InquiryData;
 
 public class InquiryActionPresenter extends BasePresenter implements  MapStatusListener {
 	
@@ -28,6 +30,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	private MapLocation currentLocation;
 	
 	private UIHandler uiHandler;
+	private InquiryService is;
+	private InquiryData data;
 	
 	public interface InquiryActionPresenterUI {
 		
@@ -38,6 +42,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		public void showBtn(boolean acceptBtn, boolean audioBtn, boolean videoBtn);
 		
 		public void showTargetAddress(String str);
+		
+		public InquiryData getInquiryDataFromUI();
 	}
 
 	public InquiryActionPresenter(Context context, InquiryActionPresenterUI ui) {
@@ -45,6 +51,7 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		this.ui = ui;
 		uiHandler = new UIHandler(new WeakReference<InquiryActionPresenter>(
 				this), new WeakReference<InquiryActionPresenterUI>(ui));
+		is = new InquiryService();
 	}
 
 	
@@ -62,6 +69,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		mapInstance.updateMap(mapInstance.buildUpater(ui.getTargetLocation()));
 		mapInstance.getLocationName(ui.getTargetLocation(), new MessageListener(uiHandler, TARGET_LOCATION_UPDATE_CALLBACK, null));
 		//TODO show waiting location message
+		
+		this.data = ui.getInquiryDataFromUI();
 	}
 	
 	
@@ -75,6 +84,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		mapInstance.stopLocate(null);
 		mapInstance.removeMapStatusListener(this);
 		uiHandler = null;
+		is.clearCalledBack();
+		is = null;
 	}
 
 
@@ -105,6 +116,13 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	public void acceptBtnClicked(View view) {
 		as = ActionState.ACCEPTED;
 		ui.showBtn(false, true, true);
+		
+		//TODO check if no location
+		
+		
+		is.takeInquiry(data.id, data.targetLat, data.targetLng);
+		
+		
 	}
 	
 	public void audioBtnClicked(View view) {

@@ -460,6 +460,10 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
+	public void resetLocalCamera() {
+		VideoRecorder.VideoPreviewSurfaceHolder = shareSurfaceView.getHolder();
+	}
+	
 	
 	
 	public UITypeStatusChangedListener getUiTypeListener() {

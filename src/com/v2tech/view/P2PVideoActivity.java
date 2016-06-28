@@ -59,7 +59,7 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 		presenter = new P2PVideoPresenter(this, this);
 		presenter.onUICreated();
 		
-		VideoRecorder.VideoPreviewSurfaceHolder = localUserVideoView.getHolder();
+		localUserVideoView.getHolder().addCallback(presenter);
 	}
 
 	@Override
@@ -131,6 +131,10 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 		return getIntent().getStringExtra("session");
 	}
 	
+	public String getDeviceId() {
+		return getIntent().getStringExtra("device");
+	}
+	
 	@Override
 	public void onClick(View v) {
 		int id =v.getId();
@@ -151,7 +155,9 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 	}
 	
 	
-
+	public void quit() {
+		finish();
+	}
 	
 	
 }

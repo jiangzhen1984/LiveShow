@@ -3778,6 +3778,14 @@ public final class WebPackage {
     // optional int32 videoCount = 21;
     boolean hasVideoCount();
     int getVideoCount();
+    
+    // optional string v2DeviceID1 = 22;
+    boolean hasV2DeviceID1();
+    String getV2DeviceID1();
+    
+    // optional string v2DeviceID2 = 23;
+    boolean hasV2DeviceID2();
+    String getV2DeviceID2();
   }
   public static final class User extends
       com.google.protobuf.GeneratedMessage
@@ -4307,6 +4315,70 @@ public final class WebPackage {
       return videoCount_;
     }
     
+    // optional string v2DeviceID1 = 22;
+    public static final int V2DEVICEID1_FIELD_NUMBER = 22;
+    private java.lang.Object v2DeviceID1_;
+    public boolean hasV2DeviceID1() {
+      return ((bitField0_ & 0x00200000) == 0x00200000);
+    }
+    public String getV2DeviceID1() {
+      java.lang.Object ref = v2DeviceID1_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          v2DeviceID1_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getV2DeviceID1Bytes() {
+      java.lang.Object ref = v2DeviceID1_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        v2DeviceID1_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string v2DeviceID2 = 23;
+    public static final int V2DEVICEID2_FIELD_NUMBER = 23;
+    private java.lang.Object v2DeviceID2_;
+    public boolean hasV2DeviceID2() {
+      return ((bitField0_ & 0x00400000) == 0x00400000);
+    }
+    public String getV2DeviceID2() {
+      java.lang.Object ref = v2DeviceID2_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          v2DeviceID2_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getV2DeviceID2Bytes() {
+      java.lang.Object ref = v2DeviceID2_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        v2DeviceID2_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       id_ = 0;
       phone_ = "";
@@ -4329,6 +4401,8 @@ public final class WebPackage {
       v2UserName_ = "";
       v2Pwd_ = "";
       videoCount_ = 0;
+      v2DeviceID1_ = "";
+      v2DeviceID2_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4404,6 +4478,12 @@ public final class WebPackage {
       }
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
         output.writeInt32(21, videoCount_);
+      }
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+        output.writeBytes(22, getV2DeviceID1Bytes());
+      }
+      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+        output.writeBytes(23, getV2DeviceID2Bytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -4497,6 +4577,14 @@ public final class WebPackage {
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(21, videoCount_);
+      }
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(22, getV2DeviceID1Bytes());
+      }
+      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(23, getV2DeviceID2Bytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4669,6 +4757,10 @@ public final class WebPackage {
         bitField0_ = (bitField0_ & ~0x00080000);
         videoCount_ = 0;
         bitField0_ = (bitField0_ & ~0x00100000);
+        v2DeviceID1_ = "";
+        bitField0_ = (bitField0_ & ~0x00200000);
+        v2DeviceID2_ = "";
+        bitField0_ = (bitField0_ & ~0x00400000);
         return this;
       }
       
@@ -4795,6 +4887,14 @@ public final class WebPackage {
           to_bitField0_ |= 0x00100000;
         }
         result.videoCount_ = videoCount_;
+        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
+          to_bitField0_ |= 0x00200000;
+        }
+        result.v2DeviceID1_ = v2DeviceID1_;
+        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
+          to_bitField0_ |= 0x00400000;
+        }
+        result.v2DeviceID2_ = v2DeviceID2_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4873,6 +4973,12 @@ public final class WebPackage {
         }
         if (other.hasVideoCount()) {
           setVideoCount(other.getVideoCount());
+        }
+        if (other.hasV2DeviceID1()) {
+          setV2DeviceID1(other.getV2DeviceID1());
+        }
+        if (other.hasV2DeviceID2()) {
+          setV2DeviceID2(other.getV2DeviceID2());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5012,6 +5118,16 @@ public final class WebPackage {
             case 168: {
               bitField0_ |= 0x00100000;
               videoCount_ = input.readInt32();
+              break;
+            }
+            case 178: {
+              bitField0_ |= 0x00200000;
+              v2DeviceID1_ = input.readBytes();
+              break;
+            }
+            case 186: {
+              bitField0_ |= 0x00400000;
+              v2DeviceID2_ = input.readBytes();
               break;
             }
           }
@@ -5723,6 +5839,78 @@ public final class WebPackage {
         videoCount_ = 0;
         onChanged();
         return this;
+      }
+      
+      // optional string v2DeviceID1 = 22;
+      private java.lang.Object v2DeviceID1_ = "";
+      public boolean hasV2DeviceID1() {
+        return ((bitField0_ & 0x00200000) == 0x00200000);
+      }
+      public String getV2DeviceID1() {
+        java.lang.Object ref = v2DeviceID1_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          v2DeviceID1_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setV2DeviceID1(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00200000;
+        v2DeviceID1_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearV2DeviceID1() {
+        bitField0_ = (bitField0_ & ~0x00200000);
+        v2DeviceID1_ = getDefaultInstance().getV2DeviceID1();
+        onChanged();
+        return this;
+      }
+      void setV2DeviceID1(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00200000;
+        v2DeviceID1_ = value;
+        onChanged();
+      }
+      
+      // optional string v2DeviceID2 = 23;
+      private java.lang.Object v2DeviceID2_ = "";
+      public boolean hasV2DeviceID2() {
+        return ((bitField0_ & 0x00400000) == 0x00400000);
+      }
+      public String getV2DeviceID2() {
+        java.lang.Object ref = v2DeviceID2_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          v2DeviceID2_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setV2DeviceID2(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00400000;
+        v2DeviceID2_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearV2DeviceID2() {
+        bitField0_ = (bitField0_ & ~0x00400000);
+        v2DeviceID2_ = getDefaultInstance().getV2DeviceID2();
+        onChanged();
+        return this;
+      }
+      void setV2DeviceID2(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00400000;
+        v2DeviceID2_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:User)
@@ -9778,7 +9966,7 @@ public final class WebPackage {
       "o\030\005 \001(\005\022\033\n\010position\030\006 \003(\0132\t.Position\022\023\n\004",
       "user\030\007 \003(\0132\005.User\022\025\n\005video\030\010 \003(\0132\006.Video" +
       "\022\033\n\010gratuity\030\t \003(\0132\t.Gratuity\022\027\n\006reward\030" +
-      "\n \003(\0132\007.Reward\"\371\002\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005p" +
+      "\n \003(\0132\007.Reward\"\243\003\n\004User\022\n\n\002id\030\001 \001(\005\022\r\n\005p" +
       "hone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004 \001(\t\022\022\n" +
       "\npwd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001(\t\022\017\n\007h" +
       "eadurl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n\003sex\030\t " +
@@ -9787,29 +9975,30 @@ public final class WebPackage {
       "\022\033\n\010position\030\016 \001(\0132\t.Position\022\020\n\010deviceI" +
       "D\030\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010descName\030",
       "\021 \001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName\030\023 \001(\t\022" +
-      "\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(\005\"?\n\010Po" +
-      "sition\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010latitude\030\002 " +
-      "\001(\001\022\016\n\006radius\030\003 \001(\005\"\321\001\n\005Video\022\n\n\002id\030\001 \001(" +
-      "\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003 \001(\005\022\033\n\010p" +
-      "osition\030\004 \001(\0132\t.Position\022\013\n\003sum\030\005 \001(\005\022\021\n" +
-      "\tuserCount\030\006 \001(\005\022\021\n\tlikeCount\030\007 \001(\005\022\025\n\rg" +
-      "ratuityCount\030\010 \001(\002\022\016\n\006degree\030\t \001(\005\022\022\n\nre" +
-      "sultType\030\n \001(\005\022\017\n\007HLSMode\030\013 \001(\010\"\325\001\n\010Grat" +
-      "uity\022\020\n\010giftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005",
-      "\022\022\n\nfromUserID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013" +
-      "sumOrRemain\030\005 \001(\002\022 \n\006answer\030\006 \001(\0162\020.Grat" +
-      "uity.Answer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013" +
-      "\n\007receive\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006c" +
-      "ancel\020\003\"\234\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerT" +
-      "ime\030\002 \001(\005\022\023\n\013releaseTime\030\003 \001(\003\022\023\n\004gift\030\004" +
-      " \003(\0132\005.Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014answe" +
-      "rUserID\030\006 \001(\005\022 \n\007operate\030\007 \001(\0162\017.Reward." +
-      "Operate\022\014\n\004desc\030\010 \001(\t\022\033\n\010position\030\t \001(\0132" +
-      "\t.Position\022\017\n\007pushSum\030\n \001(\005\"A\n\007Operate\022\013",
-      "\n\007release\020\000\022\010\n\004edit\020\001\022\n\n\006cancle\020\002\022\007\n\003pay" +
-      "\020\003\022\n\n\006answer\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001(\005" +
-      "\022\016\n\006amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002B\037\n" +
-      "\021com.v2tech.net.lvB\nWebPackage"
+      "\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(\005\022\023\n\013v2" +
+      "DeviceID1\030\026 \001(\t\022\023\n\013v2DeviceID2\030\027 \001(\t\"?\n\010" +
+      "Position\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010latitude\030" +
+      "\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\321\001\n\005Video\022\n\n\002id\030\001 " +
+      "\001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003 \001(\005\022\033\n" +
+      "\010position\030\004 \001(\0132\t.Position\022\013\n\003sum\030\005 \001(\005\022" +
+      "\021\n\tuserCount\030\006 \001(\005\022\021\n\tlikeCount\030\007 \001(\005\022\025\n" +
+      "\rgratuityCount\030\010 \001(\002\022\016\n\006degree\030\t \001(\005\022\022\n\n" +
+      "resultType\030\n \001(\005\022\017\n\007HLSMode\030\013 \001(\010\"\325\001\n\010Gr",
+      "atuity\022\020\n\010giftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001" +
+      "(\005\022\022\n\nfromUserID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023" +
+      "\n\013sumOrRemain\030\005 \001(\002\022 \n\006answer\030\006 \001(\0162\020.Gr" +
+      "atuity.Answer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer" +
+      "\022\013\n\007receive\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n" +
+      "\006cancel\020\003\"\234\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowe" +
+      "rTime\030\002 \001(\005\022\023\n\013releaseTime\030\003 \001(\003\022\023\n\004gift" +
+      "\030\004 \003(\0132\005.Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014ans" +
+      "werUserID\030\006 \001(\005\022 \n\007operate\030\007 \001(\0162\017.Rewar" +
+      "d.Operate\022\014\n\004desc\030\010 \001(\t\022\033\n\010position\030\t \001(",
+      "\0132\t.Position\022\017\n\007pushSum\030\n \001(\005\"A\n\007Operate" +
+      "\022\013\n\007release\020\000\022\010\n\004edit\020\001\022\n\n\006cancle\020\002\022\007\n\003p" +
+      "ay\020\003\022\n\n\006answer\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001" +
+      "(\005\022\016\n\006amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002B" +
+      "\037\n\021com.v2tech.net.lvB\nWebPackage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -9845,7 +10034,7 @@ public final class WebPackage {
           internal_static_User_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_User_descriptor,
-              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", "VideoCount", },
+              new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", "VideoCount", "V2DeviceID1", "V2DeviceID2", },
               com.v2tech.net.lv.WebPackage.User.class,
               com.v2tech.net.lv.WebPackage.User.Builder.class);
           internal_static_Position_descriptor =

@@ -158,6 +158,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	private ViewLive currentViewLive;
 	private PublishingLive publishingLive;
+	private long currentInquiryId;
 	
 	// /////
 
@@ -888,6 +889,7 @@ public class MainPresenter extends BasePresenter implements
 			}
 			setState(WATCHING_FLAG);
 			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_PERSONEL);
+			cancelInquiry();
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			break;
@@ -944,8 +946,8 @@ public class MainPresenter extends BasePresenter implements
 		String award = ui.getInquiryAward();
 		//TODO check award available
 		
-		long inquiryId = is.startInquiry(Float.parseFloat(award), ml.getLat(), ml.getLng(), null);
-		if (inquiryId < 0) {
+		currentInquiryId = is.startInquiry(Float.parseFloat(award), ml.getLat(), ml.getLng(), null);
+		if (currentInquiryId < 0) {
 			//TODO notify user
 		}
 	}
@@ -1138,6 +1140,15 @@ public class MainPresenter extends BasePresenter implements
 		mapInstance.addMarker(mapInstance.buildMarker(watcher));
 	}
 
+	
+	
+	private void cancelInquiry() {
+		if (currentInquiryId > 0) {
+			is.cancelInquiry(currentInquiryId);
+			//reset inquiryId
+			currentInquiryId = -1;
+		}
+	}
 	// waiting for chair man device information
 	private boolean pending = false;
 

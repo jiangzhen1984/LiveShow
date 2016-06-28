@@ -24,6 +24,7 @@ import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.view.P2PMessageActivity;
+import com.v2tech.view.P2PVideoActivity;
 import com.v2tech.vo.User;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 
@@ -130,7 +131,12 @@ public class FansFollowPresenter extends BasePresenter implements
 
 	@Override
 	public void onVideoCallBtnClicked(View v) {
-		// TODO Auto-generated method stub
+		Intent i = new Intent();
+		i.putExtra("uid", u.getmUserId());
+		i.putExtra("username", u.getName());
+		i.putExtra("device", u.getmUserId()+":Camera");
+		i.setClass(context, P2PVideoActivity.class);
+		context.startActivity(i);
 
 	}
 

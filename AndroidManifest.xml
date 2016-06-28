@@ -265,6 +265,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+          <receiver android:name="com.v2tech.view.ReceiverP2PVideoChatInvitation" >
+            <intent-filter>
+                <action android:name="com.v2tech.p2p_video_notification_action" />
+
+                <category android:name="com.v2tech" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="com.v2tech.db.MessageProvider"

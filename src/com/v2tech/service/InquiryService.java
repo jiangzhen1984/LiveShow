@@ -80,6 +80,20 @@ public class InquiryService extends AbstractHandler {
 		values.put(MessageDescriptor.MessageSession.Cols.SYSTEM_MESSAGE_FROM_USER_NAME,  json.toString());
 		ctx.getContentResolver().insert(MessageDescriptor.MessageSession.CONTENT_URI, values);
 	}
+	
+	public boolean takeInquiry(long inquiryId, double lat, double lng) {
+		InquiryReqPacket ir = new InquiryReqPacket();
+		ir.type = InquiryReqPacket.TYPE_ACCEPT;
+		ir.lat = lat;
+		ir.lng = lng;
+		ir.inquiryUserId = GlobalHolder.getInstance().getCurrentUserId();
+		ir.inquireId = inquiryId;
+		ResponsePacket rp = DeamonWorker.getInstance().request(ir);
+		if (rp.getHeader().isError()) {
+			return false;
+		} 
+		return true;
+	}
 
 	@Override
 	public void clearCalledBack() {

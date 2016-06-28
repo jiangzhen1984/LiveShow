@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity implements
 	protected void onStart() {
 		super.onStart();
 		presenter.onUIStarted();
+		mMapVideoLayout.resetLocalCamera();
 	
 	}
 

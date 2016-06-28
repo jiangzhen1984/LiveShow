@@ -19,6 +19,7 @@ import com.v2tech.net.lv.GetCodeReqPacket;
 import com.v2tech.net.lv.LoginReqPacket;
 import com.v2tech.net.lv.LoginRespPacket;
 import com.v2tech.net.lv.LogoutReqPacket;
+import com.v2tech.net.lv.UpdateUserDeviceReqPacket;
 import com.v2tech.net.lv.V2AccountReprotReqPacket;
 import com.v2tech.net.lv.V2UserIdReportReqPacket;
 import com.v2tech.net.pkt.PacketProxy;
@@ -225,7 +226,7 @@ public class UserService extends AbstractHandler {
 			String date = fromat.format(new Date(
 					GlobalConfig.SERVER_TIME * 1000));
 			V2Log.i("get server time ：" + date + "   ===> uid:" + nUserID
-					+ "  result:" + nResult);
+					+ "  result:" + nResult+"  sDBID:"+ sDBID);
 			RequestLogInResponse.Result res = RequestLogInResponse.Result
 					.fromInt(nResult);
 
@@ -242,6 +243,10 @@ public class UserService extends AbstractHandler {
 			DeamonWorker.getInstance().requestAsync(
 					new PacketProxy(new V2UserIdReportReqPacket(GlobalHolder
 							.getInstance().getCurrentUserId()), null));
+			UpdateUserDeviceReqPacket udp = new UpdateUserDeviceReqPacket();
+			udp.deviceId =nUserID+":Camera";
+			DeamonWorker.getInstance().requestAsync(
+					new PacketProxy(udp, null));
 		}
 
 		@Override
@@ -274,6 +279,9 @@ public class UserService extends AbstractHandler {
 					V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "",
 					false);
 		}
+		
+		
+		
 
 	}
 }

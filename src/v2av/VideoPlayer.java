@@ -53,6 +53,8 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	
 	private ViewItemListener itemListener;
 	
+	private boolean isViewReady;
+	
 	
 	public interface ViewItemListener {
 		public void onCurrentItemChanged(int current, int newIdx);
@@ -60,6 +62,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 
 
 	public VideoPlayer() {
+		screens = new Bitmap[1];
 	}
 
 
@@ -238,6 +241,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 			return;
 		}
 		Canvas hc = holder.lockCanvas();
+		isViewReady = true;
 		int width = hc.getWidth();
 		int height = hc.getHeight();
 		holder.unlockCanvasAndPost(hc);
@@ -281,8 +285,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		
+		isViewReady = false;
 	}
 
 
@@ -363,6 +366,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	
 	
 	private void postInvalidate() {
+		if (!isViewReady) {
+			V2Log.e("SurfaceView is not ready");
+			return;
+		}
 		Canvas canvas = mSurfaceH.lockCanvas();
 		if (canvas == null) {
 			return;

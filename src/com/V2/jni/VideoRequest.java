@@ -4,9 +4,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.V2.jni.callback.VideoRequestCallback;
-
 import v2av.VideoPlayer;
+
+import com.V2.jni.callback.VideoRequestCallback;
+import com.V2.jni.util.V2Log;
 
 public class VideoRequest {
 	private static VideoRequest mVideoRequest;
@@ -267,6 +268,7 @@ public class VideoRequest {
 	 * @return None
 	 */
 	private void OnVideoChatInvite(String szSessionID, long nUserID, String szDeviceID) {
+		V2Log.i("====>" + szSessionID+"   nUserID:"+nUserID+"  szDeviceID:"+ szDeviceID);
 		for (int i = 0; i < mCallBacks.size(); i++) {
 			WeakReference<VideoRequestCallback> wf = mCallBacks.get(i);
 			if (wf != null && wf.get() != null) {

@@ -8,7 +8,10 @@ import android.os.IBinder;
 
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
+import com.V2.jni.VideoRequest;
+import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.callback.ChatRequestCallback;
+import com.V2.jni.callback.VideoRequestCallback;
 import com.V2.jni.ind.MessageInd;
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
@@ -33,6 +36,8 @@ public class NotificationService extends Service {
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING = "com.v2tech.live_watching";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_MESSAGE = "com.v2tech.live_message";
 	private static final String NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW = "com.v2tech.inquiry_new";
+	
+	public static final String P2P_VIDEO_NOTIFICAITON_ACTION = "com.v2tech.p2p_video_notification_action";
 
 	
 	
@@ -47,6 +52,7 @@ public class NotificationService extends Service {
 		((MainApplication)this.getApplication()).onMainCreate();
 		DeamonWorker.getInstance().addNotificationListener(noListener);
 		ChatRequest.getInstance().addChatRequestCallback(messageCallbackListener);
+		VideoRequest.getInstance().addCallback(vrcb);
 	}
 
 
@@ -56,6 +62,7 @@ public class NotificationService extends Service {
 		super.onDestroy();
 		DeamonWorker.getInstance().removeNotificationListener(noListener);
 		ChatRequest.getInstance().removeChatRequestCallback(messageCallbackListener);
+		VideoRequest.getInstance().removeCallback(vrcb);
 	}
 
 
@@ -159,4 +166,27 @@ public class NotificationService extends Service {
 		}
 		
 	};
+	
+	
+	
+	
+	private  VideoRequestCallback  vrcb = new  VideoRequestCallbackAdapter() {
+
+		@Override
+		public void OnVideoChatInviteCallback(String szSessionID,
+				long nFromUserID, String szDeviceID) {
+			
+			V2Log.i("===> send broadcast : "+ P2P_VIDEO_NOTIFICAITON_ACTION+"  session:"+ szSessionID+"  user:"+nFromUserID+"  device:"+szDeviceID);
+			Intent i = new Intent();
+			i.setAction(P2P_VIDEO_NOTIFICAITON_ACTION);
+			i.addCategory("com.v2tech");
+			i.putExtra("session", szSessionID);
+			i.putExtra("user", nFromUserID);
+			i.putExtra("device", szDeviceID);
+			getApplicationContext().sendBroadcast(i);
+		}
+
+		
+	};
+
 }
