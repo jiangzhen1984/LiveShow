@@ -263,7 +263,7 @@ public class MainPresenter extends BasePresenter implements
 		if (isState(PUBLISHING_FLAG)) {
 			unsetState(PUBLISHING_FLAG);
 			ui.updateVideShareButtonText(false);
-			vs.quitConference(currentViewLive.live, new MessageListener(h,
+			vs.quitConference(publishingLive, new MessageListener(h,
 					CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
 			setState(PUBLISHING_FLAG);
