@@ -36,6 +36,7 @@ public class NotificationService extends Service {
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING = "com.v2tech.live_watching";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_MESSAGE = "com.v2tech.live_message";
 	private static final String NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW = "com.v2tech.inquiry_new";
+	private static final String NOTIFICAITON_OBJ_TYPE_INQUIRY_ACCEPT = "com.v2tech.inquiry_accept";
 	
 	public static final String P2P_VIDEO_NOTIFICAITON_ACTION = "com.v2tech.p2p_video_notification_action";
 
@@ -109,9 +110,15 @@ public class NotificationService extends Service {
 				}
 			} else if (ip instanceof InquiryIndPacket) {
 				InquiryIndPacket  lwip =(InquiryIndPacket) ip;
-				sendBroadCast(NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW,
-						new String[] { "irid", "iuid", "award" ,"lat", "lng"},
-						new Serializable[] { lwip.inquireId, lwip.inquiryUserId, lwip.award, lwip.lat, lwip.lng});
+				if (lwip.type == InquiryIndPacket.TYPE_NEW) {
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_INQUIRY_NEW,
+							new String[] { "irid", "iuid", "award" ,"lat", "lng", "desc"},
+							new Serializable[] { lwip.inquireId, lwip.inquiryUserId, lwip.award, lwip.tlat, lwip.tlng, lwip.desc});
+				} else if (lwip.type == InquiryIndPacket.TYPE_ACCEPT) {
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_INQUIRY_ACCEPT,
+							new String[] { "irid", "auid", "slat", "slng", "tlat", "tlng"},
+							new Serializable[] { lwip.inquireId, lwip.inquiryAcceptUserId, lwip.award, lwip.slat, lwip.slng, lwip.tlat, lwip.tlng});
+				}
 			}
 
 		}

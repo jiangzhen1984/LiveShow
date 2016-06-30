@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.map.LocationParameter;
@@ -34,6 +35,7 @@ import com.v2tech.map.MarkerListener;
 import com.v2tech.service.AsyncResult;
 import com.v2tech.service.ConferenceService;
 import com.v2tech.service.GlobalHolder;
+import com.v2tech.service.InquiryAcceptenceHandler;
 import com.v2tech.service.InquiryService;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.LiveService;
@@ -60,6 +62,7 @@ import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.ViewLive;
 import com.v2tech.vo.Watcher;
 import com.v2tech.vo.conference.ConferenceGroup;
+import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.msg.VMessageTextItem;
@@ -84,7 +87,7 @@ public class MainPresenter extends BasePresenter implements
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
 		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,ViewItemListener,
-		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler,
+		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler, InquiryAcceptenceHandler, 
 		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener, OnSpinVolumeChangedListener {
 
 	private static final int INIT = 1;
@@ -262,6 +265,10 @@ public class MainPresenter extends BasePresenter implements
 		public void updateMapAddressText(String text);
 		
 		public String getInquiryAward();
+		
+		public String getInquiryMessage();
+		
+		public void showIncorrectAwardMessage(String message);
 		
 		public void setInquiryStateToWaiting(boolean wait);
 		
@@ -961,9 +968,15 @@ public class MainPresenter extends BasePresenter implements
 	public void onInquiryLauchBtnClicked(View v) {
 		MapLocation ml = mapInstance.getMapCenter();
 		String award = ui.getInquiryAward();
-		//TODO check award available
+		String desc = ui.getInquiryMessage();
+		float faward =0;
+		try {
+			faward = Float.parseFloat(award);
+		} catch(NumberFormatException e) {
+			ui.showIncorrectAwardMessage(context.getResources().getString(R.string.inquiry_error_incorrect_award));
+		}
 		
-		currentInquiryId = is.startInquiry(Float.parseFloat(award), ml.getLat(), ml.getLng(), null);
+		currentInquiryId = is.startInquiry(faward, ml.getLat(), ml.getLng(), desc);
 		if (currentInquiryId < 0) {
 			//TODO notify user
 		} else {
@@ -1026,6 +1039,18 @@ public class MainPresenter extends BasePresenter implements
 	///////////OnSpinVolumeChangedListener///////////////////////////////////////////////////
 	
 
+	
+	
+	
+	///////////InquiryAcceptenceHandler///////////////////////////////////////////////////
+	@Override
+	public void onTake(User user, InquiryData data) {
+		Toast.makeText(context, "User take this ", Toast.LENGTH_SHORT).show();
+		//TODO update UI
+		
+	}
+	///////////InquiryAcceptenceHandler///////////////////////////////////////////////////
+	
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();
 		// 4 for group type

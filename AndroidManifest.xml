@@ -257,7 +257,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-          <receiver android:name="com.v2tech.view.ReceiverInquiryNewMessage" >
+          <receiver android:name="com.v2tech.view.ReceiverInquiryHandler" >
             <intent-filter>
                 <action android:name="com.v2tech.notification_action" />
 

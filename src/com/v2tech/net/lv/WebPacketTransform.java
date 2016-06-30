@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.net.lv.WebPackage.Reward;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
@@ -102,6 +103,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         } else if ("getFollowList".equalsIgnoreCase(type)) {
             return extraFollowsQueryResponse(webPackage);
         } else if ("reward".equalsIgnoreCase(type)) {
+        	V2Log.i(webPackage.toString());
         	if (ind) {
         		return extraInquiryIndication(webPackage);
         	} else {
@@ -620,9 +622,19 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         	lrp.inquiryUserId = re.getFromUserID();
         	lrp.inquireId = re.getId();
         	lrp.award= re.getGift(0).getAmount();
+        	lrp.desc = re.getDesc();
         	com.v2tech.net.lv.WebPackage.Position po = re.getPosition();
-        	lrp.lat = po.getLatitude();
-        	lrp.lng = po.getLongitude();
+        	if (re.getOperate() == Reward.Operate.answer) {
+        		lrp.type = InquiryIndPacket.TYPE_ACCEPT;
+        		lrp.slat = po.getLatitude();
+            	lrp.slng = po.getLongitude();
+            	lrp.tlat = po.getLatitude();
+            	lrp.tlng = po.getLongitude();
+        	} else if (re.getOperate() == Reward.Operate.release) {
+        		lrp.type = InquiryIndPacket.TYPE_NEW;
+        		lrp.tlat = po.getLatitude();
+            	lrp.tlng = po.getLongitude();
+        	}
         } else {
         	 lrp.setErrorFlag(true);
         	 V2Log.e(" No availeable award for inquiry indication ");

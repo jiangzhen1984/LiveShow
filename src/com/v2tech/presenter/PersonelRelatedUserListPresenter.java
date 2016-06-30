@@ -176,7 +176,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	public void update(int position, View convertView) {
 		Item item = itemList.get(position);
 		ui.updateItemName(convertView, item.name);
-		ui.updateItemSn(convertView, item.sn);
+		ui.updateItemSn(convertView, item.getSn());
 //		if (u.follow) {
 //			ui.updateItemBtnCancel(convertView);
 //		} else {
@@ -537,9 +537,22 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		public CharSequence time;
 		public int underCount;
 		public User u;
+		
+		public CharSequence getSn() {
+			return sn;
+		}
 	}
 	
 	class SystemItem extends Item {
 		JSONObject content;
+		
+		public CharSequence getSn() {
+			try {
+				return content.getString("desc");
+			} catch (JSONException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
 	}
 }

@@ -534,6 +534,15 @@ public class MainActivity extends BaseActivity implements
 		inquiryToast.setGravity(Gravity.CENTER, 0, 0);
 		inquiryToast.show();
 	}
+	
+	
+	public String getInquiryMessage() {
+		return mMapVideoLayout.getInquiryMessage();
+	}
+	
+	public void showIncorrectAwardMessage(String message) {
+		//TODO add show error
+	}
 	/////////////////////////////////////////////////////////////
 	
 

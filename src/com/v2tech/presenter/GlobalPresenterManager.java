@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.v2tech.service.InquiryAcceptenceHandler;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.LiveStatusHandler;
 import com.v2tech.service.LiveWathcingHandler;
@@ -17,6 +18,7 @@ public class GlobalPresenterManager {
 	private Vector<WeakReference<LiveStatusHandler>> liveStatusHandlerList = new Vector<WeakReference<LiveStatusHandler>>();
 	private Vector<WeakReference<LiveMessageHandler>> liveMessageHandlerList = new Vector<WeakReference<LiveMessageHandler>>();
 	private Vector<WeakReference<LiveWathcingHandler>> liveWatchingHandlerList = new Vector<WeakReference<LiveWathcingHandler>>();
+	private Vector<WeakReference<InquiryAcceptenceHandler>> inquiryAcceptenceHandlerList = new Vector<WeakReference<InquiryAcceptenceHandler>>();
 	
 
 	private GlobalPresenterManager() {
@@ -40,6 +42,10 @@ public class GlobalPresenterManager {
 		if (presenter instanceof LiveWathcingHandler) {
 			onLiveWathcingHandlerCreated((LiveWathcingHandler) presenter);
 		}
+		
+		if (presenter instanceof InquiryAcceptenceHandler) {
+			onInquiryAcceptenceHandlerCreated((InquiryAcceptenceHandler) presenter);
+		}
 	}
 
 	public void onPresenterDestroyed(BasePresenter presenter) {
@@ -60,7 +66,9 @@ public class GlobalPresenterManager {
 					if (act instanceof LiveMessageHandler) {
 						onLiveMessageHandlerDestroyed((LiveMessageHandler) presenter);
 					}
-
+					if (act instanceof InquiryAcceptenceHandler) {
+						onInquiryAcceptenceHandlerDestroyed((InquiryAcceptenceHandler) presenter);
+					}
 					break;
 				}
 			}
@@ -186,5 +194,46 @@ public class GlobalPresenterManager {
 		}
 	}
 
+
+	
+	
+	
+	public void onInquiryAcceptenceHandlerCreated(InquiryAcceptenceHandler lsh) {
+		inquiryAcceptenceHandlerList.add(new WeakReference<InquiryAcceptenceHandler>(lsh));
+	}
+
+	public void onInquiryAcceptenceHandlerDestroyed(InquiryAcceptenceHandler lsh) {
+		synchronized (inquiryAcceptenceHandlerList) {
+			int size = inquiryAcceptenceHandlerList.size();
+
+			for (int i = 0; i < size; i++) {
+				WeakReference<InquiryAcceptenceHandler> w = inquiryAcceptenceHandlerList
+						.get(i);
+				InquiryAcceptenceHandler act = w.get();
+				if (act != null && act == lsh) {
+					inquiryAcceptenceHandlerList.remove(i);
+					break;
+				}
+			}
+		}
+	}
+	
+	
+	public List<InquiryAcceptenceHandler> getInquiryAcceptenceHandler() {
+		synchronized (inquiryAcceptenceHandlerList) {
+			int size = inquiryAcceptenceHandlerList.size();
+			List<InquiryAcceptenceHandler> handlers = new ArrayList<InquiryAcceptenceHandler>(
+					size);
+			for (int i = 0; i < size; i++) {
+				WeakReference<InquiryAcceptenceHandler> w = inquiryAcceptenceHandlerList
+						.get(i);
+				InquiryAcceptenceHandler act = w.get();
+				if (act != null) {
+					handlers.add(act);
+				}
+			}
+			return handlers;
+		}
+	}
 
 }

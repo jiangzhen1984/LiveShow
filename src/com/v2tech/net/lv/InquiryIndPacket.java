@@ -14,8 +14,11 @@ public class InquiryIndPacket extends IndicationPacket {
 	public int type;
 	public float award;
 	public long inquiryUserId;
-	public double lat;
-	public double lng;
+	public long inquiryAcceptUserId;
+	public double tlat;
+	public double tlng;
+	public double slat;
+	public double slng;
 	public String desc;
 	
 	

@@ -133,7 +133,7 @@
     <string name="inquiry_action_audio_btn_text">按住对讲</string>
     <string name="inquiry_action_video_share_btn_text">视频直播</string>
     <string name="inquiry_start_notification">正在通知附近的朋友...</string>
-    
+    <string name="inquiry_error_incorrect_award">请输入正确的金额</string>
    
     
 

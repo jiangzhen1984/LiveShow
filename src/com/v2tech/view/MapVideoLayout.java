@@ -468,6 +468,10 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
+	public String getInquiryMessage() {
+		return this.inquiryBidWidget.getWordEditText().getEditableText().toString();
+	}
+	
 	
 	public UITypeStatusChangedListener getUiTypeListener() {
 		return uiTypeListener;
