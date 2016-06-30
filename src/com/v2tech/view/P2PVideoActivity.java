@@ -59,6 +59,7 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 		presenter = new P2PVideoPresenter(this, this);
 		
 		localUserVideoView.getHolder().addCallback(presenter);
+		
 	}
 
 	@Override

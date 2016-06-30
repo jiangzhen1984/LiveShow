@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements
 		mMapVideoLayout.setVideoShareBtnLayoutListener(presenter);
 		mMapVideoLayout.setInquiryBidWidgetListener(presenter);
 		mMapVideoLayout.setVideoShareRightWidgetListener(presenter);
+		mMapVideoLayout.setOnSpinVolumeChangedListener(presenter);
 		
 
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(

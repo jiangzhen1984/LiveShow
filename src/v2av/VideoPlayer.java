@@ -290,6 +290,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		isViewReady = false;
+		this.recycleBitmap();
 	}
 
 
@@ -320,6 +321,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		for (int i = 0; screens != null && i < screens.length; i++) {
 			if (screens[i] != null && !screens[i].isRecycled()) {
 				screens[i].recycle();
+				screens[i] = null;
 			}
 		}
 	}

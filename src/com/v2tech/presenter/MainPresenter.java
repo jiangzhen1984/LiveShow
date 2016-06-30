@@ -13,6 +13,7 @@ import v2av.VideoRecorder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -71,6 +72,7 @@ import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
 import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
+import com.v2tech.widget.VerticalSpinWidget.OnSpinVolumeChangedListener;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
@@ -83,7 +85,7 @@ public class MainPresenter extends BasePresenter implements
 		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
 		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,ViewItemListener,
 		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler,
-		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener {
+		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener, OnSpinVolumeChangedListener {
 
 	private static final int INIT = 1;
 	private static final int RECOMMENDAATION = 3;
@@ -160,6 +162,8 @@ public class MainPresenter extends BasePresenter implements
 	private PublishingLive publishingLive;
 	private long currentInquiryId;
 	
+	private AudioManager audioManager; 
+	
 	// /////
 
 	public MainPresenter(Context context, MainPresenterUI ui) {
@@ -172,6 +176,7 @@ public class MainPresenter extends BasePresenter implements
 
 		uiHandler = new UiHandler(this, ui);
 		viewLiveList = new ArrayList<ViewLive>(20);
+		audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 	}
 
 	public interface MainPresenterUI {
@@ -1005,7 +1010,13 @@ public class MainPresenter extends BasePresenter implements
 	///////////ViewItemListener///////////////////////////////////////////////////
 	
 	
-	
+	///////////OnSpinVolumeChangedListener///////////////////////////////////////////////////
+	@Override
+	public void OnSpinVolumeChanged(float cent) {
+		int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int)(cent * max), AudioManager.FLAG_PLAY_SOUND);
+	}
+	///////////OnSpinVolumeChangedListener///////////////////////////////////////////////////
 	
 
 	private void requestConnection(long lid, int type, int action) {

@@ -11,9 +11,11 @@ import com.v2tech.v2liveshow.R;
 
 public class VerticalSpinWidget extends FrameLayout {
 	
-	private FrameLayout volumnCurrent;
-	private FrameLayout volumnMax;
+	private View volumnCurrent;
+	private View volumnMax;
+	private View volumeControlBtn;
 	
+	private OnSpinVolumeChangedListener listener;
 	
 	private Type type = Type.DOWN_TO_UP;
 	
@@ -35,11 +37,12 @@ public class VerticalSpinWidget extends FrameLayout {
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
-		if (child.getId() == R.id.voice_volumn_current_view) {
-			volumnCurrent = (FrameLayout)child;
-			//volumnMax =(FrameLayout)child;
-			//volumnCurrent=(FrameLayout)child.findViewById(R.id.voice_volumn_current_view);
-			//FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams)volumnCurrent.getLayoutParams();
+		if (child.getId() == R.id.voice_volume_current_view) {
+			volumnCurrent = child;
+		} else if (child.getId() == R.id.voice_volume_control_btn) {
+			volumeControlBtn = child;
+		} else if(child.getId() == R.id.voice_volume_maximum_view) {
+			volumnMax = child;
 		}
 	}
 
@@ -62,16 +65,19 @@ public class VerticalSpinWidget extends FrameLayout {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			volumnCurrent.offsetTopAndBottom((int)event.getY() - lastY);
+			volumeControlBtn.offsetTopAndBottom((int)event.getY() - lastY);
 			lastY = (int)event.getY();
 			break;
 		case MotionEvent.ACTION_UP:
 			if (type == Type.DOWN_TO_UP) {
 				cent = ((float)(getBottom() - volumnCurrent.getTop())) / (float)getBottom();  
-				V2Log.i("===new cent:" + cent);
 			} else {
 				
 			}
 			requestLayout();
+			if (listener != null) {
+				listener.OnSpinVolumeChanged(cent);
+			}
 			break;
 		}
 		
@@ -111,16 +117,37 @@ public class VerticalSpinWidget extends FrameLayout {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams)volumnCurrent.getLayoutParams();
+		FrameLayout.LayoutParams controllBtnfl = (FrameLayout.LayoutParams)volumeControlBtn.getLayoutParams();
 		if (type == Type.DOWN_TO_UP) {
 			fl.topMargin = (int)((bottom - top) * (1.0F - cent));
+			controllBtnfl.topMargin = fl.topMargin;
 		} else {
 			
 		}
 		super.onLayout(changed, left, top, right, bottom);
 	}
 
+	
+	
 
 
+	
+	public OnSpinVolumeChangedListener getListener() {
+		return listener;
+	}
+
+	public void setListener(OnSpinVolumeChangedListener listener) {
+		this.listener = listener;
+	}
+
+
+
+
+
+
+	public interface OnSpinVolumeChangedListener {
+		public void OnSpinVolumeChanged(float cent);
+	}
 
 
 	enum Type {

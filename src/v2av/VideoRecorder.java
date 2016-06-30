@@ -1,5 +1,7 @@
 package v2av;
 
+import com.V2.jni.util.V2Log;
+
 import v2av.VideoCaptureDevInfo.CapParams;
 import v2av.VideoCaptureDevInfo.FrontFacingCameraType;
 import v2av.VideoCaptureDevInfo.VideoCaptureDevice;
@@ -51,9 +53,10 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 	private int StartRecordVideo() {
 
 		if (mCapDevInfo == null) {
+			V2Log.e("===== mCapDevInfo:" + mCapDevInfo);
 			return -1;
 		}
-		Log.i("DEBUG", "要开启的默认视频是：" + mCapDevInfo.GetDefaultDevName());
+		Log.e("DEBUG", "要开启的默认视频是：" + mCapDevInfo.GetDefaultDevName());
 		VideoCaptureDevice device = mCapDevInfo.GetDevice(mCapDevInfo.GetDefaultDevName());
 		if (device == null) {
 			Log.e("DEBUG", "开启默认视频失败！ -1");
@@ -71,6 +74,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 
 		switch (InitCamera(device)) {
 		case Err_CameraOpenError:
+			Log.e("DEBUG", "init camera failed ");
 			return -1;
 		default:
 			break;
@@ -391,7 +395,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 	}
 
 	private void StartPreview() {
-		Log.i("DEBUG", "StartPreview");
+		V2Log.e( "StartPreview");
 
 		if (mCamera == null) {
 			return;
@@ -436,7 +440,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		
+		V2Log.e("====================create");
 	}
 
 	@Override

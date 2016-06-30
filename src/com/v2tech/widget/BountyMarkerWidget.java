@@ -31,18 +31,18 @@ public class BountyMarkerWidget extends RelativeLayout {
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
-		if (child.getId() == R.id.bounty_wheel_view) {
-			wheelView = (WheelView)child;
-			NumericArrayWheelAdapter nwa = new NumericArrayWheelAdapter(
-					getContext(),
-					new int[] { 1, 2, 3, 5, 8, 10, 15, 20, 50, 80 }, "¥%1d");
-			wheelView.setVisibleItems(3);
-			nwa.setTextColor(Color.GRAY);
-			nwa.setTextSize(12);
-			wheelView.setViewAdapter(nwa);
-			wheelView.setCurrentItem(10);
-			wheelView.setCyclic(true);
-		}
+//		if (child.getId() == R.id.bounty_wheel_view) {
+//			wheelView = (WheelView)child;
+//			NumericArrayWheelAdapter nwa = new NumericArrayWheelAdapter(
+//					getContext(),
+//					new int[] { 1, 2, 3, 5, 8, 10, 15, 20, 50, 80 }, "¥%1d");
+//			wheelView.setVisibleItems(3);
+//			nwa.setTextColor(Color.GRAY);
+//			nwa.setTextSize(12);
+//			wheelView.setViewAdapter(nwa);
+//			wheelView.setCurrentItem(10);
+//			wheelView.setCyclic(true);
+//		}
 	}
 	
 	

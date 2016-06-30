@@ -44,6 +44,7 @@ import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.TouchSurfaceView;
 import com.v2tech.widget.TouchSurfaceView.Translate;
 import com.v2tech.widget.VerticalSpinWidget;
+import com.v2tech.widget.VerticalSpinWidget.OnSpinVolumeChangedListener;
 import com.v2tech.widget.VideoShareBtnLayout;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoShareRightWidget;
@@ -167,7 +168,7 @@ public class MapVideoLayout extends FrameLayout {
 		volumnWidget.setCent(0.5F);
 		
 		volumneIcon= new ImageView(getContext());
-		((ImageView)volumneIcon).setImageResource(R.drawable.voice_volumn_icon);
+		((ImageView)volumneIcon).setImageResource(R.drawable.volume_contronller_icon_);
 		
 		
 		this.addView(shareSurfaceView, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
@@ -207,7 +208,7 @@ public class MapVideoLayout extends FrameLayout {
 		this.addView(volumnWidget, -1,  lp);
 		
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lp.leftMargin = 40;
+		lp.leftMargin = 50;
 		this.addView(volumneIcon, -1,  lp);
 		
 		
@@ -479,6 +480,10 @@ public class MapVideoLayout extends FrameLayout {
 		this.videoShareRightWidet.setListener(listener);
 	}
 
+	
+	public void setOnSpinVolumeChangedListener(OnSpinVolumeChangedListener listener) {
+		this.volumnWidget.setListener(listener);
+	}
 
 	private int mInitY;
 	private int mInitX;
@@ -631,12 +636,13 @@ public class MapVideoLayout extends FrameLayout {
 			translateBottomView(p2pAudioWatcherLayout, dy);
 			break;
 		case INQUIRE_BIDING:
-			if (mMapView.getTop() + dy > getTop()) {
+			if (mMapView.getTop() + dy > mapLocationTipsWidget.getBottom()) {
 				translateBottomView(inquiryBidWidget, dy);
 				translateTopView(tsv, dy);
 				translateTopView(mMsgLayout, dy);
 				translateTopView(lierInteractionLayout, dy);
 				translateTopView(liveWatcherLayout, dy);
+				mapLocationTipsWidget.offsetTopAndBottom(dy);
 				bountyMarker.offsetTopAndBottom(dy);
 				inquiryCloseBtn.offsetTopAndBottom(dy);
 				mMapView.offsetTopAndBottom(dy);
@@ -1008,8 +1014,8 @@ public class MapVideoLayout extends FrameLayout {
 			p2pVideoLayout.layout(left,bottomChildTop , right, bottom);
 			mMapView.layout(left, bottom, right, bottom + bottomHeight);
 		} else if (st == ScreenType.INQUIRE_BIDING) {
-			borderY = bottom - tsv.getMeasuredHeight();
-			mMapView.layout(left, top, right, borderY);
+			borderY = bottom - tsv.getMeasuredHeight() + mapLocationTipsWidget.getMeasuredHeight();
+			mMapView.layout(left, top + mapLocationTipsWidget.getMeasuredHeight(), right, borderY);
 			tsv.layout(left, - tsv.getMeasuredHeight(), right, 0 );
 			shareSurfaceView.layout(left, - tsv.getMeasuredHeight(), right, 0);
 			videoShareBtnLayout.layout(left, top, right, borderY);
