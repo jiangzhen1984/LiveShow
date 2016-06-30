@@ -53,6 +53,7 @@ public class MainApplication extends Application {
 		super.onCreate();
 		this.registerActivityLifecycleCallbacks(GlobalActivityManager
 				.getInstance());
+		V2Log.e("====>" +this.getApplicationInfo().processName);
 	}
 
 	@Override

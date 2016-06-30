@@ -77,8 +77,6 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 	public void onUICreated() {
 		super.onUICreated();
 		int flag = UserChattingObject.VIDEO_CALL;
-		
-		
 	
 		int type = ui.getStartType();
 		if (type == UIType.CALLING.ordinal()) {
@@ -178,22 +176,22 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 					GroupType.CHATING.intValue(), 0, uco.getUser().getmUserId(),
 					uco.getDeviceId(), ui.getRemoteVideoPlayer());
 			servcie.requestCloseVideoDevice(duc, null);
+			servcie.cancelCalling(uco, null);
+			break;
 		case CALLING:
 			duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance().getCurrentUserId(), "", null);
 			servcie.requestCloseVideoDevice(duc, null);
 			servcie.cancelCalling(uco, null);
-			ui.quit();
 			break;
 		case RINGING:
 			duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance().getCurrentUserId(), "", null);
 			servcie.requestCloseVideoDevice(duc, null);
 			servcie.declineCalling(uco, null);
-			ui.quit();
 			break;
 		default:
 			break;
 		}
-		servcie.cancelCalling(uco, null);
+		ui.quit();
 	}
 
 	public void onAcceptBtnClicked() {
@@ -205,6 +203,12 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 		updateUIOnConnected();
 	}
 	
+	
+	public void onSwitchCameraBtnClicked() {
+		UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+				.getInstance().getCurrentUserId(), "", null);
+		servcie.switchCamera(duc);
+	}
 	
 	private void updateUIOnCalling() {
 		ui.showCallingLayout();

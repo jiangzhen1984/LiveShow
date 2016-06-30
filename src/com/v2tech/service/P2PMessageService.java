@@ -332,7 +332,7 @@ public class P2PMessageService extends DeviceService {
 	}
 	
 	public void cancelCalling(UserChattingObject ucd, MessageListener listener) {
-		VideoRequest.getInstance().VideoCancelChat(ucd.getSzSessionID(),
+		VideoRequest.getInstance().VideoCloseChat(ucd.getSzSessionID(),
 				ucd.getUser().getmUserId(), ucd.getDeviceId());
 	}
 
@@ -399,8 +399,7 @@ public class P2PMessageService extends DeviceService {
 		@Override
 		public void OnVideoChatClosed(String szSessionID, long nFromUserID,
 				String szDeviceID) {
-			super.OnVideoChatClosed(szSessionID, nFromUserID, szDeviceID);
-			
+			listener.onDeclined();
 		}
 
 		@Override

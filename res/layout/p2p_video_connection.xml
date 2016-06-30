@@ -137,7 +137,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="@dimen/p2p_video_btn_margin_bottom"
                 android:layout_marginRight="@dimen/p2p_video_btn_margin_right"
-                android:src="@drawable/p2p_video_accept_btn" />
+                android:src="@drawable/p2p_video_connect_camera_switch_btn" />
 
             <ImageView
                 android:id="@+id/p2p_video_waiting_hangoff_btn"

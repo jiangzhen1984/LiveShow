@@ -39,7 +39,6 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	private VideoRenderType videoRenderType = VideoRenderType.LEFT_CONTENT;
 	
 	private Bitmap[] screens;
-	private int currentIndex;
 	
 	boolean renderingVideo;
 
@@ -54,6 +53,8 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	private ViewItemListener itemListener;
 	
 	private boolean isViewReady;
+	
+	private int currentIndex;
 	
 	
 	public interface ViewItemListener {
@@ -132,8 +133,9 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		int distance =(int)( Math.abs(x) * mBitmap.getWidth());
 		int len = screens.length;
 		int nextIndex = 0;
+		int curIndex = currentIndex;
 		if (x > 0) {
-			nextIndex = (currentIndex + len - 1) % len;
+			nextIndex = (curIndex + len - 1) % len;
 			content2SrcRect.left = width - distance;
 			content2SrcRect.right = width;
 			content2TarRect.left = 0;
@@ -148,7 +150,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 				videoCanvas = new Canvas(content2Bitmap);
 			}
 		} else if (x < 0) {
-			nextIndex = (currentIndex + len + 1) % len;
+			nextIndex = (curIndex + len + 1) % len;
 			content2SrcRect.left =  0;
 			content2SrcRect.right = distance;
 			content2TarRect.left = width - distance;
@@ -163,7 +165,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 				videoCanvas = new Canvas(content1Bitmap);
 			}
 		} else {
-			nextIndex = (currentIndex + len + 1) % len;
+			nextIndex = (curIndex + len + 1) % len;
 			content1SrcRect.left = 0;
 			content1SrcRect.right = width;
 			content1TarRect.left = 0;
@@ -179,15 +181,20 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 			}
 			
 		}
-		content1Bitmap = screens[currentIndex];
+		content1Bitmap = screens[curIndex];
 		content2Bitmap = screens[nextIndex];
 		
 		if (x == 1.0F || x == -1.0F) {
-			currentIndex = nextIndex;
-			//TODO notify index changed
+			if (itemListener != null && curIndex != nextIndex) {
+				itemListener.onCurrentItemChanged(curIndex, nextIndex);
+			}
+			
+			curIndex =nextIndex;
+			currentIndex = curIndex;
+			
 		}
 		if (DEBUG) {
-			V2Log.i("cent :" + x +"  curent Index:" + currentIndex+"  nextIndex:"+nextIndex);
+			V2Log.i("cent :" + x +"  curent Index:" + curIndex+"  nextIndex:"+nextIndex);
 			V2Log.i("video :" + content1SrcRect+" ===> "+ content1TarRect);
 			V2Log.i("rest :" + content2SrcRect+" ===> "+ content2TarRect);
 		}
@@ -195,14 +202,11 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 			postInvalidate();
 		}
 		
-		if (itemListener != null && currentIndex != nextIndex) {
-			itemListener.onCurrentItemChanged(currentIndex, nextIndex);
-		}
-		
 	}
 	
 	public void finishTranslate() {
 		translate(0F, 0F);
+		
 	}
 	
 	public void setItemIndex(int idx) {

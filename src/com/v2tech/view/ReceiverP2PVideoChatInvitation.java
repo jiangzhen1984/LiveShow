@@ -1,5 +1,6 @@
 package com.v2tech.view;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.presenter.P2PVideoPresenter;
 
 import android.content.BroadcastReceiver;
@@ -13,6 +14,7 @@ public class ReceiverP2PVideoChatInvitation extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
+		V2Log.e("=====  new broadcast " + context.getApplicationInfo().packageName);
 		if ("com.v2tech.p2p_video_notification_action".equals(action)) {
 			Intent i = new Intent();
 			i.setClass(context, P2PVideoActivity.class);

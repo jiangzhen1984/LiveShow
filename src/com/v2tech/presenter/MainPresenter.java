@@ -326,6 +326,8 @@ public class MainPresenter extends BasePresenter implements
 		cacheMarker = new HashMap<Live, Marker>();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
+		vpController = ui.getVideoPlayer();
+		vpController.setItemListener(this);
 	}
 
 	@Override
@@ -405,6 +407,11 @@ public class MainPresenter extends BasePresenter implements
 			currentViewLive.playing = false;
 			currentViewLive.showing = false;
 			currentViewLive.surfaveViewIdx = -1;
+			
+			UserDeviceConfig duc = new UserDeviceConfig(4,
+					currentViewLive.live.getLid(), GlobalHolder.getInstance()
+							.getCurrentUserId(), "", null);
+			vs.requestCloseVideoDevice(duc, null);
 			vs.requestExitConference(currentViewLive.live, null);
 			unsetState(WATCHING_FLAG);
 		}
@@ -423,6 +430,7 @@ public class MainPresenter extends BasePresenter implements
 			currentViewLive.showing = true;
 			currentViewLive.surfaveViewIdx = vpController.getCurrentItemIdx();
 			updateLiveScreen(l);
+			setState(WATCHING_FLAG);
 		}
 		return true;
 	}
@@ -887,7 +895,7 @@ public class MainPresenter extends BasePresenter implements
 			if (isState(PUBLISHING_FLAG)) {
 				videoShareButtonClicked();
 			}
-			setState(WATCHING_FLAG);
+			
 			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_PERSONEL);
 			cancelInquiry();
 			break;
@@ -973,6 +981,11 @@ public class MainPresenter extends BasePresenter implements
 	public void onCurrentItemChanged(int current, int newIdx) {
 			for (ViewLive vl : viewLiveList) {
 				if (vl.surfaveViewIdx == current) {
+					UserDeviceConfig duc = new UserDeviceConfig(4,
+							vl.live.getLid(), GlobalHolder.getInstance()
+									.getCurrentUserId(), "", null);
+					vs.requestCloseVideoDevice(duc, null);
+					
 					vs.requestExitConference(vl.live, null);
 					vl.showing = false;
 				}
@@ -985,6 +998,8 @@ public class MainPresenter extends BasePresenter implements
 					this.currentViewLive = vl;
 				}
 			}
+			
+			//TODO if nothing, need to push one
 	}
 	
 	///////////ViewItemListener///////////////////////////////////////////////////
@@ -1186,9 +1201,6 @@ public class MainPresenter extends BasePresenter implements
 				return;
 			}
 			if (uid == this.currentViewLive.live.getPublisher().getmUserId()) {
-				if (vpController == null) {
-					vpController = ui.getVideoPlayer();
-				}
 				UserDeviceConfig udc = new UserDeviceConfig(0,
 						this.currentViewLive.live.getLid(), currentViewLive.live.getPublisher()
 								.getmUserId(), ll.get(0).getDeviceID(), vpController);

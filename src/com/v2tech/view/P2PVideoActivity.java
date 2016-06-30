@@ -57,7 +57,6 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 		remoteVideoPlayer = new VideoPlayer();
 		remoteUserVideoView.getHolder().addCallback(remoteVideoPlayer);
 		presenter = new P2PVideoPresenter(this, this);
-		presenter.onUICreated();
 		
 		localUserVideoView.getHolder().addCallback(presenter);
 	}
@@ -65,7 +64,6 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		presenter.onUIDestroyed();
 		VideoRecorder.VideoPreviewSurfaceHolder = null;
 	}
 
@@ -145,7 +143,7 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 			presenter.onHangoffBtnClicked();
 			break;
 		case R.id.p2p_video_connection_switch_camera_btn:
-			
+			presenter.onSwitchCameraBtnClicked();
 			break;
 		case R.id.p2p_video_ringing_accept_btn:
 			presenter.onAcceptBtnClicked();
