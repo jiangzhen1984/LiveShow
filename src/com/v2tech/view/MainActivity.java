@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -34,7 +35,7 @@ public class MainActivity extends BaseActivity implements
 	private BottomButtonLayout bottomButtonLayout;
 
 	private ImageView mPersonalButton;
-
+	private Toast inquiryToast;
 	
 	MainPresenter presenter;
 
@@ -517,6 +518,22 @@ public class MainActivity extends BaseActivity implements
 		return mMapVideoLayout.getInquiryAward();
 	}
 	
+	
+	public void setInquiryStateToWaiting(boolean wait) {
+		mMapVideoLayout.disableInquiryBtn(wait);
+	}
+	
+	
+	public void updateInquiryMessage(String msg) {
+		if (this.inquiryToast == null) {
+			inquiryToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+		} else {
+			inquiryToast.cancel();
+		}
+		
+		inquiryToast.setGravity(Gravity.CENTER, 0, 0);
+		inquiryToast.show();
+	}
 	/////////////////////////////////////////////////////////////
 	
 

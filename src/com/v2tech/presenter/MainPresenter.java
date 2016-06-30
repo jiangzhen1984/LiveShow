@@ -262,6 +262,10 @@ public class MainPresenter extends BasePresenter implements
 		public void updateMapAddressText(String text);
 		
 		public String getInquiryAward();
+		
+		public void setInquiryStateToWaiting(boolean wait);
+		
+		public void updateInquiryMessage(String msg);
 	}
 
 	public void videoShareButtonClicked() {
@@ -962,6 +966,9 @@ public class MainPresenter extends BasePresenter implements
 		currentInquiryId = is.startInquiry(Float.parseFloat(award), ml.getLat(), ml.getLng(), null);
 		if (currentInquiryId < 0) {
 			//TODO notify user
+		} else {
+			ui.setInquiryStateToWaiting(true);
+			ui.updateInquiryMessage(context.getResources().getString(R.string.inquiry_start_notification));
 		}
 	}
 	
@@ -1173,6 +1180,8 @@ public class MainPresenter extends BasePresenter implements
 			is.cancelInquiry(currentInquiryId);
 			//reset inquiryId
 			currentInquiryId = -1;
+			
+			ui.setInquiryStateToWaiting(false);
 		}
 	}
 	// waiting for chair man device information

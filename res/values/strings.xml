@@ -132,6 +132,7 @@
     <string name="inquiry_action_accept_btn_text">接受悬赏，带TA去瞅瞅</string>
     <string name="inquiry_action_audio_btn_text">按住对讲</string>
     <string name="inquiry_action_video_share_btn_text">视频直播</string>
+    <string name="inquiry_start_notification">正在通知附近的朋友...</string>
     
    
     

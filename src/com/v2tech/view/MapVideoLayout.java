@@ -234,7 +234,9 @@ public class MapVideoLayout extends FrameLayout {
 		mMsgLayout.addMessageString(msg);
 	}
 	
-	
+	public void disableInquiryBtn(boolean flag) {
+		inquiryBidWidget.enableLaunchBtn(!flag);
+	}
 	
 	public VideoOpt addNewVideoWindow(final Live l) {
 		return null;
