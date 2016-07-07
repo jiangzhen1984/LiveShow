@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.LoginPresenter;
 import com.v2tech.presenter.LoginPresenter.LoginPresenterUI;
@@ -41,7 +42,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.login_reg_activity);
-		presenter = new LoginPresenter(this);
+		
 		
 		
 		mUserNameET = (EditText)findViewById(R.id.edt_user_name);
@@ -57,7 +58,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 		
 		mUserNameET.addTextChangedListener(textWatcher);
 		mUserCodeET.addTextChangedListener(textWatcher);
-		presenter.onUICreated();
 
 	}
 
@@ -109,6 +109,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new LoginPresenter(this);
+		}
 		return presenter;
 	}
 	
@@ -160,6 +163,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 
 	@Override
 	public void showLogingInProgress() {
+		V2Log.e("=================progress");
 		if (proDialog == null) {
 			proDialog = new ProgressDialog(this);
 			proDialog.setCancelable(false);

@@ -40,16 +40,34 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 	
 	@Override
 	public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-		list.add(new WeakReference<Activity>(activity));
+		synchronized(list) {
+			list.add(new WeakReference<Activity>(activity));
+		}
+		if (activity instanceof  BaseActivity) {
+			((BaseActivity)activity).getPresenter().onUICreated();
+		} else if (activity instanceof BaseFragmentActivity) {
+			((BaseFragmentActivity)activity).getPresenter().onUICreated();
+		}
 		
 	}
 
 	@Override
 	public void onActivityStarted(Activity activity) {
-		if (activity instanceof  BaseActivity) {
-			((BaseActivity)activity).getPresenter().onUICreated();
-		} else if (activity instanceof BaseFragmentActivity) {
-			((BaseFragmentActivity)activity).getPresenter().onUICreated();
+		synchronized(list) {
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				WeakReference<Activity> w = list.get(i);
+				Activity act = w.get();
+				if (act == activity) {
+					list.remove(i);
+					if (activity instanceof  BaseActivity) {
+						((BaseActivity)activity).getPresenter().onUIStarted();
+					} else if (activity instanceof BaseFragmentActivity) {
+						((BaseFragmentActivity)activity).getPresenter().onUIStarted();
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -67,7 +85,22 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 
 	@Override
 	public void onActivityStopped(Activity activity) {
-		// TODO Auto-generated method stub
+		synchronized(list) {
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				WeakReference<Activity> w = list.get(i);
+				Activity act = w.get();
+				if (act == activity) {
+					list.remove(i);
+					if (activity instanceof  BaseActivity) {
+						((BaseActivity)activity).getPresenter().onUIStopped();
+					} else if (activity instanceof BaseFragmentActivity) {
+						((BaseFragmentActivity)activity).getPresenter().onUIStopped();
+					}
+					break;
+				}
+			}
+		}
 		
 	}
 

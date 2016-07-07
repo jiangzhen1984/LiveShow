@@ -45,8 +45,6 @@ public class PersonelRelatedUserListActivity extends BaseFragmentActivity implem
 		title = (TextView)findViewById(R.id.title_bar_center_tv);
 		returnBtn = findViewById(R.id.title_bar_left_btn);
 		
-		int type = this.getIntent().getIntExtra("type", -1);
-		presenter = new PersonelRelatedUserListPresenter(this, type, this);
 
 		barFrag = (PersonelSearchBarFragment)this.getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 		listFrag = (UserListFragment)this.getSupportFragmentManager().findFragmentById(R.id.list_fragment);
@@ -70,6 +68,10 @@ public class PersonelRelatedUserListActivity extends BaseFragmentActivity implem
 
 
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			int type = this.getIntent().getIntExtra("type", -1);
+			presenter = new PersonelRelatedUserListPresenter(this, type, this);
+		}
 		return this.presenter;
 	}
 

@@ -60,6 +60,16 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+	
+
+
+
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.showBtn(true, false, false);
 		mapInstance = ui.getMap();
 		mapInstance.addMapStatusListener(this);
@@ -72,8 +82,6 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		
 		this.data = ui.getInquiryDataFromUI();
 	}
-	
-	
 
 
 

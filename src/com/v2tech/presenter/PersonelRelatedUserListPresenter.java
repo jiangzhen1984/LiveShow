@@ -203,6 +203,14 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		boolean timeFlag = false;
 		boolean btnFlag  = false;
 		switch (type) {
@@ -245,8 +253,6 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		Message.obtain(local, MSG_GET_LIST).sendToTarget();
 	}
 
-	
-	
 
 	@Override
 	public void onUIDestroyed() {

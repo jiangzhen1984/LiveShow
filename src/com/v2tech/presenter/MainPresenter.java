@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.map.LocationParameter;
@@ -163,7 +162,7 @@ public class MainPresenter extends BasePresenter implements
 	
 	private ViewLive currentViewLive;
 	private PublishingLive publishingLive;
-	private long currentInquiryId;
+	private InquiryData inquiryData;
 	
 	private AudioManager audioManager; 
 	
@@ -245,6 +244,10 @@ public class MainPresenter extends BasePresenter implements
 		public void showWatcherP2PVideoLayout(boolean flag);
 
 		public void showWatcherP2PAudioLayout(boolean flag);
+		
+		public void showPersonelWidgetForInquiry(boolean flag);
+		
+		public void showInquiryAcceptedMsg(String msg);
 
 		public void showProgressDialog(boolean flag, String text);
 
@@ -342,12 +345,20 @@ public class MainPresenter extends BasePresenter implements
 		cacheMarker = new HashMap<Live, Marker>();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
-		vpController = ui.getVideoPlayer();
-		vpController.setItemListener(this);
 	}
 
 	@Override
 	public void onUIStarted() {
+		if (vpController == null) {
+			vpController = ui.getVideoPlayer();
+			vpController.setItemListener(this);
+		}
+		
+		if (mapInstance == null) {
+			mapInstance = ui.getMainMap();
+			mapInstance.registerMakerListener(this);
+			mapInstance.addMapStatusListener(this);
+		}
 		startLocationScan();
 	}
 
@@ -375,21 +386,7 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void startLocationScan() {
-		if (mapInstance == null) {
-			h.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					mapInstance.startLocate(mapInstance.buildParameter(context));
-
-				}
-
-			}, 500);
-			return;
-		} else {
-			mapInstance.startLocate(mapInstance.buildParameter(context));
-		}
-
+		mapInstance.startLocate(mapInstance.buildParameter(context));
 	}
 
 	private void stopLocate() {
@@ -975,9 +972,13 @@ public class MainPresenter extends BasePresenter implements
 		} catch(NumberFormatException e) {
 			ui.showIncorrectAwardMessage(context.getResources().getString(R.string.inquiry_error_incorrect_award));
 		}
-		
-		currentInquiryId = is.startInquiry(faward, ml.getLat(), ml.getLng(), desc);
-		if (currentInquiryId < 0) {
+		if (inquiryData == null) {
+			inquiryData = new InquiryData();
+		}
+		inquiryData.targetLat = ml.getLat();
+		inquiryData.targetLng = ml.getLng();
+		inquiryData.id = is.startInquiry(faward, ml.getLat(), ml.getLng(), desc);
+		if (inquiryData.id < 0) {
 			//TODO notify user
 		} else {
 			ui.setInquiryStateToWaiting(true);
@@ -1045,8 +1046,12 @@ public class MainPresenter extends BasePresenter implements
 	///////////InquiryAcceptenceHandler///////////////////////////////////////////////////
 	@Override
 	public void onTake(User user, InquiryData data) {
-		Toast.makeText(context, "User take this ", Toast.LENGTH_SHORT).show();
-		//TODO update UI
+		ui.showPersonelWidgetForInquiry(true);
+		ui.showInquiryAcceptedMsg(user.getName()+context.getResources().getString(R.string.inquiry_accepted));
+		MapLocation target = mapInstance.buildLocation(inquiryData.targetLat, inquiryData.targetLng);
+		MapLocation source = mapInstance.buildLocation(data.sourceLat, data.sourceLng);
+		V2Log.i(" inquiry:  source: " + source+"  target:"+target);
+		mapInstance.showRoadMap(source, target);
 		
 	}
 	///////////InquiryAcceptenceHandler///////////////////////////////////////////////////
@@ -1083,7 +1088,6 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void doInitInBack() {
-		((MainApplication)context.getApplicationContext()).onMainCreate();
 		vs = new ConferenceService();
 		us = new UserService();
 		ls = new LiveService();
@@ -1110,9 +1114,6 @@ public class MainPresenter extends BasePresenter implements
 					+ GlobalHolder.getInstance().getCurrentUser());
 		}
 
-		mapInstance = ui.getMainMap();
-		mapInstance.registerMakerListener(this);
-		mapInstance.addMapStatusListener(this);
 
 	}
 
@@ -1201,13 +1202,14 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void cancelInquiry() {
-		if (currentInquiryId > 0) {
-			is.cancelInquiry(currentInquiryId);
+		if (inquiryData.id > 0) {
+			is.cancelInquiry(inquiryData.id);
 			//reset inquiryId
-			currentInquiryId = -1;
+			inquiryData.id = -1;
 			
 			ui.setInquiryStateToWaiting(false);
 		}
+		
 	}
 	// waiting for chair man device information
 	private boolean pending = false;

@@ -624,13 +624,14 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         	lrp.award= re.getGift(0).getAmount();
         	lrp.desc = re.getDesc();
         	com.v2tech.net.lv.WebPackage.Position po = re.getPosition();
-        	if (re.getOperate() == Reward.Operate.answer) {
+        	
+        	if ("answer".equalsIgnoreCase(webPackage.getOperateType())) {
         		lrp.type = InquiryIndPacket.TYPE_ACCEPT;
         		lrp.slat = po.getLatitude();
             	lrp.slng = po.getLongitude();
             	lrp.tlat = po.getLatitude();
             	lrp.tlng = po.getLongitude();
-        	} else if (re.getOperate() == Reward.Operate.release) {
+        	} else if ("release".equalsIgnoreCase(webPackage.getOperateType())) {
         		lrp.type = InquiryIndPacket.TYPE_NEW;
         		lrp.tlat = po.getLatitude();
             	lrp.tlng = po.getLongitude();

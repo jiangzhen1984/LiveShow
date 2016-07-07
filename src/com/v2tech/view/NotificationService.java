@@ -2,10 +2,6 @@ package com.v2tech.view;
 
 import java.io.Serializable;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.VideoRequest;
@@ -25,6 +21,11 @@ import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.jni.JNIResponse.Result;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+import com.v2tech.vo.inquiry.InquiryData;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
 
 public class NotificationService extends Service {
 	
@@ -115,9 +116,17 @@ public class NotificationService extends Service {
 							new String[] { "irid", "iuid", "award" ,"lat", "lng", "desc"},
 							new Serializable[] { lwip.inquireId, lwip.inquiryUserId, lwip.award, lwip.tlat, lwip.tlng, lwip.desc});
 				} else if (lwip.type == InquiryIndPacket.TYPE_ACCEPT) {
+					User answer = new User(lwip.inquiryAcceptUserId);
+					InquiryData id = new InquiryData();
+					id.targetLat = lwip.tlat;
+					id.targetLng = lwip.tlng;
+					id.sourceLat = lwip.slat;
+					id.sourceLng = lwip.slng;
+					id.answer = answer;
+					
 					sendBroadCast(NOTIFICAITON_OBJ_TYPE_INQUIRY_ACCEPT,
-							new String[] { "irid", "auid", "slat", "slng", "tlat", "tlng"},
-							new Serializable[] { lwip.inquireId, lwip.inquiryAcceptUserId, lwip.award, lwip.slat, lwip.slng, lwip.tlat, lwip.tlng});
+							new String[] { "data"},
+							new Serializable[] {id});
 				}
 			}
 

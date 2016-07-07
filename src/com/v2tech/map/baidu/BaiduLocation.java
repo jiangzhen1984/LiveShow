@@ -41,4 +41,11 @@ public class BaiduLocation extends MapLocation {
 		}
 		return parameter;
 	}
+
+	@Override
+	public String toString() {
+		return "BaiduLocation [lat=" + ll.latitude + "  lng=" +ll.longitude+ "]";
+	}
+	
+	
 }

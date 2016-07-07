@@ -37,11 +37,21 @@ public class PersonelPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+	
+
+	
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.updateTitleBar();
 		ui.updateUserUI(GlobalHolder.getInstance().getCurrentUser());
 	}
 
-	
+
+
+
 	public void personelBtnClicked() {
 		ui.showPersonelDetailUI();
 	}

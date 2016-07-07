@@ -57,7 +57,7 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 		videoBtn.setOnClickListener(this);
 		
 		mapApi = new BaiduMapImpl(mapView.getMap(), mapView);
-		presenter = new InquiryActionPresenter(this, this);
+		
 	}
 
 	@Override
@@ -67,6 +67,9 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new InquiryActionPresenter(this, this);
+		}
 		return presenter;
 	}
 

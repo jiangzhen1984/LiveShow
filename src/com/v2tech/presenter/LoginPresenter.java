@@ -68,6 +68,13 @@ public class LoginPresenter extends BasePresenter {
 		super.onUICreated();
 		h = new LocalHandler(backendThread.getLooper());
 		Message.obtain(h, INIT).sendToTarget();
+	}
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.showKeyboard();
 		ui.showNotificaitonView(false);
 	}
@@ -118,7 +125,7 @@ public class LoginPresenter extends BasePresenter {
 		String username = ui.getUserNameText();
 		String code = ui.getCodeText();
 		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
-		ui.showLogingInProgress();
+		
 	}
 
 	public void doGetCodeInBack() {
@@ -252,6 +259,7 @@ public class LoginPresenter extends BasePresenter {
 				us = new UserService();
 				break;
 			case LOGIN_ACTION:
+				ui.showLogingInProgress();
 				doLoginInBack();
 				break;
 			case GET_CODE_ACTION:

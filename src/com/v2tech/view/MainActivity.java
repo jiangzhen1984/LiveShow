@@ -41,13 +41,9 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		((MainApplication)this.getApplication()).onMainCreate();
 		super.onCreate(savedInstanceState);
 		
-		((MainApplication)this.getApplication()).onMainCreate();
-		
-		if (presenter == null) {
-			presenter = new MainPresenter(this, this);
-		}
 		setContentView(R.layout.main_activity);
 		mMainLayout = (FrameLayout) findViewById(R.id.main);
 
@@ -59,8 +55,6 @@ public class MainActivity extends BaseActivity implements
 
 		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
 		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
-		presenter.onUICreated();
-
 	}
 
 
@@ -109,7 +103,6 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-		presenter.onUIStarted();
 		mMapVideoLayout.resetLocalCamera();
 	
 	}
@@ -129,7 +122,6 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	protected void onStop() {
 		super.onStop();
-		presenter.onUIStopped();
 	}
 	
 	
@@ -154,6 +146,10 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public BasePresenter getPresenter() {
+
+		if (presenter == null) {
+			presenter = new MainPresenter(this, this);
+		}
 		return presenter;
 	}
 
@@ -531,6 +527,7 @@ public class MainActivity extends BaseActivity implements
 			inquiryToast.cancel();
 		}
 		
+		inquiryToast.setText(msg);
 		inquiryToast.setGravity(Gravity.CENTER, 0, 0);
 		inquiryToast.show();
 	}
@@ -542,6 +539,15 @@ public class MainActivity extends BaseActivity implements
 	
 	public void showIncorrectAwardMessage(String message) {
 		//TODO add show error
+	}
+	
+	
+	public void showPersonelWidgetForInquiry(boolean flag) {
+		mMapVideoLayout.showPersonelWidgetForInquiryBider(flag);
+	}
+	
+	public void showInquiryAcceptedMsg(String msg) {
+		updateInquiryMessage(msg);
 	}
 	/////////////////////////////////////////////////////////////
 	

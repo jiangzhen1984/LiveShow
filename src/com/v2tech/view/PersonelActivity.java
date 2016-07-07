@@ -45,7 +45,7 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personal_activity);
-		presenter = new PersonelPresenter(this, this);
+		
 
 		mPersonalNameTv = (TextView) findViewById(R.id.personal_name);
 		mMyFollowingBtn = findViewById(R.id.personal_follow_btn);
@@ -164,6 +164,9 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new PersonelPresenter(this, this);
+		}
 		return presenter;
 	}
 
