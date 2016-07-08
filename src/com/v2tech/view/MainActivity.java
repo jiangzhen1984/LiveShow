@@ -248,11 +248,8 @@ public class MainActivity extends BaseActivity implements
 	public void showSearchErrorToast() {
 		if (last != null) {
 			last.cancel();
-		} else {
-			last = Toast.makeText(this, R.string.main_search_no_element_found, Toast.LENGTH_SHORT);
-		}
-		
-		last.setText(R.string.main_search_no_element_found);
+		} 
+		last = Toast.makeText(this, R.string.main_search_no_element_found, Toast.LENGTH_SHORT);
 		last.show();
 	}
 	
@@ -521,12 +518,12 @@ public class MainActivity extends BaseActivity implements
 	
 	
 	public void updateInquiryMessage(String msg) {
-		if (this.inquiryToast == null) {
-			inquiryToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
-		} else {
+		if (this.inquiryToast != null) {
 			inquiryToast.cancel();
+			inquiryToast = null;
 		}
 		
+		inquiryToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
 		inquiryToast.setText(msg);
 		inquiryToast.setGravity(Gravity.CENTER, 0, 0);
 		inquiryToast.show();

@@ -44,6 +44,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		public void showTargetAddress(String str);
 		
 		public InquiryData getInquiryDataFromUI();
+		
+		public void showWaitingLocation();
 	}
 
 	public InquiryActionPresenter(Context context, InquiryActionPresenterUI ui) {
@@ -125,10 +127,11 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		as = ActionState.ACCEPTED;
 		ui.showBtn(false, true, true);
 		
-		//TODO check if no location
-		
-		
-		is.takeInquiry(data.id, data.targetLat, data.targetLng);
+		if (currentLocation == null) {
+			ui.showWaitingLocation();
+		} else {
+			is.takeInquiry(data.id, currentLocation.getLat(), currentLocation.getLng());
+		}
 		
 		
 	}

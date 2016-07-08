@@ -135,6 +135,7 @@
     <string name="inquiry_start_notification">正在通知附近的朋友...</string>
     <string name="inquiry_error_incorrect_award">请输入正确的金额</string>
     <string name="inquiry_accepted">带你去瞅瞅儿</string>
+    <string name="inquiry_accept_error_no_location">请等待定位！</string>
    
     
 

@@ -1,11 +1,5 @@
 package com.v2tech.view;
 
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
 import com.v2tech.map.MapAPI;
@@ -16,6 +10,14 @@ import com.v2tech.presenter.InquiryActionPresenter;
 import com.v2tech.presenter.InquiryActionPresenter.InquiryActionPresenterUI;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.inquiry.InquiryData;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 public class InquiryActionActivity extends BaseActivity implements InquiryActionPresenterUI, OnClickListener {
 	
@@ -121,5 +123,20 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 	
 	public InquiryData getInquiryDataFromUI() {
 		return (InquiryData)getIntent().getExtras().get("inquiry");
+	}
+	
+	
+	private Toast t;
+	public void showWaitingLocation() {
+		if (t != null) {
+			t.cancel();
+			t = null;
+		}
+		t = new Toast(this);
+		t.setText(getResources().getString(R.string.inquiry_accept_error_no_location));
+		t.setDuration(Toast.LENGTH_SHORT);
+		t.setGravity(Gravity.CENTER, 0, 0);
+		t.show();
+		
 	}
 }

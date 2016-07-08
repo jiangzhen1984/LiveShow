@@ -13,6 +13,7 @@ public class BaiduMaker extends Marker {
 	private com.baidu.mapapi.map.Marker m;
 	
 	public OverlayOptions oo;
+	
 
 	public BaiduMaker() {
 		super();

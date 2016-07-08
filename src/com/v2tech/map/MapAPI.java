@@ -47,6 +47,9 @@ public interface MapAPI {
 	public void showRoadMap(MapLocation from, MapLocation to);
 	
 	
+	public void showRoadMap(Marker sm, MapLocation from, Marker tm, MapLocation to);
+	
+	
 	public void addMapStatusListener(MapStatusListener listener);
 	
 	

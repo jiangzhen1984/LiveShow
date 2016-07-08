@@ -70,6 +70,9 @@ public class BaiduMapImpl implements MapAPI,
 	private RoutePlanSearch roadMapQueryAPI;
 	
 	private WalkingRouteOverlay  lastOverlay;
+	private Marker startMarker;
+	private Marker terminalMarker;
+	
 
 	// ///listener///
 	private MarkerListener markerListener;
@@ -154,8 +157,9 @@ public class BaiduMapImpl implements MapAPI,
 			return new BaiduMaker((Live) obj);
 		} else if (obj instanceof Watcher) {
 			return new BaiduMaker((Watcher) obj);
+		} else {
+			return new BaiduMaker();
 		}
-		return null;
 	}
 
 	public Updater buildUpater(Object obj) {
@@ -286,6 +290,11 @@ public class BaiduMapImpl implements MapAPI,
 	
 	@Override
 	public void showRoadMap(MapLocation from, MapLocation to) {
+		showRoadMap(null, from, null, to);
+	}
+	
+	@Override
+	public void showRoadMap(Marker sm, MapLocation from, Marker tm, MapLocation to) {
 		if (lastOverlay != null) {
 			lastOverlay.removeFromMap();
 		}
@@ -294,6 +303,12 @@ public class BaiduMapImpl implements MapAPI,
 		roadMapQueryAPI.walkingSearch((new WalkingRoutePlanOption())
                 .from(stNode)
                 .to(enNode));
+		if (sm != null) {
+			this.startMarker = sm;
+		}
+		if (tm != null) {
+			this.terminalMarker = tm;
+		}
 	}
 	
 
@@ -382,7 +397,6 @@ public class BaiduMapImpl implements MapAPI,
 	// ////////////////////// OnGetRoutePlanResultListener
 	@Override
 	public void onGetWalkingRouteResult(WalkingRouteResult result) {
-		
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
             //result.getSuggestAddrInfo()
@@ -390,7 +404,13 @@ public class BaiduMapImpl implements MapAPI,
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
         	WalkingRouteLine route = result.getRouteLines().get(0);
-            WalkingRouteOverlay overlay = new RoadMapOverlay(mapImpl);
+        	RoadMapOverlay overlay = new RoadMapOverlay(mapImpl);
+        	if (startMarker != null) {
+        		overlay.startMarkerRes = startMarker.resId;
+        	}
+        	if (terminalMarker != null) {
+        		overlay.terminalMarkerRes = terminalMarker.resId;
+        	}
             lastOverlay = overlay;
             overlay.setData(route);
             overlay.addToMap();

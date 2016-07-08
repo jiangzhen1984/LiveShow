@@ -9,6 +9,8 @@ public class Marker {
 	
 	protected Watcher watcher;
 	
+	public int resId;
+	
 	public Marker() {
 	}
 
