@@ -184,8 +184,7 @@ public class MapVideoLayout extends FrameLayout {
 		this.addView(tsv, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
 		this.addView(mMapView, -1, generateDefaultLayoutParams());
 		this.addView(lierInteractionLayout, -1, generateDefaultLayoutParams());
-		this.addView(p2pVideoLayout, -1, generateDefaultLayoutParams());
-		this.addView(p2pAudioWatcherLayout, -1, generateDefaultLayoutParams());
+		
 		
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 10;
@@ -198,6 +197,8 @@ public class MapVideoLayout extends FrameLayout {
 		this.addView(mapLocationTipsWidget, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(inquiryCloseBtn, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.addView(inquiryBiderWidget, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		this.addView(p2pVideoLayout, -1, generateDefaultLayoutParams());
+		this.addView(p2pAudioWatcherLayout, -1, generateDefaultLayoutParams());
 		
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 40;
@@ -389,13 +390,13 @@ public class MapVideoLayout extends FrameLayout {
 	public void showP2PWatcherVideoLayout(boolean flag) {
 		int distance = getBottom() - tsv.getMeasuredHeight();
 		if (flag) {
+			p2pVideoLayout.removeSurfaceHolderCallback(p2pVideoPlayer);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(null);
+			
 			// fake UI behavior for simulate touch move up.
 			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
 					ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
 					PostState.RESTORE, distance);
-			
-			p2pVideoLayout.removeSurfaceHolderCallback(p2pVideoPlayer);
-			p2pVideoLayout.setTouchSurfaceViewTranslate(null);
 			
 		} else {
 			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
@@ -1076,6 +1077,7 @@ public class MapVideoLayout extends FrameLayout {
 			inquiryCloseBtn.layout(left, bottom, right, bottom + inquiryCloseBtn.getMeasuredHeight());
 			returnBtnView.layout(left, bottom, right, bottom + returnBtnView.getMeasuredHeight());
 			videoShareRightWidet.layout(left, bottom, right, bottom + videoShareRightWidet.getMeasuredHeight());
+			p2pVideoLayout.layout(left, bottom - 1, right, bottom + p2pVideoLayout.getMeasuredHeight());
 			
 			LayoutParams lp = (LayoutParams) volumneIcon.getLayoutParams();
 			volumneIcon
@@ -1178,7 +1180,7 @@ public class MapVideoLayout extends FrameLayout {
 		} else if (st == ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
 			tsv.layout(left, top, right, borderY);
-			mMapView.layout(left, borderY, right, bottom);
+			mMapView.layout(left, bottom, right, bottom + mMapView.getMeasuredHeight());
 			p2pVideoLayout.layout(left, borderY, right, bottom);
 			
 		} else if (st == ScreenType.INQUIRING) {

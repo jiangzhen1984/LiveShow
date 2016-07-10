@@ -403,8 +403,11 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 
 		try {
 			if (VideoPreviewSurfaceHolder != null) {
+				V2Log.e("=====>"  + VideoPreviewSurfaceHolder);
 				mCamera.setPreviewDisplay(VideoPreviewSurfaceHolder);
 				mCamera.startPreview();
+			} else {
+				throw new RuntimeException("No local holder");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -414,7 +417,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 	}
 
 	private boolean StartRecord(IPreviewCallBack callback) {
-		Log.i("DEBUG", "StartRecord");
+		V2Log.e("StartRecord");
 		if (mCamera == null) {
 			return false;
 		}
@@ -425,7 +428,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 	}
 
 	private void StopRecord() {
-		Log.i("DEBUG", "StopRecord");
+		V2Log.e("StopRecord");
 		if (mCamera == null) {
 			return;
 		}
@@ -441,7 +444,8 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		V2Log.e("====================create");
+		V2Log.e("====================create" + holder);
+		V2Log.e("=====>"  + VideoPreviewSurfaceHolder);
 	}
 
 	@Override

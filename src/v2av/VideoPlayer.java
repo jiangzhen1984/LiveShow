@@ -259,6 +259,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 			V2Log.e("holder is null");
 			return;
 		}
+		V2Log.e("=====>" + holder);
 		Canvas hc = holder.lockCanvas();
 		isViewReady = true;
 		int width = hc.getWidth();

@@ -46,8 +46,6 @@ public class P2PVideoMainLayout extends RelativeLayout {
 		super.addView(child, index, params);
 		if (child.getId() == R.id.p2p_video_main_surfaceview) {
 			surfaceView = (SurfaceView)child;
-			surfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-			
 		} else if (child.getId() == R.id.p2p_video_main_btn_ly) {
 			btnLayout = child;
 			leftBtn = child.findViewById(R.id.p2p_video_main_left_btn);
@@ -116,9 +114,6 @@ public class P2PVideoMainLayout extends RelativeLayout {
 
 	public void setListener(P2PVideoMainLayoutListener listener) {
 		this.listener = listener;
-		surfaceView.setZOrderMediaOverlay(true);
-		btnLayout.bringToFront();
-		
 	}
 
 

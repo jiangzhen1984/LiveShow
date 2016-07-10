@@ -1,6 +1,7 @@
 package com.v2tech.vo;
 
 import com.v2tech.map.Marker;
+import com.v2tech.vo.group.Group;
 
 public class ViewLive {
 
@@ -15,6 +16,8 @@ public class ViewLive {
 	public int surfaveViewIdx;
 	
 	public boolean isowner;
+	
+	public Group group;
 
 	public ViewLive(Live live) {
 		super();

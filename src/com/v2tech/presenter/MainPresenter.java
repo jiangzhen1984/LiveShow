@@ -835,13 +835,7 @@ public class MainPresenter extends BasePresenter implements
 						this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 								.getCurrentUserId(), "", null);
 				ui.showBottomLayout(false);
-				
-				try {
-					Thread.currentThread().sleep(300);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				vs.requestOpenVideoDevice(duc, null);
+				vs.requestOpenVideoDevice(new ConferenceGroup(currentViewLive.live.getLid(), null, null, null, null) , duc, null);
 				
 				setBState(B_WATCHING_VIDEO_CONNECTED_FLAG);
 				unsetBState(B_WATCHING_VIDEO_REQUEST_FLAG);
