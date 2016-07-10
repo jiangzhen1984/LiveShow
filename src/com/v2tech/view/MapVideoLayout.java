@@ -68,6 +68,8 @@ public class MapVideoLayout extends FrameLayout {
 	private VideoController videoController;
 	private VideoPlayer videoPlayer;
 	private VideoPlayer p2pVideoPlayer;
+	private Translate  videoPlayerTranslate;
+	private Translate  p2pVideoPlayerTranslate;
 	
 	private MapView mMapView;
 	private TouchSurfaceView tsv;
@@ -115,12 +117,16 @@ public class MapVideoLayout extends FrameLayout {
 	private void init() {
 		videoPlayer = new VideoPlayer(6);
 		p2pVideoPlayer = new VideoPlayer(1);
+		
+		videoPlayerTranslate = new LocalTranslation(videoPlayer);
+		p2pVideoPlayerTranslate  = new LocalTranslation(p2pVideoPlayer);
+		
 		tsv =  new TouchSurfaceView(getContext()); 
 		tsv.setZOrderOnTop(true);
 		tsv.setZOrderMediaOverlay(true);
 		tsv.getHolder().setFormat(PixelFormat.TRANSPARENT);
 		tsv.getHolder().addCallback(videoPlayer);
-		tsv.setTranslate(touchSurfaceViewTranslate);
+		tsv.setTranslate(videoPlayerTranslate);
 		
 		
 		shareSurfaceView = new TouchSurfaceView(getContext()); 
@@ -146,7 +152,7 @@ public class MapVideoLayout extends FrameLayout {
 		
 		p2pVideoLayout= (P2PVideoMainLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_video_main_layout, (ViewGroup)null);
 		p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
-		p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
+		p2pVideoLayout.setTouchSurfaceViewTranslate(p2pVideoPlayerTranslate);
 		
 		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, (ViewGroup)null);
 		
@@ -377,7 +383,7 @@ public class MapVideoLayout extends FrameLayout {
 					ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION,
 					PostState.RESTORE, distance);
 			p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
-			p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(p2pVideoPlayerTranslate);
 		} else {
 			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION,
 					ScreenType.VIDEO_SHARE, PostState.GO_NEXT, distance);
@@ -402,7 +408,7 @@ public class MapVideoLayout extends FrameLayout {
 			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
 					ScreenType.VIDEO_MAP, PostState.GO_NEXT, distance);
 			p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
-			p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(p2pVideoPlayerTranslate);
 		}
 	}
 	
@@ -1176,6 +1182,9 @@ public class MapVideoLayout extends FrameLayout {
 			inquiryBiderWidget.layout(left, bottom, right, bottom + inquiryBiderWidget.getMeasuredHeight());
 			
 		} else if (st == ScreenType.VIDEO_SHARE_MAP) {
+			borderY = shareSurfaceView.getMeasuredHeight();
+			mMapView.layout(left, borderY, right, bottom);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
 			
 		} else if (st == ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
@@ -1223,51 +1232,6 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
-	private Translate touchSurfaceViewTranslate = new Translate() {
-
-		
-		@Override
-		public void onStartTranslate() {
-			videoPlayer.startTranslate();
-		}
-
-
-		@Override
-		public void onTranslate(float x, float y) {
-			videoPlayer.translate(x, y);
-		}
-		
-
-		@Override
-		public void onFinishTranslate() {
-			videoPlayer.finishTranslate();
-		}
-		
-	};
-	
-	
-	private Translate touchSurfaceViewP2PTranslate = new Translate() {
-
-		
-		@Override
-		public void onStartTranslate() {
-			p2pVideoPlayer.startTranslate();
-		}
-
-
-		@Override
-		public void onTranslate(float x, float y) {
-			p2pVideoPlayer.translate(x, y);
-		}
-		
-
-		@Override
-		public void onFinishTranslate() {
-			p2pVideoPlayer.finishTranslate();
-		}
-		
-	};
-	
 	
 	private OnClickListener clickListener = new OnClickListener() {
 
@@ -1288,6 +1252,36 @@ public class MapVideoLayout extends FrameLayout {
 		}
 		
 	};
+	
+	
+	class LocalTranslation implements Translate {
+
+		private VideoPlayer ref;
+		
+		
+		public LocalTranslation(VideoPlayer ref) {
+			super();
+			this.ref = ref;
+		}
+
+		@Override
+		public void onStartTranslate() {
+			ref.startTranslate();
+		}
+
+		@Override
+		public void onTranslate(float x, float y) {
+			ref.translate(x, y);
+			
+		}
+
+		@Override
+		public void onFinishTranslate() {
+			ref.finishTranslate();
+			
+		}
+		
+	}
 	
 
 	

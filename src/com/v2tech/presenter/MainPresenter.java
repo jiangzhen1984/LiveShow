@@ -134,17 +134,6 @@ public class MainPresenter extends BasePresenter implements
 	private static final int B_PUBLISHING_AUDIO_CONNECTED_FLAG = 0X0400;
 	private static final int B_PUBLISHING_VIDEO_CONNECTED_FLAG = 0X0800;
 	
-	
-	
-	public static final int WATCHER_FLAG_PUBLISHER = 1;
-	public static final int WATCHER_FLAG_WATCHER = 2;
-	
-	
-	public static final int TITLE_BAR_BTN_TYPE_BACK = 1;
-	public static final int TITLE_BAR_BTN_TYPE_PERSONEL = 2;
-	
-	public static final int LOCAL_CAMERA_TYPE_SHARE = 1;
-	public static final int LOCAL_CAMERA_TYPE_P2P_CONNECTION = 2;
 
 	private Context context;
 	private MainPresenterUI ui;
@@ -198,100 +187,6 @@ public class MainPresenter extends BasePresenter implements
 		audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		
 		liveConnectionUserList =  new ArrayList<LiveConnectionUser>(5);
-	}
-
-	public interface MainPresenterUI {
-
-		public MapAPI getMainMap();
-
-		public void showTextKeyboard(boolean flag);
-
-		public void showVideoScreentItem(int tag, boolean showFlag);
-
-		public void showLoginUI();
-
-		public void showPersonelUI();
-
-		public void showSearchErrorToast();
-
-		public String getTextString();
-
-		public void updateVideShareButtonText(boolean publish);
-
-		public void showBottomLayout(boolean flag);
-
-		public void showError(int flag);
-
-		public void showDebugMsg(String msg);
-
-		public void queuedLiveMessage(CharSequence msg);
-		
-		public void updateRendNum(int num);
-
-		public void showRedBtm(boolean flag);
-
-		public void showIncharBtm(boolean flag);
-
-		public void updateBalanceSum(final float num);
-
-		public void showLiverInteractionLayout(boolean flag);
-
-		public void showConnectRequestLayout(boolean flag, Object tag);
-
-		public void showMarqueeMessage(boolean flag);
-
-		public void closeVideo(boolean flag);
-
-		public void doFinish();
-		
-		// 1 for back btn 2 for personel btn
-		public void updateTitleBarBtn(int type);
-
-		// 1 for audio 2 for video
-		public void updateConnectLayoutBtnType(int type);
-
-		public void showP2PVideoLayout(boolean flag);
-
-		public void showWatcherP2PVideoLayout(boolean flag);
-
-		public void showWatcherP2PAudioLayout(boolean flag);
-		
-		public void showPersonelWidgetForInquiry(boolean flag);
-		
-		public void showInquiryAcceptedMsg(String msg);
-
-		public void showProgressDialog(boolean flag, String text);
-
-		public void updateInterfactionFollowBtn(boolean followed);
-
-		public MapAPI getWatcherMapInstance();
-		
-		public void addWatcher(int flag, Watcher watcher);
-		
-		public void removeWatcher(int flag, Watcher watcher);
-		
-		public VideoPlayer getVideoPlayer();
-		
-		public VideoPlayer getP2PVideoPlayer();
-		
-		public void showMap(boolean flag);
-		
-		public void cancelInquireState();
-		
-		public void updateMapAddressText(String text);
-		
-		public String getInquiryAward();
-		
-		public String getInquiryMessage();
-		
-		public void showIncorrectAwardMessage(String message);
-		
-		public void setInquiryStateToWaiting(boolean wait);
-		
-		public void updateInquiryMessage(String msg);
-		
-		//1 for share video 2 for p2p connect 
-		public void updateLocalCameraType(int type);
 	}
 
 	public void videoShareButtonClicked() {
@@ -691,9 +586,13 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onP2PVideoMainRightBtnClicked(View v) {
-		if (!isBState(B_PUBLISHING_FLAG)) {
+		if (!isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
 			throw new RuntimeException("ilegal state: "+ bState);
 		}
+		
+		UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+				.getInstance().getCurrentUserId(), "", null);
+		vs.switchCamera(duc);
 		
 	}
 
@@ -829,7 +728,7 @@ public class MainPresenter extends BasePresenter implements
 			}
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
 			if (isBState(B_WATCHING_FLAG) && isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
-				ui.updateLocalCameraType(LOCAL_CAMERA_TYPE_P2P_CONNECTION);
+				ui.updateLocalCameraType(MainPresenterUI.LOCAL_CAMERA_TYPE_P2P_CONNECTION);
 				ui.showWatcherP2PVideoLayout(true);
 				UserDeviceConfig duc = new UserDeviceConfig(4,
 						this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
@@ -867,7 +766,7 @@ public class MainPresenter extends BasePresenter implements
 				vs.requestCloseVideoDevice(duc, null);
 				ui.showWatcherP2PVideoLayout(false);
 			}
-			ui.updateLocalCameraType(LOCAL_CAMERA_TYPE_SHARE);
+			ui.updateLocalCameraType(MainPresenterUI.LOCAL_CAMERA_TYPE_SHARE);
 			
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
 			if (isBState(B_WATCHING_FLAG)  && isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
@@ -950,11 +849,12 @@ public class MainPresenter extends BasePresenter implements
 		switch (screenType) {
 		case INQUIRE_BIDING:
 			ui.showBottomLayout(false);
-			this.unsetState(BOTTOM_LAYOUT_SHOW);
+			unsetState(BOTTOM_LAYOUT_SHOW);
 			//Update title to back
-			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_BACK);
+			ui.updateTitleBarBtn(MainPresenterUI.TITLE_BAR_BTN_TYPE_BACK);
 			mapInstance.getLocationName(mapInstance.getMapCenter(), new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
 			setState(INQUIRY_WIDGET_SHOW);
+			ui.updateInputMode(MainPresenterUI.INPUT_MODE_PAN);
 			break;
 		case VIDEO_MAP:
 			if (isState(LOCAL_CAMERA_OPENING)) {
@@ -967,8 +867,10 @@ public class MainPresenter extends BasePresenter implements
 			if (isBState(B_PUBLISHING_FLAG)) {
 				videoShareButtonClicked();
 			}
-			
-			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_PERSONEL);
+			setState(BOTTOM_LAYOUT_SHOW);
+			ui.showBottomLayout(true);
+			ui.updateInputMode(MainPresenterUI.INPUT_MODE_NOTHING);
+			ui.updateTitleBarBtn(MainPresenterUI.TITLE_BAR_BTN_TYPE_PERSONEL);
 			cancelInquiry();
 			break;
 		case VIDEO_PUBLISHER_SHOW:

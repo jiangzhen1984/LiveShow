@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,12 +16,13 @@ import android.widget.Toast;
 import com.v2tech.map.MapAPI;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.MainPresenter;
+import com.v2tech.presenter.MainPresenterUI;
 import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BottomButtonLayout;
 
 public class MainActivity extends BaseActivity implements
-		View.OnClickListener, MainPresenter.MainPresenterUI {
+		View.OnClickListener, MainPresenterUI {
 
 	private static final int REQUEST_KEYBOARD_ACTIVITY = 100;
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
@@ -83,7 +84,7 @@ public class MainActivity extends BaseActivity implements
 	
 	private void initTitleBarButtonLayout() {
 		 this.mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
-		 mPersonalButton.setTag(MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL);
+		 mPersonalButton.setTag(MainPresenterUI.TITLE_BAR_BTN_TYPE_PERSONEL);
 		 this.mPersonalButton.setImageResource(R.drawable.user_icon);
 		 mPersonalButton.setOnClickListener(this);
 
@@ -184,9 +185,9 @@ public class MainActivity extends BaseActivity implements
 			break;
 		case R.id.title_bar_left_btn:
 			int tag = (Integer)v.getTag();
-			if (tag == MainPresenter.TITLE_BAR_BTN_TYPE_BACK) {
+			if (tag == MainPresenterUI.TITLE_BAR_BTN_TYPE_BACK) {
 				presenter.titleBackButtonClicked();
-			} else if (tag == MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL) {
+			} else if (tag == MainPresenterUI.TITLE_BAR_BTN_TYPE_PERSONEL) {
 				presenter.personelButtonClicked();
 			}
 			break;
@@ -319,43 +320,45 @@ public class MainActivity extends BaseActivity implements
 	}
 	
 	
-	
+	@Override
 	public void queuedLiveMessage(CharSequence msg) {
 		mMapVideoLayout.addNewMessage(msg);
 	}
 	
-	
+	@Override
 	public void updateBalanceSum(final float num) {
 		mMapVideoLayout.updateBalanceSum(num);
 	}
 	
-	
+	@Override
 	public void updateRendNum(final int num) {
 		mMapVideoLayout.updateRendNum(num);
 	}
 	
 	
-	
+	@Override
 	public void showRedBtm(boolean flag) {
 		mMapVideoLayout.showRedBtm(flag);
 	}
 	
+	@Override
 	public void showIncharBtm(boolean flag) {
 		mMapVideoLayout.showIncharBtm(flag);
 	}
 	
 	
-	
+	@Override
 	public void showMarqueeMessage(boolean flag) {
 		mMapVideoLayout.showMarqueeMessage(flag);
 		//videoShareLayout.showMarqueeMessage(flag);
 	}
 	
+	@Override
 	public void showMap(boolean flag) {
 		mMapVideoLayout.showMap(flag);
 	}
 	
-	
+	@Override
 	public void updateConnectLayoutBtnType(int type) {
 //		if (type ==1) {
 //			videoShareLayout.getConnectionRequestLayout().updateLeftBtnIcon(R.drawable.audio_call_decline_btn);
@@ -366,7 +369,7 @@ public class MainActivity extends BaseActivity implements
 //		}
 	}
 	
-	
+	@Override
 	public void showConnectRequestLayout(boolean flag, Object tag) {
 		mMapVideoLayout.showRequestingConnectionLy(flag, tag);
 	}
@@ -383,11 +386,6 @@ public class MainActivity extends BaseActivity implements
 		
 	}
 	
-	
-	public void showVideoshareBtnLayout(boolean flag) {
-		//videoShareLayout.showVideoShareBtnLy(flag);
-	}
-
 
 	@Override
 	public void showWatcherP2PVideoLayout(boolean flag) {
@@ -397,6 +395,7 @@ public class MainActivity extends BaseActivity implements
 	
 	ProgressDialog dialog;
 	
+	@Override
 	public void showProgressDialog(boolean flag, String text) {
 		if (dialog == null && flag) {
 			dialog = ProgressDialog.show(this, "", text);
@@ -410,13 +409,13 @@ public class MainActivity extends BaseActivity implements
 	} 
 	
 	
-	
+	@Override
 	public void showWatcherP2PAudioLayout(boolean flag) {
 		mMapVideoLayout.showP2PAudioWatcherLy(flag);
 	}
 	
 	
-	
+	@Override
 	public void updateInterfactionFollowBtn(boolean followed) {
 		if (followed) {
 			mMapVideoLayout.updateFollowBtnImageResource(R.drawable.liver_interaction_cancel_follow_friend);
@@ -428,18 +427,19 @@ public class MainActivity extends BaseActivity implements
 	}
 	
 	
-	
+	@Override
 	public MapAPI getWatcherMapInstance() {
 		//return this.videoShareLayout.getWatcherMapInstance();
 		return null;
 	}
 	
-	//FIXME close BTN
+	@Override
 	public void closeVideo(boolean flag) {
+		//FIXME close BTN
 		
 	}
 	
-	
+	@Override
 	public void addWatcher(int flag, Watcher watcher) {
 //		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
 //			videoShareLayout.addWatcher(watcher);
@@ -448,6 +448,7 @@ public class MainActivity extends BaseActivity implements
 //		}
 	}
 	
+	@Override
 	public void removeWatcher(int flag, Watcher watcher) {
 //		if (flag == MainPresenter.WATCHER_FLAG_PUBLISHER) {
 //			videoShareLayout.removeWatcher(watcher);
@@ -456,42 +457,46 @@ public class MainActivity extends BaseActivity implements
 //		}
 	}
 	
-	
+	@Override
 	public VideoPlayer getVideoPlayer() {
 		return mMapVideoLayout.getVideoPlayer();
 	}
 	
 	
+	@Override
 	public void updateTitleBarBtn(int type) {
 		mPersonalButton = (ImageView)findViewById(R.id.title_bar_left_btn);
 		mPersonalButton.setTag(type);
-		if (type == MainPresenter.TITLE_BAR_BTN_TYPE_BACK) {
+		if (type == MainPresenterUI.TITLE_BAR_BTN_TYPE_BACK) {
 			 mPersonalButton.setImageResource(R.drawable.title_bar_return_btn);
-		} else if (type == MainPresenter.TITLE_BAR_BTN_TYPE_PERSONEL) {
+		} else if (type == MainPresenterUI.TITLE_BAR_BTN_TYPE_PERSONEL) {
 			 mPersonalButton.setImageResource(R.drawable.user_icon);
 		}
 	}
 	
+	@Override
 	public void cancelInquireState() {
 		mMapVideoLayout.showInquiryWidget(false);
 	}
 	
 	
+	@Override
 	public void updateMapAddressText(String text) {
 		mMapVideoLayout.updateMapLocationAddress(text);
 	}
 	
 	
+	@Override
 	public String getInquiryAward() {
 		return mMapVideoLayout.getInquiryAward();
 	}
 	
-	
+	@Override
 	public void setInquiryStateToWaiting(boolean wait) {
 		mMapVideoLayout.disableInquiryBtn(wait);
 	}
 	
-	
+	@Override
 	public void updateInquiryMessage(String msg) {
 		if (this.inquiryToast != null) {
 			inquiryToast.cancel();
@@ -504,36 +509,51 @@ public class MainActivity extends BaseActivity implements
 		inquiryToast.show();
 	}
 	
-	
+	@Override
 	public String getInquiryMessage() {
 		return mMapVideoLayout.getInquiryMessage();
 	}
 	
+	@Override
 	public void showIncorrectAwardMessage(String message) {
 		//TODO add show error
 	}
 	
-	
+	@Override
 	public void showPersonelWidgetForInquiry(boolean flag) {
 		mMapVideoLayout.showPersonelWidgetForInquiryBider(flag);
 	}
 	
+	@Override
 	public void showInquiryAcceptedMsg(String msg) {
 		updateInquiryMessage(msg);
 	}
 	
-	
+	@Override
 	public VideoPlayer getP2PVideoPlayer() {
 		return mMapVideoLayout.getP2PVideoPlayer();
 	}
 	
-	
+	@Override
 	public void updateLocalCameraType(int type) {
-		if (MainPresenter.LOCAL_CAMERA_TYPE_SHARE == type) {
+		if (MainPresenterUI.LOCAL_CAMERA_TYPE_SHARE == type) {
 			mMapVideoLayout.resetLocalCamera();
-		} else if (MainPresenter.LOCAL_CAMERA_TYPE_P2P_CONNECTION == type) {
+		} else if (MainPresenterUI.LOCAL_CAMERA_TYPE_P2P_CONNECTION == type) {
 			mMapVideoLayout.updateLocalCameraOnP2P();
 		}
+	}
+	
+	@Override
+	public void updateInputMode(int type) {
+		switch (type) {
+		case MainPresenterUI.INPUT_MODE_NOTHING:
+			getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+			break;
+		case MainPresenterUI.INPUT_MODE_PAN:
+			getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+			break;
+		}
+		
 	}
 	/////////////////////////////////////////////////////////////
 	
