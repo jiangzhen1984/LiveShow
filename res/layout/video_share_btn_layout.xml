@@ -37,6 +37,7 @@
         android:layout_marginTop="20dp" >
 
         <LinearLayout
+            android:id="@+id/video_share_wechat_share_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".25"

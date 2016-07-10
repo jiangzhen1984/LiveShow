@@ -79,10 +79,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		
-		presenter = new P2PMessagePresenter(this.getApplicationContext(), this);
 		
-		presenter.onUICreated();
-		emojiWidget.setListener(presenter);
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		
 	}
@@ -103,6 +100,11 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new P2PMessagePresenter(this.getApplicationContext(), this);
+			emojiWidget.setListener(presenter);
+		}
+		
 		return presenter;
 	}
 

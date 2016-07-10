@@ -33,6 +33,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	private InquiryService is;
 	private InquiryData data;
 	
+	private boolean showRoadMap;
+	
 	public interface InquiryActionPresenterUI {
 		
 		public MapAPI getMap();

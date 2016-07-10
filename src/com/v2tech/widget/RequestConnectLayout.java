@@ -104,10 +104,10 @@ public class RequestConnectLayout extends LinearLayout {
 			int id = v.getId();
 			switch (id) {
 			case R.id.request_connect_right_btn:
-				listener.onRequestConnectRightBtnClicked(v);
+				listener.onRequestConnectRightBtnClicked(v, getTag());
 				break;
 			case R.id.request_connect_left_btn:
-				listener.onRequestConnectLeftBtnClicked(v);
+				listener.onRequestConnectLeftBtnClicked(v, getTag());
 				break;
 			}
 		}
@@ -134,6 +134,13 @@ public class RequestConnectLayout extends LinearLayout {
 	
 	
 	
+	
+	@Override
+	public void setTag(Object tag) {
+		super.setTag(tag);
+		
+	}
+
 	public RequestConnectLayoutListener getListener() {
 		return listener;
 	}
@@ -147,7 +154,7 @@ public class RequestConnectLayout extends LinearLayout {
 
 
 	public interface RequestConnectLayoutListener {
-		public void onRequestConnectLeftBtnClicked(View v);
-		public void onRequestConnectRightBtnClicked(View v);
+		public void onRequestConnectLeftBtnClicked(View v, Object wigetTag);
+		public void onRequestConnectRightBtnClicked(View v, Object wigetTag);
 	}
 }

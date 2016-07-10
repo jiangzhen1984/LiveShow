@@ -61,7 +61,7 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 					}
 				} else if (meta.mt == MetaType.AUDIO_VIDEO_CTL) {
 					if (meta.type == VMessageAudioVideoRequestItem.TYPE_VIDEO) {
-						h.onVdideoMessage(meta.lid, meta.uid, meta.action);
+						h.onVideoMessage(meta.lid, meta.uid, meta.action);
 					} else if (meta.type == VMessageAudioVideoRequestItem.TYPE_AUDIO) {
 						h.onAudioMessage(meta.lid, meta.uid, meta.action);
 					}

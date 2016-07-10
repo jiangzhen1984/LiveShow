@@ -9,7 +9,6 @@ import java.util.Map;
 
 import v2av.VideoPlayer;
 import v2av.VideoPlayer.ViewItemListener;
-import v2av.VideoRecorder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +18,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 
 import com.V2.jni.util.V2Log;
@@ -49,7 +46,6 @@ import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.MessageUtil;
 import com.v2tech.util.SPUtil;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.view.MainApplication;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
@@ -62,6 +58,7 @@ import com.v2tech.vo.ViewLive;
 import com.v2tech.vo.Watcher;
 import com.v2tech.vo.conference.ConferenceGroup;
 import com.v2tech.vo.inquiry.InquiryData;
+import com.v2tech.vo.live.LiveConnectionUser;
 import com.v2tech.vo.msg.VMessage;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.msg.VMessageTextItem;
@@ -71,7 +68,6 @@ import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
 import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
 import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
-import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VerticalSpinWidget.OnSpinVolumeChangedListener;
@@ -84,7 +80,7 @@ public class MainPresenter extends BasePresenter implements
 		BottomButtonLayoutListener,VideoShareRightWidgetListener, 
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
-		P2PVideoMainLayoutListener, P2PAudioWatcherLayoutListener,
+		P2PVideoMainLayoutListener, 
 		P2PAudioLiverLayoutListener, VideoShareBtnLayoutListener,ViewItemListener,
 		MessageMarqueeLayoutListener, LiveStatusHandler, LiveMessageHandler, InquiryAcceptenceHandler, 
 		LiveWathcingHandler, MapStatusListener, InquiryBidWidgetListener, OnSpinVolumeChangedListener {
@@ -111,8 +107,6 @@ public class MainPresenter extends BasePresenter implements
 	public static final int VIDEO_BOTTOM_LY_FLAG = 1 << 2;
 	public static final int FOLLOW_COUNT_SHOW_FLAG = 1 << 3;
 	public static final int LIVER_SHOW_FLAG = 1 << 4;
-	private static final int PUBLISHING_FLAG = 1 << 5;
-	private static final int WATCHING_FLAG = 1 << 6;
 	private static final int LOCAL_CAMERA_OPENING = 1 << 7;
 	private static final int BOTTOM_LAYOUT_SHOW = 1 << 8;
 	private static final int KEYBOARD_SHOW = 1 << 9;
@@ -121,10 +115,25 @@ public class MainPresenter extends BasePresenter implements
 	private static final int MESSAGE_MARQUEE_ENABLE = 1 << 12;
 	private static final int AUDIO_CALL_REQUEST_SHOW = 1 << 13;
 	private static final int VIDEO_CALL_REQUEST_SHOW = 1 << 14;
-	private static final int VIDEO_P2P_SHOW = 1 << 15;
 	private static final int AUDIO_P2P_SHOW = 1 << 16;
 	private static final int PROGRESS_DIALOG_SOWN = 1 << 17;
 	public static final int MESSAGE_MARQUEE_LY_SHOW = 1 << 18;
+	public static final int INQUIRY_WIDGET_SHOW = 1 << 19;
+	public static final int INQUIRY_BIDER_PERSONLE_WIDGET_SHOW = 1 << 20;
+	
+	
+	private static final int B_WATCHING_FLAG = 0X0001;
+	private static final int B_PREPARE_PUBLISH_FLAG = 0X0002;
+	private static final int B_PUBLISHING_FLAG = 0X0004;
+	private static final int B_WATCHING_AUDIO_REQUEST_FLAG = 0X0010;
+	private static final int B_WATCHING_VIDEO_REQUEST_FLAG = 0X0020;
+	private static final int B_PUBLISHING_AUDIO_REQUEST_FLAG = 0X0040;
+	private static final int B_PUBLISHING_VIDEO_REQUEST_FLAG = 0X0080;
+	private static final int B_WATCHING_AUDIO_CONNECTED_FLAG = 0X0100;
+	private static final int B_WATCHING_VIDEO_CONNECTED_FLAG = 0X0200;
+	private static final int B_PUBLISHING_AUDIO_CONNECTED_FLAG = 0X0400;
+	private static final int B_PUBLISHING_VIDEO_CONNECTED_FLAG = 0X0800;
+	
 	
 	
 	public static final int WATCHER_FLAG_PUBLISHER = 1;
@@ -133,6 +142,9 @@ public class MainPresenter extends BasePresenter implements
 	
 	public static final int TITLE_BAR_BTN_TYPE_BACK = 1;
 	public static final int TITLE_BAR_BTN_TYPE_PERSONEL = 2;
+	
+	public static final int LOCAL_CAMERA_TYPE_SHARE = 1;
+	public static final int LOCAL_CAMERA_TYPE_P2P_CONNECTION = 2;
 
 	private Context context;
 	private MainPresenterUI ui;
@@ -142,7 +154,10 @@ public class MainPresenter extends BasePresenter implements
 	private Handler h;
 	private InquiryService is;
 
+	//for UI window state
 	private int videoScreenState;
+	//for  business state
+	private int bState;
 
 
 	// ///////////////////////////////
@@ -157,8 +172,10 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private VideoPlayer  vpController;
+	private VideoPlayer  vpP2pController;
 	
 	private List<ViewLive> viewLiveList;
+	private List<LiveConnectionUser>  liveConnectionUserList;
 	
 	private ViewLive currentViewLive;
 	private PublishingLive publishingLive;
@@ -179,6 +196,8 @@ public class MainPresenter extends BasePresenter implements
 		uiHandler = new UiHandler(this, ui);
 		viewLiveList = new ArrayList<ViewLive>(20);
 		audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		
+		liveConnectionUserList =  new ArrayList<LiveConnectionUser>(5);
 	}
 
 	public interface MainPresenterUI {
@@ -199,12 +218,6 @@ public class MainPresenter extends BasePresenter implements
 
 		public void updateVideShareButtonText(boolean publish);
 
-		public SurfaceView getCameraSurfaceView();
-
-		public SurfaceView getP2PMainSurface();
-
-		public SurfaceView getP2PMainWatherSurface();
-
 		public void showBottomLayout(boolean flag);
 
 		public void showError(int flag);
@@ -213,8 +226,6 @@ public class MainPresenter extends BasePresenter implements
 
 		public void queuedLiveMessage(CharSequence msg);
 		
-		public void updateWatchNum(int num);
-
 		public void updateRendNum(int num);
 
 		public void showRedBtm(boolean flag);
@@ -225,7 +236,7 @@ public class MainPresenter extends BasePresenter implements
 
 		public void showLiverInteractionLayout(boolean flag);
 
-		public void showConnectRequestLayout(boolean flag);
+		public void showConnectRequestLayout(boolean flag, Object tag);
 
 		public void showMarqueeMessage(boolean flag);
 
@@ -261,6 +272,8 @@ public class MainPresenter extends BasePresenter implements
 		
 		public VideoPlayer getVideoPlayer();
 		
+		public VideoPlayer getP2PVideoPlayer();
+		
 		public void showMap(boolean flag);
 		
 		public void cancelInquireState();
@@ -276,16 +289,21 @@ public class MainPresenter extends BasePresenter implements
 		public void setInquiryStateToWaiting(boolean wait);
 		
 		public void updateInquiryMessage(String msg);
+		
+		//1 for share video 2 for p2p connect 
+		public void updateLocalCameraType(int type);
 	}
 
 	public void videoShareButtonClicked() {
-		if (isState(PUBLISHING_FLAG)) {
-			unsetState(PUBLISHING_FLAG);
+		if (isBState(B_PUBLISHING_FLAG)) {
+			unsetBState(B_PUBLISHING_FLAG);
+			setBState(B_PREPARE_PUBLISH_FLAG);
 			ui.updateVideShareButtonText(false);
 			vs.quitConference(publishingLive, new MessageListener(h,
 					CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 		} else {
-			setState(PUBLISHING_FLAG);
+			setBState(B_PUBLISHING_FLAG);
+			unsetBState(B_PREPARE_PUBLISH_FLAG);
 			Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
 			ui.updateVideShareButtonText(true);
 		}
@@ -329,7 +347,7 @@ public class MainPresenter extends BasePresenter implements
 				|| isState(VIDEO_CALL_REQUEST_SHOW)) {
 			this.unsetState(AUDIO_CALL_REQUEST_SHOW);
 			this.unsetState(VIDEO_CALL_REQUEST_SHOW);
-			ui.showConnectRequestLayout(false);
+			ui.showConnectRequestLayout(false, null);
 			return;
 		}
 		ui.doFinish();
@@ -358,6 +376,11 @@ public class MainPresenter extends BasePresenter implements
 			mapInstance = ui.getMainMap();
 			mapInstance.registerMakerListener(this);
 			mapInstance.addMapStatusListener(this);
+		}
+		
+		if (vpP2pController == null) {
+			vpP2pController = ui.getP2PVideoPlayer();
+			vpP2pController.setItemListener(this);
 		}
 		startLocationScan();
 	}
@@ -411,11 +434,10 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public boolean onMarkerClickedListener(Marker m) {
-		if (isState(PUBLISHING_FLAG)) {
-			// TODO illegal state
-			return false;
+		if (isBState(B_PUBLISHING_FLAG) || isBState(B_PREPARE_PUBLISH_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
 		}
-		if (isState(WATCHING_FLAG)) {
+		if (isBState(B_WATCHING_FLAG)) {
 			// quit from old
 			currentViewLive.playing = false;
 			currentViewLive.showing = false;
@@ -426,7 +448,7 @@ public class MainPresenter extends BasePresenter implements
 							.getCurrentUserId(), "", null);
 			vs.requestCloseVideoDevice(duc, null);
 			vs.requestExitConference(currentViewLive.live, null);
-			unsetState(WATCHING_FLAG);
+			unsetBState(B_WATCHING_FLAG);
 		}
 
 		// join new one
@@ -443,7 +465,7 @@ public class MainPresenter extends BasePresenter implements
 			currentViewLive.showing = true;
 			currentViewLive.surfaveViewIdx = vpController.getCurrentItemIdx();
 			updateLiveScreen(l);
-			setState(WATCHING_FLAG);
+			setBState(B_WATCHING_FLAG);
 		}
 		return true;
 	}
@@ -496,7 +518,6 @@ public class MainPresenter extends BasePresenter implements
 	// //////////////////VideoWatcherListLayoutListener
 	@Override
 	public void onPublisherBtnClicked(View v) {
-		// ui.showWatcherP2PAudioLayout(true);
 		if (isState(LIVER_INTERACTION_LAY_SHOW)) {
 			this.unsetState(LIVER_INTERACTION_LAY_SHOW);
 			ui.showLiverInteractionLayout(false);
@@ -512,59 +533,51 @@ public class MainPresenter extends BasePresenter implements
 
 	// ///////////RequestConnectLayoutListener
 	@Override
-	public void onRequestConnectLeftBtnClicked(View v) {
+	public void onRequestConnectLeftBtnClicked(View v, Object widgetTag) {
 		if (!isState(AUDIO_CALL_REQUEST_SHOW)
 				&& !isState(VIDEO_CALL_REQUEST_SHOW)) {
 			return;
 		}
-		ui.showConnectRequestLayout(false);
+		ui.showConnectRequestLayout(false, null);
 
 		unsetState(AUDIO_CALL_REQUEST_SHOW);
 		unsetState(VIDEO_CALL_REQUEST_SHOW);
 	}
 
-	// TODO FIXME add
-	public long requestUid;
 
 	@Override
-	public void onRequestConnectRightBtnClicked(View v) {
-		if (!isState(AUDIO_CALL_REQUEST_SHOW)
-				&& !isState(VIDEO_CALL_REQUEST_SHOW)) {
-			// TODO show UI
+	public void onRequestConnectRightBtnClicked(View v, Object widgetTag) {
+		if (!isBState(B_PUBLISHING_VIDEO_REQUEST_FLAG)
+				&& !isBState(B_PUBLISHING_AUDIO_REQUEST_FLAG)) {
 			return;
 		}
-		ui.showConnectRequestLayout(false);
-		if (isState(VIDEO_CALL_REQUEST_SHOW)) {
-			setState(VIDEO_P2P_SHOW);
-			unsetState(VIDEO_CALL_REQUEST_SHOW);
+		
+		LiveConnectionUser lcu = (LiveConnectionUser) widgetTag;
+		ui.showConnectRequestLayout(false, null);
+		if (isBState(B_PUBLISHING_VIDEO_REQUEST_FLAG)) {
+			setBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG);
+			unsetBState(B_PUBLISHING_VIDEO_REQUEST_FLAG);
+			unsetBState(B_PUBLISHING_AUDIO_REQUEST_FLAG);
 			ui.showP2PVideoLayout(true);
-			User u = GlobalHolder.getInstance().getUser(requestUid);
-			if (u.ll == null || u.ll.size() <= 0) {
-				// TODO
-				return;
-			}
-			UserDeviceConfig udc = u.ll.iterator().next();
-			udc.setGroupID(this.currentViewLive.live.getLid());
-			udc.setGroupType(4);
-			VideoPlayer vp = new VideoPlayer();
-			vp.SetSurface(ui.getP2PMainSurface().getHolder());
-			udc.setVp(vp);
-			vs.requestOpenVideoDevice(
-					new ConferenceGroup(this.currentViewLive.live.getLid(), "", null,
-							null, null), udc, null);
+			lcu.udc.setVp(vpP2pController);
+			lcu.index = 0;
+			lcu.showing = true;
+			vs.requestOpenVideoDevice(publishingLive.group, lcu.udc, null);
 
-			this.requestConnection(this.currentViewLive.live.getLid(),
+			this.requestConnection(this.publishingLive.getLid(),
 					VMessageAudioVideoRequestItem.TYPE_VIDEO,
 					VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 
-		} else if (isState(AUDIO_CALL_REQUEST_SHOW)) {
-			setState(AUDIO_P2P_SHOW);
-			unsetState(AUDIO_CALL_REQUEST_SHOW);
+		} else if (isBState(B_PUBLISHING_AUDIO_REQUEST_FLAG)) {
+			setBState(B_PUBLISHING_AUDIO_CONNECTED_FLAG);
+			unsetBState(B_PUBLISHING_AUDIO_REQUEST_FLAG);
+			unsetBState(B_PUBLISHING_VIDEO_REQUEST_FLAG);
 			ui.showMap(true);
-			this.requestConnection(this.currentViewLive.live.getLid(),
+			this.requestConnection(this.publishingLive.getLid(),
 					VMessageAudioVideoRequestItem.TYPE_AUDIO,
 					VMessageAudioVideoRequestItem.ACTION_ACCEPT);
 		}
+		
 	}
 
 	// ///////////RequestConnectLayoutListener
@@ -573,9 +586,8 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onChattingBtnClicked(View v) {
-		if (!isState(WATCHING_FLAG)) {
-			// TODO show incorrect UI
-			return;
+		if (!isBState(B_WATCHING_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
 		}
 
 		if (isState(PROGRESS_DIALOG_SOWN)) {
@@ -593,26 +605,25 @@ public class MainPresenter extends BasePresenter implements
 		requestConnection(this.currentViewLive.live.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_AUDIO,
 				VMessageAudioVideoRequestItem.ACTION_REQUEST);
+		setBState(B_WATCHING_AUDIO_REQUEST_FLAG);
 	}
 
 	@Override
 	public void onVideoCallBtnClicked(View v) {
-		if (!isState(WATCHING_FLAG)) {
-			// TODO show incorrect UI
-			return;
+		if (!isBState(B_WATCHING_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
 		}
 		requestConnection(this.currentViewLive.live.getLid(),
 				VMessageAudioVideoRequestItem.TYPE_VIDEO,
 				VMessageAudioVideoRequestItem.ACTION_REQUEST);
+		setBState(B_WATCHING_VIDEO_REQUEST_FLAG);
 	}
 
 	@Override
 	public void onMsgBtnClicked(View v) {
-		if (!isState(WATCHING_FLAG)) {
-			// TODO show incorrect UI
-			return;
+		if (!isBState(B_WATCHING_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
 		}
-
 		Intent i = new Intent();
 		i.putExtra("chatuserid", this.currentViewLive.live.getPublisher().getmUserId());
 		i.setClass(context, P2PMessageActivity.class);
@@ -634,55 +645,60 @@ public class MainPresenter extends BasePresenter implements
 	// ///////////P2PVideoMainLayoutListener
 	@Override
 	public void onP2PVideoMainLeftBtnClicked(View v) {
-		this.unsetState(VIDEO_P2P_SHOW);
-		ui.showP2PVideoLayout(false);
-		ui.showWatcherP2PVideoLayout(false);
+		if (!isBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG) && !isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
+		}
+		
 		// If liver is not self, than close local camera device
 
 		int type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
-		if (isState(VIDEO_P2P_SHOW)) {
+		if (isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
 			type = VMessageAudioVideoRequestItem.TYPE_VIDEO;
 		} else if (isState(AUDIO_P2P_SHOW)) {
 			type = VMessageAudioVideoRequestItem.TYPE_AUDIO;
 		}
-		requestConnection(this.currentViewLive.live.getLid(), type,
-				VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
-		if (currentViewLive.live.getPublisher().getmUserId() != GlobalHolder
-				.getInstance().getCurrentUserId()) {
-
+		
+		if (isBState(B_PUBLISHING_FLAG)) {
+			ui.showP2PVideoLayout(false);
+			requestConnection(this.publishingLive.getLid(), type,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			//close all remote device
+			int len = liveConnectionUserList.size();
+			for(int i =0; i < len; i++) {
+				LiveConnectionUser lcu = liveConnectionUserList.get(i);
+				vs.requestCloseVideoDevice(lcu.udc, null);
+			}
+			
+			//clear connection state
+			unsetBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG);
+			unsetBState(B_PUBLISHING_VIDEO_REQUEST_FLAG);
+			
+		} else if(isState(B_WATCHING_FLAG)) {
+			ui.showWatcherP2PVideoLayout(false);
+			requestConnection(this.currentViewLive.live.getLid(), type,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			//close local camera
 			UserDeviceConfig duc = new UserDeviceConfig(4,
 					this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 							.getCurrentUserId(), "", null);
 			vs.requestCloseVideoDevice(duc, null);
-		} else {
-			// TODO close remote device
+			//clear connection state
+			unsetBState(B_WATCHING_VIDEO_CONNECTED_FLAG);
 		}
+		liveConnectionUserList.clear();
 
 	}
 
 	@Override
 	public void onP2PVideoMainRightBtnClicked(View v) {
-
+		if (!isBState(B_PUBLISHING_FLAG)) {
+			throw new RuntimeException("ilegal state: "+ bState);
+		}
+		
 	}
 
 	// ///////////P2PVideoMainLayoutListener
 
-	// ///////////P2PAudioWatcherLayoutListener
-	@Override
-	public void onRecordBtnClicked(View view) {
-
-	}
-
-	@Override
-	public void onChatBtnClicked(View view) {
-
-	}
-
-	@Override
-	public void onTipsBtnClicked(View view) {
-	}
-
-	// ///////////P2PAudioWatcherLayoutListener
 
 	// ///////////P2PAudioLiverLayoutListener
 
@@ -712,6 +728,7 @@ public class MainPresenter extends BasePresenter implements
 		videoShareButtonClicked();
 	}
 
+	@Override
 	public void onMapShareBtnClicked(View v) {
 		if (isState(VIDEO_SHARE_BTN_SHOW)) {
 			unsetState(VIDEO_SHARE_BTN_SHOW);
@@ -725,6 +742,12 @@ public class MainPresenter extends BasePresenter implements
 			}
 		}
 	}
+	
+	@Override
+	public void onWechatShareBtnClicked(View v) {
+		this.onVideoMessage(12, 123, VMessageAudioVideoRequestItem.ACTION_REQUEST);
+	}
+	
 
 	// ///////////VideoShareBtnLayoutListener///////////////////////////////////////////////////
 
@@ -755,10 +778,11 @@ public class MainPresenter extends BasePresenter implements
 		}
 
 		if (opt == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
-			requestUid = uid;
+			LiveConnectionUser lcu = addLiveConnctionUser(uid);
 			this.videoScreenState |= AUDIO_CALL_REQUEST_SHOW;
 			ui.updateConnectLayoutBtnType(AUDIO_CALL_REQUEST_SHOW);
-			ui.showConnectRequestLayout(true);
+			ui.showConnectRequestLayout(true, lcu);
+			addLiveConnctionUser(uid);
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
 			uiHandler.removeMessages(UI_HANDLE_AUDIO_CALL_TIMEOUT);
 			ui.showProgressDialog(false, null);
@@ -771,50 +795,90 @@ public class MainPresenter extends BasePresenter implements
 
 	}
 
-	public void onVdideoMessage(long liveId, long uid, int opt) {
-		if (isState(AUDIO_CALL_REQUEST_SHOW)
-				|| isState(VIDEO_CALL_REQUEST_SHOW)) {
+	public void onVideoMessage(long liveId, long uid, int opt) {
+		if (isState(AUDIO_CALL_REQUEST_SHOW)) {
 			return;
 		}
 		if (opt == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
-			requestUid = uid;
-			this.videoScreenState |= VIDEO_CALL_REQUEST_SHOW;
-			ui.updateConnectLayoutBtnType(VIDEO_CALL_REQUEST_SHOW);
-			ui.showConnectRequestLayout(true);
+			if (isBState(B_PUBLISHING_FLAG) && liveId == this.publishingLive.getLid()) {
+				LiveConnectionUser lcu = addLiveConnctionUser(uid);
+				if (isBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG)) {
+					int idx = vpP2pController.getCurrentItemIdx();
+					for(int i = 0; i < liveConnectionUserList.size(); i++) {
+						LiveConnectionUser tmp = liveConnectionUserList.get(i);
+						if (tmp.showing == true || tmp.index == idx) {
+							vs.requestCloseVideoDevice(publishingLive.group, tmp.udc, null);
+							tmp.showing = false;
+						}
+					}
+					
+					lcu.udc.setVp(vpP2pController);
+					lcu.showing = true;
+					vpP2pController.setItemIndex(lcu.index);
+					vs.requestOpenVideoDevice(publishingLive.group, lcu.udc, null);
+	
+					this.requestConnection(this.publishingLive.getLid(),
+							VMessageAudioVideoRequestItem.TYPE_VIDEO,
+							VMessageAudioVideoRequestItem.ACTION_ACCEPT);
+					
+				} else {
+					setBState(B_PUBLISHING_VIDEO_REQUEST_FLAG);
+					ui.updateConnectLayoutBtnType(VIDEO_CALL_REQUEST_SHOW);
+					ui.showConnectRequestLayout(true, lcu);
+				}
+			}
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_ACCEPT) {
-			ui.showWatcherP2PVideoLayout(true);
-			UserDeviceConfig duc = new UserDeviceConfig(4,
-					this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
-							.getCurrentUserId(), "", null);
-			VideoRecorder.VideoPreviewSurfaceHolder = ui
-					.getP2PMainWatherSurface().getHolder();
-			VideoRecorder.VideoPreviewSurfaceHolder
-					.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-			ui.showBottomLayout(false);
-			unsetState(BOTTOM_LAYOUT_SHOW);
-			vs.requestOpenVideoDevice(duc, null);
+			if (isBState(B_WATCHING_FLAG) && isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
+				ui.updateLocalCameraType(LOCAL_CAMERA_TYPE_P2P_CONNECTION);
+				ui.showWatcherP2PVideoLayout(true);
+				UserDeviceConfig duc = new UserDeviceConfig(4,
+						this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
+								.getCurrentUserId(), "", null);
+				ui.showBottomLayout(false);
+				
+				try {
+					Thread.currentThread().sleep(300);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				vs.requestOpenVideoDevice(duc, null);
+				
+				setBState(B_WATCHING_VIDEO_CONNECTED_FLAG);
+				unsetBState(B_WATCHING_VIDEO_REQUEST_FLAG);
+				unsetState(LIVER_INTERACTION_LAY_SHOW);
+				unsetState(BOTTOM_LAYOUT_SHOW);
+				
+			}
+			
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_HANG_OFF) {
-			ui.showWatcherP2PVideoLayout(false);
-			if (uid != currentViewLive.live.getPublisher().getmUserId()) {
-				// close local device
+			
+			if (isBState(B_PUBLISHING_FLAG) && isBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG)) {
+				
+				
+				LiveConnectionUser lcu = removeLiveConnectionUser(uid);
+				if (lcu != null) {
+					// close remote device
+					UserDeviceConfig duc = new UserDeviceConfig(0,
+							publishingLive.getLid(), uid, lcu.udc.getDeviceID(), null);
+					vs.requestCloseVideoDevice(duc, null);
+				} else {
+					throw new RuntimeException("Ilegal statue uid not found:"+ uid);
+				}
+				//TODO if all users connection are hanged off, should hide device
+			} else if (isBState(B_WATCHING_FLAG)  && isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
+				
 				UserDeviceConfig duc = new UserDeviceConfig(4,
 						this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
 								.getCurrentUserId(), "", null);
 				vs.requestCloseVideoDevice(duc, null);
-			} else {
-				// close remote device
-				VideoPlayer vp = new VideoPlayer();
-				vp.SetSurface(ui.getP2PMainSurface().getHolder());
-				UserDeviceConfig duc = new UserDeviceConfig(0,
-						this.currentViewLive.live.getLid(), uid, GlobalHolder
-								.getInstance().getUser(uid).ll.iterator()
-								.next().getDeviceID(), vp);
-				vs.requestCloseVideoDevice(duc, null);
-
+				ui.showWatcherP2PVideoLayout(false);
 			}
+			ui.updateLocalCameraType(LOCAL_CAMERA_TYPE_SHARE);
+			
 		} else if (opt == VMessageAudioVideoRequestItem.ACTION_DECLINE) {
-
+			if (isBState(B_WATCHING_FLAG)  && isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
+				//TODO notify user
+			}
 		}
 	}
 
@@ -862,23 +926,23 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onUserWatched(Live l, User user) {
-		Watcher w = new Watcher(user.getmUserId());
-		if (isState(WATCHING_FLAG)) {
-			ui.addWatcher(WATCHER_FLAG_WATCHER, w);
-		} else {
-			ui.addWatcher(WATCHER_FLAG_PUBLISHER, w);
-		}
+//		Watcher w = new Watcher(user.getmUserId());
+//		if (isState(WATCHING_FLAG)) {
+//			ui.addWatcher(WATCHER_FLAG_WATCHER, w);
+//		} else {
+//			ui.addWatcher(WATCHER_FLAG_PUBLISHER, w);
+//		}
 		
 	}
 
 	@Override
 	public void onWatcherLeaved(Live l, User user) {
-		Watcher w = new Watcher(user.getmUserId());
-		if (isState(WATCHING_FLAG)) {
-			ui.removeWatcher(WATCHER_FLAG_WATCHER, w);
-		} else {
-			ui.removeWatcher(WATCHER_FLAG_PUBLISHER, w);
-		}
+//		Watcher w = new Watcher(user.getmUserId());
+//		if (isState(WATCHING_FLAG)) {
+//			ui.removeWatcher(WATCHER_FLAG_WATCHER, w);
+//		} else {
+//			ui.removeWatcher(WATCHER_FLAG_PUBLISHER, w);
+//		}
 		
 	}
 	
@@ -896,6 +960,7 @@ public class MainPresenter extends BasePresenter implements
 			//Update title to back
 			ui.updateTitleBarBtn(TITLE_BAR_BTN_TYPE_BACK);
 			mapInstance.getLocationName(mapInstance.getMapCenter(), new MessageListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
+			setState(INQUIRY_WIDGET_SHOW);
 			break;
 		case VIDEO_MAP:
 			if (isState(LOCAL_CAMERA_OPENING)) {
@@ -905,7 +970,7 @@ public class MainPresenter extends BasePresenter implements
 				unsetState(LOCAL_CAMERA_OPENING);
 						
 			}
-			if (isState(PUBLISHING_FLAG)) {
+			if (isBState(B_PUBLISHING_FLAG)) {
 				videoShareButtonClicked();
 			}
 			
@@ -920,14 +985,17 @@ public class MainPresenter extends BasePresenter implements
 			vs.requestOpenVideoDevice(duc, null);
 			ui.showBottomLayout(false);
 			this.setState(LOCAL_CAMERA_OPENING | VIDEO_SHARE_BTN_SHOW);
+			setBState(B_PREPARE_PUBLISH_FLAG);
 			this.unsetState(BOTTOM_LAYOUT_SHOW);
 			break;
 		case VIDEO_SHARE_CONNECTION_REQUESTING:
+			setBState(B_PUBLISHING_VIDEO_REQUEST_FLAG);
+			setBState(B_PUBLISHING_AUDIO_REQUEST_FLAG);
 			break;
 		case VIDEO_SHARE_MAP:
 			this.unsetState(VIDEO_SHARE_BTN_SHOW);
 			break;
-		case VIDEO_SHARE_P2P_PUBLISHER:
+		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			break;
 		case VIDEO_SHARE_P2P_WATCHER:
 			break;
@@ -954,7 +1022,9 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onSelfLocationUpdated(MapLocation ml) {
 		this.currentLocation = ml;
-		this.updateMapCenter(ml, ml.getParameter());
+		if (!(isState(INQUIRY_WIDGET_SHOW) || isState(INQUIRY_BIDER_PERSONLE_WIDGET_SHOW))) {
+			this.updateMapCenter(ml, ml.getParameter());
+		}
 		reportLocation();
 	}
 	
@@ -1004,26 +1074,43 @@ public class MainPresenter extends BasePresenter implements
 	
 	///////////ViewItemListener///////////////////////////////////////////////////
 	@Override
-	public void onCurrentItemChanged(int current, int newIdx) {
-			for (ViewLive vl : viewLiveList) {
-				if (vl.surfaveViewIdx == current) {
-					UserDeviceConfig duc = new UserDeviceConfig(4,
-							vl.live.getLid(), GlobalHolder.getInstance()
-									.getCurrentUserId(), "", null);
-					vs.requestCloseVideoDevice(duc, null);
-					
-					vs.requestExitConference(vl.live, null);
-					vl.showing = false;
+	public void onCurrentItemChanged(VideoPlayer vp, int current, int newIdx) {
+		if (vp == vpP2pController) {
+			//DO 2P2 video change
+			int len = liveConnectionUserList.size();
+			for (int i = 0; i < len; i++) {
+				LiveConnectionUser lcu = liveConnectionUserList.get(i);
+				if (lcu.index == current) {
+					V2Log.e("====  close idx:" + lcu.index);
+					vs.requestCloseVideoDevice(publishingLive.group, lcu.udc, null);
 				}
-				if (vl.surfaveViewIdx == newIdx) {
-					if (vl.playing) {
-						vs.requestEnterConference(vl.live, new MessageListener(h,
-								WATCHING_REQUEST_CALLBACK, null));
-						vl.showing = true;
-					}
-					this.currentViewLive = vl;
+				if (lcu.index == newIdx) {
+					V2Log.e("====  open idx:" + lcu.index);
+					vs.requestOpenVideoDevice(publishingLive.group, lcu.udc, null);
 				}
 			}
+			return;
+		}
+		
+		for (ViewLive vl : viewLiveList) {
+			if (vl.surfaveViewIdx == current) {
+				UserDeviceConfig duc = new UserDeviceConfig(4,
+						vl.live.getLid(), GlobalHolder.getInstance()
+								.getCurrentUserId(), "", null);
+				vs.requestCloseVideoDevice(duc, null);
+				
+				vs.requestExitConference(vl.live, null);
+				vl.showing = false;
+			}
+			if (vl.surfaveViewIdx == newIdx) {
+				if (vl.playing) {
+					vs.requestEnterConference(vl.live, new MessageListener(h,
+							WATCHING_REQUEST_CALLBACK, null));
+					vl.showing = true;
+				}
+				this.currentViewLive = vl;
+			}
+		}
 			
 			//TODO if nothing, need to push one
 	}
@@ -1052,6 +1139,8 @@ public class MainPresenter extends BasePresenter implements
 		MapLocation source = mapInstance.buildLocation(data.sourceLat, data.sourceLng);
 		V2Log.i(" inquiry:  source: " + source+"  target:"+target);
 		mapInstance.showRoadMap(source, target);
+		setState(INQUIRY_BIDER_PERSONLE_WIDGET_SHOW);
+		unsetState(INQUIRY_WIDGET_SHOW);
 		
 	}
 	///////////InquiryAcceptenceHandler///////////////////////////////////////////////////
@@ -1076,6 +1165,18 @@ public class MainPresenter extends BasePresenter implements
 
 	private boolean isState(int flag) {
 		return (this.videoScreenState & flag) == flag;
+	}
+	
+	private void setBState(int flag) {
+		this.bState |= flag;
+	}
+
+	private void unsetBState(int flag) {
+		this.bState &= (~flag);
+	}
+
+	private boolean isBState(int flag) {
+		return (this.bState & flag) == flag;
 	}
 
 	private void updateLiveScreen(Live l) {
@@ -1126,7 +1227,6 @@ public class MainPresenter extends BasePresenter implements
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
 			RequestConfCreateResponse rcr = (RequestConfCreateResponse) resp;
 			publishingLive.setLid(rcr.getConfId());
-			videoScreenState |= PUBLISHING_FLAG;
 			ls.reportLiveStatus(publishingLive, null);
 		} else {
 			ui.showDebugMsg("create error");
@@ -1140,9 +1240,14 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void createVideoShareInBack() {
-		// TODO if no location how to?
+		if (currentLocation == null) {
+			//FIXME notify when locating
+			return;
+		}
 		publishingLive = new PublishingLive(GlobalHolder.getInstance().getCurrentUser(), 0,
 				currentLocation.getLat(), currentLocation.getLng());
+		publishingLive.group = new ConferenceGroup(this.publishingLive.getLid(), "", null,
+				null, null);
 		vs.createConference(publishingLive, new MessageListener(h,
 				CREATE_VIDEO_SHARE_CALL_BACK, null));
 	}
@@ -1202,21 +1307,20 @@ public class MainPresenter extends BasePresenter implements
 	
 	
 	private void cancelInquiry() {
-		if (inquiryData.id > 0) {
+		if (inquiryData != null && inquiryData.id > 0) {
 			is.cancelInquiry(inquiryData.id);
 			//reset inquiryId
 			inquiryData.id = -1;
 			
 			ui.setInquiryStateToWaiting(false);
 		}
-		
+		unsetState(INQUIRY_WIDGET_SHOW);
 	}
 	// waiting for chair man device information
 	private boolean pending = false;
 
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			setState(WATCHING_FLAG);
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
 			if (this.currentViewLive.live.getPublisher() == null) {
 				this.currentViewLive.live.setPublisher(new User(rer.getConf()
@@ -1251,9 +1355,8 @@ public class MainPresenter extends BasePresenter implements
 				UserDeviceConfig udc = new UserDeviceConfig(0,
 						this.currentViewLive.live.getLid(), currentViewLive.live.getPublisher()
 								.getmUserId(), ll.get(0).getDeviceID(), vpController);
-				vs.requestOpenVideoDevice(
-						new ConferenceGroup(this.currentViewLive.live.getLid(), null,
-								null, null, null), udc, null);
+				vs.requestOpenVideoDevice(new ConferenceGroup(this.currentViewLive.live.getLid(), "", null,
+						null, null) ,  udc, null);
 				pending = false;
 
 			} else {
@@ -1282,6 +1385,40 @@ public class MainPresenter extends BasePresenter implements
 		for (ViewLive vl : viewLiveList) {
 			if (vl.live == l) {
 				return vl;
+			}
+		}
+		return null;
+	}
+	
+	
+	private LiveConnectionUser addLiveConnctionUser(long uid) {
+		User u = GlobalHolder.getInstance().getUser(uid);
+		if (u.ll == null || u.ll.size() <= 0) {
+			return null;
+		}
+		UserDeviceConfig udc = u.ll.iterator().next();
+		udc.setGroupID(this.publishingLive.getLid());
+		udc.setGroupType(4);
+		
+		LiveConnectionUser lcu = new LiveConnectionUser();
+		lcu.user = u;
+		lcu.udc = udc;
+		lcu.showing = false;
+		if (liveConnectionUserList.size() > 0) {
+			lcu.index = vpP2pController.appendWindow() - 1;
+		} else {
+			lcu.index = 0;
+		}
+		liveConnectionUserList.add(lcu);
+		return lcu;
+	}
+	
+	
+	private LiveConnectionUser removeLiveConnectionUser(long uid) {
+		int size = liveConnectionUserList.size();
+		for (int i  = 0; i < size; i++) {
+			if (liveConnectionUserList.get(i).user.getmUserId() == uid) {
+				return liveConnectionUserList.remove(i);
 			}
 		}
 		return null;

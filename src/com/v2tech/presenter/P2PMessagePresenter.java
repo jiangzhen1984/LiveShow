@@ -315,6 +315,14 @@ public class P2PMessagePresenter extends BasePresenter implements
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
+		
 		ui.showAdditionLayout(false);
 		ui.showEmojiLayout(false);
 		// Check intent flag first
@@ -330,13 +338,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		} else if (startFlag == 2) {
 			fireAction = true;
 		}
-	}
-	
-	
-
-	@Override
-	public void onUIStarted() {
-		super.onUIStarted();
+		
 		if (!fireAction) {
 			return;
 		}
@@ -392,7 +394,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 	}
 
 	@Override
-	public void onVdideoMessage(long liveId, long uid, int opt) {
+	public void onVideoMessage(long liveId, long uid, int opt) {
 
 	}
 

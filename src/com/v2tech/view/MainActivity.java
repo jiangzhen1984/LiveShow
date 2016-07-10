@@ -268,14 +268,6 @@ public class MainActivity extends BaseActivity implements
 
 	
 	
-	@Override
-	public SurfaceView getCameraSurfaceView() {
-		//return videoShareLayout.getLocalCameraView();
-		return null;
-	}
-
-	
-
 
 	@Override
 	public void showBottomLayout(boolean flag) {
@@ -337,10 +329,6 @@ public class MainActivity extends BaseActivity implements
 		mMapVideoLayout.updateBalanceSum(num);
 	}
 	
-	public void updateWatchNum(final int num) {
-		mMapVideoLayout.updateWatcherNum(num);
-		
-	}
 	
 	public void updateRendNum(final int num) {
 		mMapVideoLayout.updateRendNum(num);
@@ -379,8 +367,8 @@ public class MainActivity extends BaseActivity implements
 	}
 	
 	
-	public void showConnectRequestLayout(boolean flag) {
-	//	videoShareLayout.showRequestConnectionLayout(flag);
+	public void showConnectRequestLayout(boolean flag, Object tag) {
+		mMapVideoLayout.showRequestingConnectionLy(flag, tag);
 	}
 	
 
@@ -391,32 +379,19 @@ public class MainActivity extends BaseActivity implements
 	
 	@Override
 	public void showP2PVideoLayout(boolean flag) {
-	//	videoShareLayout.showP2PVideoLayout(flag);
+		mMapVideoLayout.showP2PVideoLayout(flag);
 		
 	}
 	
 	
-	public SurfaceView  getP2PMainSurface() {
-		//return videoShareLayout.getP2PMainSurface();
-		return null;
-	}
-
-
 	public void showVideoshareBtnLayout(boolean flag) {
 		//videoShareLayout.showVideoShareBtnLy(flag);
 	}
 
 
 	@Override
-	public SurfaceView getP2PMainWatherSurface() {
-		return mMapVideoLayout.getP2PWatcherSurfaceView();
-	}
-
-
-
-	@Override
 	public void showWatcherP2PVideoLayout(boolean flag) {
-		mMapVideoLayout.showP2PVideoLayout(flag);
+		mMapVideoLayout.showP2PWatcherVideoLayout(flag);
 	}
 	
 	
@@ -545,6 +520,20 @@ public class MainActivity extends BaseActivity implements
 	
 	public void showInquiryAcceptedMsg(String msg) {
 		updateInquiryMessage(msg);
+	}
+	
+	
+	public VideoPlayer getP2PVideoPlayer() {
+		return mMapVideoLayout.getP2PVideoPlayer();
+	}
+	
+	
+	public void updateLocalCameraType(int type) {
+		if (MainPresenter.LOCAL_CAMERA_TYPE_SHARE == type) {
+			mMapVideoLayout.resetLocalCamera();
+		} else if (MainPresenter.LOCAL_CAMERA_TYPE_P2P_CONNECTION == type) {
+			mMapVideoLayout.updateLocalCameraOnP2P();
+		}
 	}
 	/////////////////////////////////////////////////////////////
 	

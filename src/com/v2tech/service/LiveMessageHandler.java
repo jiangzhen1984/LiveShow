@@ -8,7 +8,7 @@ public interface LiveMessageHandler {
 	public void onAudioMessage(long liveId, long uid, int opt);
 	
 	
-	public void onVdideoMessage(long liveId, long uid, int opt);
+	public void onVideoMessage(long liveId, long uid, int opt);
 	
 	
 	public void onLiveMessage(long liveId, long uid, VMessage vm);

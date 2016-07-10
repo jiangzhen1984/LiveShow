@@ -185,13 +185,22 @@ public class PersonelRelatedUserListActivity extends BaseFragmentActivity implem
 		lb.btn.setTag(tag);
 	}
 	
-	public void  updateItemGender(View parent, boolean male) {
+	public void  updateItemGender(View parent, boolean showFlag, boolean male) {
 		LocalBind lb = (LocalBind)parent.getTag();
+		if (!showFlag) {
+			lb.gender.setVisibility(showFlag? View.VISIBLE : View.GONE);
+		}
 		if (male) {
 			lb.gender.setImageResource(R.drawable.personel_item_gender_male);
 		} else {
 			lb.gender.setImageResource(R.drawable.personel_item_gender_female);
 		}
+	}
+	
+	
+	public void updateItemTime(View parent, CharSequence timeStr) {
+		LocalBind lb = (LocalBind)parent.getTag();
+		lb.time.setText(timeStr);
 	}
 	
 	

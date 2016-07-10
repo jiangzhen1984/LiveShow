@@ -69,8 +69,9 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		public void updateItemBtnCancel(View parent);
 		public void updateItemBtnFollow(View parent);
 		public void updateItemBtnTag(View parent, Object tag);
-		public void updateItemGender(View parent, boolean male);
+		public void updateItemGender(View parent, boolean showFlag, boolean male);
 		public void updateItemUserTag(View parent, Object tag);
+		public void updateItemTime(View parent, CharSequence timeStr);
 		public void showFansTitle();
 		public void showFriendsTitle();
 		public void showFollowTitle();
@@ -175,7 +176,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 
 	public void update(int position, View convertView) {
 		Item item = itemList.get(position);
-		ui.updateItemName(convertView, item.name);
+		ui.updateItemName(convertView, item.getName());
 		ui.updateItemSn(convertView, item.getSn());
 //		if (u.follow) {
 //			ui.updateItemBtnCancel(convertView);
@@ -184,8 +185,9 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 //		}
 		ui.updateItemBtnTag(convertView, Long.valueOf(item.id));
 		
-		ui.updateItemGender(convertView, item.gender);
+		ui.updateItemGender(convertView, item.isShowGender(), item.gender);
 		ui.updateItemUserTag(convertView, item);
+		ui.updateItemTime(convertView, item.getTime());
 	}
 
 	
@@ -463,18 +465,23 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 	
 	
 	
-	private static SimpleDateFormat format =  new SimpleDateFormat("hh:mm"); 
+	private static SimpleDateFormat format =  new SimpleDateFormat("HH:mm");
+	private static SimpleDateFormat format1 =  new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
 	private void convertMessageSessionList(List<VMessageSession> sessList) {
 		if (sessList == null || sessList.size() <= 0) {
 			return;
 		}
-		
+		long today = System.currentTimeMillis() / 24 * 3600 * 1000;
 		itemList  = new ArrayList<Item>(sessList.size());
 		for (VMessageSession vs : sessList) {
+			boolean todayFlag = today == (vs.timestamp.getTime()  / 24 * 3600 * 1000);
+			
 			if (vs.isSystem) {
 				SystemItem si = new SystemItem();
 				si.id = vs.id;
 				si.content = vs.contentJson;
+				si.time = todayFlag ? format1.format(vs.timestamp) : format.format(vs.timestamp);
 				itemList.add(si);
 			} else {
 				Item item = new Item();
@@ -482,7 +489,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 				item.id = vs.id;
 				item.name = vs.fromName;
 				item.sn = vs.content;
-				item.time = format.format(vs.timestamp);
+				item.time = todayFlag ? format1.format(vs.timestamp) : format.format(vs.timestamp);
 				item.u = new User(vs.fromUid);
 			}
 		}
@@ -543,10 +550,25 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		public CharSequence time;
 		public int underCount;
 		public User u;
+		public boolean showGender;
+		
+		
+		public CharSequence getName() {
+			return name;
+		}
 		
 		public CharSequence getSn() {
 			return sn;
 		}
+
+		public boolean isShowGender() {
+			return true;
+		}
+		
+		public CharSequence getTime() {
+			return this.time;
+		}
+		
 	}
 	
 	class SystemItem extends Item {
@@ -559,6 +581,19 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 				e.printStackTrace();
 				return null;
 			}
+		}
+		
+		public CharSequence getName() {
+			try {
+				return content.getString("title");
+			} catch (JSONException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		public boolean isShowGender() {
+			return false;
 		}
 	}
 }

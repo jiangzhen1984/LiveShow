@@ -4,10 +4,10 @@ import v2av.VideoPlayer;
 import v2av.VideoRecorder;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -67,6 +67,7 @@ public class MapVideoLayout extends FrameLayout {
 	
 	private VideoController videoController;
 	private VideoPlayer videoPlayer;
+	private VideoPlayer p2pVideoPlayer;
 	
 	private MapView mMapView;
 	private TouchSurfaceView tsv;
@@ -113,6 +114,7 @@ public class MapVideoLayout extends FrameLayout {
 
 	private void init() {
 		videoPlayer = new VideoPlayer(6);
+		p2pVideoPlayer = new VideoPlayer(1);
 		tsv =  new TouchSurfaceView(getContext()); 
 		tsv.setZOrderOnTop(true);
 		tsv.setZOrderMediaOverlay(true);
@@ -143,7 +145,8 @@ public class MapVideoLayout extends FrameLayout {
 		requestConnectLayout = (RequestConnectLayout)LayoutInflater.from(getContext()).inflate(R.layout.requesting_connect_layout, (ViewGroup)null);
 		
 		p2pVideoLayout= (P2PVideoMainLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_video_main_layout, (ViewGroup)null);
-		p2pVideoLayout.getSurfaceView().getHolder().addCallback(new  VideoShareSufaceViewCallback());
+		p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
+		p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
 		
 		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, (ViewGroup)null);
 		
@@ -226,6 +229,15 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
+	
+	
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		p2pVideoPlayer.Release();
+		videoPlayer.Release();
+	}
 
 	public MapAPI getMap() {
 		return new BaiduMapImpl(mMapView.getMap(), mMapView);
@@ -329,8 +341,9 @@ public class MapVideoLayout extends FrameLayout {
 		}
 	}
 
-	public void showRequestingConnectionLy(boolean flag) {
+	public void showRequestingConnectionLy(boolean flag, Object tag) {
 		int distance = getBottom() - tsv.getMeasuredHeight();
+		requestConnectLayout.setTag(tag);
 		if (flag) {
 			// fake UI behavior for simulate touch move up.
 			turnUITypeAnimation(ScreenType.VIDEO_SHARE_CONNECTION_REQUESTING,
@@ -359,12 +372,36 @@ public class MapVideoLayout extends FrameLayout {
 		int distance = getBottom() - tsv.getMeasuredHeight();
 		if (flag) {
 			// fake UI behavior for simulate touch move up.
-			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
-					ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION,
+					ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION,
 					PostState.RESTORE, distance);
+			p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
 		} else {
-			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_PUBLISHER,
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION,
 					ScreenType.VIDEO_SHARE, PostState.GO_NEXT, distance);
+			p2pVideoLayout.removeSurfaceHolderCallback(p2pVideoPlayer);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(null);
+		}
+	}
+	
+	
+	public void showP2PWatcherVideoLayout(boolean flag) {
+		int distance = getBottom() - tsv.getMeasuredHeight();
+		if (flag) {
+			// fake UI behavior for simulate touch move up.
+			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
+					ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
+					PostState.RESTORE, distance);
+			
+			p2pVideoLayout.removeSurfaceHolderCallback(p2pVideoPlayer);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(null);
+			
+		} else {
+			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION,
+					ScreenType.VIDEO_MAP, PostState.GO_NEXT, distance);
+			p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
+			p2pVideoLayout.setTouchSurfaceViewTranslate(touchSurfaceViewP2PTranslate);
 		}
 	}
 	
@@ -417,10 +454,6 @@ public class MapVideoLayout extends FrameLayout {
 	}
 
 	
-	
-	public SurfaceView getP2PWatcherSurfaceView() {
-		return p2pVideoLayout.getSurfaceView();
-	}
 	
 	public String getInquiryAward() {
 		return inquiryBidWidget.getTipsEditText().getEditableText().toString();
@@ -486,9 +519,18 @@ public class MapVideoLayout extends FrameLayout {
 		return videoPlayer;
 	}
 	
+	public VideoPlayer getP2PVideoPlayer() {
+		return p2pVideoPlayer;
+	}
+	
 	
 	public void resetLocalCamera() {
 		VideoRecorder.VideoPreviewSurfaceHolder = shareSurfaceView.getHolder();
+	}
+	
+	
+	public void updateLocalCameraOnP2P() {
+		VideoRecorder.VideoPreviewSurfaceHolder = p2pVideoLayout.getSurfaceView().getHolder();
 	}
 	
 	
@@ -598,7 +640,7 @@ public class MapVideoLayout extends FrameLayout {
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P_PUBLISHER:
+		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			ret = (x >= (int) p2pVideoLayout.getLeft()
 			&& p2pVideoLayout.getRight() >= x
 			&& (int) p2pVideoLayout.getTop() <= y && p2pVideoLayout
@@ -656,7 +698,7 @@ public class MapVideoLayout extends FrameLayout {
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P_PUBLISHER:
+		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			translateBottomView(p2pVideoLayout, dy);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
@@ -726,13 +768,13 @@ public class MapVideoLayout extends FrameLayout {
 			break;
 		case VIDEO_SHARE_MAP:
 			break;
-		case VIDEO_SHARE_P2P_PUBLISHER:
+		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
 				fly.startFlying(getBottom() - borderY - absDisY , ScreenType.VIDEO_SHARE);
 			} else {
 				ps = PostState.RESTORE;
-				fly.startFlying(absDisY , ScreenType.VIDEO_SHARE_P2P_PUBLISHER);
+				fly.startFlying(absDisY , ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION);
 			}
 			break;
 		case VIDEO_PUBLISHER_SHOW:
@@ -860,7 +902,7 @@ public class MapVideoLayout extends FrameLayout {
 				translateBottomView(returnBtnView, -offset);
 			}
 			break;
-		case VIDEO_SHARE_P2P_PUBLISHER:
+		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			if (ps == PostState.GO_NEXT) {
 				translateBottomView(p2pVideoLayout, offset);
 			} else {
@@ -879,6 +921,13 @@ public class MapVideoLayout extends FrameLayout {
 				translateBottomView(p2pAudioWatcherLayout, offset);
 			} else {
 				translateBottomView(p2pAudioWatcherLayout, -offset);
+			}
+			break;
+		case VIDEO_WATCHING_VIDEO_CONNECTION:
+			if (ps == PostState.GO_NEXT) {
+				translateBottomView(p2pVideoLayout, offset);
+			} else {
+				translateBottomView(p2pVideoLayout, -offset);
 			}
 			break;
 		case INQUIRE_BIDING:
@@ -952,7 +1001,53 @@ public class MapVideoLayout extends FrameLayout {
 
 	
 	
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int count = getChildCount();
 
+		int maxHeight = 0;
+		int maxWidth = 0;
+		int childState = 0;
+
+		for (int i = 0; i < count; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() != GONE) {
+				if (child == p2pVideoLayout) {
+					measureChildWithMargins(child, widthMeasureSpec, 0,
+							heightMeasureSpec, VIDEO_SURFACE_HEIGHT);
+				} else {
+					measureChildWithMargins(child, widthMeasureSpec, 0,
+							heightMeasureSpec, 0);
+				}
+
+				final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+				maxWidth = Math.max(maxWidth, child.getMeasuredWidth()
+						+ lp.leftMargin + lp.rightMargin);
+				maxHeight = Math.max(maxHeight, child.getMeasuredHeight()
+						+ lp.topMargin + lp.bottomMargin);
+				childState = combineMeasuredStates(childState,
+						child.getMeasuredState());
+			}
+		}
+
+		// Check against our minimum height and width
+		maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
+		maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+
+		// Check against our foreground's minimum height and width
+		final Drawable drawable = getForeground();
+		if (drawable != null) {
+			maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
+			maxWidth = Math.max(maxWidth, drawable.getMinimumWidth());
+		}
+
+		setMeasuredDimension(
+				resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
+				resolveSizeAndState(maxHeight, heightMeasureSpec,
+						childState << MEASURED_HEIGHT_STATE_SHIFT));
+
+	}
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
@@ -965,7 +1060,6 @@ public class MapVideoLayout extends FrameLayout {
 		bottom = bottom - 1;
 		V2Log.i("====> layout st:"+ st +"   ts:"+ ts);
 		int bottomChildTop = top + tsv.getMeasuredHeight();
-		int bottomHeight = bottom - bottomChildTop;
 
 		if (st == ScreenType.VIDEO_MAP) {
 			borderY = tsv.getMeasuredHeight();
@@ -1043,21 +1137,24 @@ public class MapVideoLayout extends FrameLayout {
 			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
 			requestConnectLayout.layout(left,borderY, right, bottom);
 			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
+			p2pVideoLayout.layout(left,bottom - 1  , right, bottom + p2pVideoLayout.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
 			tsv.layout(left, top, right, bottomChildTop);
 			mMapView.layout(left, bottomChildTop, right, bottom);
 			p2pAudioWatcherLayout.layout(left, bottomChildTop, right, bottomChildTop + p2pAudioWatcherLayout.getMeasuredHeight());
-		} else if (st == ScreenType.VIDEO_SHARE_P2P_PUBLISHER) {
-			shareSurfaceView.layout(left, top, right, bottomChildTop);
-			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
-			p2pVideoLayout.layout(left,bottomChildTop , right, bottom);
-			mMapView.layout(left, bottom, right, bottom + bottomHeight);
+		} else if (st == ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION) {
+			borderY = shareSurfaceView.getMeasuredHeight();
+			shareSurfaceView.layout(left, top, right, borderY);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
+			p2pVideoLayout.layout(left,borderY , right, bottom);
+			mMapView.layout(left, bottom, right, bottom + mMapView.getMeasuredHeight());
+			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
 		} else if (st == ScreenType.INQUIRE_BIDING) {
 			borderY = bottom - tsv.getMeasuredHeight() + mapLocationTipsWidget.getMeasuredHeight();
 			mMapView.layout(left, top + mapLocationTipsWidget.getMeasuredHeight(), right, borderY);
 			tsv.layout(left, - tsv.getMeasuredHeight(), right, 1);
-			shareSurfaceView.layout(left, - tsv.getMeasuredHeight(), right, 0);
+			shareSurfaceView.layout(left, - tsv.getMeasuredHeight(), right, 1);
 			videoShareBtnLayout.layout(left, top, right, borderY);
 			inquiryBidWidget.layout(left, borderY, right, bottom);
 			mapLocationTipsWidget.layout(left, top, right, top + mapLocationTipsWidget.getMeasuredHeight());
@@ -1078,7 +1175,13 @@ public class MapVideoLayout extends FrameLayout {
 			
 		} else if (st == ScreenType.VIDEO_SHARE_MAP) {
 			
-		}else if (st == ScreenType.INQUIRING) {
+		} else if (st == ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION) {
+			borderY = tsv.getMeasuredHeight();
+			tsv.layout(left, top, right, borderY);
+			mMapView.layout(left, borderY, right, bottom);
+			p2pVideoLayout.layout(left, borderY, right, bottom);
+			
+		} else if (st == ScreenType.INQUIRING) {
 			borderY = bottom - tsv.getMeasuredHeight() + mapLocationTipsWidget.getMeasuredHeight();
 			mMapView.layout(left, top + mapLocationTipsWidget.getMeasuredHeight(), right, borderY);
 			tsv.layout(left, - tsv.getMeasuredHeight(), right, 0 );
@@ -1141,6 +1244,29 @@ public class MapVideoLayout extends FrameLayout {
 	};
 	
 	
+	private Translate touchSurfaceViewP2PTranslate = new Translate() {
+
+		
+		@Override
+		public void onStartTranslate() {
+			p2pVideoPlayer.startTranslate();
+		}
+
+
+		@Override
+		public void onTranslate(float x, float y) {
+			p2pVideoPlayer.translate(x, y);
+		}
+		
+
+		@Override
+		public void onFinishTranslate() {
+			p2pVideoPlayer.finishTranslate();
+		}
+		
+	};
+	
+	
 	private OnClickListener clickListener = new OnClickListener() {
 
 		@Override
@@ -1173,9 +1299,10 @@ public class MapVideoLayout extends FrameLayout {
 		VIDEO_SHARE_CONNECTION_REQUESTING, 
 		VIDEO_SHARE_MAP, 
 		VIDEO_SHARE_P2P_WATCHER, 
-		VIDEO_SHARE_P2P_PUBLISHER, 
+		VIDEO_SHARE_P2P_VIDEO_CONNECTION, 
 		VIDEO_PUBLISHER_SHOW, 
-		VIDEO_WATCHING_AUDIO_CONNECTION, 
+		VIDEO_WATCHING_AUDIO_CONNECTION,
+		VIDEO_WATCHING_VIDEO_CONNECTION,
 		INQUIRE_BIDING,
 		INQUIRING;
 	}

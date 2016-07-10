@@ -407,6 +407,7 @@ public class VideoRecorder  implements SurfaceHolder.Callback {
 				mCamera.startPreview();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			UninitCamera();
 			throw new RuntimeException("StartPreview 打开视频出错！" + e.getLocalizedMessage());
 		}

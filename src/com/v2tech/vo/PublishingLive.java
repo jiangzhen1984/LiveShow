@@ -3,8 +3,11 @@ package com.v2tech.vo;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.v2tech.vo.group.Group;
+
 public class PublishingLive extends Live {
 	
+	public Group group;
 	
 	protected Map<User, ConnectedUser> connectUser;
 

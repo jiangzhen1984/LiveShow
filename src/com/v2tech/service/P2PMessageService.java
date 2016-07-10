@@ -25,6 +25,7 @@ import com.V2.jni.util.V2Log;
 import com.v2tech.db.MessageDescriptor;
 import com.v2tech.db.MessageDescriptor.P2PMessage;
 import com.v2tech.util.MessageUtil;
+import com.v2tech.v2liveshow.R;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserChattingObject;
 import com.v2tech.vo.msg.VMessage;
@@ -254,6 +255,7 @@ public class P2PMessageService extends DeviceService {
 								+ com.v2tech.db.MessageDescriptor.MessageSession.Cols.SYSTEM_MESSAGE_TIMESTAMP
 								+ " desc ");
 		List<VMessageSession>  list = new ArrayList<VMessageSession>(cur.getCount());
+		String systemMsgTitle = ctx.getResources().getString(R.string.message_session_system_msg);
 		while (cur.moveToNext()) {
 			long mid = cur.getLong(0);
 			int type = cur.getInt(1);
@@ -282,9 +284,11 @@ public class P2PMessageService extends DeviceService {
 				sess.fromName = "";
 				sess.content = name;
 				sess.isSystem = true;
+				sess.timestamp = new Date(timestamp);
 				JSONTokener jsonParser = new JSONTokener(sess.content.toString());
 				try {
 					JSONObject obj = (JSONObject) jsonParser.nextValue();
+					obj.put("title", systemMsgTitle);
 					sess.contentJson = obj;
 				} catch (JSONException e) {
 					e.printStackTrace();

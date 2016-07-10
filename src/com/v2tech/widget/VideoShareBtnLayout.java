@@ -14,6 +14,8 @@ public class VideoShareBtnLayout extends RelativeLayout {
 	private Button shareBtn;
 
 	private View mapBtn;
+	
+	private View wechatShareBtn;
 
 	private VideoShareBtnLayoutListener listener;
 
@@ -35,11 +37,13 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		super.addView(child, index, params);
 		if (child.getId() == R.id.video_share_button) {
 			shareBtn = (Button) child;
-			shareBtn.setOnClickListener(clickListener);
 		} else if (child.getId() == R.id.video_share_map_btn) {
 			mapBtn = child;
-			mapBtn.setOnClickListener(clickListener);
+		} else if (child.getId() == R.id.video_share_outer_btn_ly) {
+			wechatShareBtn = child.findViewById(R.id.video_share_wechat_share_btn);
+			wechatShareBtn.setOnClickListener(clickListener);
 		}
+		child.setOnClickListener(clickListener);
 	}
 
 	
@@ -55,7 +59,6 @@ public class VideoShareBtnLayout extends RelativeLayout {
 
 		@Override
 		public void onClick(View v) {
-			V2Log.i(v+"  cliecked");
 			if (listener == null) {
 				return;
 			}
@@ -66,6 +69,9 @@ public class VideoShareBtnLayout extends RelativeLayout {
 				break;
 			case  R.id.video_share_map_btn:
 				listener.onMapShareBtnClicked(v);
+				break;
+			case  R.id.video_share_wechat_share_btn:
+				listener.onWechatShareBtnClicked(v);
 				break;
 			}
 
@@ -93,5 +99,7 @@ public class VideoShareBtnLayout extends RelativeLayout {
 		public void onVideoSharedBtnClicked(View v);
 		
 		public void onMapShareBtnClicked(View v);
+		
+		public void onWechatShareBtnClicked(View v);
 	}
 }

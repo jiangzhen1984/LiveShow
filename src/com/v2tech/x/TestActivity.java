@@ -83,6 +83,14 @@ public class TestActivity extends Activity {
 			public void onMapShareBtnClicked(View v) {
 				
 			}
+
+			@Override
+			public void onWechatShareBtnClicked(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
 			
 		});
 		

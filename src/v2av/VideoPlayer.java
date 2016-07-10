@@ -58,7 +58,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	
 	
 	public interface ViewItemListener {
-		public void onCurrentItemChanged(int current, int newIdx);
+		public void onCurrentItemChanged(VideoPlayer vp, int current, int newIdx);
 	}
 
 
@@ -109,7 +109,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		return this.currentIndex;
 	}
 
-	void Release() {
+	public void Release() {
 		recycleBitmap();
 		
 		mSurfaceH = null;
@@ -186,7 +186,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		
 		if (x == 1.0F || x == -1.0F) {
 			if (itemListener != null && curIndex != nextIndex) {
-				itemListener.onCurrentItemChanged(curIndex, nextIndex);
+				itemListener.onCurrentItemChanged(this, curIndex, nextIndex);
 			}
 			
 			curIndex =nextIndex;
@@ -235,6 +235,21 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	}
 
 	
+	
+	public int appendWindow() {
+		int newLen = screens.length + 1;
+		Bitmap[] newScreens = new Bitmap[newLen];
+		System.arraycopy(screens, 0, newScreens, 0, newLen - 1);
+		
+		if (isViewReady) {
+			newScreens[newLen - 1] = Bitmap.createBitmap(newScreens[0].getWidth(), newScreens[0].getHeight(), Config.ARGB_8888);
+			Canvas c = new Canvas(newScreens[newLen - 1]);
+			drawFirstBlankFrame(c, newLen);
+		}
+		screens = newScreens;
+		
+		return newLen;
+	}
 	
 	
 

@@ -1,7 +1,9 @@
 package com.v2tech.widget;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.util.AttributeSet;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -44,16 +46,14 @@ public class P2PVideoMainLayout extends RelativeLayout {
 		super.addView(child, index, params);
 		if (child.getId() == R.id.p2p_video_main_surfaceview) {
 			surfaceView = (SurfaceView)child;
-			if (btnLayout != null) {
-				btnLayout.bringToFront();
-			}
+			surfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+			
 		} else if (child.getId() == R.id.p2p_video_main_btn_ly) {
 			btnLayout = child;
 			leftBtn = child.findViewById(R.id.p2p_video_main_left_btn);
 			rightBtn = child.findViewById(R.id.p2p_video_main_right_btn);
 			leftBtn.setOnClickListener(click);
 			rightBtn.setOnClickListener(click);
-			this.bringChildToFront(child);
 		}
 	}
 
@@ -69,6 +69,22 @@ public class P2PVideoMainLayout extends RelativeLayout {
 
 	public SurfaceView getSurfaceView() {
 		return surfaceView;
+	}
+	
+	public void setTouchSurfaceViewTranslate(TouchSurfaceView.Translate tt) {
+		if (!(surfaceView instanceof TouchSurfaceView)) {
+			throw new RuntimeException(" not touch surface view");
+		}
+		((TouchSurfaceView)surfaceView).setTranslate(tt);
+	}
+	
+	
+	public void addSurfaceHolderCallback(SurfaceHolder.Callback sc) {
+		surfaceView.getHolder().addCallback(sc);
+	}
+	
+	public void removeSurfaceHolderCallback(SurfaceHolder.Callback sc) {
+		surfaceView.getHolder().removeCallback(sc);
 	}
 	
 	
@@ -100,6 +116,9 @@ public class P2PVideoMainLayout extends RelativeLayout {
 
 	public void setListener(P2PVideoMainLayoutListener listener) {
 		this.listener = listener;
+		surfaceView.setZOrderMediaOverlay(true);
+		btnLayout.bringToFront();
+		
 	}
 
 
