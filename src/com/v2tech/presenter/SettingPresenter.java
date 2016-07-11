@@ -26,6 +26,13 @@ public class SettingPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.updateTitle();
 	}
 

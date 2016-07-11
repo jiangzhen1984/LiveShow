@@ -25,6 +25,15 @@ public class PersonelShowPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+		
+	}
+
+	
+
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.updateTitleBar();
 	}
 

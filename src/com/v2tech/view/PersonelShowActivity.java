@@ -28,7 +28,6 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personal_show_activity);
-		presenter = new PersonelShowPresenter(this, this);
 
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
@@ -91,6 +90,9 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new PersonelShowPresenter(this, this);
+		}
 		return presenter;
 	}
 

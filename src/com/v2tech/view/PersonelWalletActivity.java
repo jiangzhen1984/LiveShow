@@ -37,7 +37,7 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personel_wallet_activity);
-		presenter = new PersonelWalletPresenter(this);
+		
 		
 		
 		returnButton = findViewById(R.id.title_bar_left_btn);
@@ -64,6 +64,9 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new PersonelWalletPresenter(this);
+		}
 		return presenter;
 	}
 	

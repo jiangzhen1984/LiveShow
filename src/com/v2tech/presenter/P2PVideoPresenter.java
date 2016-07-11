@@ -76,8 +76,17 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
-		int flag = UserChattingObject.VIDEO_CALL;
+	}
 	
+	
+
+
+	
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
+		int flag = UserChattingObject.VIDEO_CALL;
+		
 		int type = ui.getStartType();
 		if (type == UIType.CALLING.ordinal()) {
 			uiType = UIType.CALLING;
@@ -103,11 +112,10 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 			updateUIOnRinging();
 		}
 	}
-	
-	
 
 
-	
+
+
 	@Override
 	public void onUIDestroyed() {
 		super.onUIDestroyed();

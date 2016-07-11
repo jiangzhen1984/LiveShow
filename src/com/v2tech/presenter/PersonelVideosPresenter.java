@@ -70,6 +70,13 @@ public class PersonelVideosPresenter extends BasePresenter {
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.updateTitle();
 		ui.refreshListView();
 		ui.updateSelectMode(mode);

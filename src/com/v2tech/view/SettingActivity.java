@@ -31,7 +31,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, Se
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personel_setting_activity);
-		presenter = new SettingPresenter(this);
+		
 		
 		
 		returnButton = findViewById(R.id.title_bar_left_btn);
@@ -61,6 +61,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener, Se
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new SettingPresenter(this);
+		}
 		return presenter;
 	}
 	

@@ -90,6 +90,12 @@ public class FansFollowPresenter extends BasePresenter implements
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
+	}
+	
+
+	@Override
+	public void onUIStarted() {
+		super.onUIStarted();
 		ui.updateTitleBar();
 		ui.showBox();
 		ui.updatePersonelViewData(null, u.getName(), u.getSignature(),

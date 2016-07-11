@@ -44,14 +44,12 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.fans_follow_activity);
-		presenter = new FansFollowPresenter(this, this);
+		
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 		personelLayout = (LiverInteractionLayout)  findViewById(R.id.personel_liver_interaction_layout);
 
-		personelLayout.setOutListener(presenter);
-		
 		audioRecordBtn = personelLayout.getAudioRecordBtn();
 		//cancel click event
 		audioRecordBtn.setOnClickListener(null);
@@ -111,6 +109,10 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new FansFollowPresenter(this, this);
+			personelLayout.setOutListener(presenter);
+		}
 		return presenter;
 	}
 	

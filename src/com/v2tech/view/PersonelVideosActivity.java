@@ -40,7 +40,7 @@ public class PersonelVideosActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.personel_video_activity);
-		presenter = new PersonelVideosPresenter(this, this);
+		
 
 		returnButton = findViewById(R.id.title_bar_left_btn);
 		mTitleBar = (TextView) findViewById(R.id.title_bar_center_tv);
@@ -85,6 +85,9 @@ public class PersonelVideosActivity extends BaseActivity implements
 	
 	@Override
 	public BasePresenter getPresenter() {
+		if (presenter == null) {
+			presenter = new PersonelVideosPresenter(this, this);
+		}
 		return presenter;
 	}
 
