@@ -49,7 +49,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		initMapviewLayout();
 		initBottomButtonLayout();
 		initTitleBarButtonLayout();
-		initResetOrder();
 
 		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
 		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
@@ -86,10 +85,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private void initBottomButtonLayout() {
 		bottomButtonLayout = (BottomButtonLayout) findViewById(R.id.bottom_layout);
 		bottomButtonLayout.setListener(presenter);
-	}
-
-	private void initResetOrder() {
-		mPersonalButton.bringToFront();
 	}
 
 	@Override

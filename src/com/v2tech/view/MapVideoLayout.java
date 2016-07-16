@@ -740,7 +740,7 @@ public class MapVideoLayout extends FrameLayout {
 			if (absDisY > FLYING_SLOP) {
 				ps = PostState.GO_NEXT;
 				if (disY < 0) {
-					fly.startFlying(tsv.getMeasuredHeight() - absDisY , ScreenType.INQUIRE_BIDING);
+					fly.startFlying(tsv.getMeasuredHeight() - absDisY - mapLocationTipsWidget.getMeasuredHeight() , ScreenType.INQUIRE_BIDING);
 				} else {
 					fly.startFlying(getBottom() - absDisY , ScreenType.VIDEO_SHARE);
 				}
@@ -829,7 +829,7 @@ public class MapVideoLayout extends FrameLayout {
 		tsv.offsetTopAndBottom(offset);
 		mMapView.offsetTopAndBottom(offset);
 		//for inquiry bid
-		if (tsv.getTop() < 0) {
+		if (tsv.getTop() < 0 ) {
 			V2Log.i("===>" + inquiryBidWidget.getTop() +"   left:" + inquiryBidWidget.getLeft() +"   right:" + inquiryBidWidget.getRight() +"   bottom:" + inquiryBidWidget.getBottom());
 			shareSurfaceView.offsetTopAndBottom(offset);
 			videoShareBtnLayout.offsetTopAndBottom(offset);
@@ -880,9 +880,9 @@ public class MapVideoLayout extends FrameLayout {
 				}
 			} else {
 				if (next == ScreenType.INQUIRE_BIDING) {
-					translateTsvAndMap(offset);
-				} else {
 					translateTsvAndMap(-offset);
+				} else {
+					translateTsvAndMap(offset);
 				}
 			}
 			break;
@@ -1023,9 +1023,10 @@ public class MapVideoLayout extends FrameLayout {
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (child.getVisibility() != GONE) {
-				if (child == p2pVideoLayout || child == p2pAudioConnectionPublisherLayout) {
+				if (child == p2pVideoLayout || child == p2pAudioConnectionPublisherLayout || child == mMapView) {
 					measureChildWithMargins(child, widthMeasureSpec, 0,
 							heightMeasureSpec, VIDEO_SURFACE_HEIGHT);
+					V2Log.i("====>" + getBottom()+"  " + child.getMeasuredHeight());
 				} else {
 					measureChildWithMargins(child, widthMeasureSpec, 0,
 							heightMeasureSpec, 0);
@@ -1066,7 +1067,7 @@ public class MapVideoLayout extends FrameLayout {
 			V2Log.e("=== can not layout due to touch state is not idle " + ts);
 			return;
 		}
-		top = top + 1;
+		top = 1;
 		bottom = bottom - 1;
 		V2Log.i("====> layout st:"+ st +"   ts:"+ ts);
 

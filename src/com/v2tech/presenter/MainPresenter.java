@@ -417,7 +417,6 @@ public class MainPresenter extends BasePresenter implements
 	@Override
 	public void onLiveInfoRecommandBtnClicked(View v) {
 		if (currentViewLive == null) {
-			// TODO show incorrect UI
 			return;
 		}
 		ls.recommend(currentViewLive.live, currentViewLive.live.isRend());
@@ -476,10 +475,10 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onRequestConnectRightBtnClicked(View v, Object widgetTag) {
-//		if (!isBState(B_PUBLISHING_VIDEO_REQUEST_FLAG)
-//				&& !isBState(B_PUBLISHING_AUDIO_REQUEST_FLAG)) {
-//			return;
-//		}
+		if (!isBState(B_PUBLISHING_VIDEO_REQUEST_FLAG)
+				&& !isBState(B_PUBLISHING_AUDIO_REQUEST_FLAG)) {
+			return;
+		}
 		
 		if (isBState(B_PUBLISHING_VIDEO_REQUEST_FLAG)) {
 			LiveConnectionUser lcu = (LiveConnectionUser) widgetTag;
