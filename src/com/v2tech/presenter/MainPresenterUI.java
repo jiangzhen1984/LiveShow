@@ -57,15 +57,9 @@ public interface MainPresenterUI {
 	
 	public void updateRendNum(int num);
 
-	public void showRedBtm(boolean flag);
-
-	public void showIncharBtm(boolean flag);
-
 	public void updateBalanceSum(final float num);
 
 	public void showMarqueeMessage(boolean flag);
-
-	public void closeVideo(boolean flag);
 
 	public void doFinish();
 	

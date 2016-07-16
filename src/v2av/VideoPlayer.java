@@ -252,6 +252,30 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	}
 	
 	
+	
+	public boolean removeCurrentWindow() {
+		if (screens.length == 1) {
+			return false;
+		}
+		int newLen = screens.length - 1;
+		Bitmap[] newScreens = new Bitmap[newLen];
+		if (currentIndex == 0) {
+			System.arraycopy(screens, 1, newScreens, 0, newLen);
+		} else if (currentIndex == newLen) {
+			System.arraycopy(screens, 0, newScreens, 0, newLen);
+		} else {
+			System.arraycopy(screens, 0, newScreens, 0, currentIndex);
+			System.arraycopy(screens, currentIndex + 1, newScreens, currentIndex, newLen - currentIndex);
+		}
+		
+		screens[currentIndex].recycle();
+		screens = newScreens;
+		int nextIndex = (currentIndex ) % newLen;
+		this.setItemIndex(nextIndex);
+		
+		return true;
+	}
+	
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {

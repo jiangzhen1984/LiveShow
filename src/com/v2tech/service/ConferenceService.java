@@ -133,7 +133,7 @@ public class ConferenceService extends DeviceService {
 	 */
 	public void requestEnterConference(Live l, MessageListener caller) {
 		DeamonWorker.getInstance().request(
-				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
+				new PacketProxy(new LiveWatchingReqPacket(l.getLid(), GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
 						LiveWatchingReqPacket.WATCHING), null));
 		V2Log.i("===  request join meeting  : "+  l.getLid());
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
@@ -168,7 +168,7 @@ public class ConferenceService extends DeviceService {
 			return;
 		}
 		DeamonWorker.getInstance().request(
-				new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
+				new PacketProxy(new LiveWatchingReqPacket(l.getLid(),GlobalHolder.getInstance().getCurrentUser().nId, l.getNid(),
 						LiveWatchingReqPacket.CANCEL), null));
 		
 		initTimeoutMessage(JNI_REQUEST_EXIT_CONF, DEFAULT_TIME_OUT_SECS, caller);
@@ -238,7 +238,7 @@ public class ConferenceService extends DeviceService {
 		}
 		
 		DeamonWorker.getInstance().request(
-				new LiveWatchingReqPacket(GlobalHolder.getInstance()
+				new LiveWatchingReqPacket(l.getLid(),GlobalHolder.getInstance()
 						.getCurrentUser().nId, l.getNid(),
 						LiveWatchingReqPacket.CANCEL)); 
 		

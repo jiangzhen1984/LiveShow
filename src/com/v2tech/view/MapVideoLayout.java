@@ -267,7 +267,6 @@ public class MapVideoLayout extends FrameLayout {
 	
 	
 	public int getVideoWindowNums() {
-		//return mViewPagerAdapter.getCount();
 		return 1;
 	}
 	
@@ -281,20 +280,10 @@ public class MapVideoLayout extends FrameLayout {
 		liveInformationLayout.updateRecommands(num+"");
 	}
 	
-	public void updateWatcherNum(int num) {
-		
-	}
-	
 	public void updateBalanceSum(float num) {
 		liveInformationLayout.updateTips(num + "");
 	}
-	
-    public void showRedBtm(boolean flag) {
-	}
-	
-	public void showIncharBtm(boolean flag) {
-	}
-	
+
 	public void updateVideoShareBtnBackground(int res) {
 		videoShareBtnLayout.updateSharedBtnBackground(res);
 	}

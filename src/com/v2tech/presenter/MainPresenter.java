@@ -184,7 +184,9 @@ public class MainPresenter extends BasePresenter implements
 		uiHandler = new UiHandler(this, ui);
 		viewLiveList = new ArrayList<ViewLive>(20);
 		audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-		
+		audioManager.setSpeakerphoneOn(true);
+		audioManager.setMicrophoneMute(false);
+		audioManager.setMode(AudioManager.MODE_NORMAL);
 		liveConnectionUserList =  new ArrayList<LiveConnectionUser>(5);
 	}
 
@@ -325,34 +327,18 @@ public class MainPresenter extends BasePresenter implements
 			throw new RuntimeException("ilegal state: "+ bState);
 		}
 		if (isBState(B_WATCHING_FLAG)) {
-			// quit from old
-			currentViewLive.playing = false;
-			currentViewLive.showing = false;
-			currentViewLive.surfaveViewIdx = -1;
-			
-			UserDeviceConfig duc = new UserDeviceConfig(4,
-					currentViewLive.live.getLid(), GlobalHolder.getInstance()
-							.getCurrentUserId(), "", null);
-			vs.requestCloseVideoDevice(duc, null);
-			vs.requestExitConference(currentViewLive.live, null);
-			unsetBState(B_WATCHING_FLAG);
+			closeLive(currentViewLive);
+			currentViewLive = null;
 		}
 
 		// join new one
 		Live l = (Live) m.getLive();
 		if (l != null) {
-			vs.requestEnterConference(l, new MessageListener(h,
-					WATCHING_REQUEST_CALLBACK, null));
 			ViewLive vl= findViewLive(l);
 			if (vl == null) {
 				throw new RuntimeException(" no viewlive :" + l);
 			}
-			this.currentViewLive = vl;
-			currentViewLive.playing = true;
-			currentViewLive.showing = true;
-			currentViewLive.surfaveViewIdx = vpController.getCurrentItemIdx();
-			updateLiveScreen(l);
-			setBState(B_WATCHING_FLAG);
+			openLive(vl);
 		}
 		return true;
 	}
@@ -365,9 +351,50 @@ public class MainPresenter extends BasePresenter implements
 
 	@Override
 	public void onCloseBtnClicked(View v) {
-		ui.closeVideo(true);
-		// FIXME close video btn
+		if(!isBState(B_WATCHING_FLAG)) {
+			V2Log.w(" state error: " + bState+"  not wathcing flag");
+			return;
+		}
+		
+	
+		//FIXME clear all connection state
+		if (isBState(B_WATCHING_AUDIO_REQUEST_FLAG)) {
+			
+		} else if (isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
+			
+		} else if (isBState(B_WATCHING_AUDIO_CONNECTED_FLAG)) {
+			
+		} else if (isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
+			
+		}
+		
+		closeLive(currentViewLive);
+		currentViewLive = null;
+		int curIdx = vpController.getCurrentItemIdx();
+		//update all video index
+		for (int i = 0; i < viewLiveList.size(); i++) {
+			ViewLive vv = viewLiveList.get(i);
+			if (vv.surfaveViewIdx > curIdx) {
+				vv.surfaveViewIdx--;
+			}
+		}
+		vpController.removeCurrentWindow();
+		curIdx = vpController.getCurrentItemIdx();
+		for (int i = 0; i < viewLiveList.size(); i++) {
+			ViewLive vv = viewLiveList.get(i);
+			if (vv.surfaveViewIdx == curIdx) {
+				currentViewLive = vv;
+				break;
+			}
+			
+		}
+		unsetBState(~0xFFFFFFFF);
+		
+		if (currentViewLive != null) {
+			openLive(currentViewLive);
+		}
 	}
+	
 
 	@Override
 	public void onLiveInfoTipsBtnClicked(View v) {
@@ -990,34 +1017,22 @@ public class MainPresenter extends BasePresenter implements
 			for (int i = 0; i < len; i++) {
 				LiveConnectionUser lcu = liveConnectionUserList.get(i);
 				if (lcu.index == current) {
-					V2Log.e("====  close idx:" + lcu.index);
 					vs.requestCloseVideoDevice(publishingLive.group, lcu.udc, null);
 				}
 				if (lcu.index == newIdx) {
-					V2Log.e("====  open idx:" + lcu.index);
 					vs.requestOpenVideoDevice(publishingLive.group, lcu.udc, null);
 				}
 			}
 			return;
 		}
 		
+		if (isBState(B_WATCHING_FLAG) && currentViewLive != null) {
+			closeLive(currentViewLive, true);
+			currentViewLive = null;
+		}
 		for (ViewLive vl : viewLiveList) {
-			if (vl.surfaveViewIdx == current) {
-				UserDeviceConfig duc = new UserDeviceConfig(4,
-						vl.live.getLid(), GlobalHolder.getInstance()
-								.getCurrentUserId(), "", null);
-				vs.requestCloseVideoDevice(duc, null);
-				
-				vs.requestExitConference(vl.live, null);
-				vl.showing = false;
-			}
 			if (vl.surfaveViewIdx == newIdx) {
-				if (vl.playing) {
-					vs.requestEnterConference(vl.live, new MessageListener(h,
-							WATCHING_REQUEST_CALLBACK, null));
-					vl.showing = true;
-				}
-				this.currentViewLive = vl;
+				openLive(vl);
 			}
 		}
 			
@@ -1105,8 +1120,6 @@ public class MainPresenter extends BasePresenter implements
 
 		ui.updateRendNum(l.rendCount);
 		// ui.updateWatchNum(l.watcherCount);
-		ui.showRedBtm(l.isRend());
-		ui.showIncharBtm(l.isInchr);
 		ui.updateBalanceSum(l.balanceSum);
 	}
 
@@ -1310,6 +1323,38 @@ public class MainPresenter extends BasePresenter implements
 			}
 		}
 		return null;
+	}
+	
+	private void closeLive(ViewLive vl) {
+		closeLive(vl, false);
+	}
+	
+	private void closeLive(ViewLive vl, boolean playingFlag) {
+		// quit from old
+		vl.playing = playingFlag;
+		vl.showing = false;
+		if (!playingFlag)  {
+			vl.surfaveViewIdx = -1;
+		}
+		
+		UserDeviceConfig duc = new UserDeviceConfig(4,
+				vl.live.getLid(), GlobalHolder.getInstance()
+						.getCurrentUserId(), "", null);
+		vs.requestCloseVideoDevice(duc, null);
+		vs.requestExitConference(vl.live, null);
+		unsetBState(B_WATCHING_FLAG);
+	}
+	
+	
+	private void openLive(ViewLive vl) {
+		this.currentViewLive = vl;
+		vl.playing = true;
+		vl.showing = true;
+		vl.surfaveViewIdx = vpController.getCurrentItemIdx();
+		vs.requestEnterConference(vl.live, new MessageListener(h,
+				WATCHING_REQUEST_CALLBACK, null));
+		updateLiveScreen(vl.live);
+		setBState(B_WATCHING_FLAG);
 	}
 	
 	

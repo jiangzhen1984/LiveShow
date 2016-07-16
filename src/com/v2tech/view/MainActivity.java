@@ -287,15 +287,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		mMapVideoLayout.updateRendNum(num);
 	}
 
-	@Override
-	public void showRedBtm(boolean flag) {
-		mMapVideoLayout.showRedBtm(flag);
-	}
-
-	@Override
-	public void showIncharBtm(boolean flag) {
-		mMapVideoLayout.showIncharBtm(flag);
-	}
 
 	@Override
 	public void showMarqueeMessage(boolean flag) {
@@ -342,11 +333,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		return null;
 	}
 
-	@Override
-	public void closeVideo(boolean flag) {
-		// FIXME close BTN
-
-	}
 
 	@Override
 	public void addWatcher(int flag, Watcher watcher) {
