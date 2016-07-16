@@ -26,7 +26,7 @@ import com.v2tech.util.GlobalConfig;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.view.P2PVideoActivity;
 import com.v2tech.vo.User;
-import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.LivePublisherPersonelLayout.InterfactionBtnClickListener;
 
 public class FansFollowPresenter extends BasePresenter implements
 		AACEncoderNotification, InterfactionBtnClickListener {

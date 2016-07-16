@@ -9,4 +9,9 @@ public class LiveConnectionUser {
 	public UserDeviceConfig udc;
 	public int index;
 	public boolean showing;
+	public Type type = Type.VIDEO;
+	
+	public enum Type {
+		AUDIO, VIDEO;
+	}
 }

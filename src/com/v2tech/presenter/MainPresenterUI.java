@@ -20,6 +20,18 @@ public interface MainPresenterUI {
 	public static final int INPUT_MODE_PAN = 2;
 	
 	
+	
+	public static final int UI_LAYOUT_TYPE_MAP = 1;
+	public static final int UI_LAYOUT_TYPE_P2P_AUDIO_REQUEST = 2;
+	public static final int UI_LAYOUT_TYPE_P2P_VIDEO_REQUEST = 3;
+	public static final int UI_LAYOUT_TYPE_P2P_AUDIO_CONNECTION_PUBLISHER = 4;
+	public static final int UI_LAYOUT_TYPE_P2P_AUDIO_CONNECTION_WATCHER = 5;
+	public static final int UI_LAYOUT_TYPE_P2P_VIDEO_CONNECTION_PUBLISHER = 6;
+	public static final int UI_LAYOUT_TYPE_P2P_VIDEO_CONNECTION_WATCHER = 7;
+	public static final int UI_LAYOUT_TYPE_LIVE_PUBLISHER_PERSONEL = 8;
+	public static final int UI_LAYOUT_TYPE_BOTTOM_BTN = 9;
+	public static final int UI_LAYOUT_TYPE_BID_PERSON_INFO = 10;
+	
 
 	public MapAPI getMainMap();
 
@@ -37,8 +49,6 @@ public interface MainPresenterUI {
 
 	public void updateVideShareButtonText(boolean publish);
 
-	public void showBottomLayout(boolean flag);
-
 	public void showError(int flag);
 
 	public void showDebugMsg(String msg);
@@ -53,10 +63,6 @@ public interface MainPresenterUI {
 
 	public void updateBalanceSum(final float num);
 
-	public void showLiverInteractionLayout(boolean flag);
-
-	public void showConnectRequestLayout(boolean flag, Object tag);
-
 	public void showMarqueeMessage(boolean flag);
 
 	public void closeVideo(boolean flag);
@@ -69,16 +75,6 @@ public interface MainPresenterUI {
 	 */
 	public void updateTitleBarBtn(int type);
 
-	// 1 for audio 2 for video
-	public void updateConnectLayoutBtnType(int type);
-
-	public void showP2PVideoLayout(boolean flag);
-
-	public void showWatcherP2PVideoLayout(boolean flag);
-
-	public void showWatcherP2PAudioLayout(boolean flag);
-	
-	public void showPersonelWidgetForInquiry(boolean flag);
 	
 	public void showInquiryAcceptedMsg(String msg);
 
@@ -95,8 +91,6 @@ public interface MainPresenterUI {
 	public VideoPlayer getVideoPlayer();
 	
 	public VideoPlayer getP2PVideoPlayer();
-	
-	public void showMap(boolean flag);
 	
 	public void cancelInquireState();
 	
@@ -120,4 +114,7 @@ public interface MainPresenterUI {
 	public void updateLocalCameraType(int type);
 	
 	public void updateInputMode(int mode);
+	
+	
+	public void showUILayout(int type, boolean show, Object tag);
 }

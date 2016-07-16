@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.v2tech.v2liveshow.R;
 
-public class LiverInteractionLayout extends LinearLayout {
+public class LivePublisherPersonelLayout extends LinearLayout {
 
 
 	private ImageView avatar;
@@ -31,21 +31,25 @@ public class LiverInteractionLayout extends LinearLayout {
 	private ImageView followBtnIV;
 	private TextView  followBtnTV; 
 	
+	private View videoRecordBtn;
+	private View tipsBtn;
+	private View chattingBtn;
+	
+	private View connectedBtnLayout;
+	private View normalBtnLayout;
 	
 	private InterfactionBtnClickListener outListener;
 	
-	private boolean flag;
-
-	public LiverInteractionLayout(Context context, AttributeSet attrs,
+	public LivePublisherPersonelLayout(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-	public LiverInteractionLayout(Context context, AttributeSet attrs) {
+	public LivePublisherPersonelLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public LiverInteractionLayout(Context context) {
+	public LivePublisherPersonelLayout(Context context) {
 		super(context);
 	}
 
@@ -94,49 +98,54 @@ public class LiverInteractionLayout extends LinearLayout {
 		innerBox.setVisibility(flag? View.VISIBLE : View.GONE);
 	}
 	
-	private void initView() {
-		avatar = (ImageView) findViewById(R.id.liver_interaction_avtar);
-		name = (TextView) findViewById(R.id.liver_interaction_name);
-		gender = (ImageView) findViewById(R.id.liver_interaction_gender);
-		level = (ImageView) findViewById(R.id.liver_interaction_level);
-		signature = (TextView)findViewById(R.id.liver_interaction_signature);
-		location = (TextView) findViewById(R.id.liver_interaction_location);
-		videos = (TextView) findViewById(R.id.liver_interaction_videos);
-		fans = (TextView) findViewById(R.id.liver_interaction_fans);
-		follows = (TextView) findViewById(R.id.liver_interaction_follows);
-		
-		chatRequestBtn = findViewById(R.id.liver_interaction_chating_btn_iv);
-		chatRequestBtn.setOnClickListener(listener);
-		
-		videoChatBtn = findViewById(R.id.liver_interaction_video_call_btn_iv);
-		videoChatBtn.setOnClickListener(listener);
-		
-		showMsgBtn = findViewById(R.id.liver_interaction_msg_btn_iv);
-		showMsgBtn.setOnClickListener(listener);
-		
-		innerBox = findViewById(R.id.liver_interaction_box_layout);
-		innerBox.setVisibility(View.GONE);
-		
-		followBtn = findViewById(R.id.liver_interaction_btn_ly);
-		followBtn.setOnClickListener(listener);
-		
-		followBtnIV = (ImageView)findViewById(R.id.liver_interaction_btn);
-		followBtnTV = (TextView)findViewById(R.id.liver_interaction_text);
-		
-		chatRequestBtn.setOnClickListener(listener);
+	
+	public void showConnectedBtnLayout(boolean flag) {
+		connectedBtnLayout.setVisibility(flag? View.VISIBLE : View.GONE);
+		normalBtnLayout.setVisibility((!flag)? View.VISIBLE : View.GONE);
 	}
-	
-	
-	
-	
-	
-	
 	
 
 	@Override
 	public void addView(View child, int index,
 			android.view.ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
+		
+		int id = child.getId();
+		switch (id) {
+		case R.id.publisher_personel_layout:
+			avatar = (ImageView) child.findViewById(R.id.live_publisher_avtar);
+			name = (TextView)  child.findViewById(R.id.liver_interaction_name);
+			gender = (ImageView)  child.findViewById(R.id.liver_interaction_gender);
+			level = (ImageView)  child.findViewById(R.id.liver_interaction_level);
+			signature = (TextView) child.findViewById(R.id.liver_interaction_signature);
+			location = (TextView)  child.findViewById(R.id.liver_interaction_location);
+			videos = (TextView)  child.findViewById(R.id.liver_interaction_videos);
+			fans = (TextView)  child.findViewById(R.id.liver_interaction_fans);
+			follows = (TextView)  child.findViewById(R.id.liver_interaction_follows);
+			followBtn = child.findViewById(R.id.liver_interaction_btn_ly);
+			followBtn.setOnClickListener(listener);
+			followBtnIV = (ImageView)child.findViewById(R.id.liver_interaction_btn);
+			followBtnTV = (TextView)child.findViewById(R.id.liver_interaction_text);
+			break;
+		case R.id.publisher_personel_btn_layout:
+			connectedBtnLayout = child.findViewById(R.id.audio_connection_watcher_btn_layout);
+			videoRecordBtn = child.findViewById(R.id.p2p_audio_connection_watcher_btn_layout_record_btn);
+			tipsBtn = child.findViewById(R.id.p2p_audio_connection_watcher_btn_layout_chatting_btn);
+			chattingBtn = child.findViewById(R.id.p2p_audio_connection_watcher_btn_layout_tips_btn);
+			
+			normalBtnLayout = child.findViewById(R.id.live_publish_watcher_btn_layout);
+			chatRequestBtn = child.findViewById(R.id.live_publish_watcher_btn_layout_audio_call_btn);
+			videoChatBtn = child.findViewById(R.id.live_publish_watcher_btn_layout_video_call_btn);
+			showMsgBtn = child.findViewById(R.id.live_publish_watcher_btn_layout_message_btn);
+			chatRequestBtn.setOnClickListener(listener);
+			videoChatBtn.setOnClickListener(listener);
+			showMsgBtn.setOnClickListener(listener);
+			break;
+		case R.id.liver_interaction_box_layout:
+			innerBox = child;
+			innerBox.setVisibility(View.GONE);
+			break;
+		}
 	}
 
 	
@@ -163,13 +172,13 @@ public class LiverInteractionLayout extends LinearLayout {
 			}
 			int id = v.getId();
 			switch (id) {
-			case R.id.liver_interaction_chating_btn_iv:
+			case R.id.live_publish_watcher_btn_layout_audio_call_btn:
 				outListener.onChattingBtnClicked(v);
 				break;
-			case R.id.liver_interaction_msg_btn_iv:
+			case R.id.live_publish_watcher_btn_layout_message_btn:
 				outListener.onMsgBtnClicked(v);
 				break;
-			case R.id.liver_interaction_video_call_btn_iv:
+			case R.id.live_publish_watcher_btn_layout_video_call_btn:
 				outListener.onVideoCallBtnClicked(v);
 				break;
 			case R.id.liver_interaction_btn_ly:
@@ -189,10 +198,6 @@ public class LiverInteractionLayout extends LinearLayout {
 
 	public void setOutListener(InterfactionBtnClickListener outListener) {
 		this.outListener = outListener;
-		if (!flag) {
-			flag = true;
-			initView();
-		}
 	}
 
 

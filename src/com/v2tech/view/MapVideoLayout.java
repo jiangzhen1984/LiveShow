@@ -1,19 +1,5 @@
 package com.v2tech.view;
 
-import v2av.VideoPlayer;
-import v2av.VideoRecorder;
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
@@ -30,13 +16,13 @@ import com.v2tech.widget.InquiryBidWidget;
 import com.v2tech.widget.InquiryBidWidget.InquiryBidWidgetListener;
 import com.v2tech.widget.LiveInformationLayout;
 import com.v2tech.widget.LiveInformationLayout.LiveInformationLayoutListener;
-import com.v2tech.widget.LiverInteractionLayout;
-import com.v2tech.widget.LiverInteractionLayout.InterfactionBtnClickListener;
+import com.v2tech.widget.LivePublisherPersonelLayout;
+import com.v2tech.widget.LivePublisherPersonelLayout.InterfactionBtnClickListener;
 import com.v2tech.widget.MapLocationTipsWidget;
 import com.v2tech.widget.MessageMarqueeLinearLayout;
 import com.v2tech.widget.MessageMarqueeLinearLayout.MessageMarqueeLayoutListener;
-import com.v2tech.widget.P2PAudioWatcherLayout;
-import com.v2tech.widget.P2PAudioWatcherLayout.P2PAudioWatcherLayoutListener;
+import com.v2tech.widget.P2PAudioConnectionPublisherLayout;
+import com.v2tech.widget.P2PAudioConnectionPublisherLayout.P2PAudioConnectionPublisherLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout;
@@ -51,6 +37,20 @@ import com.v2tech.widget.VideoShareRightWidget;
 import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
+
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import v2av.VideoPlayer;
+import v2av.VideoRecorder;
 
 public class MapVideoLayout extends FrameLayout {
 	
@@ -76,11 +76,11 @@ public class MapVideoLayout extends FrameLayout {
 	private TouchSurfaceView shareSurfaceView;
 	private VideoShareBtnLayout videoShareBtnLayout;
 	private MessageMarqueeLinearLayout mMsgLayout;
-	private LiverInteractionLayout lierInteractionLayout;
+	private LivePublisherPersonelLayout livePublisherPersonelLayout;
 	private RequestConnectLayout   requestConnectLayout;
 	private P2PVideoMainLayout p2pVideoLayout;
-	private P2PAudioWatcherLayout p2pAudioWatcherLayout;
 	private LiveInformationLayout  liveInformationLayout;
+	private P2PAudioConnectionPublisherLayout p2pAudioConnectionPublisherLayout;
 	private VideoWatcherListLayout liveWatcherLayout;
 	private InquiryBidWidget      inquiryBidWidget;
 	private MapLocationTipsWidget mapLocationTipsWidget;
@@ -90,7 +90,7 @@ public class MapVideoLayout extends FrameLayout {
 	private VideoShareRightWidget videoShareRightWidet;
 	private VerticalSpinWidget volumnWidget;
 	private View volumneIcon;
-	private LiverInteractionLayout inquiryBiderWidget;
+	private LivePublisherPersonelLayout inquiryBiderWidget;
 	
 	
 	private ScreenType st = ScreenType.VIDEO_MAP;
@@ -144,8 +144,8 @@ public class MapVideoLayout extends FrameLayout {
 		videoShareBtnLayout = (VideoShareBtnLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_share_btn_layout, (ViewGroup)null);
 		
 		
-		lierInteractionLayout = (LiverInteractionLayout)LayoutInflater.from(getContext()).inflate(R.layout.liver_interaction_layout, (ViewGroup)null);
-		lierInteractionLayout.showInnerBox(false);
+		livePublisherPersonelLayout = (LivePublisherPersonelLayout)LayoutInflater.from(getContext()).inflate(R.layout.liver_interaction_layout, (ViewGroup)null);
+		livePublisherPersonelLayout.showInnerBox(false);
 		
 		
 		requestConnectLayout = (RequestConnectLayout)LayoutInflater.from(getContext()).inflate(R.layout.requesting_connect_layout, (ViewGroup)null);
@@ -154,10 +154,9 @@ public class MapVideoLayout extends FrameLayout {
 		p2pVideoLayout.addSurfaceHolderCallback(p2pVideoPlayer);
 		p2pVideoLayout.setTouchSurfaceViewTranslate(p2pVideoPlayerTranslate);
 		
-		p2pAudioWatcherLayout= (P2PAudioWatcherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_watcher_layout, (ViewGroup)null);
-		
 		liveInformationLayout = (LiveInformationLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_right_border_layout, (ViewGroup)null);
 		liveWatcherLayout	 = (VideoWatcherListLayout)LayoutInflater.from(getContext()).inflate(R.layout.video_layout_bottom_layout, (ViewGroup)null);
+		p2pAudioConnectionPublisherLayout	 = (P2PAudioConnectionPublisherLayout)LayoutInflater.from(getContext()).inflate(R.layout.p2p_audio_connected_publisher_layout, (ViewGroup)null);
 		
 		bountyMarker = (BountyMarkerWidget)LayoutInflater.from(getContext()).inflate(R.layout.bounty_marker_layout, (ViewGroup)null);
 		inquiryBidWidget = (InquiryBidWidget)LayoutInflater.from(getContext()).inflate(R.layout.inquiry_bid_layout, (ViewGroup)null);
@@ -180,7 +179,7 @@ public class MapVideoLayout extends FrameLayout {
 		volumneIcon= new ImageView(getContext());
 		((ImageView)volumneIcon).setImageResource(R.drawable.volume_contronller_icon_);
 		
-		inquiryBiderWidget= (LiverInteractionLayout)LayoutInflater.from(getContext()).inflate(R.layout.liver_interaction_layout, (ViewGroup)null);
+		inquiryBiderWidget= (LivePublisherPersonelLayout)LayoutInflater.from(getContext()).inflate(R.layout.liver_interaction_layout, (ViewGroup)null);
 		inquiryBiderWidget.showInnerBox(false);
 		
 		
@@ -189,8 +188,8 @@ public class MapVideoLayout extends FrameLayout {
 		
 		this.addView(tsv, -1, new LayoutParams(LayoutParams.MATCH_PARENT, VIDEO_SURFACE_HEIGHT));
 		this.addView(mMapView, -1, generateDefaultLayoutParams());
-		this.addView(lierInteractionLayout, -1, generateDefaultLayoutParams());
-		
+		this.addView(livePublisherPersonelLayout, -1, generateDefaultLayoutParams());
+		this.addView(p2pAudioConnectionPublisherLayout, -1, generateDefaultLayoutParams());
 		
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 10;
@@ -204,7 +203,6 @@ public class MapVideoLayout extends FrameLayout {
 		this.addView(inquiryCloseBtn, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.addView(inquiryBiderWidget, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.addView(p2pVideoLayout, -1, generateDefaultLayoutParams());
-		this.addView(p2pAudioWatcherLayout, -1, generateDefaultLayoutParams());
 		
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 40;
@@ -330,7 +328,7 @@ public class MapVideoLayout extends FrameLayout {
 		}
 	}
 	
-	public void showLiverInteractionLy(boolean flag) {
+	public void showPublisherPersonelLy(boolean flag) {
 		if (st != ScreenType.VIDEO_MAP && flag) {
 			throw new RuntimeException(" screen type can not support: " + st
 					+ "  only support from " + ScreenType.VIDEO_MAP + " to "
@@ -362,7 +360,7 @@ public class MapVideoLayout extends FrameLayout {
 		}
 	}
 
-	public void showP2PAudioWatcherLy(boolean flag) {
+	public void showP2PAudioConnectionWatcherLy(boolean flag) {
 		int distance = getBottom() - tsv.getMeasuredHeight();
 		if (flag) {
 			// fake UI behavior for simulate touch move up.
@@ -373,9 +371,25 @@ public class MapVideoLayout extends FrameLayout {
 			turnUITypeAnimation(ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION,
 					ScreenType.VIDEO_MAP, PostState.GO_NEXT, distance);
 		}
+		livePublisherPersonelLayout.showConnectedBtnLayout(flag);
 	}
 	
-	public void showP2PVideoLayout(boolean flag) {
+	
+	public void showP2PAudioConnectionPublisherLy(boolean flag) {
+		int distance = getBottom() - shareSurfaceView.getMeasuredHeight();
+		if (flag) {
+			// fake UI behavior for simulate touch move up.
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_AUDIO_CONNECTION,
+					ScreenType.VIDEO_SHARE_P2P_AUDIO_CONNECTION,
+					PostState.RESTORE, distance);
+		} else {
+			turnUITypeAnimation(ScreenType.VIDEO_SHARE_P2P_AUDIO_CONNECTION,
+					ScreenType.VIDEO_SHARE_MAP, PostState.GO_NEXT, distance);
+		}
+	}
+	
+	
+	public void showP2PVideoConnectionPublisherLayout(boolean flag) {
 		int distance = getBottom() - tsv.getMeasuredHeight();
 		if (flag) {
 			// fake UI behavior for simulate touch move up.
@@ -393,7 +407,7 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
-	public void showP2PWatcherVideoLayout(boolean flag) {
+	public void showP2PVideoConnectionWatcherLayout(boolean flag) {
 		int distance = getBottom() - tsv.getMeasuredHeight();
 		if (flag) {
 			p2pVideoLayout.removeSurfaceHolderCallback(p2pVideoPlayer);
@@ -453,11 +467,11 @@ public class MapVideoLayout extends FrameLayout {
 	
 	
 	public void updateFollowBtnImageResource(int res) {
-		lierInteractionLayout.updateFollowBtnImageResource(res);
+		livePublisherPersonelLayout.updateFollowBtnImageResource(res);
 	}
 
 	public void updateFollowBtnTextResource(int res) {
-		lierInteractionLayout.updateFollowBtnTextResource(res);
+		livePublisherPersonelLayout.updateFollowBtnTextResource(res);
 	}
 
 	
@@ -472,12 +486,10 @@ public class MapVideoLayout extends FrameLayout {
 	}
 	
 	
-	public void setP2PAudioWatcherLayoutListener(P2PAudioWatcherLayoutListener listener)  {
-		this.p2pAudioWatcherLayout.setOutListener(listener);
-	}
+	
 	
 	public void setInterfactionBtnClickListener(InterfactionBtnClickListener listener)  {
-		this.lierInteractionLayout.setOutListener(listener);
+		this.livePublisherPersonelLayout.setOutListener(listener);
 	}
 	
 	public void setP2PVideoMainLayoutListener(P2PVideoMainLayoutListener listener) {
@@ -490,6 +502,10 @@ public class MapVideoLayout extends FrameLayout {
 	
 	public void setVideoShareBtnLayoutListener(VideoShareBtnLayoutListener listener) {
 		this.videoShareBtnLayout.setListener(listener);
+	}
+	
+	public void setP2PAudioConnectionPublisherLayoutListener(P2PAudioConnectionPublisherLayoutListener listener) {
+		this.p2pAudioConnectionPublisherLayout.setListener(listener);
 	}
 	
 	public void showMarqueeMessageLayout(boolean flag) {
@@ -654,16 +670,12 @@ public class MapVideoLayout extends FrameLayout {
 			.getBottom() >= y);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
-			ret = (x >= (int) lierInteractionLayout.getLeft()
-			&& lierInteractionLayout.getRight() >= x
-			&& (int) lierInteractionLayout.getTop() <= y && lierInteractionLayout
+			ret = (x >= (int) livePublisherPersonelLayout.getLeft()
+			&& livePublisherPersonelLayout.getRight() >= x
+			&& (int) livePublisherPersonelLayout.getTop() <= y && livePublisherPersonelLayout
 			.getBottom() >= y);
 			break;
 		case VIDEO_WATCHING_AUDIO_CONNECTION:
-			ret = (x >= (int) p2pAudioWatcherLayout.getLeft()
-			&& p2pAudioWatcherLayout.getRight() >= x
-			&& (int) p2pAudioWatcherLayout.getTop() <= y && p2pAudioWatcherLayout
-			.getBottom() >= y);
 			break;
 		case INQUIRE_BIDING:
 			ret = (x >= (int) inquiryBidWidget.getLeft()
@@ -709,17 +721,16 @@ public class MapVideoLayout extends FrameLayout {
 			translateBottomView(p2pVideoLayout, dy);
 			break;
 		case VIDEO_PUBLISHER_SHOW:
-			translateBottomView(lierInteractionLayout, dy);
+			translateBottomView(livePublisherPersonelLayout, dy);
 			break;
 		case VIDEO_WATCHING_AUDIO_CONNECTION:
-			translateBottomView(p2pAudioWatcherLayout, dy);
 			break;
 		case INQUIRE_BIDING:
 			if (mMapView.getTop() + dy > mapLocationTipsWidget.getBottom()) {
 				translateBottomView(inquiryBidWidget, dy);
 				translateTopView(tsv, dy);
 				translateTopView(mMsgLayout, dy);
-				translateTopView(lierInteractionLayout, dy);
+				translateTopView(livePublisherPersonelLayout, dy);
 				translateTopView(liveWatcherLayout, dy);
 				mapLocationTipsWidget.offsetTopAndBottom(dy);
 				bountyMarker.offsetTopAndBottom(dy);
@@ -909,6 +920,14 @@ public class MapVideoLayout extends FrameLayout {
 				translateBottomView(returnBtnView, -offset);
 			}
 			break;
+		case VIDEO_SHARE_P2P_AUDIO_CONNECTION:
+			if (ps == PostState.GO_NEXT) {
+				translateBottomView(p2pAudioConnectionPublisherLayout, offset);
+			} else {
+				translateBottomView(p2pAudioConnectionPublisherLayout, -offset);
+				translateBottomView(mMapView, -offset);
+			}
+			break;
 		case VIDEO_SHARE_P2P_VIDEO_CONNECTION:
 			if (ps == PostState.GO_NEXT) {
 				translateBottomView(p2pVideoLayout, offset);
@@ -918,17 +937,12 @@ public class MapVideoLayout extends FrameLayout {
 			break;
 		case VIDEO_PUBLISHER_SHOW:
 			if (ps == PostState.GO_NEXT) {
-				translateBottomView(lierInteractionLayout, offset);
+				translateBottomView(livePublisherPersonelLayout, offset);
 			} else {
-				translateBottomView(lierInteractionLayout, -offset);
+				translateBottomView(livePublisherPersonelLayout, -offset);
 			}
 			break;
 		case VIDEO_WATCHING_AUDIO_CONNECTION:
-			if (ps == PostState.GO_NEXT) {
-				translateBottomView(p2pAudioWatcherLayout, offset);
-			} else {
-				translateBottomView(p2pAudioWatcherLayout, -offset);
-			}
 			break;
 		case VIDEO_WATCHING_VIDEO_CONNECTION:
 			if (ps == PostState.GO_NEXT) {
@@ -942,7 +956,7 @@ public class MapVideoLayout extends FrameLayout {
 				translateBottomView(inquiryBidWidget, offset);
 				translateTopView(tsv, offset);
 				translateTopView(mMsgLayout, offset);
-				translateTopView(lierInteractionLayout, offset);
+				translateTopView(livePublisherPersonelLayout, offset);
 				translateTopView(liveWatcherLayout, offset);
 				mMapView.offsetTopAndBottom(offset);
 				bountyMarker.offsetTopAndBottom(offset);
@@ -1020,7 +1034,7 @@ public class MapVideoLayout extends FrameLayout {
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (child.getVisibility() != GONE) {
-				if (child == p2pVideoLayout) {
+				if (child == p2pVideoLayout || child == p2pAudioConnectionPublisherLayout) {
 					measureChildWithMargins(child, widthMeasureSpec, 0,
 							heightMeasureSpec, VIDEO_SURFACE_HEIGHT);
 				} else {
@@ -1074,9 +1088,8 @@ public class MapVideoLayout extends FrameLayout {
 			shareSurfaceView.layout(left, top, right, bottomChildTop);
 			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
 			mMapView.layout(left, bottomChildTop, right, bottom);
-			lierInteractionLayout.layout(left,bottom, right, bottom + lierInteractionLayout.getMeasuredHeight());
+			livePublisherPersonelLayout.layout(left,bottom, right, bottom + livePublisherPersonelLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
-			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
 			inquiryBidWidget.layout(left, bottom, right, bottom + inquiryBidWidget.getMeasuredHeight());
 			bountyMarker.layout(left, bottom, right, bottom + bountyMarker.getMeasuredHeight());
 			mapLocationTipsWidget.layout(left, -mapLocationTipsWidget.getMeasuredHeight(), right, 0);
@@ -1106,6 +1119,7 @@ public class MapVideoLayout extends FrameLayout {
 					left + volumnWidget.getMeasuredWidth() + lp.leftMargin, vwbottom);	
 			
 			inquiryBiderWidget.layout(left, bottom -1 , right, bottom + inquiryBiderWidget.getMeasuredHeight());
+			p2pAudioConnectionPublisherLayout.layout(left, bottom , right, bottom + p2pAudioConnectionPublisherLayout.getMeasuredHeight());
 			
 		} else if (st == ScreenType.VIDEO_SHARE) {
 			borderY = shareSurfaceView.getMeasuredHeight();
@@ -1113,14 +1127,13 @@ public class MapVideoLayout extends FrameLayout {
 			shareSurfaceView.layout(left, top, right, bottomChildTop);
 			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
 			mMapView.layout(left, bottom, right, bottom + mMapView.getMeasuredHeight());
-			lierInteractionLayout.layout(left,bottom, right, bottom + lierInteractionLayout.getMeasuredHeight());
+			livePublisherPersonelLayout.layout(left,bottom, right, bottom + livePublisherPersonelLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
-			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
 			inquiryBidWidget.layout(left, bottom, right, bottom + inquiryBidWidget.getMeasuredHeight());
 			p2pVideoLayout.layout(left,bottom , right, bottom + p2pVideoLayout.getMeasuredHeight());
 			volumnWidget.layout(left,bottom , right, bottom + volumnWidget.getMeasuredHeight());
 			volumneIcon.layout(left,bottom , right, bottom + volumneIcon.getMeasuredHeight());
-			
+			p2pAudioConnectionPublisherLayout.layout(left,bottom - 1  , right, bottom + p2pAudioConnectionPublisherLayout.getMeasuredHeight());
 			LayoutParams lp = (LayoutParams) returnBtnView.getLayoutParams();
 			returnBtnView.layout(right - returnBtnView.getMeasuredWidth()
 					- lp.rightMargin, bottom + lp.topMargin, right
@@ -1137,20 +1150,25 @@ public class MapVideoLayout extends FrameLayout {
 			borderY = tsv.getMeasuredHeight();
 			tsv.layout(left, top, right, bottomChildTop);
 			mMapView.layout(left, bottomChildTop, right, bottom);
-			lierInteractionLayout.layout(left,bottomChildTop, right, bottom);
-			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
+			livePublisherPersonelLayout.layout(left,bottomChildTop, right, bottom);
+		} else if (st == ScreenType.VIDEO_SHARE_P2P_AUDIO_CONNECTION) {
+			borderY = shareSurfaceView.getMeasuredHeight();
+			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			mMapView.layout(left, borderY, right, bottom);
+			p2pAudioConnectionPublisherLayout.layout(left, borderY, right, bottom);
+			requestConnectLayout.layout(left,bottom , right, bottom + requestConnectLayout.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_SHARE_CONNECTION_REQUESTING) {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			shareSurfaceView.layout(left, top, right, bottomChildTop);
 			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
 			requestConnectLayout.layout(left,borderY, right, bottom);
-			p2pAudioWatcherLayout.layout(left, bottom, right, bottom + p2pAudioWatcherLayout.getMeasuredHeight());
 			p2pVideoLayout.layout(left,bottom - 1  , right, bottom + p2pVideoLayout.getMeasuredHeight());
+			p2pAudioConnectionPublisherLayout.layout(left,bottom - 1  , right, bottom + p2pAudioConnectionPublisherLayout.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
 			tsv.layout(left, top, right, bottomChildTop);
-			mMapView.layout(left, bottomChildTop, right, bottom);
-			p2pAudioWatcherLayout.layout(left, bottomChildTop, right, bottomChildTop + p2pAudioWatcherLayout.getMeasuredHeight());
+			mMapView.layout(left, borderY, right, bottom);
+			livePublisherPersonelLayout.layout(left,borderY, right, bottom);
 		} else if (st == ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION) {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			shareSurfaceView.layout(left, top, right, borderY);
@@ -1185,6 +1203,14 @@ public class MapVideoLayout extends FrameLayout {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			mMapView.layout(left, borderY, right, bottom);
 			videoShareBtnLayout.layout(left, borderY, right, bottom);
+			p2pAudioConnectionPublisherLayout.layout(left,bottom - 1  , right, bottom + p2pAudioConnectionPublisherLayout.getMeasuredHeight());
+			LayoutParams lp = (LayoutParams) returnBtnView.getLayoutParams();
+			returnBtnView.layout(right - returnBtnView.getMeasuredWidth()
+					- lp.rightMargin, borderY + lp.topMargin, right
+					- lp.rightMargin,
+					borderY + returnBtnView.getMeasuredHeight() +lp.topMargin
+							);
+			
 			
 		} else if (st == ScreenType.VIDEO_WATCHING_VIDEO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
@@ -1293,8 +1319,8 @@ public class MapVideoLayout extends FrameLayout {
 		VIDEO_MAP, 
 		VIDEO_SHARE,
 		VIDEO_SHARE_CONNECTION_REQUESTING, 
-		VIDEO_SHARE_MAP, 
-		VIDEO_SHARE_P2P_WATCHER, 
+		VIDEO_SHARE_MAP,
+		VIDEO_SHARE_P2P_AUDIO_CONNECTION, 
 		VIDEO_SHARE_P2P_VIDEO_CONNECTION, 
 		VIDEO_PUBLISHER_SHOW, 
 		VIDEO_WATCHING_AUDIO_CONNECTION,

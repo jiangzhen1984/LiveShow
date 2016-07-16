@@ -20,7 +20,7 @@ import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.FansFollowPresenter;
 import com.v2tech.presenter.FansFollowPresenter.FansFollowPresenterUI;
 import com.v2tech.v2liveshow.R;
-import com.v2tech.widget.LiverInteractionLayout;
+import com.v2tech.widget.LivePublisherPersonelLayout;
 import com.v2tech.widget.VoiceRecordDialogWidget;
 
 /**
@@ -33,7 +33,7 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 	private TextView titleBarName;
 
 	private FansFollowPresenter presenter;
-	private LiverInteractionLayout personelLayout;
+	private LivePublisherPersonelLayout personelLayout;
 	
 	private View audioRecordBtn;
 	private PopupWindow   dialog;
@@ -48,7 +48,7 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
-		personelLayout = (LiverInteractionLayout)  findViewById(R.id.personel_liver_interaction_layout);
+		personelLayout = (LivePublisherPersonelLayout)  findViewById(R.id.personel_liver_interaction_layout);
 
 		audioRecordBtn = personelLayout.getAudioRecordBtn();
 		//cancel click event
