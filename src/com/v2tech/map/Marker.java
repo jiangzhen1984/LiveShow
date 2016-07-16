@@ -9,7 +9,9 @@ public class Marker {
 	
 	protected Watcher watcher;
 	
-	public int resId;
+	protected int resId;
+	
+	protected Object ntObj;
 	
 	public Marker() {
 	}
@@ -40,6 +42,22 @@ public class Marker {
 
 	public void setWatcher(Watcher watcher) {
 		this.watcher = watcher;
+	}
+
+	public int getResId() {
+		return resId;
+	}
+
+	public void setResId(int resId) {
+		this.resId = resId;
+	}
+
+	public Object getNtObj() {
+		return ntObj;
+	}
+
+	public void setNtObj(Object ntObj) {
+		this.ntObj = ntObj;
 	}
 
 	

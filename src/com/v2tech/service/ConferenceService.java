@@ -240,7 +240,7 @@ public class ConferenceService extends DeviceService {
 		DeamonWorker.getInstance().request(
 				new LiveWatchingReqPacket(l.getLid(),GlobalHolder.getInstance()
 						.getCurrentUser().nId, l.getNid(),
-						LiveWatchingReqPacket.CANCEL)); 
+						LiveWatchingReqPacket.CLOSE)); 
 		
 		initTimeoutMessage(JNI_REQUEST_QUIT_CONFERENCE, DEFAULT_TIME_OUT_SECS,
 				caller);

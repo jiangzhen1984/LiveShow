@@ -92,10 +92,11 @@ public class NotificationService extends Service {
 			} else if (ip instanceof LiveWatchingIndPacket) {
 				LiveWatchingIndPacket  lwip =(LiveWatchingIndPacket) ip;
 				if (lwip.type == LiveWatchingReqPacket.CLOSE) {
-					User u = new User(lwip.uid);
-					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH,
+					Live live = new Live(new User(lwip.uid), 0, lwip.nid, 0D,
+							0d);
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_FINISH,
 							new String[] { "obj", "lid", "opt" },
-							new Serializable[] { u, lwip.nid, lwip.type });
+							new Serializable[] { live, lwip.nid, lwip.type });
 				} else if (lwip.type == LiveWatchingReqPacket.WATCHING) {
 					User u = new User(lwip.uid);
 					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING,

@@ -23,6 +23,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -111,7 +112,7 @@ public class BaiduMapImpl implements MapAPI,
 					.position(
 							new LatLng(marker.getLive().getLat(), marker
 									.getLive().getLng())).extraInfo(bundle);
-			mapImpl.addOverlay(oo);
+		
 		} else if (marker.getWatcher() != null) {
 			BitmapDescriptor online = BitmapDescriptorFactory
 					.fromResource(R.drawable.watcher_location);
@@ -123,18 +124,15 @@ public class BaiduMapImpl implements MapAPI,
 					.position(
 							new LatLng(marker.getWatcher().getLat(), marker
 									.getWatcher().getLng())).extraInfo(bundle);
-			mapImpl.addOverlay(oo);
 
 		}
+		Overlay ol = mapImpl.addOverlay(oo);
+		marker.setNtObj(ol);
 		((BaiduMaker)marker).oo = oo;
 	}
 	
 	public void removeMarker(Marker marker) {
-//		OverlayOptions oo = ((BaiduMaker)marker).oo;
-//		MapView mv = mapView.get();
-//		if (mv != null) {
-//			ViewGroupOverlay gp = mv.getOverlay();
-//		}
+		((Overlay)marker.getNtObj()).remove();
 	}
 
 	
@@ -406,10 +404,10 @@ public class BaiduMapImpl implements MapAPI,
         	WalkingRouteLine route = result.getRouteLines().get(0);
         	RoadMapOverlay overlay = new RoadMapOverlay(mapImpl);
         	if (startMarker != null) {
-        		overlay.startMarkerRes = startMarker.resId;
+        		overlay.startMarkerRes = startMarker.getResId();
         	}
         	if (terminalMarker != null) {
-        		overlay.terminalMarkerRes = terminalMarker.resId;
+        		overlay.terminalMarkerRes = terminalMarker.getResId();
         	}
             lastOverlay = overlay;
             overlay.setData(route);
