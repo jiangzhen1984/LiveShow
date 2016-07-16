@@ -56,7 +56,7 @@ public class MapVideoLayout extends FrameLayout {
 	
 	private static int VIDEO_SURFACE_HEIGHT = 774;
 
-	private static int FLYING_SLOP = 180;
+	private static int FLYING_SLOP = 320;
 	
 	private static final boolean DEBUG = true;
 	
@@ -1069,14 +1069,13 @@ public class MapVideoLayout extends FrameLayout {
 		top = top + 1;
 		bottom = bottom - 1;
 		V2Log.i("====> layout st:"+ st +"   ts:"+ ts);
-		int bottomChildTop = top + tsv.getMeasuredHeight();
 
 		if (st == ScreenType.VIDEO_MAP) {
 			borderY = tsv.getMeasuredHeight();
-			tsv.layout(left, top, right, bottomChildTop);
-			shareSurfaceView.layout(left, top, right, bottomChildTop);
-			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
-			mMapView.layout(left, bottomChildTop, right, bottom);
+			tsv.layout(left, top, right, borderY);
+			shareSurfaceView.layout(left, top, right, borderY);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
+			mMapView.layout(left, borderY, right, bottom);
 			livePublisherPersonelLayout.layout(left,bottom, right, bottom + livePublisherPersonelLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
 			inquiryBidWidget.layout(left, bottom, right, bottom + inquiryBidWidget.getMeasuredHeight());
@@ -1090,16 +1089,16 @@ public class MapVideoLayout extends FrameLayout {
 			LayoutParams lp = (LayoutParams) volumneIcon.getLayoutParams();
 			volumneIcon
 					.layout(left + lp.leftMargin,
-							bottomChildTop - liveWatcherLayout.getMeasuredHeight()
+							borderY - liveWatcherLayout.getMeasuredHeight()
 									- lp.bottomMargin
 									- volumneIcon.getMeasuredHeight(),
 							left + lp.leftMargin
-									+ volumneIcon.getMeasuredWidth(), bottomChildTop
+									+ volumneIcon.getMeasuredWidth(), borderY
 									- liveWatcherLayout.getMeasuredHeight()
 									- lp.bottomMargin);
 
 			 lp = (LayoutParams) volumnWidget.getLayoutParams();
-			int vwbottom =   bottomChildTop
+			int vwbottom =   borderY
 					- lp.bottomMargin
 					- volumneIcon.getMeasuredHeight()
 					- liveWatcherLayout.getMeasuredHeight();
@@ -1113,8 +1112,8 @@ public class MapVideoLayout extends FrameLayout {
 		} else if (st == ScreenType.VIDEO_SHARE) {
 			borderY = shareSurfaceView.getMeasuredHeight();
 			tsv.layout(left, bottom, right, bottom + tsv.getMeasuredHeight());
-			shareSurfaceView.layout(left, top, right, bottomChildTop);
-			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			shareSurfaceView.layout(left, top, right, borderY);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
 			mMapView.layout(left, bottom, right, bottom + mMapView.getMeasuredHeight());
 			livePublisherPersonelLayout.layout(left,bottom, right, bottom + livePublisherPersonelLayout.getMeasuredHeight());
 			requestConnectLayout.layout(left,bottom, right, bottom + requestConnectLayout.getMeasuredHeight());
@@ -1137,25 +1136,25 @@ public class MapVideoLayout extends FrameLayout {
 			
 		} else if (st ==  ScreenType.VIDEO_PUBLISHER_SHOW) {
 			borderY = tsv.getMeasuredHeight();
-			tsv.layout(left, top, right, bottomChildTop);
-			mMapView.layout(left, bottomChildTop, right, bottom);
-			livePublisherPersonelLayout.layout(left,bottomChildTop, right, bottom);
+			tsv.layout(left, top, right, borderY);
+			mMapView.layout(left, borderY, right, bottom);
+			livePublisherPersonelLayout.layout(left,borderY, right, bottom);
 		} else if (st == ScreenType.VIDEO_SHARE_P2P_AUDIO_CONNECTION) {
 			borderY = shareSurfaceView.getMeasuredHeight();
-			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
 			mMapView.layout(left, borderY, right, bottom);
 			p2pAudioConnectionPublisherLayout.layout(left, borderY, right, bottom);
 			requestConnectLayout.layout(left,bottom , right, bottom + requestConnectLayout.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_SHARE_CONNECTION_REQUESTING) {
 			borderY = shareSurfaceView.getMeasuredHeight();
-			shareSurfaceView.layout(left, top, right, bottomChildTop);
-			videoShareBtnLayout.layout(left, bottomChildTop, right, bottom);
+			shareSurfaceView.layout(left, top, right, borderY);
+			videoShareBtnLayout.layout(left, borderY, right, bottom);
 			requestConnectLayout.layout(left,borderY, right, bottom);
 			p2pVideoLayout.layout(left,bottom - 1  , right, bottom + p2pVideoLayout.getMeasuredHeight());
 			p2pAudioConnectionPublisherLayout.layout(left,bottom - 1  , right, bottom + p2pAudioConnectionPublisherLayout.getMeasuredHeight());
 		} else if (st == ScreenType.VIDEO_WATCHING_AUDIO_CONNECTION) {
 			borderY = tsv.getMeasuredHeight();
-			tsv.layout(left, top, right, bottomChildTop);
+			tsv.layout(left, top, right, borderY);
 			mMapView.layout(left, borderY, right, bottom);
 			livePublisherPersonelLayout.layout(left,borderY, right, bottom);
 		} else if (st == ScreenType.VIDEO_SHARE_P2P_VIDEO_CONNECTION) {
@@ -1232,7 +1231,7 @@ public class MapVideoLayout extends FrameLayout {
 		}
 		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
 			liveWatcherLayout.layout(left,
-					bottomChildTop - liveWatcherLayout.getMeasuredHeight()
+					borderY - liveWatcherLayout.getMeasuredHeight()
 							- tsv.getTop(),
 					right - liveInformationLayout.getMeasuredWidth(),
 					tsv.getBottom());
