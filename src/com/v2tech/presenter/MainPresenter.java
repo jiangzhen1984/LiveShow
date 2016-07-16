@@ -357,15 +357,28 @@ public class MainPresenter extends BasePresenter implements
 		}
 		
 	
-		//FIXME clear all connection state
+		//clear all connection state
 		if (isBState(B_WATCHING_AUDIO_REQUEST_FLAG)) {
-			
+			requestConnection(currentViewLive.live.getLid(),
+					VMessageAudioVideoRequestItem.TYPE_AUDIO,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			ui.showProgressDialog(false, null);
 		} else if (isBState(B_WATCHING_VIDEO_REQUEST_FLAG)) {
+			requestConnection(currentViewLive.live.getLid(),
+					VMessageAudioVideoRequestItem.TYPE_VIDEO,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_VIDEO_REQUEST, false, null);
 			
 		} else if (isBState(B_WATCHING_AUDIO_CONNECTED_FLAG)) {
-			
+			requestConnection(currentViewLive.live.getLid(),
+					VMessageAudioVideoRequestItem.TYPE_AUDIO,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_AUDIO_CONNECTION_WATCHER, false, null);
 		} else if (isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
-			
+			requestConnection(currentViewLive.live.getLid(),
+					VMessageAudioVideoRequestItem.TYPE_VIDEO,
+					VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
+			ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_VIDEO_CONNECTION_WATCHER, false, null);
 		}
 		
 		closeLive(currentViewLive);
@@ -913,7 +926,9 @@ public class MainPresenter extends BasePresenter implements
 			cancelInquiry();
 			unsetBState(B_PREPARE_PUBLISH_FLAG);
 			if (isBState(B_PUBLISHING_FLAG)) {
-				//TODO cancel video publishing
+				ui.updateVideShareButtonText(false);
+				vs.quitConference(publishingLive, new MessageListener(h,
+						CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
 				unsetBState(B_PUBLISHING_FLAG);
 			}
 			break;
@@ -1030,13 +1045,21 @@ public class MainPresenter extends BasePresenter implements
 			closeLive(currentViewLive, true);
 			currentViewLive = null;
 		}
+		
+		ViewLive vvtmp = null;
 		for (ViewLive vl : viewLiveList) {
 			if (vl.surfaveViewIdx == newIdx) {
 				openLive(vl);
+				return;
+			} else if (vvtmp == null && vl.playing == false) {
+				vvtmp = vl;
 			}
 		}
-			
-			//TODO if nothing, need to push one
+		
+		//show recommendation video
+		if (vvtmp!= null) {
+			openLive(vvtmp);
+		}
 	}
 	
 	///////////ViewItemListener///////////////////////////////////////////////////
