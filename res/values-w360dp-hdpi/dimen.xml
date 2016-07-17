@@ -22,7 +22,7 @@
     <dimen name="personel_root_margin_right">80dp</dimen>
     <dimen name="personel_show_avatar_margin_right">30dp</dimen>
     <dimen name="personel_show_text_size">13.5sp</dimen>
-     <dimen name="personel_show_text_size1">12.5sp</dimen>
+    <dimen name="personel_show_text_size1">12.5sp</dimen>
     <dimen name="personel_user_item_padding">10dp</dimen>
     <dimen name="personel_user_item_text_margin_top">10dp</dimen>
     <dimen name="personel_user_item_text_margin_top1">2dp</dimen>
@@ -39,12 +39,14 @@
     <dimen name="voice_record_dialog_widget_root_margin">15dp</dimen>
     <dimen name="voice_record_dialog_widget_root_margin_hor">20dp</dimen>
     <dimen name="voice_record_dialog_widget_text_size">13.5sp</dimen>
-     <dimen name="liver_interaction_personel_btn_margin_hor">10dp</dimen>
-     <dimen name="liver_interaction_personel_btn_text_size">16sp</dimen>
-     
-     <dimen name="p2p_video_btn_margin_bottom">40dp</dimen>
-     <dimen name="p2p_video_btn_margin_left">40dp</dimen>
-     <dimen name="p2p_video_btn_margin_right">40dp</dimen>
-      <dimen name="p2p_video_name_text_size">13.5sp</dimen>
+    <dimen name="liver_interaction_personel_btn_margin_hor">10dp</dimen>
+    <dimen name="liver_interaction_personel_btn_text_size">16sp</dimen>
+    <dimen name="p2p_video_btn_margin_bottom">40dp</dimen>
+    <dimen name="p2p_video_btn_margin_left">40dp</dimen>
+    <dimen name="p2p_video_btn_margin_right">40dp</dimen>
+    <dimen name="p2p_video_name_text_size">13.5sp</dimen>
+    <dimen name="video_lock_setting_dialog_banner_margin_top">40dp</dimen>
+    <dimen name="video_lock_setting_dialog_banner_text_size">13.5sp</dimen>
+    <dimen name="video_unlock_setting_dialog_banner_margin">20dp</dimen>
 
 </resources>

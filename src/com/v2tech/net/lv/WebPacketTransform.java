@@ -332,7 +332,12 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         packetBuilder.setId(String.valueOf(p.getId()));
         packetBuilder.setMethod("publicVideo");
         packetBuilder.setFrom(String.valueOf(p.uid));
-        packetBuilder.setOperateType("public");
+        
+        if (p.ot == LivePublishReqPacket.OptType.PUBLISH) {
+        	packetBuilder.setOperateType("public");
+        } else if (p.ot == LivePublishReqPacket.OptType.UPDATE_PWD) {
+        	packetBuilder.setOperateType("edit");
+        }
         packetBuilder.setVersion(VERSION);
         
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
@@ -341,8 +346,13 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         WebPackage.Position.Builder positon = WebPackage.Position.newBuilder();
         positon.setLongitude(p.lng);
         positon.setLatitude(p.lat);
+        if (p.ot == LivePublishReqPacket.OptType.UPDATE_PWD) {
+        	video.setId((int)p.nid);
+        	video.setVideoNum(p.lid +"");
+        }
         video.setPosition(positon);
         video.setUserId((int)p.uid);
+        video.setVideoPwd(p.pwd);
         data.addVideo(video);
         packetBuilder.setData(data);
         return packetBuilder.build();
@@ -351,14 +361,43 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraPublisVideoIndication(WebPackage.Packet webPackage) {
         LivePublishIndPacket lrp = new LivePublishIndPacket();
         lrp.setErrorFlag(!webPackage.getResult().getResult());
-        lrp.vid = Long.valueOf(webPackage.getData().getNormal());
+        
+        
+		if (webPackage.getData().getVideoCount() > 0) {
+			 lrp.vid = webPackage.getData().getVideo(0).getId();
+			if (lrp.vid == 0) {
+				V2Log.w(" extraPublisVideoIndication Use data normal as id ");
+				if (webPackage.getData().getNormal() != null
+						&& !webPackage.getData().getNormal().equals("")) {
+					lrp.vid = Long.parseLong(webPackage.getData().getNormal());
+				} else {
+					V2Log.w(" extraPublisVideoIndication Use data normal is null ");
+					lrp.setErrorFlag(true);
+					return lrp;
+				}
+			}
+		} else {
+			V2Log.e("=== extraPublisVideoIndication error no video data");
+			lrp.setErrorFlag(true);
+			return lrp;
+		}
+        
+		if ("edit".equals(webPackage.getOperateType())) {
+			lrp.ot = LivePublishIndPacket.OptType.UPDATE;
+		} else {
+			lrp.ot = LivePublishIndPacket.OptType.PUBLISH;
+		}
+        
         WebPackage.Video video = webPackage.getData().getVideo(0);
         lrp.lid = Long.parseLong(video.getVideoNum());
         lrp.uid = video.getUserId();
         WebPackage.Position position = video.getPosition();
         lrp.lng = position.getLongitude();
         lrp.lat = position.getLatitude();
-        lrp.v2uid = webPackage.getData().getUser(0).getId();
+        if (webPackage.getData().getUserCount() > 0){
+        	lrp.v2uid = webPackage.getData().getUser(0).getId();
+        }
+        lrp.pwd = video.getVideoPwd();
         return lrp;
     }
     
@@ -380,13 +419,31 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         LivePublishRespPacket lrp = new LivePublishRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
         lrp.setErrorFlag(!webPackage.getResult().getResult());
-        if(webPackage.getResult().getResult()){
-            lrp.nvid = Long.valueOf(webPackage.getData().getNormal());
-        }else {
-            V2Log.e("=== extraPublisVideoResponse error");
-            lrp.setErrorFlag(true);
+        
+        
+        if(!webPackage.getResult().getResult()){
+        	  V2Log.e("=== extraPublisVideoResponse error no result");
+              lrp.setErrorFlag(true);
+              return lrp;
         }
-        return lrp;
+        
+		if (webPackage.getData().getVideoCount() > 0) {
+			lrp.nvid = webPackage.getData().getVideo(0).getId();
+			if (lrp.nvid == 0) {
+				V2Log.w(" Use data normal as id ");
+				if (webPackage.getData().getNormal() != null
+						&& !webPackage.getData().getNormal().equals("")) {
+					lrp.nvid = Long.parseLong(webPackage.getData().getNormal());
+				} else {
+					V2Log.w(" Use data normal is null ");
+					lrp.setErrorFlag(true);
+				}
+			}
+		} else {
+			V2Log.e("=== extraPublisVideoResponse error no video data");
+			lrp.setErrorFlag(true);
+		}
+		return lrp;
     }
 
     private WebPackage.Packet serializeLogoutRequest(LogoutReqPacket p) {

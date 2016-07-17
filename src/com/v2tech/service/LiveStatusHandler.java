@@ -9,5 +9,8 @@ public interface LiveStatusHandler {
 	
 	
 	public void handleLiveFinished(Live l);
+	
+	
+	public void handleLiveUpdate(Live l);
 
 }

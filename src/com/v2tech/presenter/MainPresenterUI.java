@@ -31,6 +31,8 @@ public interface MainPresenterUI {
 	public static final int UI_LAYOUT_TYPE_LIVE_PUBLISHER_PERSONEL = 8;
 	public static final int UI_LAYOUT_TYPE_BOTTOM_BTN = 9;
 	public static final int UI_LAYOUT_TYPE_BID_PERSON_INFO = 10;
+	public static final int UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG = 11;
+	public static final int UI_LAYOUT_TYPE_VIDEO_UNLOCK_SETTING_DIALOG = 12;
 	
 
 	public MapAPI getMainMap();

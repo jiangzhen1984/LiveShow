@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/video_unlock_setting_dialog_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/video_lock_setting_dialog_layout_panel_bg"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/video_unlock_setting_unlock_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/video_unlock_setting_dialog_banner_margin"
+            android:layout_marginBottom="@dimen/video_unlock_setting_dialog_banner_margin"
+            android:text="@string/video_unlock_setting_dialog_layout_banner_text"
+            android:textColor="@color/video_lock_setting_dialog_layout_text_color"
+            android:textSize="@dimen/video_lock_setting_dialog_banner_text_size" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/video_unlock_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/video_unlock_setting_dialog_panel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/video_lock_setting_dialog_close_btn_margin_top"
+        android:src="@drawable/video_lock_setting_layout_close_btn" />
+
+</RelativeLayout>

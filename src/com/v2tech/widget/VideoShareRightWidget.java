@@ -13,6 +13,7 @@ public class VideoShareRightWidget extends LinearLayout {
 	private TextView recommandCountTV;
 	private TextView tipsCountTV;
 	private View cameraSwitchBtn;
+	private View videoLockBtn;
 
 	private VideoShareRightWidgetListener listener;
 
@@ -42,6 +43,9 @@ public class VideoShareRightWidget extends LinearLayout {
 		}else if (id == R.id.video_right_border_share_ly) {
 			cameraSwitchBtn =  child.findViewById(R.id.camera_switch_btn);
 			cameraSwitchBtn.setOnClickListener(clickListener);
+		} else if (id == R.id.video_right_border_lock_ly) {
+			videoLockBtn = child.findViewById(R.id.video_lock_btn);
+			videoLockBtn.setOnClickListener(clickListener);
 		}
 	}
 
@@ -56,6 +60,9 @@ public class VideoShareRightWidget extends LinearLayout {
 			switch (id) {
 			case R.id.camera_switch_btn:
 				listener.onCameraSwitchBtnClick(v);
+				break;
+			case R.id.video_lock_btn:
+				listener.onVideoLockBtnClick(v);
 				break;
 			}
 
@@ -90,6 +97,8 @@ public class VideoShareRightWidget extends LinearLayout {
 	public interface VideoShareRightWidgetListener {
 
 		public void onCameraSwitchBtnClick(View v);
+		
+		public void onVideoLockBtnClick(View v);
 	}
 
 }

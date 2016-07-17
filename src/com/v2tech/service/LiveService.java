@@ -143,6 +143,26 @@ public class LiveService extends DeviceService {
 	}
 	
 	
+	public void lockLive(Live l, String pwd) {
+		Packet resp = DeamonWorker.getInstance().request(
+				new LivePublishReqPacket(GlobalHolder.getInstance()
+						.getCurrentUser().nId, l.getLid(), l.getNid(), 
+						l.getLat(),
+						l.getLng(), pwd));
+		V2Log.i("== report live lock status : "  + resp.getHeader().isError());
+	}
+	
+	
+	public void unlockLive(Live l) {
+		Packet resp = DeamonWorker.getInstance().request(
+				new LivePublishReqPacket(GlobalHolder.getInstance()
+						.getCurrentUser().nId, l.getLid(), l.getNid(), 
+						l.getLat(),
+						l.getLng(), ""));
+		V2Log.i("== report live unlock status : "  + resp.getHeader().isError());
+	}
+	
+	
 	public void getWatcherList(Live l, MessageListener caller) {
 		DeamonWorker.getInstance().requestAsync(
 				new PacketProxy(

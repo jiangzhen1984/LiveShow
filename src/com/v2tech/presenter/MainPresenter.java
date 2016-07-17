@@ -7,6 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import v2av.VideoPlayer;
+import v2av.VideoPlayer.ViewItemListener;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import com.V2.jni.util.V2Log;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
@@ -59,26 +74,15 @@ import com.v2tech.widget.P2PAudioLiverLayout.P2PAudioLiverLayoutListener;
 import com.v2tech.widget.P2PVideoMainLayout.P2PVideoMainLayoutListener;
 import com.v2tech.widget.RequestConnectLayout.RequestConnectLayoutListener;
 import com.v2tech.widget.VerticalSpinWidget.OnSpinVolumeChangedListener;
+import com.v2tech.widget.VideoLockSettingDialog.VideoLockSettingDiagLockListener;
 import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
+import com.v2tech.widget.VideoUnlockSettingDialog.VideoUnlockSettingDiagLockListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
-import android.view.View;
-import v2av.VideoPlayer;
-import v2av.VideoPlayer.ViewItemListener;
-
 public class MainPresenter extends BasePresenter implements
-		MarkerListener,UITypeStatusChangedListener, 
-		BottomButtonLayoutListener,VideoShareRightWidgetListener, 
+		MarkerListener,UITypeStatusChangedListener, VideoLockSettingDiagLockListener, 
+		BottomButtonLayoutListener,VideoShareRightWidgetListener, VideoUnlockSettingDiagLockListener, 
 		LiveInformationLayoutListener, RequestConnectLayoutListener,
 		InterfactionBtnClickListener, VideoWatcherListLayoutListener,
 		P2PVideoMainLayoutListener, P2PAudioConnectionPublisherLayoutListener,
@@ -168,6 +172,8 @@ public class MainPresenter extends BasePresenter implements
 	private ViewLive currentViewLive;
 	private PublishingLive publishingLive;
 	private InquiryData inquiryData;
+	//pending for input password
+	private ViewLive pendingViewLive;
 	
 	private AudioManager audioManager; 
 	
@@ -326,6 +332,7 @@ public class MainPresenter extends BasePresenter implements
 		if (isBState(B_PUBLISHING_FLAG) || isBState(B_PREPARE_PUBLISH_FLAG)) {
 			throw new RuntimeException("ilegal state: "+ bState);
 		}
+		
 		if (isBState(B_WATCHING_FLAG)) {
 			closeLive(currentViewLive);
 			currentViewLive = null;
@@ -338,7 +345,12 @@ public class MainPresenter extends BasePresenter implements
 			if (vl == null) {
 				throw new RuntimeException(" no viewlive :" + l);
 			}
-			openLive(vl);
+			if (vl.live.isLocked()) {
+				pendingViewLive = vl;
+				ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, true, null);
+			} else {
+				openLive(vl);
+			}
 		}
 		return true;
 	}
@@ -675,25 +687,37 @@ public class MainPresenter extends BasePresenter implements
 	
 	@Override
 	public void onWechatShareBtnClicked(View v) {
-		
+		ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, true, null);
 	}
 	
 
 	// ///////////VideoShareBtnLayoutListener///////////////////////////////////////////////////
 
 	// ///////////LiveStatusHandler///////////////////////////////////////////////////
-
+	@Override
 	public void handleNewLivePushlishment(Live l) {
 		V2Log.i("==== get new live -->" + l.getLid());
 		addLiveMarker(l);
 	}
 
+	@Override
 	public void handleLiveFinished(Live l) {
 		Marker m = cacheMarker.get(l);
 		if (m != null) {
 			this.mapInstance.removeMarker(m);
 		} else {
 			V2Log.e("===> no marker for live id " + l);
+		}
+	}
+	
+	@Override
+	public void handleLiveUpdate(Live l) {
+		for (int i = 0; i < viewLiveList.size(); i++) {
+			ViewLive vl = viewLiveList.get(i);
+			if (vl.live.getNid() == l.getNid()) {
+				vl.live.setLocked(l.isLocked());
+				vl.live.setLockPwd(l.getLockPwd());
+			}
 		}
 	}
 
@@ -1017,6 +1041,20 @@ public class MainPresenter extends BasePresenter implements
 		vs.switchCamera(duc);
 	}
 	
+	
+	public void onVideoLockBtnClick(View v) {
+		if (isBState(B_PUBLISHING_FLAG)) {
+			//Update video state onFinish
+			if (publishingLive.isLocked()) {
+				ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_UNLOCK_SETTING_DIALOG, true, null);
+			} else {
+				ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, true, null);
+			}
+		} else {
+			
+		}
+	}
+	
 	///////////VideoShareRightWidgetListener///////////////////////////////////////////////////
 	
 	
@@ -1103,6 +1141,50 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	/////////// P2PAudioConnectionPublisherLayoutListener///////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	/////////// VideoLockSettingDiagLockListener///////////////////////////////////////////////////
+	@Override
+	public void onVideoLockFinish(EditText et1, EditText et2, EditText et3, EditText et4) {
+		String pwd = et1.getEditableText().toString()
+				+ et2.getEditableText().toString()
+				+ et3.getEditableText().toString()
+				+ et4.getEditableText().toString();
+		if (isBState(B_PUBLISHING_FLAG)) {
+			publishingLive.setLocked(true);
+			publishingLive.setLockPwd(pwd);
+			ls.lockLive(publishingLive, publishingLive.getLockPwd());
+			ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, false, null);
+		} else {
+			if (pendingViewLive != null) {
+				if (pendingViewLive.live.getLockPwd().equals(pwd)) {
+					ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, false, null);
+					openLive(pendingViewLive);
+					pendingViewLive = null;
+				} else {
+					//TODO notify incorrect password
+					Toast.makeText(context, "密码错误", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+		
+	}
+	
+	/////////// VideoLockSettingDiagLockListener///////////////////////////////////////////////////
+	
+	
+	/////////// VideoUnlockSettingDiagLockListener///////////////////////////////////////////////////
+	@Override
+	public void onVideoUnLockFinish(View v) {
+		publishingLive.setLocked(false);
+		publishingLive.setLockPwd("");
+		ls.unlockLive(publishingLive);
+		ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_UNLOCK_SETTING_DIALOG, false, null);
+	}
+	/////////// VideoUnlockSettingDiagLockListener///////////////////////////////////////////////////
 	
 	private void requestConnection(long lid, int type, int action) {
 		long uid = GlobalHolder.getInstance().getCurrentUser().getmUserId();

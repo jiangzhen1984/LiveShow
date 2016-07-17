@@ -59,5 +59,8 @@
     <color name="map_location_tips_widget_bg">#f0eff5</color>
     
     <color name="p2p_video_calling_ly_bg">#f0eff5</color>
+    
+    <color name="video_lock_setting_dialog_layout_panel_bg">#ffffff</color>
+    <color name="video_lock_setting_dialog_layout_text_color">#000000</color>
 
 </resources>

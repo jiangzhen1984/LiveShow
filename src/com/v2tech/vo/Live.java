@@ -41,6 +41,9 @@ public class Live implements Serializable, Comparable<Live>{
 	
 	protected List<User> watcher;
 	
+	protected boolean isLocked;
+	protected String lockPwd;
+	
 	
 	public Live(User publisher, long lid, double lat, double lng) {
 		super();
@@ -233,7 +236,25 @@ public class Live implements Serializable, Comparable<Live>{
 	public void setRend(boolean rend) {
 		this.rend = rend;
 	}
+	
+	
 
+
+	public boolean isLocked() {
+		return isLocked;
+	}
+
+	public void setLocked(boolean isLocked) {
+		this.isLocked = isLocked;
+	}
+
+	public String getLockPwd() {
+		return lockPwd;
+	}
+
+	public void setLockPwd(String lockPwd) {
+		this.lockPwd = lockPwd;
+	}
 
 	/**
 	 * <conf canaudio="1" candataop="1" canvideo="1" conftype="0" haskey="0" //

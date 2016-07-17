@@ -32,6 +32,7 @@ public class NotificationService extends Service {
 	
 	private static final String NOTIFICAITON_ACTION = "com.v2tech.notification_action";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH = "com.v2tech.live_publish";
+	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_UPDATE = "com.v2tech.live_update";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_FINISH = "com.v2tech.live_finished";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_LEAVE = "com.v2tech.live_leave";
 	private static final String NOTIFICAITON_OBJ_TYPE_LIVE_WATCHING = "com.v2tech.live_watching";
@@ -85,10 +86,24 @@ public class NotificationService extends Service {
 			V2Log.i(" OnNotification===>" + ip);
 			if (ip instanceof LivePublishIndPacket) {
 				LivePublishIndPacket lpip = (LivePublishIndPacket) ip;
-				Live live = new Live(new User(lpip.v2uid), lpip.lid, lpip.vid, lpip.lat,
-						lpip.lng);
-				live.getPublisher().nId = lpip.uid;
-				sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH, live);
+				if (lpip.ot == LivePublishIndPacket.OptType.PUBLISH) {
+					Live live = new Live(new User(lpip.v2uid), lpip.lid, lpip.vid, lpip.lat,
+							lpip.lng);
+					live.getPublisher().nId = lpip.uid;
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH, live);
+				} else if (lpip.ot == LivePublishIndPacket.OptType.UPDATE) {
+					Live live = new Live(new User(lpip.v2uid), lpip.lid, lpip.vid, lpip.lat,
+							lpip.lng);
+					live.getPublisher().nId = lpip.uid;
+					if (lpip.pwd != null && !lpip.pwd.equals("")) {
+						live.setLockPwd(lpip.pwd);
+						live.setLocked(true);
+					} else {
+						live.setLockPwd("");
+						live.setLocked(false);
+					}
+					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_UPDATE, live);
+				}
 			} else if (ip instanceof LiveWatchingIndPacket) {
 				LiveWatchingIndPacket  lwip =(LiveWatchingIndPacket) ip;
 				if (lwip.type == LiveWatchingReqPacket.CLOSE) {

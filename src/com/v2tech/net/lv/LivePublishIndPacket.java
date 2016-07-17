@@ -11,24 +11,32 @@ public class LivePublishIndPacket extends IndicationPacket {
 	public double lat;
 	public double lng;
 	public long v2uid;
+	public String pwd;
+	public OptType ot;
 	
 	public LivePublishIndPacket() {
 		super();
 	}
 	
 	
-	public LivePublishIndPacket(long vid, long uid, long lid, double lat, double lng) {
+	public LivePublishIndPacket(long vid, long uid, long lid, double lat, double lng, String pwd) {
 		super();
 		this.vid = vid;
 		this.uid = uid;
 		this.lid = lid;
 		this.lat = lat;
 		this.lng = lng;
+		this.pwd = pwd;
 	}
 
 	
 
 	
+	
+	
+	public enum OptType{
+		PUBLISH,UPDATE;
+	}
 	
 	
 	

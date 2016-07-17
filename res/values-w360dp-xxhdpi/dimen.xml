@@ -83,5 +83,16 @@
     <dimen name="p2p_video_btn_margin_left">40dp</dimen>
     <dimen name="p2p_video_btn_margin_right">40dp</dimen>
      <dimen name="p2p_video_name_text_size">13.5sp</dimen>
+     
+     
+    
+    <dimen name="video_lock_setting_dialog_banner_margin_top">40dp</dimen>
+    <dimen name="video_lock_setting_dialog_banner_text_size">13.5sp</dimen>
+    <dimen name="video_lock_setting_dialog_pwd_margin_left">40dp</dimen>
+    <dimen name="video_lock_setting_dialog_pwd_margin_right">40dp</dimen>
+    <dimen name="video_lock_setting_dialog_pwd_edit_margin_gap">10dp</dimen>
+    <dimen name="video_lock_setting_dialog_close_btn_margin_top">20dp</dimen>
+    
+    <dimen name="video_unlock_setting_dialog_banner_margin">20dp</dimen>
 
 </resources>

@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-
     <LinearLayout
         android:id="@+id/video_right_border_rd_ly"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -37,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -64,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -76,5 +75,21 @@
             android:src="@drawable/converse_camera_button" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/video_right_border_lock_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight=".2"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/video_lock_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/video_share_up" />
+    </LinearLayout>
 
 </com.v2tech.widget.VideoShareRightWidget>

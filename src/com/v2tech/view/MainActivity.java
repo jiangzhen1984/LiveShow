@@ -1,13 +1,6 @@
 package com.v2tech.view;
 
-import com.v2tech.map.MapAPI;
-import com.v2tech.presenter.BasePresenter;
-import com.v2tech.presenter.MainPresenter;
-import com.v2tech.presenter.MainPresenterUI;
-import com.v2tech.v2liveshow.R;
-import com.v2tech.vo.Watcher;
-import com.v2tech.widget.BottomButtonLayout;
-
+import v2av.VideoPlayer;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -19,7 +12,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import v2av.VideoPlayer;
+
+import com.v2tech.map.MapAPI;
+import com.v2tech.presenter.BasePresenter;
+import com.v2tech.presenter.MainPresenter;
+import com.v2tech.presenter.MainPresenterUI;
+import com.v2tech.v2liveshow.R;
+import com.v2tech.vo.Watcher;
+import com.v2tech.widget.BottomButtonLayout;
+import com.v2tech.widget.VideoLockSettingDialog;
+import com.v2tech.widget.VideoUnlockSettingDialog;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MainPresenterUI {
 
@@ -37,6 +39,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private Toast inquiryToast;
 
 	MainPresenter presenter;
+	
+	private VideoLockSettingDialog lockSettingDialog;
+	private VideoUnlockSettingDialog unlockSettingDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -469,6 +474,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			break;
 		case UI_LAYOUT_TYPE_BID_PERSON_INFO:
 			mMapVideoLayout.showPersonelWidgetForInquiryBider(show);
+			break;
+		case UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG:
+			if (show) {
+				if (lockSettingDialog == null) {
+					lockSettingDialog = new VideoLockSettingDialog(this, presenter);
+				}
+				lockSettingDialog.show();
+			} else {
+				lockSettingDialog.dismiss();
+			}
+			break;
+		case UI_LAYOUT_TYPE_VIDEO_UNLOCK_SETTING_DIALOG:
+			if (show) {
+				if (unlockSettingDialog == null) {
+					unlockSettingDialog = new VideoUnlockSettingDialog(this, presenter);
+				}
+				unlockSettingDialog.show();
+			} else {
+				unlockSettingDialog.dismiss();
+			}
 			break;
 		}
 	}

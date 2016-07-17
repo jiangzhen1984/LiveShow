@@ -172,7 +172,6 @@ public class MapVideoLayout extends FrameLayout {
 		
 		videoShareRightWidet = (VideoShareRightWidget)LayoutInflater.from(getContext()).inflate(R.layout.video_share_right_widget_layout, (ViewGroup)null);
 		
-		
 		volumnWidget = (VerticalSpinWidget)LayoutInflater.from(getContext()).inflate(R.layout.vertical_spin_widget_layout, (ViewGroup)null);
 		volumnWidget.setCent(0.5F);
 		
@@ -194,7 +193,13 @@ public class MapVideoLayout extends FrameLayout {
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lp.topMargin = 10;
 		this.addView(mMsgLayout, -1, lp);
-		this.addView(liveInformationLayout, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, VIDEO_SURFACE_HEIGHT ));
+		
+		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, VIDEO_SURFACE_HEIGHT);
+		lp.topMargin = 40;
+		lp.rightMargin = 40;
+		this.addView(liveInformationLayout, -1, lp);
+		
+		
 		this.addView(liveWatcherLayout, -1,  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		this.addView(requestConnectLayout, -1, generateDefaultLayoutParams());
 		this.addView(bountyMarker, -1,  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -214,6 +219,7 @@ public class MapVideoLayout extends FrameLayout {
 		lp.rightMargin = 40;
 		lp.bottomMargin = 40;
 		this.addView(videoShareRightWidet, -1,  lp);
+		
 		
 		lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 		lp.topMargin = 40;
@@ -1023,10 +1029,11 @@ public class MapVideoLayout extends FrameLayout {
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (child.getVisibility() != GONE) {
-				if (child == p2pVideoLayout || child == p2pAudioConnectionPublisherLayout || child == mMapView) {
+				if (child == p2pVideoLayout
+						|| child == p2pAudioConnectionPublisherLayout
+						|| child == mMapView || child == videoShareRightWidet) {
 					measureChildWithMargins(child, widthMeasureSpec, 0,
 							heightMeasureSpec, VIDEO_SURFACE_HEIGHT);
-					V2Log.i("====>" + getBottom()+"  " + child.getMeasuredHeight());
 				} else {
 					measureChildWithMargins(child, widthMeasureSpec, 0,
 							heightMeasureSpec, 0);
@@ -1085,6 +1092,8 @@ public class MapVideoLayout extends FrameLayout {
 			inquiryCloseBtn.layout(left, bottom, right, bottom + inquiryCloseBtn.getMeasuredHeight());
 			returnBtnView.layout(left, bottom, right, bottom + returnBtnView.getMeasuredHeight());
 			videoShareRightWidet.layout(left, bottom, right, bottom + videoShareRightWidet.getMeasuredHeight());
+			
+			
 			p2pVideoLayout.layout(left, bottom - 1, right, bottom + p2pVideoLayout.getMeasuredHeight());
 			
 			LayoutParams lp = (LayoutParams) volumneIcon.getLayoutParams();
@@ -1132,8 +1141,9 @@ public class MapVideoLayout extends FrameLayout {
 			 lp = (LayoutParams) videoShareRightWidet.getLayoutParams();
 			videoShareRightWidet.layout(
 					right - videoShareRightWidet.getMeasuredWidth()
-							- lp.rightMargin,  lp.topMargin, right
+							- lp.rightMargin,  top, right
 							- lp.rightMargin, borderY - lp.bottomMargin);
+			lp = (LayoutParams) videoShareRightWidet.getLayoutParams();
 			
 		} else if (st ==  ScreenType.VIDEO_PUBLISHER_SHOW) {
 			borderY = tsv.getMeasuredHeight();
@@ -1226,9 +1236,10 @@ public class MapVideoLayout extends FrameLayout {
 		mMsgLayout.layout(left, tsv.getTop() + lp.topMargin, right, tsv.getTop() + mMsgLayout.getMeasuredHeight()+ lp.topMargin);
 		
 		if (liveInformationLayout.getVisibility() == View.VISIBLE) {
+			lp = (LayoutParams) liveInformationLayout.getLayoutParams();
 			liveInformationLayout.layout(
-					right - liveInformationLayout.getMeasuredWidth(),
-					tsv.getTop(), right, tsv.getBottom());
+					right - liveInformationLayout.getMeasuredWidth()- lp.rightMargin,
+					tsv.getTop(), right- lp.rightMargin, tsv.getBottom());
 		}
 		if (liveWatcherLayout.getVisibility() == View.VISIBLE) {
 			liveWatcherLayout.layout(left,
