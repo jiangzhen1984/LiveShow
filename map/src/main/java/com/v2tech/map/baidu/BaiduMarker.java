@@ -26,9 +26,17 @@ public class BaiduMarker extends Marker {
 		super(ntObj, lat, lng);
 	}
 
+	public BaiduMarker(Serializable ntObj, double lat, double lng, int resId) {
+		super(ntObj, lat, lng);
+		setResId(resId);
+	}
+
 	public BaiduMarker(com.baidu.mapapi.map.Marker m) {
 		super();
 		this.m = m;
+		this.ntObj = m.getExtraInfo().getSerializable("ntobj");
+		this.lat = m.getPosition().latitude;
+		this.lat = m.getPosition().longitude;
 	}
 
 }

@@ -131,8 +131,9 @@ public class BaiduMapImpl implements MapAPI,
 		}
 	}
 
-	public Marker buildMarker(Serializable obj, double lat, double lng) {
-		return new BaiduMarker(obj, lat, lng);
+	@Override
+	public Marker buildMarker(Serializable obj, double lat, double lng, int resId) {
+		return new BaiduMarker(obj, lat, lng, resId);
 	}
 
 	public Updater buildUpater(Serializable obj) {

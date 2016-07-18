@@ -10,7 +10,7 @@ public interface MapAPI {
 	
 	public void removeMarker(Marker marker);
 	
-	public Marker buildMarker(Serializable obj, double lat, double lng);
+	public Marker buildMarker(Serializable obj, double lat, double lng, int resId);
 	
 	public void clearMarkers();
 	

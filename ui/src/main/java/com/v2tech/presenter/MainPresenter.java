@@ -60,6 +60,7 @@ import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.ViewLive;
 import com.v2tech.vo.Watcher;
 import com.v2tech.vo.conference.ConferenceGroup;
+import com.v2tech.vo.conference.ConferencePermission;
 import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.vo.live.LiveConnectionUser;
 import com.v2tech.vo.msg.VMessage;
@@ -1265,6 +1266,7 @@ public class MainPresenter extends BasePresenter implements
 	private void handleCreateVideoShareBack(JNIResponse resp) {
 		V2Log.e("==> CREATE VIDEO SHARE:" + resp.getResult());
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			vs.applyForControlPermission(ConferencePermission.SPEAKING, null);
 			RequestConfCreateResponse rcr = (RequestConfCreateResponse) resp;
 			publishingLive.setLid(rcr.getConfId());
 			ls.reportLiveStatus(publishingLive, null);
@@ -1334,14 +1336,14 @@ public class MainPresenter extends BasePresenter implements
 	}
 
 	private void addLiveMarker(final Live live) {
-		Marker m = mapInstance.buildMarker(live, live.getLat(), live.getLng());
+		Marker m = mapInstance.buildMarker(live, live.getLat(), live.getLng(), R.drawable.marker_live);
 		mapInstance.addMarker(m);
 		cacheMarker.put(live, m);
 		viewLiveList.add(new ViewLive(live, m));
 	}
 
 	private void addWatcherMarker(Watcher watcher) {
-		mapInstance.addMarker(mapInstance.buildMarker(watcher, watcher.getLat(), watcher.getLng()));
+		mapInstance.addMarker(mapInstance.buildMarker(watcher, watcher.getLat(), watcher.getLng(), R.drawable.watcher_location));
 	}
 
 	
@@ -1361,6 +1363,7 @@ public class MainPresenter extends BasePresenter implements
 
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+			vs.applyForControlPermission(ConferencePermission.SPEAKING, null);
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
 			if (this.currentViewLive.live.getPublisher() == null) {
 				this.currentViewLive.live.setPublisher(new User(rer.getConf()
