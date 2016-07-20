@@ -20,12 +20,8 @@ public class PersonelSearchBarFragment extends Fragment implements TextWatcher {
 	public PersonelSearchBarFragment() {
 		super();
 	}
-	
-	
-	public PersonelSearchBarFragment(PersonelSearchBarTextListener listener) {
-		super();
-		this.listener = listener;
-	}
+
+
 
 	@Override
 	public void onAttach(Activity activity) {

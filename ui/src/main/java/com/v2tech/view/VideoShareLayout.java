@@ -208,10 +208,10 @@ public class VideoShareLayout extends LinearLayout {
 		
 		if (type == ANIMATION_TYPE_OUT) {
 			tabBlockHolderAnimation = AnimationUtils.loadAnimation(getContext(),
-					R.animator.liver_interaction_from_up_to_down_out);
+					R.anim.liver_interaction_from_up_to_down_out);
 		} else if (type == ANIMATION_TYPE_IN) {
 			tabBlockHolderAnimation =  AnimationUtils.loadAnimation(getContext(),
-					R.animator.liver_interaction_from_down_to_up_in);
+					R.anim.liver_interaction_from_down_to_up_in);
 		}
 		tabBlockHolderAnimation.setDuration(duration);
 		tabBlockHolderAnimation.setFillAfter(fillAfter);

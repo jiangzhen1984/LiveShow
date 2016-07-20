@@ -75,8 +75,8 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 
-		this.overridePendingTransition(R.animator.left_to_right_in,
-				R.animator.left_to_right_out);
+		this.overridePendingTransition(R.anim.left_to_right_in,
+				R.anim.left_to_right_out);
 
 	}
 
@@ -129,7 +129,7 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 	@Override
 	public void finish() {
 		super.finish();
-		overridePendingTransition(0, R.animator.left_to_right_out);
+		overridePendingTransition(0, R.anim.left_to_right_out);
 	}
 
 	@Override

@@ -228,7 +228,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	@Override
 	public void finish() {
 		super.finish();
-		overridePendingTransition(0, R.animator.left_to_right_out);
+		overridePendingTransition(0, R.anim.left_to_right_out);
 	}
 
 	

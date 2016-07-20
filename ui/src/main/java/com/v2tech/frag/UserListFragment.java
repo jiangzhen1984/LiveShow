@@ -26,12 +26,6 @@ public class UserListFragment extends Fragment implements UserListFragmentNotifi
 		adapter = new LocalAdapter();
 	}
 
-	public UserListFragment(UserListFragmentConnector connector) {
-		super();
-		this.connector = connector;
-	}
-	
-
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

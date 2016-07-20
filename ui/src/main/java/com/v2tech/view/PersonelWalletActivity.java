@@ -109,7 +109,7 @@ public class PersonelWalletActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void finish() {
 		super.finish();
-		overridePendingTransition(0, R.animator.left_to_right_out);
+		overridePendingTransition(0, R.anim.left_to_right_out);
 	}
 
 	
