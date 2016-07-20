@@ -4,7 +4,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
-import com.v2tech.R;
+import com.v2tech.map.R;
 
 public class RoadMapOverlay extends WalkingRouteOverlay {
 	

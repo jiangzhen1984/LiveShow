@@ -330,9 +330,6 @@ public class VMessage {
 		}
 		sb.append("    </ItemList>");
 		sb.append("</TChatData>");
-		if(V2Log.isDebuggable) {
-			V2Log.d(sb.toString());
-		}
 		return sb.toString();
 	}
 }

@@ -6,12 +6,12 @@ android {
     enforceUniquePackageName = false
     signingConfigs {
         debug {
-            storeFile file('/home/CORPUSERS/28851274/.android/debug.keystore')
+            storeFile file('/home/jiangzhen/.android/debug.keystore')
         }
     }
     defaultConfig {
         applicationId "com.v2tech"
-        minSdkVersion 22
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"

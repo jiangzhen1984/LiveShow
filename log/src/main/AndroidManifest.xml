@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.V2.jni">
+    package="com.V2.jni.log">
 
     <application
         android:allowBackup="true"
