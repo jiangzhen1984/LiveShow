@@ -4,7 +4,7 @@ public class Constants {
 
 	public static final String SERVER ="123.57.217.170";
 	
-	public static final String N_SERVER ="115.28.100.110";
+	public static final String N_SERVER ="123.57.20.30";
 	
 	
 	public static final String NAME_SPACE= "urn:ConfWebServiceInterface";

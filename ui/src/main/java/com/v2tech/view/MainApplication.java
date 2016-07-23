@@ -84,7 +84,7 @@ public class MainApplication extends Application {
 		// 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
 		SDKInitializer.initialize(this);
 
-		initGloblePath();
+		initGlobalPath();
 
 		String path = GlobalConfig.getGlobalPath();
 		File ro = new File(path);
@@ -127,7 +127,9 @@ public class MainApplication extends Application {
 					+ res);
 		}
 
-		initGloblePath();
+		V2Log.initLogConfig(crashPath.getAbsolutePath(), 1024* 1024);
+
+		initGlobalPath();
 		initConfigSP();
 		initConfigFile();
 
@@ -279,7 +281,7 @@ public class MainApplication extends Application {
 	/**
 	 * 初始化程序数据存储目录
 	 */
-	private void initGloblePath() {
+	private void initGlobalPath() {
 		String saveData = "";
 		boolean sdExist = android.os.Environment.MEDIA_MOUNTED
 				.equals(android.os.Environment.getExternalStorageState());
