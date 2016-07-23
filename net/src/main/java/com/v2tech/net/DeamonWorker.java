@@ -25,8 +25,6 @@ import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import android.util.Log;
-
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.lv.WebPackage;
 import com.v2tech.net.pkt.IndicationPacket;
@@ -98,7 +96,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
 					WebPackage.Packet data = packetTransform.serialize(lb.req);
-					Log.i("DeamonWorker", "write==>" + data);
+					V2Log.i("write==>" + data);
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized (lb) {
@@ -115,8 +113,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 			}
 
 		} catch (Exception e) {
-			V2Log.e(e.getMessage());
-			Log.e("DeamonWorker", " error :", e);
+			V2Log.e(e);
 			e.printStackTrace();
 			if (ch != null && !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
@@ -194,10 +191,10 @@ public class DeamonWorker implements Runnable, NetConnector,
 		notifyWorker();
 		synchronized (ll) {
 			try {
-				Log.e("ReaderChannel", Thread.currentThread() + "==>" + ll
+				V2Log.i( Thread.currentThread() + "==>" + ll
 						+ "  to wait");
 				ll.wait();
-				Log.e("ReaderChannel", Thread.currentThread() + "==>" + ll
+				V2Log.i( Thread.currentThread() + "==>" + ll
 						+ "  restore ");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -321,7 +318,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 	private void updateConnectionState(ConnectionState ws) {
 		synchronized (csLock) {
-			Log.i("DeamonWorker", " old cs:" + cs+"   new cs:"+ws);
+			V2Log.w(" old cs:" + cs+"   new cs:"+ws);
 			cs = ws;
 		}
 	}
@@ -354,7 +351,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		req.resp = resp;
 		if (req.sync) {
 			synchronized (req) {
-				Log.e("ReaderChannel", req + "  to notify");
+				V2Log.i(req + "  to notify");
 				req.notify();
 			}
 		} else if (((PacketProxy) req.req).getListener() != null) {
@@ -388,10 +385,10 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		public void run() {
 			while (cs != ConnectionState.CONNECTED) {
-				Log.i("ReaderChannel", "try to reconnect====>" + cs);
+				V2Log.w("try to reconnect====>" + cs);
 				if (st == WorkerState.RUNNING
 						|| (deamon != null && deamon.isAlive())) {
-					Log.i("ReaderChannel", "try to disconnect====>" + st + "  "
+					V2Log.w( "try to disconnect====>" + st + "  "
 							+ deamon);
 					disconnect();
 					try {
@@ -460,19 +457,19 @@ public class DeamonWorker implements Runnable, NetConnector,
 			if (packetTransform != null) {
 				Packet p = packetTransform.unserialize(pack);
 				if (p == null) {
-					Log.e("ReaderChannel", " Parser error");
+					V2Log.e(" Parser error");
 					return;
 				}
-				Log.i("ReaderChannel", "transform====>" + p);
+				V2Log.i("transform====>" + p);
 				if (p instanceof IndicationPacket) {
-					Log.i("ReaderChannel", "notification====>" + p);
+					V2Log.i( "notification====>" + p);
 					sendNotificaiton((IndicationPacket) p);
 					return;
 				}
 				LocalBind lb = findRequestBind((ResponsePacket) p);
-				Log.i("ReaderChannel", "local bind:" + lb);
+				V2Log.i( "local bind:" + lb);
 				if (p.getHeader().isError()) {
-					Log.e("ReaderChannel", "error message:" + p.getHeader().getErrorMsg());
+					V2Log.e("error message:" + p.getHeader().getErrorMsg());
 				}
 				if (lb != null) {
 					lb.respontime = System.currentTimeMillis();
@@ -483,7 +480,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-			Log.e("ReaderChannel", "Exception:" + cause);
+			V2Log.e("Exception:" + cause);
 			cause.printStackTrace();
 			ctx.close();
 		}
