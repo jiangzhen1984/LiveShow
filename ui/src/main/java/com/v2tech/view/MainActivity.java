@@ -19,6 +19,7 @@ import com.v2tech.presenter.MainPresenter;
 import com.v2tech.presenter.MainPresenterUI;
 import com.v2tech.R;
 import com.v2tech.vo.Watcher;
+import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.widget.BottomButtonLayout;
 import com.v2tech.widget.VideoLockSettingDialog;
 import com.v2tech.widget.VideoUnlockSettingDialog;
@@ -121,7 +122,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onDestroy();
 		presenter.onUIDestroyed();
 		((MainApplication) this.getApplication()).requestQuit();
+	}
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		if ("inquiryaction".equalsIgnoreCase(intent.getStringExtra("from"))) {
+			presenter.uiRequestVideoRecordAction(intent);
+		} else {
+			//nothing to do from other;
+		}
 	}
 
 	@Override
@@ -495,6 +505,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				unlockSettingDialog.dismiss();
 			}
 			break;
+		}
+	}
+
+
+
+
+	@Override
+	public void updateUILayout(int requestType) {
+		switch (requestType) {
+			case MainPresenterUI.REQUEST_UI_LAYOUT_VIDEO_SHARE:
+				mMapVideoLayout.updateLayout(MapVideoLayout.ScreenType.VIDEO_SHARE);
+				break;
+			case MainPresenterUI.REQUEST_UI_LAYOUT_VIDEO_WACHING:
+				mMapVideoLayout.updateLayout(MapVideoLayout.ScreenType.VIDEO_MAP);
+				break;
 		}
 	}
 	/////////////////////////////////////////////////////////////

@@ -254,6 +254,15 @@ public class MainPresenter extends BasePresenter implements
 
 	}
 
+
+	public void uiRequestVideoRecordAction(Intent intent) {
+		//TODO update inquiry state to publishing video
+		ui.updateUILayout(MainPresenterUI.REQUEST_UI_LAYOUT_VIDEO_SHARE);
+		//update video share btn
+
+		videoShareButtonClicked();
+	}
+
 	@Override
 	public void onUICreated() {
 		super.onUICreated();
@@ -538,9 +547,9 @@ public class MainPresenter extends BasePresenter implements
 		ui.showProgressDialog(true,
 				context.getResources()
 						.getString(R.string.audio_call_connecting));
-		Message timout = Message
+		Message timeout = Message
 				.obtain(uiHandler, UI_HANDLE_AUDIO_CALL_TIMEOUT);
-		uiHandler.sendMessageDelayed(timout, 10000);
+		uiHandler.sendMessageDelayed(timeout, 10000);
 		
 
 		requestConnection(this.currentViewLive.live.getLid(),
@@ -559,6 +568,7 @@ public class MainPresenter extends BasePresenter implements
 				VMessageAudioVideoRequestItem.TYPE_VIDEO,
 				VMessageAudioVideoRequestItem.ACTION_REQUEST);
 		setBState(B_WATCHING_VIDEO_REQUEST_FLAG);
+		//TODO update ui state for open local camera
 	}
 
 	@Override
@@ -582,6 +592,26 @@ public class MainPresenter extends BasePresenter implements
 		ui.updateInterfactionFollowBtn(true);
 	}
 
+
+
+	@Override
+	public void onAudioBtnPressed(View v) {
+		if (!isBState(B_WATCHING_AUDIO_CONNECTED_FLAG)) {
+			throw new RuntimeException("Illegal state not in watching connection state: " + bState);
+		}
+		V2Log.i(" start to speak  ");
+		vs.applyForControlPermission(ConferencePermission.SPEAKING, null);
+	}
+
+	@Override
+	public void onAudioBtnReleased(View v) {
+		if (!isBState(B_WATCHING_AUDIO_CONNECTED_FLAG)) {
+			throw new RuntimeException("Illegal state not in watching connection state: " + bState);
+		}
+		V2Log.i(" finish speaking  ");
+		vs.applyForReleasePermission(ConferencePermission.SPEAKING, null);
+
+	}
 	// ///////////InterfactionBtnClickListener
 
 	// ///////////P2PVideoMainLayoutListener
@@ -1363,7 +1393,6 @@ public class MainPresenter extends BasePresenter implements
 
 	private void handWatchRequestCallback(JNIResponse resp) {
 		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			vs.applyForControlPermission(ConferencePermission.SPEAKING, null);
 			RequestEnterConfResponse rer = (RequestEnterConfResponse) resp;
 			if (this.currentViewLive.live.getPublisher() == null) {
 				this.currentViewLive.live.setPublisher(new User(rer.getConf()

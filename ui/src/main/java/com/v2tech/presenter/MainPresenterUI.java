@@ -33,84 +33,95 @@ public interface MainPresenterUI {
 	public static final int UI_LAYOUT_TYPE_BID_PERSON_INFO = 10;
 	public static final int UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG = 11;
 	public static final int UI_LAYOUT_TYPE_VIDEO_UNLOCK_SETTING_DIALOG = 12;
+
+
+
+	public static final int REQUEST_UI_LAYOUT_VIDEO_WACHING = 1;
+	public static final int REQUEST_UI_LAYOUT_VIDEO_SHARE = 2;
+
+
+	MapAPI getMainMap();
+
+	void showTextKeyboard(boolean flag);
+
+	void showVideoScreentItem(int tag, boolean showFlag);
+
+	void showLoginUI();
+
+	void showPersonelUI();
+
+	void showSearchErrorToast();
+
+	String getTextString();
+
+	void updateVideShareButtonText(boolean publish);
+
+	void showError(int flag);
+
+	void showDebugMsg(String msg);
+
+	void queuedLiveMessage(CharSequence msg);
 	
+	void updateRendNum(int num);
 
-	public MapAPI getMainMap();
+	void updateBalanceSum(final float num);
 
-	public void showTextKeyboard(boolean flag);
+	void showMarqueeMessage(boolean flag);
 
-	public void showVideoScreentItem(int tag, boolean showFlag);
+	void doFinish();
 
-	public void showLoginUI();
-
-	public void showPersonelUI();
-
-	public void showSearchErrorToast();
-
-	public String getTextString();
-
-	public void updateVideShareButtonText(boolean publish);
-
-	public void showError(int flag);
-
-	public void showDebugMsg(String msg);
-
-	public void queuedLiveMessage(CharSequence msg);
-	
-	public void updateRendNum(int num);
-
-	public void updateBalanceSum(final float num);
-
-	public void showMarqueeMessage(boolean flag);
-
-	public void doFinish();
-	
 	/**
-	 * 
-	 * @param type  {@link TITLE_BAR_BTN_TYPE_BACK}  {@link TITLE_BAR_BTN_TYPE_PERSONEL}
+	 * @param type {@link MainPresenterUI#TITLE_BAR_BTN_TYPE_BACK}  {@link MainPresenterUI#TITLE_BAR_BTN_TYPE_PERSONEL}
 	 */
-	public void updateTitleBarBtn(int type);
+	void updateTitleBarBtn(int type);
 
 	
-	public void showInquiryAcceptedMsg(String msg);
+	void showInquiryAcceptedMsg(String msg);
 
-	public void showProgressDialog(boolean flag, String text);
+	void showProgressDialog(boolean flag, String text);
 
-	public void updateInterfactionFollowBtn(boolean followed);
+	void updateInterfactionFollowBtn(boolean followed);
 
-	public MapAPI getWatcherMapInstance();
+	MapAPI getWatcherMapInstance();
 	
-	public void addWatcher(int flag, Watcher watcher);
+	void addWatcher(int flag, Watcher watcher);
 	
-	public void removeWatcher(int flag, Watcher watcher);
+	void removeWatcher(int flag, Watcher watcher);
 	
-	public VideoPlayer getVideoPlayer();
+	VideoPlayer getVideoPlayer();
 	
-	public VideoPlayer getP2PVideoPlayer();
+	VideoPlayer getP2PVideoPlayer();
 	
-	public void cancelInquireState();
+	void cancelInquireState();
 	
-	public void updateMapAddressText(String text);
+	void updateMapAddressText(String text);
 	
-	public String getInquiryAward();
+	String getInquiryAward();
 	
-	public String getInquiryMessage();
+	String getInquiryMessage();
 	
-	public void showIncorrectAwardMessage(String message);
+	void showIncorrectAwardMessage(String message);
 	
-	public void setInquiryStateToWaiting(boolean wait);
+	void setInquiryStateToWaiting(boolean wait);
 	
-	public void updateInquiryMessage(String msg);
+	void updateInquiryMessage(String msg);
 	
 	/**
-	 * {@link LOCAL_CAMERA_TYPE_SHARE}
-	 * {@link LOCAL_CAMERA_TYPE_P2P_CONNECTION}
+	 * {@link MainPresenterUI#LOCAL_CAMERA_TYPE_SHARE}
+	 * {@link MainPresenterUI#LOCAL_CAMERA_TYPE_P2P_CONNECTION}
 	 * @param type
 	 */
-	public void updateLocalCameraType(int type);
+	void updateLocalCameraType(int type);
 	
-	public void updateInputMode(int mode);
+	void updateInputMode(int mode);
 	
 	
-	public void showUILayout(int type, boolean show, Object tag);
+	void showUILayout(int type, boolean show, Object tag);
+
+
+	/**
+	 *
+	 * @param requestType
+     */
+	void updateUILayout(int requestType);
 }

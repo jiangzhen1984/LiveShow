@@ -155,6 +155,16 @@ public class FansFollowPresenter extends BasePresenter implements
 
 	}
 
+	@Override
+	public void onAudioBtnPressed(View v) {
+		
+	}
+
+	@Override
+	public void onAudioBtnReleased(View v) {
+
+	}
+
 	public void onFollowBtnClick(View v) {
 		List<User> userList = null;
 		if (type == TYPE_FOLLOWERS) {

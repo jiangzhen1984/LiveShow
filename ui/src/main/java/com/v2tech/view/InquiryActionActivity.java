@@ -86,47 +86,54 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 			presenter.audioBtnClicked(v);
 			break;
 		case R.id.inquiry_video_share_btn:
-			presenter.audioBtnClicked(v);
+			presenter.videoShareBtnClicked(v);
 			break;
 		case R.id.title_bar_left_btn:
 			break;
 		}
 	}
 
-	
-	
+
+	@Override
 	public MapAPI getMap() {
 		return mapApi;
 	}
-	
-	
-	
+
+
+	@Override
 	public MapLocation getTargetLocation() {
 		double lat = getIntent().getDoubleExtra("lat", 0.0);
 		double lng = getIntent().getDoubleExtra("lng", 0.0);
 		return mapApi.buildLocation(lat, lng);
 	}
-	
-	
-	
+
+
+	@Override
 	public void showBtn(boolean acceptBtn, boolean audioBtn, boolean videoBtn) {
 		this.acceptBtn.setVisibility(acceptBtn ? View.VISIBLE : View.GONE);
 		this.audioBtn.setVisibility(audioBtn ? View.VISIBLE : View.GONE);
 		this.videoBtn.setVisibility(videoBtn ? View.VISIBLE : View.GONE);
 	}
-	
-	
+
+	@Override
 	public void showTargetAddress(String str) {
 		addressText.setText(str);
 	}
-	
-	
+
+
+	@Override
 	public InquiryData getInquiryDataFromUI() {
 		return (InquiryData)getIntent().getExtras().get("inquiry");
 	}
-	
+
+
+	@Override
+	public void doFinish() {
+		finish();
+	}
 	
 	private Toast t;
+	@Override
 	public void showWaitingLocation() {
 		if (t != null) {
 			t.cancel();

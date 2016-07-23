@@ -298,6 +298,17 @@ public class MapVideoLayout extends FrameLayout {
 	public void updateMapLocationAddress(String address) {
 		mapLocationTipsWidget.updateMapLocationAddress(address);
 	}
+
+
+	public void updateLayout(ScreenType screenType) {
+		if (st !=  screenType) {
+			this.st = screenType;
+			requestLayout();
+			if (uiTypeListener != null) {
+				uiTypeListener.onUITypeChanged(st);
+			}
+		}
+	}
 	
 	
 	public void showVideoBtnLy(boolean flag) {

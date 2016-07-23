@@ -1,8 +1,7 @@
 package com.v2tech.presenter;
 
-import java.lang.ref.WeakReference;
-
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -15,8 +14,9 @@ import com.v2tech.map.MapStatus;
 import com.v2tech.map.MapStatusListener;
 import com.v2tech.service.AsyncResult;
 import com.v2tech.service.InquiryService;
-import com.v2tech.service.MessageListener;
 import com.v2tech.vo.inquiry.InquiryData;
+
+import java.lang.ref.WeakReference;
 
 public class InquiryActionPresenter extends BasePresenter implements  MapStatusListener {
 	
@@ -49,6 +49,9 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		public InquiryData getInquiryDataFromUI();
 		
 		public void showWaitingLocation();
+
+
+		public void doFinish();
 	}
 
 	public InquiryActionPresenter(Context context, InquiryActionPresenterUI ui) {
@@ -140,11 +143,17 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	}
 	
 	public void audioBtnClicked(View view) {
-		
+		//TODO send audio message
 	}
 	
 	public void videoShareBtnClicked(View view) {
-		
+		ui.doFinish();
+		Intent i = new Intent();
+		i.putExtra("inquiry", data);
+		i.putExtra("from", "inquiryaction");
+		i.addCategory("com.v2tech");
+		i.setAction("com.v2tech.request_video_record");
+		context.startActivity(i);
 	}
 	
 	
