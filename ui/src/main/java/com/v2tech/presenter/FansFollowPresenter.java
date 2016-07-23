@@ -157,7 +157,7 @@ public class FansFollowPresenter extends BasePresenter implements
 
 	@Override
 	public void onAudioBtnPressed(View v) {
-		
+
 	}
 
 	@Override

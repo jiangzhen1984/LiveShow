@@ -36,7 +36,7 @@ public final class V2Log {
     private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int fileIdx = 1;
     private static int fileSize = 8172000;
-    private static String logDir;;
+    private static String logDir = "";
 
 
     private V2Log() {
@@ -50,6 +50,9 @@ public final class V2Log {
      * @param fs  file maximum size
      */
     public static void initLogConfig(String ld, int fs) {
+        if (ld == null) {
+            throw new NullPointerException(" log dir doesn't permit null");
+        }
         logDir = ld;
         fileSize = fs;
     }
