@@ -35,6 +35,7 @@ import com.V2.jni.VideoRequest;
 import com.V2.jni.WBRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
+import com.v2tech.misc.CrashHandler;
 import com.v2tech.misc.LogCollectionWorker;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.WebPacketTransform;
@@ -54,6 +55,7 @@ public class MainApplication extends Application {
 		this.registerActivityLifecycleCallbacks(GlobalActivityManager
 				.getInstance());
 		V2Log.e("====>" +this.getApplicationInfo().processName);
+		CrashHandler.getInstance().init(this);
 	}
 
 	@Override
