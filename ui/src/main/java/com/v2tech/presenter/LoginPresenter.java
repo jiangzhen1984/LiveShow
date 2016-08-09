@@ -30,29 +30,31 @@ public class LoginPresenter extends BasePresenter {
 
 	public interface LoginPresenterUI {
 
-		public String getUserNameText();
+		String getUserNameText();
 
-		public String getCodeText();
+		String getCodeText();
 
-		public void updateStartButton(boolean enable);
+		CharSequence getOriginUserNameText();
 
-		public void appendBlankSpace();
+		void updateStartButton(boolean enable);
 
-		public void showLogingInProgress();
+		void appendBlankSpace();
 
-		public void doLogedIn();
+		void showLogingInProgress();
 
-		public void doReturned();
+		void doLoggedIn();
 
-		public void setPhoneNumberError();
+		void doReturned();
 
-		public void showKeyboard();
+		void setPhoneNumberError();
 
-		public void doLogonFailed();
+		void showKeyboard();
+
+		void doLogonFailed();
 		
-		public void showIncorrectMsgIncorrectUsername();
+		void showIncorrectMsgIncorrectUsername();
 		
-		public void showNotificaitonView(boolean flag);
+		void showNotificationView(boolean flag);
 	}
 
 	private LoginPresenterUI ui;
@@ -76,7 +78,7 @@ public class LoginPresenter extends BasePresenter {
 	public void onUIStarted() {
 		super.onUIStarted();
 		ui.showKeyboard();
-		ui.showNotificaitonView(false);
+		ui.showNotificationView(false);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class LoginPresenter extends BasePresenter {
 	}
 
 	public void startButtonClicked() {
-		ui.showNotificaitonView(false);
+		ui.showNotificationView(false);
 		Message.obtain(h, LOGIN_ACTION, null).sendToTarget();
 		;
 	}
@@ -102,8 +104,9 @@ public class LoginPresenter extends BasePresenter {
 	}
 
 	public void userNameTextChanged() {
-		int len = ui.getUserNameText().length();
-		if (len == 4 || len == 8) {
+		CharSequence cs = ui.getOriginUserNameText();
+		int len = cs.length();
+		if ((len == 4 || len == 9)&& cs.charAt(len -1) !=' ') {
 			ui.appendBlankSpace();
 		}
 	}
@@ -144,10 +147,10 @@ public class LoginPresenter extends BasePresenter {
 					.setMobile(ui.getUserNameText());
 			queryFollowersList();
 			queryFansList();
-			ui.doLogedIn();
+			ui.doLoggedIn();
 		} else {
 			ui.showIncorrectMsgIncorrectUsername();
-			ui.showNotificaitonView(true);
+			ui.showNotificationView(true);
 			ui.doLogonFailed();
 		}
 	}

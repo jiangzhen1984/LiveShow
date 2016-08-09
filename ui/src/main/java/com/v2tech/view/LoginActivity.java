@@ -129,6 +129,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	}
 
 
+	public CharSequence getOriginUserNameText() {
+		return mUserNameET.getEditableText();
+	}
 
 	@Override
 	public void updateStartButton(boolean enable) {
@@ -163,7 +166,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 
 	@Override
 	public void showLogingInProgress() {
-		V2Log.e("=================progress");
 		if (proDialog == null) {
 			proDialog = new ProgressDialog(this);
 			proDialog.setCancelable(false);
@@ -173,7 +175,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	
 
 	@Override
-	public void doLogedIn() {
+	public void doLoggedIn() {
 		finish();
 	}
 	
@@ -204,7 +206,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 	}
 
 	
-	public void showNotificaitonView(final boolean flag) {
+	public void showNotificationView(final boolean flag) {
 		this.runOnUiThread(new Runnable() {
 
 			@Override
