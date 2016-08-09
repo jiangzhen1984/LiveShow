@@ -1,6 +1,5 @@
 package com.v2tech.view;
 
-import v2av.VideoPlayer;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -13,16 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.v2tech.R;
 import com.v2tech.map.MapAPI;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.presenter.MainPresenterUI;
-import com.v2tech.R;
 import com.v2tech.vo.Watcher;
-import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.widget.BottomButtonLayout;
 import com.v2tech.widget.VideoLockSettingDialog;
 import com.v2tech.widget.VideoUnlockSettingDialog;
+
+import v2av.VideoPlayer;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MainPresenterUI {
 
@@ -30,9 +30,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private static final int REQUEST_LOGIN_ACTIVITY_CODE = 101;
 	private static final int REQUEST_PERSONAL_ACTIVITY = 102;
 
-	// private BottomButtonLayout mBottomButtonLayout;
 	private FrameLayout mMainLayout;
-	// private VideoShareLayout videoShareLayout;
 	private MapVideoLayout mMapVideoLayout;
 	private BottomButtonLayout bottomButtonLayout;
 

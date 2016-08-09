@@ -50,8 +50,7 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		
 		public void showWaitingLocation();
 
-
-		public void doFinish();
+		public void quit();
 	}
 
 	public InquiryActionPresenter(Context context, InquiryActionPresenterUI ui) {
@@ -147,13 +146,13 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 	}
 	
 	public void videoShareBtnClicked(View view) {
-		ui.doFinish();
 		Intent i = new Intent();
 		i.putExtra("inquiry", data);
 		i.putExtra("from", "inquiryaction");
 		i.addCategory("com.v2tech");
 		i.setAction("com.v2tech.request_video_record");
 		context.startActivity(i);
+		ui.quit();
 	}
 	
 	

@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.R;
 import com.v2tech.map.LocationNameQueryResponseListener;
 import com.v2tech.map.LocationParameter;
 import com.v2tech.map.MapAPI;
@@ -49,7 +50,6 @@ import com.v2tech.service.jni.RequestConfCreateResponse;
 import com.v2tech.service.jni.RequestEnterConfResponse;
 import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.util.SPUtil;
-import com.v2tech.R;
 import com.v2tech.view.MapVideoLayout.ScreenType;
 import com.v2tech.view.MapVideoLayout.UITypeStatusChangedListener;
 import com.v2tech.view.P2PMessageActivity;
@@ -82,6 +82,16 @@ import com.v2tech.widget.VideoShareBtnLayout.VideoShareBtnLayoutListener;
 import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoUnlockSettingDialog.VideoUnlockSettingDiagLockListener;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import v2av.VideoPlayer;
+import v2av.VideoPlayer.ViewItemListener;
 
 public class MainPresenter extends BasePresenter implements
         MarkerListener, UITypeStatusChangedListener, VideoLockSettingDiagLockListener,
@@ -1620,6 +1630,5 @@ public class MainPresenter extends BasePresenter implements
             }
         }
     }
-
 
 }

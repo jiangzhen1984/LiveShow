@@ -1,16 +1,5 @@
 package com.v2tech.view;
 
-import com.baidu.mapapi.map.BaiduMapOptions;
-import com.baidu.mapapi.map.MapView;
-import com.v2tech.map.MapAPI;
-import com.v2tech.map.MapLocation;
-import com.v2tech.map.baidu.BaiduMapImpl;
-import com.v2tech.presenter.BasePresenter;
-import com.v2tech.presenter.InquiryActionPresenter;
-import com.v2tech.presenter.InquiryActionPresenter.InquiryActionPresenterUI;
-import com.v2tech.R;
-import com.v2tech.vo.inquiry.InquiryData;
-
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -18,6 +7,17 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.MapView;
+import com.v2tech.R;
+import com.v2tech.map.MapAPI;
+import com.v2tech.map.MapLocation;
+import com.v2tech.map.baidu.BaiduMapImpl;
+import com.v2tech.presenter.BasePresenter;
+import com.v2tech.presenter.InquiryActionPresenter;
+import com.v2tech.presenter.InquiryActionPresenter.InquiryActionPresenterUI;
+import com.v2tech.vo.inquiry.InquiryData;
 
 public class InquiryActionActivity extends BaseActivity implements InquiryActionPresenterUI, OnClickListener {
 	
@@ -127,11 +127,7 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 	}
 
 
-	@Override
-	public void doFinish() {
-		finish();
-	}
-	
+
 	private Toast t;
 	@Override
 	public void showWaitingLocation() {
@@ -144,6 +140,10 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 		t.setDuration(Toast.LENGTH_SHORT);
 		t.setGravity(Gravity.CENTER, 0, 0);
 		t.show();
-		
+	}
+
+
+	public void quit() {
+		finish();
 	}
 }

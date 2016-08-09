@@ -143,6 +143,8 @@
     <string name="message_session_system_msg">系统消息</string>
     <string name="video_lock_setting_dialog_layout_banner_text">设置密码</string>
     <string name="video_unlock_setting_dialog_layout_banner_text">确定取消视频加密</string>
-    
+
+
+    <string name="video_code_incorrect">视频密码错误！</string>
 
 </resources>

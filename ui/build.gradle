@@ -6,7 +6,7 @@ android {
     enforceUniquePackageName = false
     signingConfigs {
         debug {
-            storeFile file('/home/jiangzhen/.android/debug.keystore')
+            storeFile file('files/debug.keystore')
         }
     }
     defaultConfig {
