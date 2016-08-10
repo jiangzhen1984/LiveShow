@@ -36,7 +36,7 @@ public class LogCollectionWorker extends Thread {
 			
 			HttpDataFactory factory = new DefaultHttpDataFactory(
 					DefaultHttpDataFactory.MINSIZE);
-			File cl = new File(GlobalConfig.getGlobalCrashPath());
+			File cl = new File( GlobalConfig.getGlobalCrashPath()+"/v2tech/crash/");
 			if (cl.isDirectory()) {
 				String[] files = cl.list();
 				File crash = null;

@@ -21,6 +21,7 @@ import com.v2tech.presenter.FansFollowPresenter;
 import com.v2tech.presenter.FansFollowPresenter.FansFollowPresenterUI;
 import com.v2tech.R;
 import com.v2tech.widget.LivePublisherPersonelLayout;
+import com.v2tech.widget.PersonelDetailLayout;
 import com.v2tech.widget.VoiceRecordDialogWidget;
 
 /**
@@ -33,7 +34,7 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 	private TextView titleBarName;
 
 	private FansFollowPresenter presenter;
-	private LivePublisherPersonelLayout personelLayout;
+	private PersonelDetailLayout personelLayout;
 	
 	private View audioRecordBtn;
 	private PopupWindow   dialog;
@@ -48,12 +49,13 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 		
 		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
 		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
-		personelLayout = (LivePublisherPersonelLayout)  findViewById(R.id.personel_liver_interaction_layout);
-
-		audioRecordBtn = personelLayout.getAudioRecordBtn();
-		//cancel click event
-		audioRecordBtn.setOnClickListener(null);
-		audioRecordBtn.setOnTouchListener(touchListener);
+		personelLayout = (PersonelDetailLayout)  findViewById(R.id.personel_liver_interaction_layout);
+//
+//		audioRecordBtn = personelLayout.getAudioRecordBtn();
+//		//cancel click event
+//		audioRecordBtn.setOnClickListener(null);
+//		audioRecordBtn.setOnTouchListener(touchListener);
+		personelLayout.setOutListener((PersonelDetailLayout.InterfactionBtnClickListener)getPresenter());
 		this.overridePendingTransition(R.anim.left_to_right_in,
 				R.anim.left_to_right_out);
 
@@ -111,7 +113,6 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 	public BasePresenter getPresenter() {
 		if (presenter == null) {
 			presenter = new FansFollowPresenter(this, this);
-			personelLayout.setOutListener(presenter);
 		}
 		return presenter;
 	}
@@ -208,43 +209,5 @@ public class FansFollowActivity extends BaseActivity implements OnClickListener,
 		voiceDialogWidget.updateVolumnLevel(level);
 	}
 	
-	
-	
-	private boolean inBoundsFlag = true;
-	private OnTouchListener touchListener = new OnTouchListener() {
 
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			int action = event.getAction();
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				audioRecordBtn.setPressed(true);
-				presenter.onRecordBtnTouchDown(event);
-				inBoundsFlag = true;
-				break;
-			case MotionEvent.ACTION_MOVE:
-				Rect r = new Rect();
-				v.getDrawingRect(r);
-				if (r.contains((int)event.getX(), (int)event.getY())) {
-					if (!inBoundsFlag) {
-						inBoundsFlag = true;
-						presenter.onRecordBtnTouchMoveInBtn(event);
-					}
-				} else {
-					if (inBoundsFlag) {
-						presenter.onRecordBtnTouchMoveOutOfBtn(event);
-						inBoundsFlag = false;
-					}
-				}
-				break;
-			case MotionEvent.ACTION_CANCEL:
-			case MotionEvent.ACTION_UP:
-				audioRecordBtn.setPressed(false);
-				presenter.onRecordBtnTouchUp(event);
-				break;
-			}
-			return true;
-		}
-		
-	};
 }

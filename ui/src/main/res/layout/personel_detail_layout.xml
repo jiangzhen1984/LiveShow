@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.v2tech.widget.LivePublisherPersonelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.v2tech.widget.PersonelDetailLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/liver_iteraction_ly_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/personel_detail_personel_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/liver_interaction_box1_margin_top"
-        android:background="@color/liver_iteraction_personel_box_bg" >
+        android:background="@color/liver_iteraction_personel_box_bg">
 
         <ImageView
-            android:id="@+id/liver_interaction_avtar"
+            android:id="@+id/personel_detail_avtar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -22,23 +23,23 @@
             android:src="@drawable/liver_interaction_avatar" />
 
         <LinearLayout
-            android:id="@+id/liver_interaction_btn_ly"
+            android:id="@+id/personel_detail_btn_ly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/liver_interaction_btn_box_margin_right"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/liver_interaction_btn"
+                android:id="@+id/personel_detail_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/liver_interaction_cancel_follow_friend" />
 
             <TextView
-                android:id="@+id/liver_interaction_text"
+                android:id="@+id/personel_detail_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -53,17 +54,17 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/liver_interaction_text_margin_hor"
             android:layout_marginRight="@dimen/liver_interaction_text_margin_hor"
-            android:layout_toLeftOf="@+id/liver_interaction_btn_ly"
-            android:layout_toRightOf="@+id/liver_interaction_avtar"
-            android:orientation="vertical" >
+            android:layout_toLeftOf="@+id/personel_detail_btn_ly"
+            android:layout_toRightOf="@+id/personel_detail_avtar"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/liver_interaction_text_margin_top" >
+                android:layout_marginTop="@dimen/liver_interaction_text_margin_top">
 
                 <TextView
-                    android:id="@+id/liver_interaction_name"
+                    android:id="@+id/personel_detail_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="晨羲"
@@ -71,7 +72,7 @@
                     android:textSize="@dimen/liver_interaction_name_text_size" />
 
                 <ImageView
-                    android:id="@+id/liver_interaction_gender"
+                    android:id="@+id/personel_detail_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -79,7 +80,7 @@
                     android:src="@drawable/gender_male" />
 
                 <ImageView
-                    android:id="@+id/liver_interaction_level"
+                    android:id="@+id/personel_detail_level"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -92,10 +93,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginTop="@dimen/liver_interaction_text_margin_top"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/liver_interaction_signature"
+                    android:id="@+id/personel_detail_signature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="自我介绍"
@@ -105,11 +106,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/imageView4"
@@ -120,7 +121,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/liver_interaction_location"
+                    android:id="@+id/personel_detail_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="上海"
@@ -145,7 +146,7 @@
                     android:textSize="@dimen/liver_interaction_text_size" />
 
                 <TextView
-                    android:id="@+id/liver_interaction_videos"
+                    android:id="@+id/personel_detail_videos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="123"
@@ -161,7 +162,7 @@
                     android:textSize="@dimen/liver_interaction_text_size" />
 
                 <TextView
-                    android:id="@+id/liver_interaction_fans"
+                    android:id="@+id/personel_detail_fans"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="56"
@@ -177,7 +178,7 @@
                     android:textSize="@dimen/liver_interaction_text_size" />
 
                 <TextView
-                    android:id="@+id/liver_interaction_follows"
+                    android:id="@+id/personel_detail_follows"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="732"
@@ -191,29 +192,27 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/common_sep_line"
-        android:orientation="vertical" >
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <LinearLayout
-        android:id="@+id/liver_interaction_box_layout"
+        android:id="@+id/personel_detail_box_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/common_sep_line"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/liver_iteraction_personel_box_bg"
             android:paddingBottom="@dimen/liver_interaction_personel_text_label_padding_hor"
-            android:paddingTop="@dimen/liver_interaction_personel_text_label_padding_hor" >
+            android:paddingTop="@dimen/liver_interaction_personel_text_label_padding_hor">
 
             <TextView
                 android:id="@+id/textView2"
@@ -238,59 +237,48 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/common_sep_line"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/personel_detail_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/liver_interaction_box2_margin_top"
-        android:padding="5dp" >
-
-
-        
+        android:padding="5dp">
 
 
         <TextView
-            android:id="@+id/liver_interaction_chating_btn_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/liver_interaction_video_call_btn_iv"
-            android:layout_marginTop="10dp"
-            android:text=" " />
-
-        <TextView
-            android:id="@+id/liver_interaction_msg_btn_iv"
+            android:id="@+id/personel_detail_msg_btn_iv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:layout_marginRight="@dimen/liver_interaction_personel_btn_margin_hor"
+            android:background="@drawable/message_send_btn_selector"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
             android:text="@string/liver_interaction_personel_message_send_btn_text"
-            android:layout_marginLeft="@dimen/liver_interaction_personel_btn_margin_hor"
-            android:layout_marginRight="@dimen/liver_interaction_personel_btn_margin_hor"
             android:textColor="@color/liver_iteraction_personel_message_send_text_color"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="@dimen/liver_interaction_personel_btn_text_size"
-            android:background="@drawable/message_send_btn_selector" />
-        
+            android:textSize="@dimen/liver_interaction_personel_btn_text_size" />
+
         <TextView
-            android:id="@+id/liver_interaction_video_call_btn_iv"
+            android:id="@+id/personel_detail_video_call_btn_iv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/personel_detail_msg_btn_iv"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="@string/liver_interaction_personel_video_call_btn_text"
             android:layout_marginLeft="@dimen/liver_interaction_personel_btn_margin_hor"
             android:layout_marginRight="@dimen/liver_interaction_personel_btn_margin_hor"
-            android:textColor="@color/liver_iteraction_personel_video_call_text_color"
-            android:layout_below="@+id/liver_interaction_msg_btn_iv"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/video_call_btn_selector"
             android:gravity="center"
-            android:textSize="@dimen/liver_interaction_personel_btn_text_size"
-            android:background="@drawable/video_call_btn_selector"  />
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/liver_interaction_personel_video_call_btn_text"
+            android:textColor="@color/liver_iteraction_personel_video_call_text_color"
+            android:textSize="@dimen/liver_interaction_personel_btn_text_size" />
     </RelativeLayout>
 
-</com.v2tech.widget.LivePublisherPersonelLayout>
+</com.v2tech.widget.PersonelDetailLayout>

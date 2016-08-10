@@ -56,7 +56,7 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 		
 		remoteVideoPlayer = new VideoPlayer();
 		remoteUserVideoView.getHolder().addCallback(remoteVideoPlayer);
-		
+		localUserVideoView.getHolder().addCallback(presenter);
 		
 	}
 
@@ -70,7 +70,6 @@ public class P2PVideoActivity extends BaseActivity implements P2PVideoPresenterU
 	public BasePresenter getPresenter() {
 		if (presenter == null) {
 			presenter = new P2PVideoPresenter(this, this);
-			localUserVideoView.getHolder().addCallback(presenter);
 		}
 		return presenter;
 	}

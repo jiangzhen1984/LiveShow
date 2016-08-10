@@ -50,6 +50,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private View sendBtn;
 	private View root;
 	private View videoConnectionBtn;
+
+	private BaseAdapter baseAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		
 		
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		
+		listView.setAdapter(baseAdapter);
+		emojiWidget.setListener(presenter);
 	}
 	
 
@@ -102,7 +105,6 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	public BasePresenter getPresenter() {
 		if (presenter == null) {
 			presenter = new P2PMessagePresenter(this.getApplicationContext(), this);
-			emojiWidget.setListener(presenter);
 		}
 		
 		return presenter;
@@ -111,7 +113,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	
 	@Override
 	public void setAdapter(BaseAdapter adapter) {
-		listView.setAdapter(adapter);
+		this.baseAdapter = adapter;
 	}
 	
 	

@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.V2.jni.ImRequest;
 import com.V2.jni.ImRequestCallbackAdapter;
@@ -85,12 +86,12 @@ public class UserService extends AbstractHandler {
 						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
 						"", true);
 			} else {
-				if (lrp.v2account != null && lrp.v2password != null) {
+				if (!TextUtils.isEmpty(lrp.v2account) && !TextUtils.isEmpty(lrp.v2password)) {
 					V2Log.i("====log v2 system with account " + lrp.v2account );
 					 ImRequest.getInstance().ImLogin(lrp.v2account, lrp.v2password,
 					 V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "", false);
 				} else {
-					V2Log.i("====log v2 system with guest ");
+					V2Log.i("====log v2 system with guest register with : " + mail);
 					ImRequest.getInstance().ImRegisterGuest(mail);
 				}
 			}

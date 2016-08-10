@@ -505,7 +505,7 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 		for (User vs : sessList) {
 			Item item = new Item();
 			itemList.add(item);
-			item.id = vs.getmUserId();
+			item.id = vs.nId;
 			item.name = vs.getName();
 			item.gender = vs.isMale;
 			item.u = vs;
