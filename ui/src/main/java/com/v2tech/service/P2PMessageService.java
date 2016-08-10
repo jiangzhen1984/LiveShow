@@ -17,6 +17,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.V2.jni.AudioRequest;
+import com.V2.jni.AudioRequestCallbackAdapter;
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.VideoRequest;
@@ -43,6 +45,7 @@ public class P2PMessageService extends DeviceService {
 	private LocalChatCB chatCB;
 	
 	private LocalVideoRequestCB lvrCB;
+	private LocalAudioRequestCB lvarCB;
 	
 	private Map<String, WeakReference<MessageListener>> pendingListener;
 	
@@ -52,7 +55,9 @@ public class P2PMessageService extends DeviceService {
 		ChatRequest.getInstance().addChatRequestCallback(chatCB);
 		pendingListener = new HashMap<String, WeakReference<MessageListener>>();
 		lvrCB = new LocalVideoRequestCB();
+		lvarCB = new LocalAudioRequestCB();
 		VideoRequest.getInstance().addCallback(lvrCB);
+		AudioRequest.getInstance().addCallback(lvarCB);
 	}
 	
 	
@@ -338,13 +343,18 @@ public class P2PMessageService extends DeviceService {
 	public void cancelCalling(UserChattingObject ucd, MessageListener listener) {
 		VideoRequest.getInstance().VideoCloseChat(ucd.getSzSessionID(),
 				ucd.getUser().getmUserId(), ucd.getDeviceId());
+		AudioRequest.getInstance().AudioCloseChat(ucd.getSzSessionID(), ucd.getUser().getmUserId());
 	}
+
+
+
 
 	@Override
 	public void clearCalledBack() {
 		ChatRequest.getInstance().removeChatRequestCallback(chatCB);
 		pendingListener.clear();
 		VideoRequest.getInstance().removeCallback(lvrCB);
+		AudioRequest.getInstance().removeCallback(lvarCB);
 	}
 	
 	
@@ -398,21 +408,33 @@ public class P2PMessageService extends DeviceService {
 				String szDeviceID) {
 			V2Log.i("OnVideoChatAccepted==== >"  +szSessionID +"  szDeviceID: " + szDeviceID+"  nFromUserID:"+ nFromUserID);
 			listener.onAccepted();
+
+			AudioRequest.getInstance().AudioInviteChat(szSessionID, nFromUserID);
 		}
 
 		@Override
 		public void OnVideoChatClosed(String szSessionID, long nFromUserID,
 				String szDeviceID) {
 			listener.onDeclined();
+			AudioRequest.getInstance().AudioCloseChat(szSessionID, nFromUserID);
 		}
 
 		@Override
 		public void OnVideoChatRefused(String szSessionID, long nFromUserID,
 				String szDeviceID) {
 			listener.onDeclined();
+			AudioRequest.getInstance().AudioCloseChat(szSessionID, nFromUserID);
 		}
-		
-		
-		
+
+
+
+	}
+
+
+	class LocalAudioRequestCB extends AudioRequestCallbackAdapter {
+		@Override
+		public void OnAudioChatInvite(String szSessionID, long nUserID) {
+			AudioRequest.getInstance().AudioAcceptChat(szSessionID, nUserID);
+		}
 	}
 }

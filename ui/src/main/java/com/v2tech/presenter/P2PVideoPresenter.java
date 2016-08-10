@@ -132,7 +132,7 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		V2Log.e("===== create and start record");
+		V2Log.i("===== create and start record for personnel video chatting");
 		VideoRecorder.VideoPreviewSurfaceHolder = holder;
 		//open local device
 		UserDeviceConfig duc = new UserDeviceConfig(GroupType.CHATING.intValue(),0 , GlobalHolder.getInstance()
