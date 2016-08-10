@@ -1,23 +1,22 @@
 package com.v2tech.net.lv;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.V2.jni.util.V2Log;
-import com.v2tech.net.lv.WebPackage.Reward;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
 import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.net.pkt.Transformer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/5/6.
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "2.1.0";
+	private static final String VERSION = "1.1.0";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){
