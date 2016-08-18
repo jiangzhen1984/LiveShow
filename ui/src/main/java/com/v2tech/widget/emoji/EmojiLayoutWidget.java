@@ -15,7 +15,7 @@ import com.v2tech.widget.emoji.EmojiView.EmojiViewListener;
 public class EmojiLayoutWidget extends LinearLayout {
 	
 	
-	private static int[] EMOJI_RES_TABLE = new int[R.drawable.emo_75 - R.drawable.emo_01 + 4];
+	public static int[] EMOJI_RES_TABLE = new int[R.drawable.emo_75 - R.drawable.emo_01 + 4];
 	private static final int VIEW_COLS = 10;
 	private static final int VIEW_ROWS = 3;
 	

@@ -12,7 +12,6 @@ import com.v2tech.map.MapAPI;
 import com.v2tech.map.MapLocation;
 import com.v2tech.map.MapStatus;
 import com.v2tech.map.MapStatusListener;
-import com.v2tech.service.AsyncResult;
 import com.v2tech.service.InquiryService;
 import com.v2tech.vo.inquiry.InquiryData;
 
@@ -150,8 +149,13 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 		i.putExtra("inquiry", data);
 		i.putExtra("from", "inquiryaction");
 		i.addCategory("com.v2tech");
-		i.setAction("com.v2tech.request_video_record");
+		i.setAction("com.v2tech.intent.request_video_record");
+		i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		context.startActivity(i);
+		ui.quit();
+	}
+
+	public void returnBtnClicked(View v) {
 		ui.quit();
 	}
 	
@@ -177,8 +181,8 @@ public class InquiryActionPresenter extends BasePresenter implements  MapStatusL
 			int what = msg.what;
 			switch (what) {
 			case TARGET_LOCATION_UPDATE_CALLBACK:
-				if (wrUI.get() != null) {
-					wrUI.get().showTargetAddress(((AsyncResult)msg.obj).getResult().toString());
+				if (wrUI.get() != null && msg.obj != null) {
+					wrUI.get().showTargetAddress(msg.obj.toString());
 				}
 				break;
 			}

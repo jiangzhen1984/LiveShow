@@ -89,6 +89,7 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 			presenter.videoShareBtnClicked(v);
 			break;
 		case R.id.title_bar_left_btn:
+			presenter.returnBtnClicked(v);
 			break;
 		}
 	}
@@ -135,9 +136,8 @@ public class InquiryActionActivity extends BaseActivity implements InquiryAction
 			t.cancel();
 			t = null;
 		}
-		t = new Toast(this);
-		t.setText(getResources().getString(R.string.inquiry_accept_error_no_location));
-		t.setDuration(Toast.LENGTH_SHORT);
+
+		t = Toast.makeText(this, R.string.inquiry_accept_error_no_location, Toast.LENGTH_SHORT);
 		t.setGravity(Gravity.CENTER, 0, 0);
 		t.show();
 	}

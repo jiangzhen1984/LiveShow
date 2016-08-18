@@ -1,10 +1,5 @@
 package com.v2tech.map.baidu;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.LongSparseArray;
@@ -24,6 +19,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
@@ -48,6 +44,11 @@ import com.v2tech.map.MapStatusListener;
 import com.v2tech.map.Marker;
 import com.v2tech.map.MarkerListener;
 import com.v2tech.map.Updater;
+
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaiduMapImpl implements MapAPI,
 		BaiduMap.OnMapStatusChangeListener, BDLocationListener,
@@ -287,7 +288,7 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onMapStatusChangeFinish(MapStatus status) {
-		V2Log.i("===>>>>>" + status.target+"  ===>"+ status.targetScreen);
+		V2Log.i("map status changed from ===>>>>>" + status.target+"  to ===>"+ status.targetScreen);
 		BaiduMapStatus bms = new BaiduMapStatus(status);
 		for (int i = 0; i < statusListener.size(); i++) {
 			WeakReference<MapStatusListener> wr = statusListener.get(i);
@@ -320,12 +321,12 @@ public class BaiduMapImpl implements MapAPI,
 				location.getLongitude());
 		MapLocation ml = new BaiduLocation(ll);
 		if(mapImpl.isMyLocationEnabled()) {
-//			MyLocationData locData = new MyLocationData.Builder()
-//			.accuracy(location.getRadius())
-//			// 此处设置开发者获取到的方向信息，顺时针0-360
-//			.direction(100).latitude(location.getLatitude())
-//			.longitude(location.getLongitude()).build();
-//			mapImpl.setMyLocationData(locData);
+			MyLocationData locData = new MyLocationData.Builder()
+			.accuracy(location.getRadius())
+			// 此处设置开发者获取到的方向信息，顺时针0-360
+			.direction(100).latitude(location.getLatitude())
+			.longitude(location.getLongitude()).build();
+			mapImpl.setMyLocationData(locData);
 		}
 		
 		for (int i = 0; i < this.statusListener.size(); i++) {

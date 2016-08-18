@@ -1,12 +1,5 @@
 package com.v2tech.view;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +37,13 @@ import com.v2tech.presenter.GlobalActivityManager;
 import com.v2tech.util.GlobalConfig;
 import com.v2tech.util.StorageUtil;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class MainApplication extends Application {
 
 	private static final String TAG = MainApplication.class.getSimpleName();
@@ -55,7 +55,6 @@ public class MainApplication extends Application {
 		super.onCreate();
 		this.registerActivityLifecycleCallbacks(GlobalActivityManager
 				.getInstance());
-		V2Log.e("====>" +this.getApplicationInfo().processName);
 		if (!BuildConfig.DEBUG) {
 			CrashHandler.getInstance().init(this);
 		}

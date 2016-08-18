@@ -1,15 +1,5 @@
 package com.v2tech.view;
 
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +17,16 @@ import com.v2tech.vo.msg.VMessageAudioItem;
 import com.v2tech.vo.msg.VMessageAudioVideoRequestItem;
 import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageTextItem;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReceiverLiveMessage extends BroadcastReceiver {
 
@@ -69,8 +69,8 @@ public class ReceiverLiveMessage extends BroadcastReceiver {
 			}
 			
 			if (vm != null) {
-				P2PMessageService.saveMessage(context, vm, vm.getToUser());
-				P2PMessageService.saveOrUpdateMessageSession(context, vm,  vm.getToUser(), false, true);
+				P2PMessageService.saveMessage(context, vm, vm.getFromUser());
+				P2PMessageService.saveOrUpdateMessageSession(context, vm,  vm.getFromUser(), false, true);
 			}
 		}
 	}
