@@ -203,6 +203,12 @@ public class UserService extends AbstractHandler {
 				new PacketProxy(new FollowReqPacket(user.nId, follow), null));
 	}
 
+
+	public boolean isLoggedIn() {
+		User user = GlobalHolder.getInstance().getCurrentUser();
+		return (user == null || user.isNY == true) ? false : true;
+	}
+
 	@Override
 	public void clearCalledBack() {
 		ImRequest.getInstance().removeCallback(imCB);

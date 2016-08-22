@@ -101,13 +101,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// mMapView.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// mMapView.onResume();
 	}
 
 	@Override
@@ -236,7 +234,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void updateVideShareButtonText(boolean publish) {
+	public void updateVideoShareButtonText(boolean publish) {
 		if (publish) {
 			mMapVideoLayout.updateVideoShareBtnBackground(R.drawable.video_sharing_button_bg);
 		} else {

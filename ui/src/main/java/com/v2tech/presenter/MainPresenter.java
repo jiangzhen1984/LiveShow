@@ -222,14 +222,14 @@ public class MainPresenter extends BasePresenter implements
         if (isBState(B_PUBLISHING_FLAG)) {
             unsetBState(B_PUBLISHING_FLAG);
             setBState(B_PREPARE_PUBLISH_FLAG);
-            ui.updateVideShareButtonText(false);
+            ui.updateVideoShareButtonText(false);
             vs.quitConference(publishingLive, new MessageListener(h,
                     CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
         } else {
             setBState(B_PREPARING_PUBLISH_FLAG);
             unsetBState(B_PREPARE_PUBLISH_FLAG);
             Message.obtain(h, CREATE_VIDEO_SHARE).sendToTarget();
-            ui.updateVideShareButtonText(true);
+            ui.updateVideoShareButtonText(true);
         }
     }
 
@@ -265,13 +265,31 @@ public class MainPresenter extends BasePresenter implements
         }
     }
 
+
+    public boolean closeLocalCameraIfNecessary() {
+        if (isState(LOCAL_CAMERA_OPENING)) {
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+                    .getInstance().getCurrentUserId(), "", null);
+            vs.requestCloseVideoDevice(duc, null);
+            unsetState(LOCAL_CAMERA_OPENING);
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void onReturnBtnClicked() {
         ui.doFinish();
     }
 
     public void onLoginChildUIFinished(int ret, Intent data) {
-
+        if (isBState(B_PREPARE_PUBLISH_FLAG)) {
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+                    .getInstance().getCurrentUserId(), "", null);
+            vs.requestOpenVideoDevice(duc, null);
+            this.setState(LOCAL_CAMERA_OPENING);
+        }
     }
 
 
@@ -718,6 +736,11 @@ public class MainPresenter extends BasePresenter implements
 
     @Override
     public void onVideoSharedBtnClicked(View v) {
+        if (!us.isLoggedIn()) {
+            closeLocalCameraIfNecessary();
+            ui.showLoginUI();
+            return;
+        }
         videoShareButtonClicked();
     }
 
@@ -983,13 +1006,7 @@ public class MainPresenter extends BasePresenter implements
                 ui.updateInputMode(MainPresenterUI.INPUT_MODE_PAN);
                 break;
             case VIDEO_MAP:
-                if (isState(LOCAL_CAMERA_OPENING)) {
-                    UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-                            .getInstance().getCurrentUserId(), "", null);
-                    vs.requestCloseVideoDevice(duc, null);
-                    unsetState(LOCAL_CAMERA_OPENING);
-
-                }
+                closeLocalCameraIfNecessary();
                 if (isBState(B_PUBLISHING_FLAG)) {
                     videoShareButtonClicked();
                 }
@@ -1000,7 +1017,7 @@ public class MainPresenter extends BasePresenter implements
                 cancelInquiry();
                 unsetBState(B_PREPARE_PUBLISH_FLAG);
                 if (isBState(B_PUBLISHING_FLAG)) {
-                    ui.updateVideShareButtonText(false);
+                    ui.updateVideoShareButtonText(false);
                     vs.quitConference(publishingLive, new MessageListener(h,
                             CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
                     unsetBState(B_PUBLISHING_FLAG);
@@ -1625,7 +1642,7 @@ public class MainPresenter extends BasePresenter implements
                     mp.ui.updateMapAddressText(msg.obj.toString());
                     break;
                 case UI_HANDLE_UPDATE_VIDEO_SHARED_BTN_TYPE:
-                    mp.ui.updateVideShareButtonText(msg.arg1 == 0 ? false : true);
+                    mp.ui.updateVideoShareButtonText(msg.arg1 == 0 ? false : true);
                     break;
             }
         }

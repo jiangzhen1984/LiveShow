@@ -54,7 +54,7 @@ public interface MainPresenterUI {
 
 	String getTextString();
 
-	void updateVideShareButtonText(boolean publish);
+	void updateVideoShareButtonText(boolean publish);
 
 	void showError(int flag);
 
