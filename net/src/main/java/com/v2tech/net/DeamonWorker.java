@@ -126,17 +126,16 @@ public class DeamonWorker implements Runnable, NetConnector,
 				reconnectFlag = false;
 			}
 			updateWorkerState(WorkerState.STOPPED);
-			group.shutdownGracefully();
+			//group.shutdownGracefully();
 		}
 
 		if (reconnectFlag) {
 			V2Log.w(" prepare to start reconnect thread :"+ reconnectThread);
-			if (reconnectThread != null) {
-				reconnectThread.interrupt();
-				reconnectThread = null;
+			if (reconnectThread == null || !reconnectThread.isAlive()) {
+				reconnectThread = new ReconnectThread();
+				reconnectThread.start();
 			}
-			reconnectThread = new ReconnectThread();
-			reconnectThread.start();
+
 		}
 
 	}
