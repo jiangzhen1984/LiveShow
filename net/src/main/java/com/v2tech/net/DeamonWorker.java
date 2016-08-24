@@ -1,5 +1,21 @@
 package com.v2tech.net;
 
+import com.V2.jni.util.V2Log;
+import com.v2tech.net.lv.WebPackage;
+import com.v2tech.net.pkt.IndicationPacket;
+import com.v2tech.net.pkt.Packet;
+import com.v2tech.net.pkt.PacketProxy;
+import com.v2tech.net.pkt.ResponsePacket;
+import com.v2tech.net.pkt.Transformer;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -16,22 +32,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
-import com.V2.jni.util.V2Log;
-import com.v2tech.net.lv.WebPackage;
-import com.v2tech.net.pkt.IndicationPacket;
-import com.v2tech.net.pkt.Packet;
-import com.v2tech.net.pkt.PacketProxy;
-import com.v2tech.net.pkt.ResponsePacket;
-import com.v2tech.net.pkt.Transformer;
 
 public class DeamonWorker implements Runnable, NetConnector,
 		TimeoutNotificator.TimeoutHandler {
@@ -83,6 +83,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	public void run() {
 		updateWorkerState(WorkerState.RUNNING);
 		Channel ch = null;
+		boolean reconnectFlag = true;
 		try {
 			updateConnectionState(ConnectionState.CONNECTING);
 			ch = strap.connect(host, port).sync().channel();
@@ -115,19 +116,27 @@ public class DeamonWorker implements Runnable, NetConnector,
 		} catch (Exception e) {
 			V2Log.e(e);
 			e.printStackTrace();
-			if (ch != null && !ch.isOpen()) {
+			if (ch == null || !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
 			}
-			if (reconnectThread == null || !reconnectThread.isAlive()) {
-				reconnectThread = new ReconnectThread();
-				reconnectThread.start();
-			}
+			reconnectFlag = true;
 		} finally {
 			if (st == WorkerState.REQUEST_STOP) {
 				updateConnectionState(ConnectionState.DISCONNECTED);
+				reconnectFlag = false;
 			}
 			updateWorkerState(WorkerState.STOPPED);
 			group.shutdownGracefully();
+		}
+
+		if (reconnectFlag) {
+			V2Log.w(" prepare to start reconnect thread :"+ reconnectThread);
+			if (reconnectThread != null) {
+				reconnectThread.interrupt();
+				reconnectThread = null;
+			}
+			reconnectThread = new ReconnectThread();
+			reconnectThread.start();
 		}
 
 	}
