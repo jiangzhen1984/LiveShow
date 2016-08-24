@@ -1,9 +1,5 @@
 package com.v2tech.presenter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -19,6 +15,10 @@ import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
 import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.vo.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class LoginPresenter extends BasePresenter {
 
@@ -262,7 +262,7 @@ public class LoginPresenter extends BasePresenter {
 				us = new UserService();
 				break;
 			case LOGIN_ACTION:
-				ui.showLogingInProgress();
+				//ui.showLogingInProgress();
 				doLoginInBack();
 				break;
 			case GET_CODE_ACTION:

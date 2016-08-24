@@ -13,11 +13,10 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.V2.jni.util.V2Log;
+import com.v2tech.R;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.LoginPresenter;
 import com.v2tech.presenter.LoginPresenter.LoginPresenterUI;
-import com.v2tech.R;
 
 /**
  * @author jiangzhen
@@ -241,7 +240,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 		super.onDestroy();
 		mUserNameET.removeTextChangedListener(textWatcher);
 		mUserCodeET.removeTextChangedListener(textWatcher);
-		presenter.onUIDestroyed();
 	}
 
 

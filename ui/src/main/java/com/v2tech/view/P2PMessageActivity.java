@@ -91,7 +91,6 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		presenter.onUIStarted();
 	}
 
 
@@ -153,7 +152,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			lb.time.setVisibility(View.VISIBLE);
 			lb.leftLy.setVisibility(View.GONE);
 			lb.rightLy.setVisibility(View.GONE);
-		} else if (dir == P2PMessagePresenter.ITEM_TYPE_SELF) {
+		} else if (dir == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.VISIBLE);
 			lb.rightLy.setVisibility(View.GONE);
@@ -178,7 +177,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			if (bm != null) {
 				lb.leftAvtar.setImageBitmap(bm);
 			}
-		} else if (dir == P2PMessagePresenter.ITEM_TYPE_OTHERS) {
+		} else if (dir == P2PMessagePresenter.ITEM_TYPE_SELF) {
 			lb.rightContent.setText(content);
 			lb.time.setVisibility(View.GONE);
 			lb.leftLy.setVisibility(View.GONE);

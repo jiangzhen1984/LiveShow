@@ -1,11 +1,23 @@
 package com.v2tech.view;
 
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapView;
+import com.v2tech.R;
 import com.v2tech.map.MapAPI;
 import com.v2tech.map.baidu.BaiduMapImpl;
-import com.v2tech.R;
 import com.v2tech.video.SurfaceVideoController;
 import com.v2tech.video.VideoController;
 import com.v2tech.video.VideoShareSufaceViewCallback;
@@ -38,17 +50,6 @@ import com.v2tech.widget.VideoShareRightWidget.VideoShareRightWidgetListener;
 import com.v2tech.widget.VideoWatcherListLayout;
 import com.v2tech.widget.VideoWatcherListLayout.VideoWatcherListLayoutListener;
 
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import v2av.VideoPlayer;
 import v2av.VideoRecorder;
 
@@ -58,7 +59,7 @@ public class MapVideoLayout extends FrameLayout {
 
 	private static int FLYING_SLOP = 320;
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
 	private int mTouchSlop;
 	private int borderY;
@@ -1087,7 +1088,9 @@ public class MapVideoLayout extends FrameLayout {
 		}
 		top = 1;
 		bottom = bottom - 1;
-		V2Log.i("====> layout st:"+ st +"   ts:"+ ts);
+		if (DEBUG) {
+			V2Log.d("====> layout st:" + st + "   ts:" + ts);
+		}
 
 		if (st == ScreenType.VIDEO_MAP) {
 			borderY = tsv.getMeasuredHeight();

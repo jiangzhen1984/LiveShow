@@ -1,14 +1,14 @@
 package com.v2tech.presenter;
 
-import java.lang.ref.WeakReference;
-import java.util.Vector;
-
 import android.app.Activity;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
 
 import com.v2tech.view.BaseActivity;
 import com.v2tech.view.BaseFragmentActivity;
+
+import java.lang.ref.WeakReference;
+import java.util.Vector;
 
 public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 	
@@ -59,7 +59,6 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 				WeakReference<Activity> w = list.get(i);
 				Activity act = w.get();
 				if (act == activity) {
-					list.remove(i);
 					if (activity instanceof  BaseActivity) {
 						((BaseActivity)activity).getPresenter().onUIStarted();
 					} else if (activity instanceof BaseFragmentActivity) {
@@ -91,7 +90,6 @@ public class GlobalActivityManager implements ActivityLifecycleCallbacks {
 				WeakReference<Activity> w = list.get(i);
 				Activity act = w.get();
 				if (act == activity) {
-					list.remove(i);
 					if (activity instanceof  BaseActivity) {
 						((BaseActivity)activity).getPresenter().onUIStopped();
 					} else if (activity instanceof BaseFragmentActivity) {

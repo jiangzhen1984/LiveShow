@@ -1,16 +1,5 @@
 package com.v2tech.presenter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.V2.jni.util.V2Log;
+import com.v2tech.R;
 import com.v2tech.audio.AACDecoder;
 import com.v2tech.audio.AACDecoder.AudioParameter;
 import com.v2tech.audio.AACDecoder.DecoderNotification;
@@ -36,7 +26,6 @@ import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.LiveMessageHandler;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.util.GlobalConfig;
-import com.v2tech.R;
 import com.v2tech.view.P2PVideoActivity;
 import com.v2tech.vo.User;
 import com.v2tech.vo.msg.VMessage;
@@ -46,6 +35,17 @@ import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageTextItem;
 import com.v2tech.widget.RichEditText;
 import com.v2tech.widget.emoji.EmojiLayoutWidget.EmojiLayoutWidgetListener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class P2PMessagePresenter extends BasePresenter implements
 		LiveMessageHandler, EmojiLayoutWidgetListener, AACEncoderNotification,
@@ -474,6 +474,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 			@Override
 			public void run() {
 				localAdapter.notifyDataSetChanged();
+				ui.scrollTo(itemList.size() - 1);
 			}
 
 		});

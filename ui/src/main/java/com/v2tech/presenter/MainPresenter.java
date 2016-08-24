@@ -1,15 +1,5 @@
 package com.v2tech.presenter;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import v2av.VideoPlayer;
-import v2av.VideoPlayer.ViewItemListener;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -289,6 +279,8 @@ public class MainPresenter extends BasePresenter implements
                     .getInstance().getCurrentUserId(), "", null);
             vs.requestOpenVideoDevice(duc, null);
             this.setState(LOCAL_CAMERA_OPENING);
+        } else {
+            Message.obtain(h, SEARCH_LIVE).sendToTarget();
         }
     }
 
@@ -332,6 +324,26 @@ public class MainPresenter extends BasePresenter implements
     @Override
     public void onUIStopped() {
         stopLocate();
+
+        if (isBState(B_PREPARE_PUBLISH_FLAG)) {
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
+                    .getInstance().getCurrentUserId(), "", null);
+            vs.requestOpenVideoDevice(duc, null);
+            this.setState(LOCAL_CAMERA_OPENING);
+        }
+
+        if (isBState(B_PUBLISHING_FLAG)) {
+            unsetBState(B_PUBLISHING_FLAG);
+            ui.updateVideoShareButtonText(false);
+            vs.quitConference(publishingLive, new MessageListener(h,
+                    CANCEL_PUBLISHING_REQUEST_CALLBACK, null));
+        }
+//
+        if (isBState(B_PREPARE_PUBLISH_FLAG) || isBState(B_PUBLISHING_FLAG)) {
+            setBState(B_WATCHING_FLAG);
+            unsetBState(B_PREPARE_PUBLISH_FLAG | B_PUBLISHING_FLAG);
+            ui.updateUILayout(MainPresenterUI.REQUEST_UI_LAYOUT_VIDEO_WACHING);
+        }
     }
 
     @Override
@@ -381,7 +393,6 @@ public class MainPresenter extends BasePresenter implements
         if (isBState(B_PUBLISHING_FLAG) || isBState(B_PREPARE_PUBLISH_FLAG)) {
             throw new RuntimeException("ilegal state: " + bState);
         }
-
         if (isBState(B_WATCHING_FLAG)) {
             closeLive(currentViewLive);
             currentViewLive = null;
@@ -394,7 +405,7 @@ public class MainPresenter extends BasePresenter implements
             if (vl == null) {
                 throw new RuntimeException(" no viewlive :" + l);
             }
-            if (vl.live.isLocked()) {
+            if (vl.live.isLocked() && vl.showing == false) {
                 pendingViewLive = vl;
                 ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, true, null);
             } else {
@@ -1057,6 +1068,9 @@ public class MainPresenter extends BasePresenter implements
     public void onMapStatusUpdated(MapStatus ms) {
         MapLocation ml = ms.getCenter();
         mapInstance.getLocationName(ml, new LocationNameQueryResponseListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
+        h.removeMessages(SEARCH_LIVE);
+        Message msg = Message.obtain(h, SEARCH_LIVE);
+        h.sendMessageDelayed(msg, 1000);
     }
 
 
@@ -1592,9 +1606,10 @@ public class MainPresenter extends BasePresenter implements
                     createVideoShareInBack();
                     break;
                 case SEARCH_LIVE:
-                    // ls.scanNear(currentMapCenter.ll.latitude,
-                    // currentMapCenter.ll.longitude, 500000,
-                    // new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
+                    MapLocation ml = mapInstance.getMapCenter();
+                     ls.scanNear(ml.getLat(),
+                     ml.getLng(), 1000,
+                     new MessageListener(this, SEARCH_LIVE_CALLBACK, null));
                     break;
                 case SEARCH_LIVE_CALLBACK:
                     handSearchLiveCallback((SearchLiveResponse) msg.obj);
