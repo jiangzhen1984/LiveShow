@@ -124,7 +124,12 @@ public final class V2Log {
 
 
     public static void flush() {
-
+        char[] flushBuf = new char[idx];
+        synchronized (buf) {
+            System.arraycopy(buf, 0, flushBuf, 0, idx);
+            idx = 0;
+        }
+        writeFile(flushBuf);
     }
 
 
