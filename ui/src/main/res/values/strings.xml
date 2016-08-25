@@ -148,4 +148,7 @@
     <string name="video_code_incorrect">视频密码错误！</string>
     <string name="title_activity_personal_setting">PersonalSettingActivity</string>
 
+
+    <string name="personal_setting_gender_male">男</string>
+    <string name="personal_setting_gender_female">女</string>
 </resources>

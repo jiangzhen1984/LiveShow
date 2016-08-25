@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/personal_frag_item_bg"
+        android:layout_gravity="center_horizontal">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingRight="20dp"
+            android:padingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:gravity="center"
+            android:textSize="@dimen/personal_setting_frag_item_text_size"
+            android:textColor="@color/personal_frag_item_text_color_bg"
+            android:text="New Text"
+            android:id="@+id/personal_nick_name_setting_et"
+            android:singleLine="true"/>
+    </RelativeLayout>
+
+</LinearLayout>

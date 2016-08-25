@@ -95,4 +95,6 @@
     
     <dimen name="video_unlock_setting_dialog_banner_margin">20dp</dimen>
 
+    <dimen name="personal_setting_frag_item_text_size">13.5sp</dimen>
+
 </resources>

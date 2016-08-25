@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/personal_frag_item_bg"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="@dimen/personal_setting_frag_item_text_size"
+            android:textColor="@color/personal_frag_item_text_color_bg"
+            android:text="@string/personal_setting_gender_male"
+            android:id="@+id/personal_gender_male_setting_et"
+            android:singleLine="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/common_sep_line"
+        android:layout_gravity="center_horizontal"></RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/personal_frag_item_bg"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="@dimen/personal_setting_frag_item_text_size"
+            android:textColor="@color/personal_frag_item_text_color_bg"
+            android:text="@string/personal_setting_gender_female"
+            android:id="@+id/personal_gender_female_setting_et"
+            android:singleLine="true"/>
+    </RelativeLayout>
+
+</LinearLayout>
