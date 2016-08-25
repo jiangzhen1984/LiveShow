@@ -1,9 +1,5 @@
 package com.v2tech.presenter;
 
-import java.lang.ref.WeakReference;
-
-import v2av.VideoPlayer;
-import v2av.VideoRecorder;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +14,11 @@ import com.v2tech.vo.User;
 import com.v2tech.vo.UserChattingObject;
 import com.v2tech.vo.UserDeviceConfig;
 import com.v2tech.vo.group.Group.GroupType;
+
+import java.lang.ref.WeakReference;
+
+import v2av.VideoPlayer;
+import v2av.VideoRecorder;
 
 public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Callback, VideoEventListener {
 	
@@ -113,8 +114,12 @@ public class P2PVideoPresenter extends BasePresenter implements SurfaceHolder.Ca
 		}
 	}
 
-
-
+	@Override
+	public void onUIStopped() {
+		super.onUIStopped();
+		onHangoffBtnClicked();
+		ui.quit();
+	}
 
 	@Override
 	public void onUIDestroyed() {

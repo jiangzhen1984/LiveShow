@@ -12,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.R;
 import com.v2tech.map.MapAPI;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.MainPresenter;
 import com.v2tech.presenter.MainPresenterUI;
+import com.v2tech.util.GlobalConfig;
 import com.v2tech.vo.Watcher;
 import com.v2tech.widget.BottomButtonLayout;
 import com.v2tech.widget.VideoLockSettingDialog;
@@ -56,6 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 		findViewById(R.id.title_bar_center_tv).setVisibility(View.GONE);
 		findViewById(R.id.title_bar_logo).setVisibility(View.VISIBLE);
+		Toast.makeText(this, GlobalConfig.getGlobalCrashPath(), Toast.LENGTH_SHORT).show();
 	}
 
 	private void initMapviewLayout() {
@@ -116,6 +119,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		//force flush log to file
+		V2Log.flush();
 		((MainApplication) this.getApplication()).requestQuit();
 	}
 
@@ -516,6 +521,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				mMapVideoLayout.updateLayout(MapVideoLayout.ScreenType.VIDEO_MAP);
 				break;
 		}
+	}
+
+
+	@Override
+	public void showWatchVideoNoPermission() {
+		Toast.makeText(this, R.string.video_code_incorrect , Toast.LENGTH_SHORT).show();
 	}
 	/////////////////////////////////////////////////////////////
 

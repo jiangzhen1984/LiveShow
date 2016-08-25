@@ -11,7 +11,6 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.R;
@@ -405,7 +404,7 @@ public class MainPresenter extends BasePresenter implements
             if (vl == null) {
                 throw new RuntimeException(" no viewlive :" + l);
             }
-            if (vl.live.isLocked() && vl.showing == false) {
+            if (vl.live.isLocked() && vl.playing == false) {
                 pendingViewLive = vl;
                 ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_VIDEO_LOCK_SETTING_DIALOG, true, null);
             } else {
@@ -1077,6 +1076,7 @@ public class MainPresenter extends BasePresenter implements
     @Override
     public void onSelfLocationUpdated(MapLocation ml) {
         this.currentLocation = ml;
+        //TODO check current map status is locked or not
         if (!(isState(INQUIRY_WIDGET_SHOW) || isState(INQUIRY_BIDER_PERSONLE_WIDGET_SHOW))) {
             this.updateMapCenter(ml, ml.getParameter());
         }
@@ -1238,8 +1238,7 @@ public class MainPresenter extends BasePresenter implements
                     openLive(pendingViewLive);
                     pendingViewLive = null;
                 } else {
-                    //TODO notify incorrect password
-                    Toast.makeText(context, "密码错误", Toast.LENGTH_SHORT).show();
+                    ui.showWatchVideoNoPermission();
                 }
             }
         }

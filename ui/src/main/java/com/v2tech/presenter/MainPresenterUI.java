@@ -1,9 +1,9 @@
 package com.v2tech.presenter;
 
-import v2av.VideoPlayer;
-
 import com.v2tech.map.MapAPI;
 import com.v2tech.vo.Watcher;
+
+import v2av.VideoPlayer;
 
 public interface MainPresenterUI {
 	
@@ -124,4 +124,7 @@ public interface MainPresenterUI {
 	 * @param requestType
      */
 	void updateUILayout(int requestType);
+
+
+	void showWatchVideoNoPermission();
 }

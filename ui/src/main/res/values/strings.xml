@@ -65,8 +65,8 @@
     <string name="personal_search_bar_follow_text">请输入关键字</string>
     <string name="personel_item_user_f_text">+关注</string>
     <string name="personel_item_user_cf_text">取消关注</string>
-    
-    
+
+
     <string name="personel_setting_account_security_text">帐号安全</string>
     <string name="personel_setting_privacy_text">隐私</string>
     <string name="personel_setting_legal_text">法律及其隐私政策</string>
@@ -74,33 +74,33 @@
     <string name="personel_setting_page_rank_text">给个好评</string>
     <string name="personel_setting_log_out_text">退出</string>
     <string name="personel_setting_title_bar">设置</string>
-    
+
     <string name="personel_video_title_bar">我的视频</string>
-    
-    
+
+
     <string name="personel_wallet_title_bar">我的钱包</string>
     <string name="personel_wallet_balance_text">余额</string>
     <string name="personel_wallet_incharge_text">充值</string>
     <string name="personel_wallet_withdraw_text">提现</string>
     <string name="personel_wallet_balance_detail">余额明细</string>
-    
-    
+
+
     <string name="liver_interaction_follow">关注</string>
     <string name="liver_interaction_cancel_follow">取消关注</string>
     <string name="liver_interaction_personel_text_video_text">视频</string>
     <string name="liver_interaction_personel_text_fans_text">粉丝</string>
     <string name="liver_interaction_personel_text_follow_text">关注</string>
     <string name="liver_interaction_personel_text_label">设备备注和标签</string>
-     <string name="liver_interaction_personel_message_send_btn_text">发消息</string>
-     <string name="liver_interaction_personel_video_call_btn_text">视频聊天</string>
-     <string name="liver_interaction_personel_audio_call_btn_text">按住对讲</string>
-     <string name="liver_interaction_personel_tips_btn_text">打赏</string>
-     <string name="liver_interaction_personel_tips_video_record_text">录制</string>
-     
-    
+    <string name="liver_interaction_personel_message_send_btn_text">发消息</string>
+    <string name="liver_interaction_personel_video_call_btn_text">视频聊天</string>
+    <string name="liver_interaction_personel_audio_call_btn_text">按住对讲</string>
+    <string name="liver_interaction_personel_tips_btn_text">打赏</string>
+    <string name="liver_interaction_personel_tips_video_record_text">录制</string>
+
+
     <string name="requesting_connect_video_text">邀请您视频聊天</string>
     <string name="requesting_connect_audio_text">邀请您对讲</string>
-    
+
     <string name="video_share_btn_text_wx">微信好友</string>
     <string name="video_share_btn_text_wx_grp">微信朋友圈</string>
     <string name="video_share_btn_text_qq">QQ好友</string>
@@ -109,28 +109,28 @@
     <string name="card_scan_scan_text">扫一扫</string>
     <string name="card_scan_scan_text1">扫描二维码名片</string>
     <string name="personal_friends_invitation_search_tips">昵称/手机号</string>
-    
+
     <string name="audio_call_connecting">正在等待对方接受邀请</string>
-    
+
     <string name="bounty_title_text">想看看这里</string>
-    
+
     <string name="p2p_message_btn_text_pressed_tip">松开结束</string>
     <string name="p2p_message_btn_text_release_tip">按住说话</string>
-    
+
     <string name="voice_record_text_tip_1">说话时间太短</string>
     <string name="voice_record_text_tip_2">说话时间太长</string>
     <string name="voice_record_text_tip_3">松开手指，取消发送</string>
     <string name="voice_record_text_tip_4">手指上划，取消发送</string>
     <string name="voice_record_text_occupcation">占位占位占位占位占位</string>
     <string name="p2p_message_send_btn_text">发送</string>
-    
+
     <string name="inquiry_bid_text1">悬赏金额</string>
     <string name="inquiry_bid_text1_hint">填写金额（元）</string>
     <string name="inquiry_bid_text2">附言</string>
     <string name="inquiry_bid_text2_hint">添加悬赏附言</string>
     <string name="inquiry_bid_btn_text">立即悬赏</string>
     <string name="map_location_tips_text">请输入关键字</string>
-    
+
     <string name="inquiry_action_accept_btn_text">接受悬赏，带TA去瞅瞅</string>
     <string name="inquiry_action_audio_btn_text">按住对讲</string>
     <string name="inquiry_action_video_share_btn_text">视频直播</string>
@@ -138,13 +138,14 @@
     <string name="inquiry_error_incorrect_award">请输入正确的金额</string>
     <string name="inquiry_accepted">带你去瞅瞅儿</string>
     <string name="inquiry_accept_error_no_location">请等待定位！</string>
-    
-    
+
+
     <string name="message_session_system_msg">系统消息</string>
     <string name="video_lock_setting_dialog_layout_banner_text">设置密码</string>
     <string name="video_unlock_setting_dialog_layout_banner_text">确定取消视频加密</string>
 
 
     <string name="video_code_incorrect">视频密码错误！</string>
+    <string name="title_activity_personal_setting">PersonalSettingActivity</string>
 
 </resources>
