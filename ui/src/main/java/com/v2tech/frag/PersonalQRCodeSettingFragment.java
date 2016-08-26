@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
@@ -25,6 +27,7 @@ public class PersonalQRCodeSettingFragment extends Fragment {
     PersonalSetting settingService;
 
     private ImageView qrImag;
+    private View btnLayout;
 
     public PersonalQRCodeSettingFragment() {
         // Required empty public constructor
@@ -41,6 +44,8 @@ public class PersonalQRCodeSettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = LayoutInflater.from(getActivity()).inflate(R.layout.personal_qr_code_setting_frag_layout, null);
         qrImag = (ImageView)root.findViewById(R.id.personal_qr_code_img);
+        btnLayout = root.findViewById(R.id.personal_qr_code_bottom_layout);
+        btnLayout.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -105,5 +110,18 @@ public class PersonalQRCodeSettingFragment extends Fragment {
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, w, h);
         return bitmap;
+    }
+
+
+
+    public void showBtn(boolean flag) {
+        if (flag) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.bottom_to_up_in);
+            btnLayout.startAnimation(hyperspaceJumpAnimation);
+        } else {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.up_to_bottom_out);
+            btnLayout.startAnimation(hyperspaceJumpAnimation);
+        }
+        btnLayout.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 }

@@ -161,6 +161,11 @@
     <string name="personal_setting_location_tips_title">定位到的地方</string>
     <string name="personal_setting_location_all_title">全部</string>
     <string name="personal_setting_qr_code_bottom_text">扫一扫二维码，关注我</string>
+    <string name="personal_setting_qr_code_btn_style_change_text">换个样式</string>
+    <string name="personal_setting_qr_code_btn_pic_save_text">保存图片</string>
+    <string name="personal_setting_qr_code_btn_cancel_change_text">取消</string>
+    <string name="personal_setting_qr_code_btn_qr_code_scan_change_text">扫描二维码</string>
+
 
 
 </resources>

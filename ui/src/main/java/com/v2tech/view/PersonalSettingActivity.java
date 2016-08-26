@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.V2.jni.util.V2Log;
@@ -19,7 +20,7 @@ import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonalSettingPresenter;
 import com.v2tech.presenter.PersonalSettingPresenter.PersonalSettingPresenterUI;
 
-public class PersonalSettingActivity extends BaseFragmentActivity implements PersonalSettingPresenterUI {
+public class PersonalSettingActivity extends BaseFragmentActivity implements PersonalSettingPresenterUI, OnClickListener {
 
 
     private PersonalSettingPresenter presenter;
@@ -42,6 +43,7 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
         saveBtn = (TextView) findViewById(R.id.title_bar_right_tv);
         saveBtn.setText(R.string.personal_setting_save);
         saveBtn.setVisibility(View.VISIBLE);
+        saveBtn.setOnClickListener(this);
 
         titleTxv  = (TextView) findViewById(R.id.title_bar_center_tv);
         fm  = this.getSupportFragmentManager();
@@ -123,6 +125,16 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
         ft.commit();
     }
 
+    @Override
+    public void showQRCodeMenu(boolean flag) {
+        qrCodeSettingFragment.showBtn(flag);
+    }
 
 
+    @Override
+    public void onClick(View v) {
+        if (v == saveBtn) {
+            presenter.actionBarRightBtnClicked(v);
+        }
+    }
 }

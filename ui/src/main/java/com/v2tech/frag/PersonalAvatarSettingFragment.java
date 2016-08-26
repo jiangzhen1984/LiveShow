@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.v2tech.R;
 import com.v2tech.service.PersonalSetting;
@@ -17,7 +16,6 @@ public class PersonalAvatarSettingFragment extends Fragment {
 
     PersonalSetting settingService;
 
-    private EditText et;
 
     public PersonalAvatarSettingFragment() {
         // Required empty public constructor
@@ -32,8 +30,7 @@ public class PersonalAvatarSettingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = LayoutInflater.from(getActivity()).inflate(R.layout.personal_signature_setting_frag_layout, null);
-        et = (EditText)root.findViewById(R.id.personal_signature_setting_et);
+        View root = LayoutInflater.from(getActivity()).inflate(R.layout.personal_avatar_setting_frag_layout, null);
 
         return root;
     }

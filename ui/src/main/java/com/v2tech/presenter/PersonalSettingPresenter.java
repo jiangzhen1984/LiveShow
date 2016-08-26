@@ -1,6 +1,7 @@
 package com.v2tech.presenter;
 
 import android.content.Context;
+import android.view.View;
 
 import com.v2tech.service.PersonalSetting;
 
@@ -19,10 +20,14 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
 
     private Context context;
     private PersonalSettingPresenterUI ui;
+    private int type ;
 
+    private boolean menuFlag;
 
     public interface PersonalSettingPresenterUI {
         public void updateUIType(int type);
+
+        public void showQRCodeMenu(boolean flag);
     }
 
 
@@ -37,6 +42,7 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
 
 
     public void initUIFragment(int type) {
+        this.type = type;
         ui.updateUIType(type);
     }
 
@@ -59,5 +65,18 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
     @Override
     public void updateNotes(String word) {
 
+    }
+
+
+    public void actionBarRightBtnClicked(View v) {
+        switch (type) {
+            case UI_TYPE_QR_CODE_SETTING:
+                ui.showQRCodeMenu(!menuFlag);
+                menuFlag = !menuFlag;
+                break;
+            case UI_TYPE_AVATAR_SETTING:
+                menuFlag = !menuFlag;
+                break;
+        }
     }
 }
