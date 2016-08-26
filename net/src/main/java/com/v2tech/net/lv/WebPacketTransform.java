@@ -60,7 +60,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     }
 
     public Packet unserialize(WebPackage.Packet webPackage){
-    	V2Log.i(webPackage.toString());
+    	V2Log.i("read ===>" + webPackage.toString());
         boolean ind = false;
         String from = webPackage.getFrom();
         if("pushServer".equals(from)){

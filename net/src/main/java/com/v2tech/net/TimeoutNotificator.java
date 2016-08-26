@@ -1,8 +1,8 @@
 package com.v2tech.net;
 
-import java.util.Queue;
-
 import com.V2.jni.util.V2Log;
+
+import java.util.Queue;
 
 public class TimeoutNotificator implements Runnable {
 
@@ -46,7 +46,7 @@ public class TimeoutNotificator implements Runnable {
 					continue;
 				}
 				if (System.currentTimeMillis() - bind.sendtime > 3000) {
-					V2Log.e("Timeout trigger ==> curr :" +System.currentTimeMillis()+" " + bind.sendtime +"  "+ bind.queuetime +"  " + bind);
+					V2Log.e("Timeout trigger ==> curr :" +System.currentTimeMillis()+" send-time:" + bind.sendtime +"  queue-time:"+ bind.queuetime +"  " + bind);
 					bind.timeout = true;
 					handler.onTimeout(bind);
 				}

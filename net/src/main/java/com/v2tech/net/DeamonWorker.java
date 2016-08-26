@@ -101,7 +101,6 @@ public class DeamonWorker implements Runnable, NetConnector,
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized (lb) {
-						// FIXME if lb timeout
 						lb.sendflag = true;
 						lb.sendtime = System.currentTimeMillis();
 					}
