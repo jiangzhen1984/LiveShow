@@ -151,4 +151,16 @@
 
     <string name="personal_setting_gender_male">男</string>
     <string name="personal_setting_gender_female">女</string>
+    <string name="personal_setting_save">保存</string>
+    <string name="personal_setting_signature_update_title">个性签名</string>
+    <string name="personal_setting_gender_update_title">性别</string>
+    <string name="personal_setting_location_update_title">地区</string>
+    <string name="personal_setting_nick_name_update_title">昵称</string>
+    <string name="personal_setting_avatar_update_title">头像</string>
+    <string name="personal_setting_qr_code_update_title">我的二维码</string>
+    <string name="personal_setting_location_tips_title">定位到的地方</string>
+    <string name="personal_setting_location_all_title">全部</string>
+    <string name="personal_setting_qr_code_bottom_text">扫一扫二维码，关注我</string>
+
+
 </resources>

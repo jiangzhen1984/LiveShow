@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/personel_setting_frag_layout_bg"
+              android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:gravity="center"
+        android:textSize="@dimen/personal_setting_frag_item_text_size"
+        android:textColor="@color/personal_frag_item_text_color_bg"
+        android:text="@string/personal_setting_location_tips_title"
+        android:singleLine="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/personal_frag_item_bg"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:gravity="center"
+            android:textSize="@dimen/personal_setting_frag_item_text_size"
+            android:textColor="@color/personal_frag_item_text_color_bg"
+            android:text="New Text"
+            android:id="@+id/personal_nick_name_setting_et"
+            android:singleLine="true"/>
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:gravity="center"
+        android:textSize="@dimen/personal_setting_frag_item_text_size"
+        android:textColor="@color/personal_frag_item_text_color_bg"
+        android:text="@string/personal_setting_location_all_title"
+        android:singleLine="true"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/personal_location_setting_all_list"
+        android:divider="@null"/>
+
+</LinearLayout>

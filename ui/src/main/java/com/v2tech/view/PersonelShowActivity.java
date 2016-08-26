@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.v2tech.view;
 
@@ -15,90 +15,122 @@ import com.v2tech.R;
 
 /**
  * @author jiangzhen
- * 
  */
 public class PersonelShowActivity extends BaseActivity implements OnClickListener,
-		PersonelShowPresenterUI {
+        PersonelShowPresenterUI {
 
-	private TextView titleBarName;
+    private TextView titleBarName;
 
-	private PersonelShowPresenter presenter;
+    private PersonelShowPresenter presenter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.personal_show_activity);
+    private View avatarUpdateBtn;
+    private View nickNameUpdateBtn;
+    private View genderUpdateBtn;
+    private View signatureUpdateBtn;
+    private View locationUpdateBtn;
 
-		findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
-		titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.personal_show_activity);
 
-		this.overridePendingTransition(R.anim.left_to_right_in,
-				R.anim.left_to_right_out);
+        findViewById(R.id.title_bar_left_btn).setOnClickListener(this);
+        titleBarName = (TextView) findViewById(R.id.title_bar_center_tv);
 
-	}
+        avatarUpdateBtn = findViewById(R.id.avatar_layout);
+        nickNameUpdateBtn = findViewById(R.id.personal_nick_name_btn);
+        genderUpdateBtn = findViewById(R.id.personal_gender_update_btn);
+        signatureUpdateBtn = findViewById(R.id.personal_signature_update_btn);
+        locationUpdateBtn = findViewById(R.id.personal_location_update_btn);
 
-	@Override
-	public void onClick(View v) {
-		int id = v.getId();
-		switch (id) {
-		case R.id.title_bar_left_btn:
-			presenter.returnBtnClicked();
-			break;
-		default:
-		}
 
-	}
+        avatarUpdateBtn.setOnClickListener(this);
+        nickNameUpdateBtn.setOnClickListener(this);
+        genderUpdateBtn.setOnClickListener(this);
+        signatureUpdateBtn.setOnClickListener(this);
+        locationUpdateBtn.setOnClickListener(this);
 
-	@Override
-	public void finish() {
-		super.finish();
-		overridePendingTransition(0, R.anim.left_to_right_out);
-	}
+        this.overridePendingTransition(R.anim.left_to_right_in,
+                R.anim.left_to_right_out);
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.title_bar_left_btn:
+                presenter.returnBtnClicked();
+                break;
+            case R.id.personal_nick_name_btn:
+                presenter.nickNameUpdateBtnClicked();
+                break;
+            case R.id.avatar_layout:
+                presenter.avatarUpdateBtnClicked();
+                break;
+            case R.id.personal_gender_update_btn:
+                presenter.genderUpdateBtnClicked();
+                break;
+            case R.id.personal_signature_update_btn:
+                presenter.signatureUpdateBtnClicked();
+                break;
+            case R.id.personal_location_update_btn:
+                presenter.locationUpdateBtnClicked();
+                break;
+            default:
+        }
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-	}
+    }
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.left_to_right_out);
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-	@Override
-	public void finishMainUI() {
-		finish();
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-	}
-	
-	
-	
-	@Override
-	public BasePresenter getPresenter() {
-		if (presenter == null) {
-			presenter = new PersonelShowPresenter(this, this);
-		}
-		return presenter;
-	}
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
-	@Override
-	public void updateTitleBar() {
-		titleBarName.setText(R.string.personal_show_title_text);
-	}
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void finishMainUI() {
+        finish();
+
+    }
+
+
+    @Override
+    public BasePresenter getPresenter() {
+        if (presenter == null) {
+            presenter = new PersonelShowPresenter(this, this);
+        }
+        return presenter;
+    }
+
+    @Override
+    public void updateTitleBar() {
+        titleBarName.setText(R.string.personal_show_title_text);
+    }
 
 }

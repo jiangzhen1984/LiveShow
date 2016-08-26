@@ -1,9 +1,9 @@
 package com.v2tech.frag;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +13,13 @@ import com.v2tech.R;
 import com.v2tech.service.PersonalSetting;
 
 
-public class PersonalSignatureSettingFragment extends Fragment {
+public class PersonalAvatarSettingFragment extends Fragment {
 
     PersonalSetting settingService;
 
     private EditText et;
 
-    public PersonalSignatureSettingFragment() {
+    public PersonalAvatarSettingFragment() {
         // Required empty public constructor
     }
 

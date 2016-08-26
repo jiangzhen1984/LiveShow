@@ -14,6 +14,7 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
     public static final int UI_TYPE_GENDER_SETTING = 3;
     public static final int UI_TYPE_AVATAR_SETTING = 4;
     public static final int UI_TYPE_SIGNATURE_SETTING = 5;
+    public static final int UI_TYPE_QR_CODE_SETTING = 6;
 
 
     private Context context;
@@ -36,7 +37,7 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
 
 
     public void initUIFragment(int type) {
-
+        ui.updateUIType(type);
     }
 
 

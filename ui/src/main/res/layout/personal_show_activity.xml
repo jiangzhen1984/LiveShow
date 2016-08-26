@@ -81,7 +81,7 @@
         </TextView>
 
         <RelativeLayout
-            android:id="@+id/personal_friends_btn"
+            android:id="@+id/personal_nick_name_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -131,7 +131,7 @@
         </TextView>
 
         <RelativeLayout
-            android:id="@+id/personal_follow_btn"
+            android:id="@+id/personal_gender_update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -181,7 +181,7 @@
         </TextView>
 
         <RelativeLayout
-            android:id="@+id/personal_fans_btn"
+            android:id="@+id/personal_location_update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -231,6 +231,7 @@
         </TextView>
 
         <RelativeLayout
+            android:id="@+id/personal_signature_update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"

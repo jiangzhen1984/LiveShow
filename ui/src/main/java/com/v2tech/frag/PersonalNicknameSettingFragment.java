@@ -1,7 +1,7 @@
 package com.v2tech.frag;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -35,7 +35,7 @@ public class PersonalNicknameSettingFragment extends Fragment {
         View root = LayoutInflater.from(getActivity()).inflate(R.layout.personal_nick_name_setting_frag_layout, null);
         et = (EditText)root.findViewById(R.id.personal_nick_name_setting_et);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return root;
     }
 
     @Override

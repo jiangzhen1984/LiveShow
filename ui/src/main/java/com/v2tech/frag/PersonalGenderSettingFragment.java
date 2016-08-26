@@ -1,9 +1,9 @@
 package com.v2tech.frag;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +32,7 @@ public class PersonalGenderSettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = LayoutInflater.from(getActivity()).inflate(R.layout.personal_gender_setting_frag_layout, null);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return root;
     }
 
     @Override

@@ -126,14 +126,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
             >
-              <intent-filter>
-                  <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-                  <category android:name="android.intent.category.DEFAULT" />
-                  <category android:name="com.v2tech" />
-                  <action android:name="com.v2tech.intent.request_video_record" />
-                </intent-filter>
         </activity>
         <activity
             android:name="com.v2tech.view.BottomButtonLayoutActivity"
@@ -230,6 +223,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.v2tech.view.PersonalSettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data android:name="type" android:value="1" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.v2tech" />
+                <action android:name="com.v2tech.intent.request_video_record" />
+            </intent-filter>
+        </activity>
+
 
         <service android:name="com.v2tech.view.JNIService" >
         </service>

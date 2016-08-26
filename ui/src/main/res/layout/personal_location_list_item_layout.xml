@@ -2,31 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/personel_setting_frag_layout_bg"
               android:orientation="vertical">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:background="@color/personal_frag_item_bg"
         android:layout_gravity="center_horizontal">
 
-        <EditText
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/personal_frag_item_bg"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingTop="5dp"
-            android:paddingLeft="5dp"
-            android:gravity="left|top"
+            android:background="@null"
+            android:gravity="center"
             android:textSize="@dimen/personal_setting_frag_item_text_size"
             android:textColor="@color/personal_frag_item_text_color_bg"
             android:text="New Text"
-            android:id="@+id/personal_signature_setting_et"
-            android:maxLines="6"
-            android:lines="6"
-            />
+            android:id="@+id/personal_location_list_item_name"
+            android:singleLine="true"/>
     </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/common_sep_line">
+    </LinearLayout>
+
 
 </LinearLayout>

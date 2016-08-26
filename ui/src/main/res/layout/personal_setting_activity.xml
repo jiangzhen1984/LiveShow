@@ -14,11 +14,14 @@
         android:layout_alignParentTop="true"
         layout="@layout/action_bar" />
 
-    <fragment
-        android:id="@+id/content_fragment"
-        android:layout_width="fill_parent"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/content_fragment"
         android:layout_below="@+id/title_bar_ly"
-        />
+        android:orientation="vertical"
+        android:background="@color/personel_setting_frag_layout_bg"
+        ></LinearLayout>
 
 </RelativeLayout>

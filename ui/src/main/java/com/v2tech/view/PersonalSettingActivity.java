@@ -1,13 +1,19 @@
 package com.v2tech.view;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.TextView;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.R;
+import com.v2tech.frag.PersonalAvatarSettingFragment;
 import com.v2tech.frag.PersonalGenderSettingFragment;
+import com.v2tech.frag.PersonalLocationSettingFragment;
 import com.v2tech.frag.PersonalNicknameSettingFragment;
+import com.v2tech.frag.PersonalQRCodeSettingFragment;
 import com.v2tech.frag.PersonalSignatureSettingFragment;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonalSettingPresenter;
@@ -18,15 +24,28 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
 
     private PersonalSettingPresenter presenter;
     private FragmentManager fm;
+    private TextView saveBtn;
+    private TextView titleTxv;
     private PersonalNicknameSettingFragment nicknameSettingFragment;
     private PersonalGenderSettingFragment genderSettingFragment;
     private PersonalSignatureSettingFragment signatureSettingFragment;
+    private PersonalAvatarSettingFragment avatarSettingFragment;
+    private PersonalLocationSettingFragment locationSettingFragment;
+    private PersonalQRCodeSettingFragment qrCodeSettingFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_setting_activity);
-        fm  = this.getFragmentManager();
+
+        saveBtn = (TextView) findViewById(R.id.title_bar_right_tv);
+        saveBtn.setText(R.string.personal_setting_save);
+        saveBtn.setVisibility(View.VISIBLE);
+
+        titleTxv  = (TextView) findViewById(R.id.title_bar_center_tv);
+        fm  = this.getSupportFragmentManager();
+        presenter.initUIFragment(6);//getIntent().getIntExtra("type", 0));
     }
 
 
@@ -49,6 +68,7 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
                     nicknameSettingFragment.setSettingService(presenter);
                 }
                 frag = nicknameSettingFragment;
+                titleTxv.setText(R.string.personal_setting_nick_name_update_title);
                 break;
 
             case PersonalSettingPresenter.UI_TYPE_GENDER_SETTING:
@@ -56,6 +76,7 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
                     genderSettingFragment = new PersonalGenderSettingFragment();
                     genderSettingFragment.setSettingService(presenter);
                 }
+                titleTxv.setText(R.string.personal_setting_gender_update_title);
                 frag = genderSettingFragment;
                 break;
             case PersonalSettingPresenter.UI_TYPE_SIGNATURE_SETTING:
@@ -63,12 +84,42 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
                     signatureSettingFragment = new PersonalSignatureSettingFragment();
                     signatureSettingFragment.setSettingService(presenter);
                 }
+                titleTxv.setText(R.string.personal_setting_signature_update_title);
                 frag = signatureSettingFragment;
+                break;
+            case PersonalSettingPresenter.UI_TYPE_LOCATION_SETTING:
+                if (locationSettingFragment == null) {
+                    locationSettingFragment = new PersonalLocationSettingFragment();
+                    locationSettingFragment.setSettingService(presenter);
+                }
+                frag = locationSettingFragment;
+                titleTxv.setText(R.string.personal_setting_location_update_title);
+                break;
+            case PersonalSettingPresenter.UI_TYPE_AVATAR_SETTING:
+                if (avatarSettingFragment == null) {
+                    avatarSettingFragment = new PersonalAvatarSettingFragment();
+                    avatarSettingFragment.setSettingService(presenter);
+                }
+                frag = avatarSettingFragment;
+                titleTxv.setText(R.string.personal_setting_avatar_update_title);
+                break;
+            case PersonalSettingPresenter.UI_TYPE_QR_CODE_SETTING:
+                if (qrCodeSettingFragment == null) {
+                    qrCodeSettingFragment = new PersonalQRCodeSettingFragment();
+                    qrCodeSettingFragment.setSettingService(presenter);
+                }
+                frag = qrCodeSettingFragment;
+                titleTxv.setText(R.string.personal_setting_qr_code_update_title);
                 break;
         }
 
+        if (frag == null) {
+            V2Log.e(" Unknown frag type: " + type);
+            finish();
+            return;
+        }
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.content_fragment, frag);
+        ft.add(R.id.content_fragment, frag);
         ft.commit();
     }
 
