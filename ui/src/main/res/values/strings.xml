@@ -165,7 +165,10 @@
     <string name="personal_setting_qr_code_btn_pic_save_text">保存图片</string>
     <string name="personal_setting_qr_code_btn_cancel_change_text">取消</string>
     <string name="personal_setting_qr_code_btn_qr_code_scan_change_text">扫描二维码</string>
-
+    <string name="personal_setting_avatar_btn_photo_taken_text">拍照</string>
+    <string name="personal_setting_avatar_btn_photo_choose_from_album_text">从相册中选择</string>
+    <string name="personal_setting_avatar_btn_cancel_text">取消</string>
+    <string name="personal_setting_avatar_btn_pic_save_text">保存图片</string>
 
 
 </resources>

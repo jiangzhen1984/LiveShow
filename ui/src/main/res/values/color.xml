@@ -72,4 +72,10 @@
     <color name="personal_frag_qr_code_item_btn_text_color">#C2C2C2</color>
     <color name="personel_setting_frag_layout_bg">#f0eff5</color>
 
+
+    <color name="personal_frag_avatar_bg">#000000</color>
+    <color name="personal_frag_avatar_text_color">#000000</color>
+    <color name="personal_frag_avatar_item_btn_bg_color">#FFFFFF</color>
+    <color name="personal_frag_avatar_item_btn_text_color">#C2C2C2</color>
+
 </resources>

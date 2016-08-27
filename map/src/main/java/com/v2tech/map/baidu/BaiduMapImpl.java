@@ -83,7 +83,7 @@ public class BaiduMapImpl implements MapAPI,
 		mSearchAPI.setOnGetGeoCodeResultListener(this);
 	//	mapView = new WeakReference<MapView>(mv);
 		this.mapImpl.setOnMapStatusChangeListener(this);
-		
+
 		roadMapQueryAPI = RoutePlanSearch.newInstance();
 		roadMapQueryAPI.setOnGetRoutePlanResultListener(this);
 	}
@@ -140,8 +140,7 @@ public class BaiduMapImpl implements MapAPI,
 	public Updater buildUpater(Serializable obj) {
 		if (obj instanceof BaiduLocation) {
 			BaiduLocation bl = ((BaiduLocation) obj);
-			return new BaiduUpdater(MapStatusUpdateFactory.newLatLngZoom(bl.ll,
-					bl.level));
+			return new BaiduUpdater(MapStatusUpdateFactory.newLatLng(bl.ll));
 		}
 
 		return null;
@@ -301,7 +300,6 @@ public class BaiduMapImpl implements MapAPI,
 
 	@Override
 	public void onMapStatusChangeStart(MapStatus status) {
-	
 	}
 	
 	

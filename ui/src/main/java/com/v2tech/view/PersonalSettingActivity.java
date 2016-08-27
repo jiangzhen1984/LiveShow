@@ -6,9 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.V2.jni.util.V2Log;
+import com.baidu.mapapi.map.Text;
 import com.v2tech.R;
 import com.v2tech.frag.PersonalAvatarSettingFragment;
 import com.v2tech.frag.PersonalGenderSettingFragment;
@@ -25,6 +27,8 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
 
     private PersonalSettingPresenter presenter;
     private FragmentManager fm;
+
+    private ImageView backBtn;
     private TextView saveBtn;
     private TextView titleTxv;
     private PersonalNicknameSettingFragment nicknameSettingFragment;
@@ -45,11 +49,19 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
         saveBtn.setVisibility(View.VISIBLE);
         saveBtn.setOnClickListener(this);
 
+
+        backBtn = (ImageView) findViewById(R.id.title_bar_left_btn);
+        backBtn.setOnClickListener(this);
+
         titleTxv  = (TextView) findViewById(R.id.title_bar_center_tv);
         fm  = this.getSupportFragmentManager();
-        presenter.initUIFragment(6);//getIntent().getIntExtra("type", 0));
+        presenter.initUIFragment(4);//getIntent().getIntExtra("type", 0));
     }
 
+    @Override
+    public void onBackPressed() {
+         presenter.backKeyPressed();
+    }
 
     @Override
     public BasePresenter getPresenter() {
@@ -101,6 +113,7 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
                 if (avatarSettingFragment == null) {
                     avatarSettingFragment = new PersonalAvatarSettingFragment();
                     avatarSettingFragment.setSettingService(presenter);
+                    avatarSettingFragment.setFragListener(presenter);
                 }
                 frag = avatarSettingFragment;
                 titleTxv.setText(R.string.personal_setting_avatar_update_title);
@@ -109,6 +122,7 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
                 if (qrCodeSettingFragment == null) {
                     qrCodeSettingFragment = new PersonalQRCodeSettingFragment();
                     qrCodeSettingFragment.setSettingService(presenter);
+                    qrCodeSettingFragment.setFragListener(presenter);
                 }
                 frag = qrCodeSettingFragment;
                 titleTxv.setText(R.string.personal_setting_qr_code_update_title);
@@ -130,11 +144,22 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
         qrCodeSettingFragment.showBtn(flag);
     }
 
+    @Override
+    public void showAvatarMenu(boolean flag) {
+        avatarSettingFragment.showBottomMenu(flag);
+    }
+
+    @Override
+    public void quit() {
+        finish();
+    }
 
     @Override
     public void onClick(View v) {
         if (v == saveBtn) {
             presenter.actionBarRightBtnClicked(v);
+        } else if (v == backBtn) {
+            presenter.backKeyPressed();
         }
     }
 }

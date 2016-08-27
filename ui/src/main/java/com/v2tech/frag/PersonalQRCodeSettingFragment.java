@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.V2.jni.util.V2Log;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -22,12 +23,18 @@ import com.v2tech.R;
 import com.v2tech.service.PersonalSetting;
 
 
-public class PersonalQRCodeSettingFragment extends Fragment {
+public class PersonalQRCodeSettingFragment extends Fragment implements View.OnClickListener {
 
     PersonalSetting settingService;
 
     private ImageView qrImag;
     private View btnLayout;
+    private View cancelBtn;
+    private View styleChangeBtn;
+    private View picSaveBtn;
+    private View qrPICScanBtn;
+
+    private QRCodeSettingFragListener fragListener;
 
     public PersonalQRCodeSettingFragment() {
         // Required empty public constructor
@@ -46,6 +53,16 @@ public class PersonalQRCodeSettingFragment extends Fragment {
         qrImag = (ImageView)root.findViewById(R.id.personal_qr_code_img);
         btnLayout = root.findViewById(R.id.personal_qr_code_bottom_layout);
         btnLayout.setVisibility(View.GONE);
+
+        styleChangeBtn = root.findViewById(R.id.personal_qr_code_btn_style_change);
+        picSaveBtn = root.findViewById(R.id.personal_qr_code_btn_pic_save);
+        qrPICScanBtn = root.findViewById(R.id.personal_qr_code_btn_qr_code_scan);
+        cancelBtn = root.findViewById(R.id.personal_qr_code_btn_cancel);
+        styleChangeBtn.setOnClickListener(this);
+        picSaveBtn.setOnClickListener(this);
+        qrPICScanBtn.setOnClickListener(this);
+        cancelBtn.setOnClickListener(this);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -71,6 +88,29 @@ public class PersonalQRCodeSettingFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        if (fragListener == null) {
+            V2Log.w("=== QRCodeSettingFragListener is null");
+            return;
+        }
+        int id = v.getId();
+        switch (id) {
+            case R.id.personal_qr_code_btn_style_change:
+                fragListener.onQRStyleChangeBtnClicked(v);
+                break;
+            case R.id.personal_qr_code_btn_pic_save:
+                fragListener.onQRPICSaveBtnClicked(v);
+                break;
+            case R.id.personal_qr_code_btn_qr_code_scan:
+                fragListener.onQRCodeScanBtnClicked(v);
+                break;
+            case R.id.personal_qr_code_btn_cancel:
+                fragListener.onQRCodeCancelBtnClicked(v);
+                break;
+
+        }
+    }
 
     private void generateQR(){
         String qrInputText = "test";
@@ -123,5 +163,18 @@ public class PersonalQRCodeSettingFragment extends Fragment {
             btnLayout.startAnimation(hyperspaceJumpAnimation);
         }
         btnLayout.setVisibility(flag ? View.VISIBLE : View.GONE);
+    }
+
+
+    public void setFragListener(QRCodeSettingFragListener fragListener) {
+        this.fragListener = fragListener;
+    }
+
+    public interface QRCodeSettingFragListener {
+        public void onQRStyleChangeBtnClicked(View v);
+        public void onQRPICSaveBtnClicked(View v);
+        public void onQRCodeScanBtnClicked(View v);
+        public void onQRCodeCancelBtnClicked(View v);
+
     }
 }

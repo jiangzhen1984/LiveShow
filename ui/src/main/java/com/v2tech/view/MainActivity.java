@@ -38,6 +38,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	private ImageView mPersonalButton;
 	private Toast inquiryToast;
+	private ImageView locationBtn;
 
 	MainPresenter presenter;
 	

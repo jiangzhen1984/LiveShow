@@ -164,6 +164,10 @@ public class MainPresenter extends BasePresenter implements
 
     private MapLocation currentLocation;
 
+    private MapLocation currentMapCenterLocation;
+
+    private boolean userCustomizedLocation = false;
+
     private Handler uiHandler;
 
     // ///////////////////////////////////////
@@ -377,7 +381,6 @@ public class MainPresenter extends BasePresenter implements
         if (lw == null) {
             return;
         }
-
         this.mapInstance.updateMap(mapInstance.buildUpater(lw));
 
         if (isState(MAP_CENTER_UPDATE)) {
@@ -969,7 +972,9 @@ public class MainPresenter extends BasePresenter implements
     }
 
     public void onLocationBtnClicked(View v) {
-
+        if (userCustomizedLocation) {
+            this.updateMapCenter(this.currentLocation, null);
+        }
     }
 
     // ///////////BottomButtonLayoutListener///////////////////////////////////////////////////
@@ -1066,6 +1071,18 @@ public class MainPresenter extends BasePresenter implements
 
     public void onMapStatusUpdated(MapStatus ms) {
         MapLocation ml = ms.getCenter();
+        currentMapCenterLocation =  ml;
+        V2Log.i(this.currentLocation+"   "+ml);
+        //map status update by self locating action
+        if (Math.abs(this.currentLocation.getLat() - ml.getLat()) < 0.0001D && Math.abs(this.currentLocation.getLng() - ml.getLng()) < 0.0001D) {
+            if (userCustomizedLocation) {
+                V2Log.d(" skip self location due to user customized" );
+                return;
+            }
+        } else {
+            userCustomizedLocation = true;
+        }
+
         mapInstance.getLocationName(ml, new LocationNameQueryResponseListener(uiHandler, QUERY_MAP_LOCATION_CALL_BACK, null));
         h.removeMessages(SEARCH_LIVE);
         Message msg = Message.obtain(h, SEARCH_LIVE);
@@ -1077,7 +1094,7 @@ public class MainPresenter extends BasePresenter implements
     public void onSelfLocationUpdated(MapLocation ml) {
         this.currentLocation = ml;
         //TODO check current map status is locked or not
-        if (!(isState(INQUIRY_WIDGET_SHOW) || isState(INQUIRY_BIDER_PERSONLE_WIDGET_SHOW))) {
+        if (!(isState(INQUIRY_WIDGET_SHOW) || isState(INQUIRY_BIDER_PERSONLE_WIDGET_SHOW)) && !userCustomizedLocation) {
             this.updateMapCenter(ml, ml.getParameter());
         }
         reportLocation();

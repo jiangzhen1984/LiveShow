@@ -64,4 +64,5 @@
 
     <dimen name="personal_setting_frag_item_text_size">13.5sp</dimen>
     <dimen name="personal_setting_frag_qr_code_item_padding">15dp</dimen>
+    <dimen name="personal_setting_frag_avatar_item_padding">15dp</dimen>
 </resources>
