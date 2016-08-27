@@ -108,7 +108,11 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         	} else {
         		return extraInquiryResponse(webPackage);
         	}
-        }  else {
+        } else if ("handleV2ID".equalsIgnoreCase(type)) {
+            return extraCommonResponse(webPackage);
+        }  else if ("V2DeviceID".equalsIgnoreCase(type)) {
+            return extraCommonResponse(webPackage);
+        } else {
             return null;
         }
     }

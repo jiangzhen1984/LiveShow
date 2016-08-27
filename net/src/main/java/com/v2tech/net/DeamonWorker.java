@@ -461,6 +461,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 			if (pack == null) {
 				return;
 			}
+			if (pack.getPacketType() == WebPackage.Packet.type.beat) {
+				return;
+			}
 			if (packetTransform != null) {
 				Packet p = packetTransform.unserialize(pack);
 				if (p == null) {
