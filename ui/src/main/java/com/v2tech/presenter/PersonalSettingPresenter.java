@@ -1,11 +1,13 @@
 package com.v2tech.presenter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 
 import com.v2tech.frag.PersonalAvatarSettingFragment;
 import com.v2tech.frag.PersonalQRCodeSettingFragment;
 import com.v2tech.service.PersonalSetting;
+
 
 /**
  * Created by 28851274 on 8/25/16.
@@ -18,6 +20,9 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
     public static final int UI_TYPE_AVATAR_SETTING = 4;
     public static final int UI_TYPE_SIGNATURE_SETTING = 5;
     public static final int UI_TYPE_QR_CODE_SETTING = 6;
+
+
+    public static final int OPEN_CAMERA_TYPE_AVATAR_PHOTO_TOKEN = 1;
 
 
     private Context context;
@@ -34,6 +39,10 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
         public void showAvatarMenu(boolean flag);
 
         public void quit();
+
+        public void openCamera(int type);
+
+        public void showAvatarPIC(Uri photoUri);
     }
 
 
@@ -94,7 +103,7 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
 
     @Override
     public void onAvatarPhotoTokenBtnClicked(View v) {
-
+        ui.openCamera(OPEN_CAMERA_TYPE_AVATAR_PHOTO_TOKEN);
     }
 
     @Override
@@ -132,6 +141,13 @@ public class PersonalSettingPresenter extends BasePresenter implements PersonalS
             actionBarRightBtnClicked(null);
         } else {
             ui.quit();
+        }
+    }
+
+
+    public void photoToken(Uri photoURI) {
+        if (type == UI_TYPE_AVATAR_SETTING) {
+            ui.showAvatarPIC(photoURI);
         }
     }
 }

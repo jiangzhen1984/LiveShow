@@ -23,7 +23,7 @@
 
 
             <ImageView
-                android:id="@+id/personal_qr_code_img"
+                android:id="@+id/personal_avatar_setting_avatar_img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"

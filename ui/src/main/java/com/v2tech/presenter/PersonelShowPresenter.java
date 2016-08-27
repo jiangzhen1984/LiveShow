@@ -48,6 +48,7 @@ public class PersonelShowPresenter extends BasePresenter {
 	private static final int UI_TYPE_GENDER_SETTING = 3;
 	private static final int UI_TYPE_AVATAR_SETTING = 4;
 	private static final int UI_TYPE_SIGNATURE_SETTING = 5;
+	private static final int UI_TYPE_QR_COD_SETTING = 6;
 
 	public void locationUpdateBtnClicked() {
 		startUpdateActivity(UI_TYPE_LOCATION_SETTING);
@@ -69,6 +70,10 @@ public class PersonelShowPresenter extends BasePresenter {
 		startUpdateActivity(UI_TYPE_GENDER_SETTING);
 	}
 
+
+	public void prcodeUpdateBtnClicked() {
+		startUpdateActivity(UI_TYPE_QR_COD_SETTING);
+	}
 
 	private void startUpdateActivity(int type) {
 		Intent i = new Intent();

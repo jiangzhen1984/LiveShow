@@ -1,6 +1,7 @@
 package com.v2tech.frag;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import com.V2.jni.util.V2Log;
 import com.v2tech.R;
@@ -25,6 +27,7 @@ public class PersonalAvatarSettingFragment extends Fragment implements View.OnCl
     private View photoTokenBtn;
     private View picChooseBtn;
     private View picSaveBtn;
+    private ImageView avatar;
 
 
     public PersonalAvatarSettingFragment() {
@@ -55,6 +58,7 @@ public class PersonalAvatarSettingFragment extends Fragment implements View.OnCl
         picChooseBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
 
+        avatar = (ImageView) root.findViewById(R.id.personal_avatar_setting_avatar_img);
 
         return root;
     }
@@ -106,6 +110,11 @@ public class PersonalAvatarSettingFragment extends Fragment implements View.OnCl
 
 
 
+    public void updateAvatar(Uri avatarUri) {
+        avatar.setImageURI(avatarUri);
+    }
+
+
     public PersonalSetting getSettingService() {
         return settingService;
     }
@@ -124,6 +133,5 @@ public class PersonalAvatarSettingFragment extends Fragment implements View.OnCl
         public void onAvatarPICSaveBtnClicked(View v);
         public void onAvatarPICChooseFromAlbumBtnClicked(View v);
         public void onAvatarCancelBtnClicked(View v);
-
     }
 }

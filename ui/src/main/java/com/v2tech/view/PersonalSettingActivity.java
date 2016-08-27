@@ -1,6 +1,9 @@
 package com.v2tech.view;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.V2.jni.util.V2Log;
-import com.baidu.mapapi.map.Text;
 import com.v2tech.R;
 import com.v2tech.frag.PersonalAvatarSettingFragment;
 import com.v2tech.frag.PersonalGenderSettingFragment;
@@ -21,9 +23,16 @@ import com.v2tech.frag.PersonalSignatureSettingFragment;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonalSettingPresenter;
 import com.v2tech.presenter.PersonalSettingPresenter.PersonalSettingPresenterUI;
+import com.v2tech.util.GlobalConfig;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PersonalSettingActivity extends BaseFragmentActivity implements PersonalSettingPresenterUI, OnClickListener {
 
+
+    public static final int REQUEST_CAMERA_CODE_FOR_PHOTO_TOKEN = 1;
 
     private PersonalSettingPresenter presenter;
     private FragmentManager fm;
@@ -37,6 +46,8 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
     private PersonalAvatarSettingFragment avatarSettingFragment;
     private PersonalLocationSettingFragment locationSettingFragment;
     private PersonalQRCodeSettingFragment qrCodeSettingFragment;
+
+    private Uri tmpPhotoURI;
 
 
     @Override
@@ -55,12 +66,22 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
 
         titleTxv  = (TextView) findViewById(R.id.title_bar_center_tv);
         fm  = this.getSupportFragmentManager();
-        presenter.initUIFragment(4);//getIntent().getIntExtra("type", 0));
+        presenter.initUIFragment(getIntent().getIntExtra("type", 0));
     }
 
     @Override
     public void onBackPressed() {
          presenter.backKeyPressed();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            presenter.photoToken(tmpPhotoURI);
+        } else if (resultCode == RESULT_CANCELED) {
+
+        }
     }
 
     @Override
@@ -152,6 +173,27 @@ public class PersonalSettingActivity extends BaseFragmentActivity implements Per
     @Override
     public void quit() {
         finish();
+    }
+
+
+    @Override
+    public void openCamera(int type) {
+        if (type == PersonalSettingPresenter.OPEN_CAMERA_TYPE_AVATAR_PHOTO_TOKEN) {
+            //create new Intent
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            tmpPhotoURI = Uri.fromFile(new File(GlobalConfig.getGlobalPicsPath()+"/" + timeStamp+".jpg"));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpPhotoURI);  // set the image file name
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+            // start the Video Capture Intent
+            startActivityForResult(intent, REQUEST_CAMERA_CODE_FOR_PHOTO_TOKEN);
+        }
+    }
+
+    @Override
+    public void showAvatarPIC(Uri photoUri) {
+        avatarSettingFragment.updateAvatar(photoUri);
     }
 
     @Override

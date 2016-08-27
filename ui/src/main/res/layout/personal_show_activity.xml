@@ -336,6 +336,7 @@
         </TextView>
 
         <RelativeLayout
+            android:id="@+id/personal_qr_code_update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"

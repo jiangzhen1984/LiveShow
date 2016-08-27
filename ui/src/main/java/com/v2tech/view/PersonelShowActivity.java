@@ -28,6 +28,7 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
     private View genderUpdateBtn;
     private View signatureUpdateBtn;
     private View locationUpdateBtn;
+    private View qrCodeUpdateBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
         genderUpdateBtn = findViewById(R.id.personal_gender_update_btn);
         signatureUpdateBtn = findViewById(R.id.personal_signature_update_btn);
         locationUpdateBtn = findViewById(R.id.personal_location_update_btn);
+        qrCodeUpdateBtn = findViewById(R.id.personal_qr_code_update_btn);
 
 
         avatarUpdateBtn.setOnClickListener(this);
@@ -49,6 +51,7 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
         genderUpdateBtn.setOnClickListener(this);
         signatureUpdateBtn.setOnClickListener(this);
         locationUpdateBtn.setOnClickListener(this);
+        qrCodeUpdateBtn.setOnClickListener(this);
 
         this.overridePendingTransition(R.anim.left_to_right_in,
                 R.anim.left_to_right_out);
@@ -76,6 +79,9 @@ public class PersonelShowActivity extends BaseActivity implements OnClickListene
                 break;
             case R.id.personal_location_update_btn:
                 presenter.locationUpdateBtnClicked();
+                break;
+            case R.id.personal_qr_code_update_btn:
+                presenter.prcodeUpdateBtnClicked();
                 break;
             default:
         }
