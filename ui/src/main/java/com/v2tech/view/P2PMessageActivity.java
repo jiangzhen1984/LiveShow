@@ -26,6 +26,7 @@ import com.v2tech.presenter.P2PMessagePresenter;
 import com.v2tech.presenter.P2PMessagePresenter.Item;
 import com.v2tech.presenter.P2PMessagePresenter.P2PMessagePresenterUI;
 import com.v2tech.R;
+import com.v2tech.vo.User;
 import com.v2tech.widget.RichEditText;
 import com.v2tech.widget.VoiceRecordDialogWidget;
 import com.v2tech.widget.emoji.EmojiLayoutWidget;
@@ -50,6 +51,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	private View sendBtn;
 	private View root;
 	private View videoConnectionBtn;
+	private TextView tvTitle;
 
 	private BaseAdapter baseAdapter;
 	
@@ -69,6 +71,7 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		voiceRecordBtn= (TextView)findViewById(R.id.p2p_message_voice_record_btn);
 		sendBtn = findViewById(R.id.p2p_message_send_btn);
 		videoConnectionBtn = findViewById(R.id.p2p_message_video_connection_btn);
+		tvTitle = (TextView) findViewById(R.id.title_bar_center_tv);
 		
 		switcherBtn.setOnClickListener(this);
 		emojiBtn.setOnClickListener(this);
@@ -227,13 +230,13 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 	public void finishMainUI() {
 		finish();
 	}
-	
-	
+
+	@Override
 	public RichEditText getEditable() {
 		return this.messageEt;
 	}
-	
-	
+
+	@Override
 	public void scrollTo(final int position) {
 //		listView.post(new Runnable() {
 //
@@ -246,12 +249,13 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		listView.setSelection(position);
 	}
 	
-	
-	public long getIntentUserId() {
-		return this.getIntent().getLongExtra("chatuserid", 0);
+
+	@Override
+	public User getIntentUser() {
+		return (User)this.getIntent().getSerializableExtra("chatuser");
 	}
-	
-	
+
+	@Override
 	public void updateVoiceDBLevel(int level) {
 		voiceDialogWidget.updateVolumnLevel(level);
 	}
@@ -270,9 +274,9 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		voiceRecordBtn.setVisibility(View.GONE);
 		messageEt.setVisibility(View.VISIBLE);
 	}
-	
-	
-	
+
+
+	@Override
 	public void showDialog(boolean flag, int type) {
 		if (dialog == null) {
 			dialog = new PopupWindow(this);
@@ -308,18 +312,20 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 			dialog.dismiss();
 		}
 	}
-	
-	
-	
+
+
+	@Override
 	public void showSendBtn(boolean flag) {
 		this.sendBtn.setVisibility(flag? View.VISIBLE : View.GONE);
 	}
-	
+
+	@Override
 	public void showPlusBtn(boolean flag) {
 		this.plusBtn.setVisibility(flag ? View.VISIBLE : View.INVISIBLE);
 	}
-	
-	
+
+
+	@Override
 	public void startAudioPlayAniamtion(View v, Item item) {
 		LocalBind lb = (LocalBind)v.getTag();
 		if (lb.leftLy.getVisibility() == View.VISIBLE) {
@@ -329,7 +335,8 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		}
 		lb.playingState = true;
 	}
-	
+
+	@Override
 	public void stopAudioPlayAniamtion(View v, Item item) {
 		LocalBind lb = (LocalBind)v.getTag();
 		if (lb.leftLy.getVisibility() == View.VISIBLE) {
@@ -365,14 +372,21 @@ public class P2PMessageActivity extends BaseActivity implements P2PMessagePresen
 		messageEt.dispatchKeyEvent(evt);
 		
 	}
-	
-	
+
+	@Override
 	public int getStartType() {
 		return getIntent().getIntExtra("type", -1);
 	}
-	
+
+	@Override
 	public String getAacfilePath() {
 		return getIntent().getStringExtra("audiofile");
+	}
+
+
+	@Override
+	public void setTitle(String title) {
+		tvTitle.setText(title);
 	}
 
 	@Override

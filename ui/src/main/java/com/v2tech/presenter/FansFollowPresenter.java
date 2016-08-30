@@ -1,32 +1,22 @@
 package com.v2tech.presenter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.UUID;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.V2.jni.util.V2Log;
-import com.v2tech.audio.AACEncoder;
-import com.v2tech.audio.AACEncoder.AACEncoderNotification;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.UserService;
-import com.v2tech.util.GlobalConfig;
 import com.v2tech.view.P2PMessageActivity;
 import com.v2tech.view.P2PVideoActivity;
 import com.v2tech.vo.User;
 import com.v2tech.widget.PersonelDetailLayout;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class FansFollowPresenter extends BasePresenter implements PersonelDetailLayout.InterfactionBtnClickListener {
 
@@ -145,7 +135,7 @@ public class FansFollowPresenter extends BasePresenter implements PersonelDetail
 	@Override
 	public void onMsgBtnClicked(View v) {
 		Intent i = new Intent();
-		i.putExtra("chatuserid", u.getmUserId());
+		i.putExtra("chatuser", u);
 		i.setClass(context, P2PMessageActivity.class);
 		context.startActivity(i);
 

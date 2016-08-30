@@ -10,7 +10,7 @@ public class FollowsQueryReqPacket extends RequestPacket {
 
 	public FollowsQueryReqPacket() {
 		super();
-		count = 20;
+		count = 60;
 	}
 
 	public FollowsQueryReqPacket(int start, int count) {

@@ -111,7 +111,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 
 		public void scrollTo(int position);
 
-		public long getIntentUserId();
+		public User getIntentUser();
 
 		public void updateVoiceDBLevel(int level);
 
@@ -136,6 +136,9 @@ public class P2PMessagePresenter extends BasePresenter implements
 		public int getStartType();
 
 		public String getAacfilePath();
+
+
+		public void setTitle(String title);
 	}
 
 	public P2PMessagePresenter(Context context, P2PMessagePresenterUI ui) {
@@ -149,7 +152,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		uiHandler = new UIHandler(ui);
 		localAdapter = new LocalAdapter();
 		ui.setAdapter(localAdapter);
-		chatUser = new User(ui.getIntentUserId());
+		chatUser = ui.getIntentUser();
 
 		loader.postDelayed(new LoaderWorker(0, 30), 100);
 
@@ -326,6 +329,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 		
 		ui.showAdditionLayout(false);
 		ui.showEmojiLayout(false);
+		ui.setTitle(chatUser.getNickName());
+
 		// Check intent flag first
 
 		additonState |= TYPE_SHOW_VOICE_LAYOUT;

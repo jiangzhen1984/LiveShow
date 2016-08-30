@@ -1,14 +1,5 @@
 package com.v2tech.presenter;
 
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.v2tech.R;
 import com.v2tech.frag.UserListFragment.UserListFragmentClickListener;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.FansQueryReqPacket;
@@ -30,12 +22,20 @@ import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.P2PMessageService;
 import com.v2tech.service.UserService;
-import com.v2tech.R;
 import com.v2tech.view.FansFollowActivity;
 import com.v2tech.view.InquiryActionActivity;
 import com.v2tech.vo.User;
 import com.v2tech.vo.inquiry.InquiryData;
 import com.v2tech.vo.msg.VMessageSession;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PersonelRelatedUserListPresenter extends BasePresenter implements UserListFragmentClickListener {
 	
@@ -412,6 +412,11 @@ public class PersonelRelatedUserListPresenter extends BasePresenter implements U
 			if (!TextUtils.isEmpty(strvideoCount)) {
 				u.videoCount =Integer.parseInt(strvideoCount); 
 			}
+
+			String phone = m.get("phone");
+			u.setNickName(phone);
+			u.setTelephone(phone);
+			u.setMobile(phone);
 			fans.add(u);
 		}
 		
