@@ -1,12 +1,5 @@
 package com.v2tech.audio;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -16,6 +9,13 @@ import android.media.MediaFormat;
 import android.os.Build;
 
 import com.V2.jni.util.V2Log;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class AACDecoder {
 	/**
@@ -79,6 +79,8 @@ public class AACDecoder {
 					: AudioFormat.CHANNEL_OUT_STEREO;
 			// Get duration of audio
 			mDurationUS = format.getLong(MediaFormat.KEY_DURATION);
+
+
 
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			throw new RuntimeException(" Doesn't support on lower 4.1 version");
@@ -152,7 +154,7 @@ public class AACDecoder {
 		if (worker != null && worker.isAlive()) {
 			throw new RuntimeException(" Decoder is working on");
 		}
-		
+
 		worker = new DecoderWorkder();
 
 		try {
@@ -223,8 +225,13 @@ public class AACDecoder {
 			mDecoder.start();
 			mAudioTracker.play();
 
-			ByteBuffer[] inputBuffers = mDecoder.getInputBuffers();
-			ByteBuffer[] outputBuffers = mDecoder.getOutputBuffers();
+			ByteBuffer[] inputBuffers = null;
+			ByteBuffer[] outputBuffers = null;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+				inputBuffers = mDecoder.getInputBuffers();
+				outputBuffers =  mDecoder.getOutputBuffers();
+			}
+
 
 			int inputBufferIndex = -1;
 			int readSize = -1;
@@ -236,7 +243,13 @@ public class AACDecoder {
 
 				inputBufferIndex = mDecoder.dequeueInputBuffer(1000);
 				if (inputBufferIndex >= 0) {
-					ByteBuffer buffer = inputBuffers[inputBufferIndex];
+
+					ByteBuffer buffer = null;
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						buffer = mDecoder.getInputBuffer(inputBufferIndex);
+					} else {
+						buffer = inputBuffers[inputBufferIndex];
+					}
 					buffer.clear();
 					readSize = mExtractor.readSampleData(buffer, 0);
 					if (readSize > 0) {
@@ -254,8 +267,17 @@ public class AACDecoder {
 				int outputBufferIndex = mDecoder.dequeueOutputBuffer(
 						bufferInfo, 1000);
 				if (outputBufferIndex >= 0) {
-					ByteBuffer buffer = outputBuffers[outputBufferIndex];
+					ByteBuffer buffer = null;
+
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						buffer = mDecoder.getOutputBuffer(outputBufferIndex);
+					} else {
+						buffer = outputBuffers[outputBufferIndex];
+					}
+
+					V2Log.i(bufferInfo.size +"===>" + bufferInfo.flags+"   "+ bufferInfo.offset);
 					byte[] data = new byte[bufferInfo.size];
+					V2Log.w("==== "+ buffer.remaining() +"   "+buffer.hasRemaining());
 					buffer.get(data);
 					buffer.clear();
 					// Flush audio raw data to hardware

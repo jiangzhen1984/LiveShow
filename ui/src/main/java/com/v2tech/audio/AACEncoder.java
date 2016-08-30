@@ -243,18 +243,27 @@ public class AACEncoder {
 
 		}
 
+
+		double db3 = 0.0;
+		static final double EMA_FILTER = 0.6;
 		private void saveDB(byte[] audiobuffer) {
 			int amplitude = (audiobuffer[0] & 0xff) << 8 | audiobuffer[1];
-
+			if (amplitude < 0) {
+				return;
+			}
 			 float mDB1 = 20 * (float)Math.log10((float) Math.abs(amplitude) /65535.0F);
-			 float ndb = 20 * (float) (Math.log10(amplitude));
+			 float ndb = 20 * (float) (Math.log10(amplitude)) / 2;
 			float mDB2 = 20 * (float)Math.log10(amplitude) - 20 * (float)Math.log10(700);
 
 			mDB = mDB2;
 
-			V2Log.i("====" + mDB1 +"   "+ ndb +"  "+mDB2);
+			db3 = EMA_FILTER * amplitude + (1.0 - EMA_FILTER) * db3;
+
+			V2Log.e(amplitude +"====" + mDB1 +"   "+ ndb +"  "+mDB2 +"  "+ db3 +"   "+ Double.toString(db3));
 
 		}
+
+
 
 		private void fillAACHeader(byte[] data) {
 			if (data.length < AAC_HEADER_LENGTH) {

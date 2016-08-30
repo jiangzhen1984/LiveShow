@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.presenter.BasePresenter;
 import com.v2tech.presenter.PersonelPresenter;
 import com.v2tech.presenter.PersonelPresenter.PersonelPresenterUI;
@@ -182,6 +183,10 @@ public class PersonelActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void updateUserUI(User user) {
+		if (user == null) {
+			V2Log.e(" user null");
+			return;
+		}
 		mPersonalNameTv.setText(user.getName());
 		mAccountName.setText(user.getMobile());
 		if ("".equals(user.getSex())) {

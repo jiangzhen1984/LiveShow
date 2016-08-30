@@ -226,7 +226,7 @@ public class P2PMessageService extends DeviceService {
 					break;
 				case VMessageAbstractItem.ITEM_TYPE_AUDIO:
 					String[] subItem = text.split(":");
-					new VMessageAudioItem(vm, subItem[0], subItem[1], Integer.parseInt(subItem[2]), Integer.parseInt(subItem[3]));
+					new VMessageAudioItem(vm, subItem[0], null, subItem[1], Integer.parseInt(subItem[2]), Integer.parseInt(subItem[3]));
 					break;
 				}
 				
