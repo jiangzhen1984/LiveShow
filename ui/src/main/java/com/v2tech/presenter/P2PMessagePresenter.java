@@ -584,8 +584,9 @@ public class P2PMessagePresenter extends BasePresenter implements
 		if (db == Double.NaN) {
 			level = 1;
 		} else {
-			level = (int) db % 10 + 1;
+			level = ((int) db) / 10 + 1;
 		}
+		V2Log.i(db+"==== =db level "+ level);
 		Message.obtain(uiHandler, UI_MSG_UPDATE_VOLUMN_LEVEL, level, 0)
 				.sendToTarget();
 	}

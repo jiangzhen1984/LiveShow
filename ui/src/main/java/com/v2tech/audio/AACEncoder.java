@@ -1,8 +1,5 @@
 package com.v2tech.audio;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
@@ -10,6 +7,11 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Build;
+
+import com.V2.jni.util.V2Log;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class AACEncoder {
 
@@ -51,7 +53,7 @@ public class AACEncoder {
 	/**
 	 * record current frame's db
 	 */
-	private double mDB;
+	private float mDB;
 
 	private RecorderThread workerThread;
 
@@ -59,7 +61,7 @@ public class AACEncoder {
 
 	/**
 	 * 
-	 * @param out
+	 * @param nofiticationListener
 	 */
 	public AACEncoder(AACEncoderNotification nofiticationListener) {
 		this.nofiticationListener = nofiticationListener;
@@ -244,9 +246,14 @@ public class AACEncoder {
 		private void saveDB(byte[] audiobuffer) {
 			int amplitude = (audiobuffer[0] & 0xff) << 8 | audiobuffer[1];
 
-			// mDB = 20 * Math.log10((double) Math.abs(amplitude) /65535.0);
+			 float mDB1 = 20 * (float)Math.log10((float) Math.abs(amplitude) /65535.0F);
+			 float ndb = 20 * (float) (Math.log10(amplitude));
+			float mDB2 = 20 * (float)Math.log10(amplitude) - 20 * (float)Math.log10(700);
 
-			mDB = 20.0 * Math.log10(amplitude) - 20.0 * Math.log10(700);
+			mDB = mDB2;
+
+			V2Log.i("====" + mDB1 +"   "+ ndb +"  "+mDB2);
+
 		}
 
 		private void fillAACHeader(byte[] data) {
