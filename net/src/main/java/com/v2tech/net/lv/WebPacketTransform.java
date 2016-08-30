@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "1.1.0";
+	private static final String VERSION = "1.2.0";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){

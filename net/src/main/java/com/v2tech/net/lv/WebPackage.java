@@ -1820,6 +1820,16 @@ public final class WebPackage {
     getAssetLogOrBuilderList();
     com.v2tech.net.lv.WebPackage.AssetLogOrBuilder getAssetLogOrBuilder(
             int index);
+
+    // repeated .ServerBean serverBean = 15;
+    java.util.List<com.v2tech.net.lv.WebPackage.ServerBean>
+    getServerBeanList();
+    com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index);
+    int getServerBeanCount();
+    java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
+    getServerBeanOrBuilderList();
+    com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
+            int index);
   }
   public static final class Data extends
           com.google.protobuf.GeneratedMessage
@@ -2089,6 +2099,27 @@ public final class WebPackage {
       return assetLog_.get(index);
     }
 
+    // repeated .ServerBean serverBean = 15;
+    public static final int SERVERBEAN_FIELD_NUMBER = 15;
+    private java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> serverBean_;
+    public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> getServerBeanList() {
+      return serverBean_;
+    }
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
+    getServerBeanOrBuilderList() {
+      return serverBean_;
+    }
+    public int getServerBeanCount() {
+      return serverBean_.size();
+    }
+    public com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index) {
+      return serverBean_.get(index);
+    }
+    public com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
+            int index) {
+      return serverBean_.get(index);
+    }
+
     private void initFields() {
       normal_ = "";
       byteDate_ = com.google.protobuf.ByteString.EMPTY;
@@ -2104,6 +2135,7 @@ public final class WebPackage {
       reward_ = java.util.Collections.emptyList();
       userState_ = java.util.Collections.emptyList();
       assetLog_ = java.util.Collections.emptyList();
+      serverBean_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2158,6 +2190,9 @@ public final class WebPackage {
       }
       for (int i = 0; i < assetLog_.size(); i++) {
         output.writeMessage(14, assetLog_.get(i));
+      }
+      for (int i = 0; i < serverBean_.size(); i++) {
+        output.writeMessage(15, serverBean_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -2223,6 +2258,10 @@ public final class WebPackage {
       for (int i = 0; i < assetLog_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(14, assetLog_.get(i));
+      }
+      for (int i = 0; i < serverBean_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(15, serverBean_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2347,6 +2386,7 @@ public final class WebPackage {
           getRewardFieldBuilder();
           getUserStateFieldBuilder();
           getAssetLogFieldBuilder();
+          getServerBeanFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2410,6 +2450,12 @@ public final class WebPackage {
           bitField0_ = (bitField0_ & ~0x00002000);
         } else {
           assetLogBuilder_.clear();
+        }
+        if (serverBeanBuilder_ == null) {
+          serverBean_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00004000);
+        } else {
+          serverBeanBuilder_.clear();
         }
         return this;
       }
@@ -2539,6 +2585,15 @@ public final class WebPackage {
           result.assetLog_ = assetLog_;
         } else {
           result.assetLog_ = assetLogBuilder_.build();
+        }
+        if (serverBeanBuilder_ == null) {
+          if (((bitField0_ & 0x00004000) == 0x00004000)) {
+            serverBean_ = java.util.Collections.unmodifiableList(serverBean_);
+            bitField0_ = (bitField0_ & ~0x00004000);
+          }
+          result.serverBean_ = serverBean_;
+        } else {
+          result.serverBean_ = serverBeanBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -2759,6 +2814,32 @@ public final class WebPackage {
             }
           }
         }
+        if (serverBeanBuilder_ == null) {
+          if (!other.serverBean_.isEmpty()) {
+            if (serverBean_.isEmpty()) {
+              serverBean_ = other.serverBean_;
+              bitField0_ = (bitField0_ & ~0x00004000);
+            } else {
+              ensureServerBeanIsMutable();
+              serverBean_.addAll(other.serverBean_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.serverBean_.isEmpty()) {
+            if (serverBeanBuilder_.isEmpty()) {
+              serverBeanBuilder_.dispose();
+              serverBeanBuilder_ = null;
+              serverBean_ = other.serverBean_;
+              bitField0_ = (bitField0_ & ~0x00004000);
+              serverBeanBuilder_ =
+                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                              getServerBeanFieldBuilder() : null;
+            } else {
+              serverBeanBuilder_.addAllMessages(other.serverBean_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2865,6 +2946,12 @@ public final class WebPackage {
               com.v2tech.net.lv.WebPackage.AssetLog.Builder subBuilder = com.v2tech.net.lv.WebPackage.AssetLog.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addAssetLog(subBuilder.buildPartial());
+              break;
+            }
+            case 122: {
+              com.v2tech.net.lv.WebPackage.ServerBean.Builder subBuilder = com.v2tech.net.lv.WebPackage.ServerBean.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addServerBean(subBuilder.buildPartial());
               break;
             }
           }
@@ -4338,6 +4425,192 @@ public final class WebPackage {
           assetLog_ = null;
         }
         return assetLogBuilder_;
+      }
+
+      // repeated .ServerBean serverBean = 15;
+      private java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> serverBean_ =
+              java.util.Collections.emptyList();
+      private void ensureServerBeanIsMutable() {
+        if (!((bitField0_ & 0x00004000) == 0x00004000)) {
+          serverBean_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.ServerBean>(serverBean_);
+          bitField0_ |= 0x00004000;
+        }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+              com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder> serverBeanBuilder_;
+
+      public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> getServerBeanList() {
+        if (serverBeanBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(serverBean_);
+        } else {
+          return serverBeanBuilder_.getMessageList();
+        }
+      }
+      public int getServerBeanCount() {
+        if (serverBeanBuilder_ == null) {
+          return serverBean_.size();
+        } else {
+          return serverBeanBuilder_.getCount();
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index) {
+        if (serverBeanBuilder_ == null) {
+          return serverBean_.get(index);
+        } else {
+          return serverBeanBuilder_.getMessage(index);
+        }
+      }
+      public Builder setServerBean(
+              int index, com.v2tech.net.lv.WebPackage.ServerBean value) {
+        if (serverBeanBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureServerBeanIsMutable();
+          serverBean_.set(index, value);
+          onChanged();
+        } else {
+          serverBeanBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setServerBean(
+              int index, com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
+        if (serverBeanBuilder_ == null) {
+          ensureServerBeanIsMutable();
+          serverBean_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          serverBeanBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addServerBean(com.v2tech.net.lv.WebPackage.ServerBean value) {
+        if (serverBeanBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureServerBeanIsMutable();
+          serverBean_.add(value);
+          onChanged();
+        } else {
+          serverBeanBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addServerBean(
+              int index, com.v2tech.net.lv.WebPackage.ServerBean value) {
+        if (serverBeanBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureServerBeanIsMutable();
+          serverBean_.add(index, value);
+          onChanged();
+        } else {
+          serverBeanBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addServerBean(
+              com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
+        if (serverBeanBuilder_ == null) {
+          ensureServerBeanIsMutable();
+          serverBean_.add(builderForValue.build());
+          onChanged();
+        } else {
+          serverBeanBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addServerBean(
+              int index, com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
+        if (serverBeanBuilder_ == null) {
+          ensureServerBeanIsMutable();
+          serverBean_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          serverBeanBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllServerBean(
+              java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.ServerBean> values) {
+        if (serverBeanBuilder_ == null) {
+          ensureServerBeanIsMutable();
+          super.addAll(values, serverBean_);
+          onChanged();
+        } else {
+          serverBeanBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearServerBean() {
+        if (serverBeanBuilder_ == null) {
+          serverBean_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00004000);
+          onChanged();
+        } else {
+          serverBeanBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeServerBean(int index) {
+        if (serverBeanBuilder_ == null) {
+          ensureServerBeanIsMutable();
+          serverBean_.remove(index);
+          onChanged();
+        } else {
+          serverBeanBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.v2tech.net.lv.WebPackage.ServerBean.Builder getServerBeanBuilder(
+              int index) {
+        return getServerBeanFieldBuilder().getBuilder(index);
+      }
+      public com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
+              int index) {
+        if (serverBeanBuilder_ == null) {
+          return serverBean_.get(index);  } else {
+          return serverBeanBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
+      getServerBeanOrBuilderList() {
+        if (serverBeanBuilder_ != null) {
+          return serverBeanBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(serverBean_);
+        }
+      }
+      public com.v2tech.net.lv.WebPackage.ServerBean.Builder addServerBeanBuilder() {
+        return getServerBeanFieldBuilder().addBuilder(
+                com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance());
+      }
+      public com.v2tech.net.lv.WebPackage.ServerBean.Builder addServerBeanBuilder(
+              int index) {
+        return getServerBeanFieldBuilder().addBuilder(
+                index, com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance());
+      }
+      public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean.Builder>
+      getServerBeanBuilderList() {
+        return getServerBeanFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+              com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
+      getServerBeanFieldBuilder() {
+        if (serverBeanBuilder_ == null) {
+          serverBeanBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                  com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>(
+                  serverBean_,
+                  ((bitField0_ & 0x00004000) == 0x00004000),
+                  getParentForChildren(),
+                  isClean());
+          serverBean_ = null;
+        }
+        return serverBeanBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Data)
@@ -12843,6 +13116,683 @@ public final class WebPackage {
     // @@protoc_insertion_point(class_scope:AssetLog)
   }
 
+  public interface ServerBeanOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+
+    // optional int32 serverId = 1;
+    boolean hasServerId();
+    int getServerId();
+
+    // optional string addr_zk = 2;
+    boolean hasAddrZk();
+    String getAddrZk();
+
+    // optional string addr_buffer = 3;
+    boolean hasAddrBuffer();
+    String getAddrBuffer();
+
+    // optional string addr_web = 4;
+    boolean hasAddrWeb();
+    String getAddrWeb();
+
+    // optional bool add = 5;
+    boolean hasAdd();
+    boolean getAdd();
+  }
+  public static final class ServerBean extends
+          com.google.protobuf.GeneratedMessage
+          implements ServerBeanOrBuilder {
+    // Use ServerBean.newBuilder() to construct.
+    private ServerBean(Builder builder) {
+      super(builder);
+    }
+    private ServerBean(boolean noInit) {}
+
+    private static final ServerBean defaultInstance;
+    public static ServerBean getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public ServerBean getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_fieldAccessorTable;
+    }
+
+    private int bitField0_;
+    // optional int32 serverId = 1;
+    public static final int SERVERID_FIELD_NUMBER = 1;
+    private int serverId_;
+    public boolean hasServerId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getServerId() {
+      return serverId_;
+    }
+
+    // optional string addr_zk = 2;
+    public static final int ADDR_ZK_FIELD_NUMBER = 2;
+    private java.lang.Object addrZk_;
+    public boolean hasAddrZk() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getAddrZk() {
+      java.lang.Object ref = addrZk_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          addrZk_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getAddrZkBytes() {
+      java.lang.Object ref = addrZk_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        addrZk_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string addr_buffer = 3;
+    public static final int ADDR_BUFFER_FIELD_NUMBER = 3;
+    private java.lang.Object addrBuffer_;
+    public boolean hasAddrBuffer() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public String getAddrBuffer() {
+      java.lang.Object ref = addrBuffer_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          addrBuffer_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getAddrBufferBytes() {
+      java.lang.Object ref = addrBuffer_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        addrBuffer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string addr_web = 4;
+    public static final int ADDR_WEB_FIELD_NUMBER = 4;
+    private java.lang.Object addrWeb_;
+    public boolean hasAddrWeb() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getAddrWeb() {
+      java.lang.Object ref = addrWeb_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          addrWeb_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getAddrWebBytes() {
+      java.lang.Object ref = addrWeb_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        addrWeb_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional bool add = 5;
+    public static final int ADD_FIELD_NUMBER = 5;
+    private boolean add_;
+    public boolean hasAdd() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public boolean getAdd() {
+      return add_;
+    }
+
+    private void initFields() {
+      serverId_ = 0;
+      addrZk_ = "";
+      addrBuffer_ = "";
+      addrWeb_ = "";
+      add_ = false;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, serverId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getAddrZkBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getAddrBufferBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getAddrWebBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBool(5, add_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(1, serverId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(2, getAddrZkBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(3, getAddrBufferBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(4, getAddrWebBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(5, add_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+              .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+              .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+              .buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+              .buildParsed();
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.ServerBean prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+            implements com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_fieldAccessorTable;
+      }
+
+      // Construct using com.v2tech.net.lv.WebPackage.ServerBean.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        serverId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        addrZk_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        addrBuffer_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        addrWeb_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        add_ = false;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.v2tech.net.lv.WebPackage.ServerBean.getDescriptor();
+      }
+
+      public com.v2tech.net.lv.WebPackage.ServerBean getDefaultInstanceForType() {
+        return com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance();
+      }
+
+      public com.v2tech.net.lv.WebPackage.ServerBean build() {
+        com.v2tech.net.lv.WebPackage.ServerBean result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      private com.v2tech.net.lv.WebPackage.ServerBean buildParsed()
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        com.v2tech.net.lv.WebPackage.ServerBean result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+                  result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+
+      public com.v2tech.net.lv.WebPackage.ServerBean buildPartial() {
+        com.v2tech.net.lv.WebPackage.ServerBean result = new com.v2tech.net.lv.WebPackage.ServerBean(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.serverId_ = serverId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.addrZk_ = addrZk_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.addrBuffer_ = addrBuffer_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.addrWeb_ = addrWeb_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.add_ = add_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.v2tech.net.lv.WebPackage.ServerBean) {
+          return mergeFrom((com.v2tech.net.lv.WebPackage.ServerBean)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.v2tech.net.lv.WebPackage.ServerBean other) {
+        if (other == com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance()) return this;
+        if (other.hasServerId()) {
+          setServerId(other.getServerId());
+        }
+        if (other.hasAddrZk()) {
+          setAddrZk(other.getAddrZk());
+        }
+        if (other.hasAddrBuffer()) {
+          setAddrBuffer(other.getAddrBuffer());
+        }
+        if (other.hasAddrWeb()) {
+          setAddrWeb(other.getAddrWeb());
+        }
+        if (other.hasAdd()) {
+          setAdd(other.getAdd());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                com.google.protobuf.UnknownFieldSet.newBuilder(
+                        this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                      extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              serverId_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              addrZk_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              addrBuffer_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              addrWeb_ = input.readBytes();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              add_ = input.readBool();
+              break;
+            }
+          }
+        }
+      }
+
+      private int bitField0_;
+
+      // optional int32 serverId = 1;
+      private int serverId_ ;
+      public boolean hasServerId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getServerId() {
+        return serverId_;
+      }
+      public Builder setServerId(int value) {
+        bitField0_ |= 0x00000001;
+        serverId_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearServerId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        serverId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional string addr_zk = 2;
+      private java.lang.Object addrZk_ = "";
+      public boolean hasAddrZk() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getAddrZk() {
+        java.lang.Object ref = addrZk_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          addrZk_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setAddrZk(String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        addrZk_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAddrZk() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        addrZk_ = getDefaultInstance().getAddrZk();
+        onChanged();
+        return this;
+      }
+      void setAddrZk(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        addrZk_ = value;
+        onChanged();
+      }
+
+      // optional string addr_buffer = 3;
+      private java.lang.Object addrBuffer_ = "";
+      public boolean hasAddrBuffer() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getAddrBuffer() {
+        java.lang.Object ref = addrBuffer_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          addrBuffer_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setAddrBuffer(String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        addrBuffer_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAddrBuffer() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        addrBuffer_ = getDefaultInstance().getAddrBuffer();
+        onChanged();
+        return this;
+      }
+      void setAddrBuffer(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        addrBuffer_ = value;
+        onChanged();
+      }
+
+      // optional string addr_web = 4;
+      private java.lang.Object addrWeb_ = "";
+      public boolean hasAddrWeb() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getAddrWeb() {
+        java.lang.Object ref = addrWeb_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          addrWeb_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setAddrWeb(String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        addrWeb_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAddrWeb() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        addrWeb_ = getDefaultInstance().getAddrWeb();
+        onChanged();
+        return this;
+      }
+      void setAddrWeb(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        addrWeb_ = value;
+        onChanged();
+      }
+
+      // optional bool add = 5;
+      private boolean add_ ;
+      public boolean hasAdd() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public boolean getAdd() {
+        return add_;
+      }
+      public Builder setAdd(boolean value) {
+        bitField0_ |= 0x00000010;
+        add_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAdd() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        add_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:ServerBean)
+    }
+
+    static {
+      defaultInstance = new ServerBean(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:ServerBean)
+  }
+
   private static com.google.protobuf.Descriptors.Descriptor
           internal_static_Packet_descriptor;
   private static
@@ -12898,6 +13848,11 @@ public final class WebPackage {
   private static
   com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internal_static_AssetLog_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+          internal_static_ServerBean_descriptor;
+  private static
+  com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internal_static_ServerBean_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
   getDescriptor() {
@@ -12914,62 +13869,65 @@ public final class WebPackage {
                     "\023\n\004data\030\010 \001(\0132\005.Data\022\017\n\007version\030\t \001(\t\"-\n" +
                     "\004type\022\006\n\002iq\020\000\022\007\n\003msg\020\001\022\n\n\006buffer\020\002\022\010\n\004be" +
                     "at\020\003\"\'\n\006Result\022\016\n\006result\030\001 \001(\010\022\r\n\005error\030" +
-                    "\002 \001(\t\"\254\002\n\004Data\022\016\n\006normal\030\001 \001(\t\022\020\n\010byteDa" +
+                    "\002 \001(\t\"\315\002\n\004Data\022\016\n\006normal\030\001 \001(\t\022\020\n\010byteDa" +
                     "te\030\002 \001(\014\022\020\n\010fromTime\030\003 \001(\003\022\016\n\006toTime\030\004 \001" +
                     "(\003\022\013\n\003sum\030\005 \001(\005\022\014\n\004from\030\006 \001(\005\022\n\n\002to\030\007 \001(",
             "\005\022\033\n\010position\030\010 \003(\0132\t.Position\022\023\n\004user\030\t" +
                     " \003(\0132\005.User\022\025\n\005video\030\n \003(\0132\006.Video\022\033\n\010gr" +
                     "atuity\030\013 \003(\0132\t.Gratuity\022\027\n\006reward\030\014 \003(\0132" +
                     "\007.Reward\022\035\n\tuserState\030\r \003(\0132\n.UserState\022" +
-                    "\033\n\010assetLog\030\016 \003(\0132\t.AssetLog\"\243\003\n\004User\022\n\n" +
-                    "\002id\030\001 \001(\005\022\r\n\005phone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013" +
-                    "\n\003pwd\030\004 \001(\t\022\022\n\npwd2orCode\030\005 \001(\t\022\020\n\010realN" +
-                    "ame\030\006 \001(\t\022\017\n\007headurl\030\007 \001(\t\022\020\n\010signText\030\010" +
-                    " \001(\t\022\013\n\003sex\030\t \001(\005\022\017\n\007address\030\n \001(\t\022\022\n\nex" +
-                    "perience\030\013 \001(\005\022\021\n\tfansCount\030\014 \001(\005\022\023\n\013fol",
-            "lowCount\030\r \001(\005\022\033\n\010position\030\016 \001(\0132\t.Posit" +
-                    "ion\022\020\n\010deviceID\030\017 \001(\t\022\022\n\nFollowType\030\020 \001(" +
-                    "\005\022\020\n\010descName\030\021 \001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2U" +
-                    "serName\030\023 \001(\t\022\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCou" +
-                    "nt\030\025 \001(\005\022\023\n\013v2DeviceID1\030\026 \001(\t\022\023\n\013v2Devic" +
-                    "eID2\030\027 \001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 \001(" +
-                    "\001\022\020\n\010latitude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\343\001\n\005" +
-                    "Video\022\n\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006u" +
-                    "serId\030\003 \001(\005\022\033\n\010position\030\004 \001(\0132\t.Position" +
-                    "\022\013\n\003sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tlike",
-            "Count\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006de" +
-                    "gree\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSMod" +
-                    "e\030\013 \001(\010\022\020\n\010videoPwd\030\014 \001(\t\"\325\001\n\010Gratuity\022\020" +
-                    "\n\010giftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfr" +
-                    "omUserID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrR" +
-                    "emain\030\005 \001(\002\022 \n\006answer\030\006 \001(\0162\020.Gratuity.A" +
-                    "nswer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007rece" +
-                    "ive\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020" +
-                    "\003\"\306\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerTime\030\002 " +
-                    "\001(\005\022\023\n\013releaseTime\030\003 \001(\003\022\023\n\004gift\030\004 \003(\0132\005",
-            ".Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014answerUserI" +
-                    "D\030\006 \001(\005\022 \n\007operate\030\007 \001(\0162\017.Reward.Operat" +
-                    "e\022\014\n\004desc\030\010 \001(\t\022\033\n\010position\030\t \001(\0132\t.Posi" +
-                    "tion\022\017\n\007pushSum\030\n \001(\005\022\022\n\nappealDesc\030\013 \001(" +
-                    "\t\022\022\n\nappealTime\030\014 \001(\003\"C\n\007Operate\022\013\n\007rele" +
-                    "ase\020\000\022\n\n\006cancle\020\001\022\007\n\003pay\020\002\022\n\n\006answer\020\003\022\n" +
-                    "\n\006appeal\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001(\005\022\016\n\006" +
-                    "amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002\"\250\001\n\tUs" +
-                    "erState\022\016\n\006userId\030\001 \001(\005\022\021\n\toperateId\030\002 \001" +
-                    "(\005\022\037\n\005state\030\003 \001(\0162\020.UserState.State\022\014\n\004d",
-            "esc\030\004 \001(\t\"I\n\005State\022\n\n\006online\020\000\022\013\n\007offlin" +
-                    "e\020\001\022\014\n\010p2pVideo\020\002\022\016\n\nMultiVideo\020\003\022\t\n\005oth" +
-                    "er\020\004\"\363\002\n\010AssetLog\022\022\n\nfromUserID\030\001 \001(\005\022\020\n" +
-                    "\010toUserID\030\002 \001(\005\022\023\n\004gift\030\003 \003(\0132\005.Gift\022\014\n\004" +
-                    "desc\030\004 \001(\t\022*\n\013operateType\030\005 \001(\0162\025.AssetL" +
-                    "og.OperateType\022\023\n\013operateTime\030\006 \001(\003\022\016\n\006s" +
-                    "oType\030\007 \001(\005\022\017\n\007payType\030\010 \001(\005\022\017\n\007payTime\030" +
-                    "\t \001(\003\022\017\n\007videoId\030\n \001(\005\022\020\n\010rewardId\030\013 \001(\005" +
-                    "\022\022\n\nappealDesc\030\014 \001(\t\022\022\n\nappealTime\030\r \001(\003" +
-                    "\"`\n\013OperateType\022\014\n\010recharge\020\000\022\010\n\004cash\020\001\022",
-            "\014\n\010gratuity\020\002\022\n\n\006reward\020\003\022\007\n\003all\020\004\022\n\n\006in" +
-                    "come\020\005\022\n\n\006payout\020\006B\037\n\021com.v2tech.net.lvB" +
-                    "\nWebPackage"
+                    "\033\n\010assetLog\030\016 \003(\0132\t.AssetLog\022\037\n\nserverBe" +
+                    "an\030\017 \003(\0132\013.ServerBean\"\243\003\n\004User\022\n\n\002id\030\001 \001" +
+                    "(\005\022\r\n\005phone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004" +
+                    " \001(\t\022\022\n\npwd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001" +
+                    "(\t\022\017\n\007headurl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n" +
+                    "\003sex\030\t \001(\005\022\017\n\007address\030\n \001(\t\022\022\n\nexperienc",
+            "e\030\013 \001(\005\022\021\n\tfansCount\030\014 \001(\005\022\023\n\013followCoun" +
+                    "t\030\r \001(\005\022\033\n\010position\030\016 \001(\0132\t.Position\022\020\n\010" +
+                    "deviceID\030\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010de" +
+                    "scName\030\021 \001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName" +
+                    "\030\023 \001(\t\022\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(" +
+                    "\005\022\023\n\013v2DeviceID1\030\026 \001(\t\022\023\n\013v2DeviceID2\030\027 " +
+                    "\001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010la" +
+                    "titude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\343\001\n\005Video\022\n" +
+                    "\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003" +
+                    " \001(\005\022\033\n\010position\030\004 \001(\0132\t.Position\022\013\n\003sum",
+            "\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tlikeCount\030\007" +
+                    " \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006degree\030\t " +
+                    "\001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSMode\030\013 \001(\010" +
+                    "\022\020\n\010videoPwd\030\014 \001(\t\"\325\001\n\010Gratuity\022\020\n\010giftT" +
+                    "ype\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserI" +
+                    "D\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005" +
+                    " \001(\002\022 \n\006answer\030\006 \001(\0162\020.Gratuity.Answer\022\017" +
+                    "\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n" +
+                    "\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003\"\306\002\n\006R" +
+                    "eward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerTime\030\002 \001(\005\022\023\n\013",
+            "releaseTime\030\003 \001(\003\022\023\n\004gift\030\004 \003(\0132\005.Gift\022\022" +
+                    "\n\nfromUserID\030\005 \001(\005\022\024\n\014answerUserID\030\006 \001(\005" +
+                    "\022 \n\007operate\030\007 \001(\0162\017.Reward.Operate\022\014\n\004de" +
+                    "sc\030\010 \001(\t\022\033\n\010position\030\t \001(\0132\t.Position\022\017\n" +
+                    "\007pushSum\030\n \001(\005\022\022\n\nappealDesc\030\013 \001(\t\022\022\n\nap" +
+                    "pealTime\030\014 \001(\003\"C\n\007Operate\022\013\n\007release\020\000\022\n" +
+                    "\n\006cancle\020\001\022\007\n\003pay\020\002\022\n\n\006answer\020\003\022\n\n\006appea" +
+                    "l\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001(\005\022\016\n\006amount\030" +
+                    "\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002\"\250\001\n\tUserState" +
+                    "\022\016\n\006userId\030\001 \001(\005\022\021\n\toperateId\030\002 \001(\005\022\037\n\005s",
+            "tate\030\003 \001(\0162\020.UserState.State\022\014\n\004desc\030\004 \001" +
+                    "(\t\"I\n\005State\022\n\n\006online\020\000\022\013\n\007offline\020\001\022\014\n\010" +
+                    "p2pVideo\020\002\022\016\n\nMultiVideo\020\003\022\t\n\005other\020\004\"\363\002" +
+                    "\n\010AssetLog\022\022\n\nfromUserID\030\001 \001(\005\022\020\n\010toUser" +
+                    "ID\030\002 \001(\005\022\023\n\004gift\030\003 \003(\0132\005.Gift\022\014\n\004desc\030\004 " +
+                    "\001(\t\022*\n\013operateType\030\005 \001(\0162\025.AssetLog.Oper" +
+                    "ateType\022\023\n\013operateTime\030\006 \001(\003\022\016\n\006soType\030\007" +
+                    " \001(\005\022\017\n\007payType\030\010 \001(\005\022\017\n\007payTime\030\t \001(\003\022\017" +
+                    "\n\007videoId\030\n \001(\005\022\020\n\010rewardId\030\013 \001(\005\022\022\n\napp" +
+                    "ealDesc\030\014 \001(\t\022\022\n\nappealTime\030\r \001(\003\"`\n\013Ope",
+            "rateType\022\014\n\010recharge\020\000\022\010\n\004cash\020\001\022\014\n\010grat" +
+                    "uity\020\002\022\n\n\006reward\020\003\022\007\n\003all\020\004\022\n\n\006income\020\005\022" +
+                    "\n\n\006payout\020\006\"c\n\nServerBean\022\020\n\010serverId\030\001 " +
+                    "\001(\005\022\017\n\007addr_zk\030\002 \001(\t\022\023\n\013addr_buffer\030\003 \001(" +
+                    "\t\022\020\n\010addr_web\030\004 \001(\t\022\013\n\003add\030\005 \001(\010B\037\n\021com." +
+                    "v2tech.net.lvB\nWebPackage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12997,7 +13955,7 @@ public final class WebPackage {
                 internal_static_Data_fieldAccessorTable = new
                         com.google.protobuf.GeneratedMessage.FieldAccessorTable(
                         internal_static_Data_descriptor,
-                        new java.lang.String[] { "Normal", "ByteDate", "FromTime", "ToTime", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", "Reward", "UserState", "AssetLog", },
+                        new java.lang.String[] { "Normal", "ByteDate", "FromTime", "ToTime", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", "Reward", "UserState", "AssetLog", "ServerBean", },
                         com.v2tech.net.lv.WebPackage.Data.class,
                         com.v2tech.net.lv.WebPackage.Data.Builder.class);
                 internal_static_User_descriptor =
@@ -13064,6 +14022,14 @@ public final class WebPackage {
                         new java.lang.String[] { "FromUserID", "ToUserID", "Gift", "Desc", "OperateType", "OperateTime", "SoType", "PayType", "PayTime", "VideoId", "RewardId", "AppealDesc", "AppealTime", },
                         com.v2tech.net.lv.WebPackage.AssetLog.class,
                         com.v2tech.net.lv.WebPackage.AssetLog.Builder.class);
+                internal_static_ServerBean_descriptor =
+                        getDescriptor().getMessageTypes().get(11);
+                internal_static_ServerBean_fieldAccessorTable = new
+                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+                        internal_static_ServerBean_descriptor,
+                        new java.lang.String[] { "ServerId", "AddrZk", "AddrBuffer", "AddrWeb", "Add", },
+                        com.v2tech.net.lv.WebPackage.ServerBean.class,
+                        com.v2tech.net.lv.WebPackage.ServerBean.Builder.class);
                 return null;
               }
             };
