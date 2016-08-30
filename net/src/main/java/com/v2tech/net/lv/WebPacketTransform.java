@@ -90,7 +90,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
                 return extraCommonResponse(webPackage);
             }
         } else if ("mapPosition".equalsIgnoreCase(type)) {
-            return extraLoginResponse(webPackage);
+            return extraCommonResponse(webPackage);
         } else if ("getFollowMe".equalsIgnoreCase(type)) {
             return extraCommonResponse(webPackage);
         } else if ("likeVideo".equalsIgnoreCase(type)) {
