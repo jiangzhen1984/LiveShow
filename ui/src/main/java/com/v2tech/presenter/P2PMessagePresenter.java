@@ -142,7 +142,7 @@ public class P2PMessagePresenter extends BasePresenter implements
 		super();
 		this.context = context;
 		this.ui = ui;
-		messageService = new P2PMessageService(context);
+		messageService = new P2PMessageService(context.getApplicationContext());
 
 		itemList = new ArrayList<Item>(20);
 		loader = new Handler(super.backendThread.getLooper());
@@ -219,7 +219,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 			new VMessageTextItem(vm, ettext.subSequence(strStart, len)
 					.toString());
 		}
-		messageService.sendMessage(vm, chatUser);
+		//assume alway success
+		messageService.sendP2PMessage(vm, null);
 
 		itemList.add(buildItem(vm));
 		notifyUIScroller(true);
@@ -362,7 +363,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 					VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
 							.getCurrentUser(), chatUser, new Date());
 					new VMessageAudioItem(vm, uuid, audioFile, "aac", (int) duration, 0);
-					messageService.sendMessage(vm, chatUser);
+					//FIXME assume always success
+					messageService.sendP2PMessage(vm, null);
 					itemList.add(buildItem(vm));
 					notifyUIScroller(true);
 				}
@@ -546,7 +548,8 @@ public class P2PMessagePresenter extends BasePresenter implements
 			VMessage vm = new VMessage(0, 0, GlobalHolder.getInstance()
 					.getCurrentUser(), chatUser, new Date());
 			new VMessageAudioItem(vm, uuid, null, "aac", (int) duration, 0);
-			messageService.sendMessage(vm, chatUser);
+			//FIXME assume always success
+			messageService.sendP2PMessage(vm, null);
 			itemList.add(buildItem(vm));
 			notifyUIScroller(false);
 		}

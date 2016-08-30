@@ -455,6 +455,8 @@ public class MainPresenter extends BasePresenter implements
             ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_VIDEO_CONNECTION_WATCHER, false, null);
         }
 
+        // mark this live closed by user and do not open automatically anymore
+        currentViewLive.closed = true;
         closeLive(currentViewLive);
         currentViewLive = null;
         int curIdx = vpController.getCurrentItemIdx();
@@ -1074,9 +1076,9 @@ public class MainPresenter extends BasePresenter implements
         currentMapCenterLocation =  ml;
         V2Log.i(this.currentLocation+"   "+ml);
         //map status update by self locating action
-        if (Math.abs(this.currentLocation.getLat() - ml.getLat()) < 0.0001D && Math.abs(this.currentLocation.getLng() - ml.getLng()) < 0.0001D) {
+        if (currentLocation != null && Math.abs(this.currentLocation.getLat() - ml.getLat()) < 0.0001D && Math.abs(this.currentLocation.getLng() - ml.getLng()) < 0.0001D) {
             if (userCustomizedLocation) {
-                V2Log.d(" skip self location due to user customized" );
+                V2Log.d(" skip self location due to user customized");
                 return;
             }
         } else {
@@ -1184,7 +1186,7 @@ public class MainPresenter extends BasePresenter implements
             if (vl.surfaveViewIdx == newIdx) {
                 openLive(vl);
                 return;
-            } else if (vvtmp == null && vl.playing == false) {
+            } else if (vvtmp == null && vl.playing == false && !currentViewLive.closed) {
                 vvtmp = vl;
             }
         }

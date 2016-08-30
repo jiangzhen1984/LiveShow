@@ -19,6 +19,8 @@ public class ViewLive {
 	
 	public Group group;
 
+	public boolean closed;
+
 	public ViewLive(Live live) {
 		super();
 		this.live = live;

@@ -160,7 +160,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 
 	@Override
 	public void doLogonFailed() {
-		proDialog.dismiss();
+		if (proDialog != null) {
+			proDialog.dismiss();
+		}
 	}
 
 	@Override

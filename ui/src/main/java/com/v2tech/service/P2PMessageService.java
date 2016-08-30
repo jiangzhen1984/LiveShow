@@ -1,17 +1,5 @@
 package com.v2tech.service;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,9 +12,9 @@ import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.VideoRequest;
 import com.V2.jni.VideoRequestCallbackAdapter;
 import com.V2.jni.util.V2Log;
+import com.v2tech.R;
 import com.v2tech.db.MessageDescriptor;
 import com.v2tech.db.MessageDescriptor.P2PMessage;
-import com.v2tech.R;
 import com.v2tech.misc.MessageRichBuilderUtil;
 import com.v2tech.vo.User;
 import com.v2tech.vo.UserChattingObject;
@@ -37,6 +25,18 @@ import com.v2tech.vo.msg.VMessageFaceItem;
 import com.v2tech.vo.msg.VMessageImageItem;
 import com.v2tech.vo.msg.VMessageSession;
 import com.v2tech.vo.msg.VMessageTextItem;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class P2PMessageService extends DeviceService {
 	
@@ -69,33 +69,32 @@ public class P2PMessageService extends DeviceService {
 		pendingListener = new HashMap<String, WeakReference<MessageListener>>();
 	}
 
-	public void sendMessage(VMessage vm, User user) {
-		sendMessage(vm, user, null);
-	}
-	
-	public void sendMessage(VMessage vm, User user, MessageListener listener) {
+
+	public void sendP2PMessage(VMessage vm, MessageListener listener) {
 		pendingListener.put(vm.getUUID(), new WeakReference<MessageListener>(listener));
 		byte[] buf = vm.toXml().getBytes();
-		ChatRequest.getInstance().ChatSendTextMessage(vm.getMsgCode(), vm.getGroupId(), user.getmUserId(), vm.getUUID(), buf, buf.length);
-		saveMessage(vm, user);
+		ChatRequest.getInstance().ChatSendTextMessage(vm.getMsgCode(), vm.getGroupId(), vm.getToUser().getmUserId(), vm.getUUID(), buf, buf.length);
+		saveP2PMessage(vm);
 		
 	}
 	
 	
 	
-	public void saveMessage(VMessage vm,  User user) {
+	public void saveP2PMessage(VMessage vm) {
 		if (wfCtx.get() != null) {
-			saveMessage(wfCtx.get(), vm, user);
+			saveP2PMessage(wfCtx.get(), vm);
+		} else {
+			V2Log.e(" no context ");
 		}
 	}
 	
-	public static void saveMessage(Context ctx, VMessage vm,  User user) {
+	public static void saveP2PMessage(Context ctx, VMessage vm) {
 		ContentValues values = new ContentValues();
-		values.put(MessageDescriptor.P2PMessage.Cols.FROM_USER ,GlobalHolder.getInstance().getCurrentUserId()+ "");
-		values.put(MessageDescriptor.P2PMessage.Cols.TO_USER,  user.getmUserId()+ "");
+		values.put(MessageDescriptor.P2PMessage.Cols.FROM_USER , vm.getFromUser().getmUserId()+ "");
+		values.put(MessageDescriptor.P2PMessage.Cols.TO_USER,  vm.getToUser().getmUserId()+ "");
 		values.put(MessageDescriptor.P2PMessage.Cols.DATE_TIME,  vm.getDate().getTime());
 		values.put(MessageDescriptor.P2PMessage.Cols.READ_FLAG,  vm.isReadState());
-		Uri uri = ctx.getContentResolver().insert(MessageDescriptor.P2PMessage.INSERT_URI.buildUpon().appendPath(user.getmUserId()+"").build(), values);
+		Uri uri = ctx.getContentResolver().insert(MessageDescriptor.P2PMessage.INSERT_URI.buildUpon().appendPath(vm.getToUser().getmUserId()+"").build(), values);
 		vm.setId(Long.parseLong(uri.getLastPathSegment()));
 		
 		Uri masterUri = MessageDescriptor.P2PMessageItem.INSERT.buildUpon().appendPath(uri.getLastPathSegment()).build();
