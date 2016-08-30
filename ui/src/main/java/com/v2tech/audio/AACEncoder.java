@@ -182,6 +182,16 @@ public class AACEncoder {
 					break;
 				}
 
+
+				long v = 0;
+				for (int i = 0; i < audioBuffer.length; i++) {
+					v += audioBuffer[i] * audioBuffer[i];
+				}
+				// 平方和除以数据总长度，得到音量大小。
+				double mean = v / (double) read;
+				double volume = 10 * Math.log10(mean);
+				V2Log.e("分贝值:" + volume);
+
 				saveDB(audioBuffer);
 				if (nofiticationListener != null) {
 					if (mDB != Double.NaN) {
@@ -252,14 +262,16 @@ public class AACEncoder {
 				return;
 			}
 			 float mDB1 = 20 * (float)Math.log10((float) Math.abs(amplitude) /65535.0F);
-			 float ndb = 20 * (float) (Math.log10(amplitude)) / 2;
+			 float ndb = 20 * (float) (Math.log10((double)amplitude));
 			float mDB2 = 20 * (float)Math.log10(amplitude) - 20 * (float)Math.log10(700);
+
+			double amplitudeDb = 20 * Math.log10((double)Math.abs(amplitude) / 32768.0D);
 
 			mDB = mDB2;
 
 			db3 = EMA_FILTER * amplitude + (1.0 - EMA_FILTER) * db3;
 
-			V2Log.e(amplitude +"====" + mDB1 +"   "+ ndb +"  "+mDB2 +"  "+ db3 +"   "+ Double.toString(db3));
+			V2Log.e(amplitude +"====" + mDB1 +"   "+ ndb +"  "+mDB2 +"  "+ db3 +"   "+ Double.toString(db3) +"  "+ amplitudeDb);
 
 		}
 
