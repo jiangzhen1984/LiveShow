@@ -17,12 +17,13 @@ public abstract class ConfRequestCallbackAdapter implements ConfRequestCallback 
 		
 	}
 
+
 	@Override
-	public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
-			String szUserInfos) {
+	public void OnConfMemberEnter(long nConfID, long nUserID,
+								  String szUserInfos) {
 		// TODO Auto-generated method stub
-		
 	}
+
 
 	@Override
 	public void OnConfMemberExitCallback(long nConfID, long nTime, long nUserID) {

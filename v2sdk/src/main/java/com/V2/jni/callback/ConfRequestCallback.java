@@ -14,16 +14,17 @@ public interface ConfRequestCallback {
 	public void OnEnterConfCallback(long nConfID, long nTime,
 			String szConfData, int nJoinResult);
 
+
+
 	/**
 	 * 会议有用户进入的回调
-	 * 
+	 *
 	 * @param nConfID
 	 * @param nUserID
-	 * @param nTime
 	 * @param szUserInfos
 	 */
-	public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
-			String szUserInfos);
+	public void OnConfMemberEnter(long nConfID, long nUserID,
+								  String szUserInfos);
 
 	/**
 	 * 会议有用户退出的回调

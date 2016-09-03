@@ -349,7 +349,18 @@ public class ConfRequest {
 		for (int i = 0; i < this.mCallBacks.size(); i++) {
 			WeakReference<ConfRequestCallback> wf = this.mCallBacks.get(i);
 			if (wf != null && wf.get() != null) {
-				wf.get().OnConfMemberEnter(nConfID, nUserID, nTimeUTC, szUserXml);
+				wf.get().OnConfMemberEnter(nConfID, nUserID,  szUserXml);
+			}
+		}
+	}
+
+
+
+	private void OnConfMemberEnter(long nConfID, long nUserID,  String szUserXml) {
+		for (int i = 0; i < this.mCallBacks.size(); i++) {
+			WeakReference<ConfRequestCallback> wf = this.mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnConfMemberEnter(nConfID, nUserID, szUserXml);
 			}
 		}
 	}

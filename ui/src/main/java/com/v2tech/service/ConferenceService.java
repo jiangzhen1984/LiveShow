@@ -510,7 +510,7 @@ public class ConferenceService extends DeviceService {
 
 
 		@Override
-		public void OnConfMemberEnter(long nConfID, long nUserID, long nTime,
+		public void OnConfMemberEnter(long nConfID, long nUserID,
 				String szUserInfos) {
 			User u = GlobalHolder.getInstance().getUser(nUserID);
 			// For quick logged in User.
