@@ -19,9 +19,6 @@ public class SipRequest {
 			synchronized (SipRequest.class) {
 				if (mSipRequest == null) {
 					mSipRequest = new SipRequest();
-					if (!mSipRequest.Initialize(mSipRequest)) {
-						throw new RuntimeException("can't initilaize SipRequest");
-					}
 				}
 			}
 		}

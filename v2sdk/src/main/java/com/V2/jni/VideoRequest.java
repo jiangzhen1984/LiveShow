@@ -143,7 +143,7 @@ public class VideoRequest {
 
 	/**
 	 * @brief 打开视频设备
-	 *
+	 * @deprecated use {@link #VideoOpenDevice(long, String, VideoPlayer)} instead
 	 * @param nGroupType
 	 *            组类型, 0为点对点, 4为会议
 	 * @param nGroupID
@@ -164,7 +164,7 @@ public class VideoRequest {
 
 	/**
 	 * @brief 关闭视频设备
-	 *
+	 * @deprecated  use {@link #VideoCloseDevice(long, String, VideoPlayer)} instead
 	 * @param nGroupType
 	 *            组类型, 0为点对点, 4为会议
 	 * @param nGroupID
@@ -181,6 +181,33 @@ public class VideoRequest {
 	 */
 	public native void VideoCloseDevice(int nGroupType, long nGroupID, int nDeviceType, long nUserID, String szDeviceID,
 			VideoPlayer vp);
+
+
+	/**
+	 *
+	 * @param userId
+	 * @param deviceId
+	 * @param vp
+     */
+	public native void VideoOpenDevice(long userid, String deviceId, VideoPlayer vp);
+
+
+	/**
+	 *
+	 * @param userId
+	 * @param deviceId
+	 * @param vp
+	 */
+	public native void VideoCloseDevice(long userid, String deviceId, VideoPlayer vp);
+
+
+	/**
+	 * Video host need to upload video to server
+	 * @param deviceId
+	 * @param flag  must be true for host
+     */
+	public native void  UploadVideo(String deviceId, boolean flag);
+
 
 	/**
 	 * 启用摄像头设备

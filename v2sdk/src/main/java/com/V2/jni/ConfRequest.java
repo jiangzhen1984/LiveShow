@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.V2.jni.callback.ConfRequestCallback;
+import com.V2.jni.util.V2Log;
 
 public class ConfRequest {
 	private static ConfRequest mConfRequest;
@@ -60,7 +61,7 @@ public class ConfRequest {
 
 	/**
 	 * @brief 进入会议
-	 *
+	 *@deprecated
 	 * @param nConfID
 	 *            会议ID
 	 *
@@ -246,7 +247,7 @@ public class ConfRequest {
 
 	/**
 	 * @brief 快速加入某个会议
-	 * 
+	 * @deprecated
 	 * @param eUEType
 	 *            用户类型
 	 * @param szUser
@@ -262,6 +263,17 @@ public class ConfRequest {
 	
 	
 	public native void ConfQuickEnter(int eUEType, String szUser, long groupId, int role);
+
+
+	/**
+	 * Use to join meeting with CDN
+	 * @param eUEType   1 pc 2 android 3 ios
+	 * @param szUser use id
+	 * @param groupId  group id
+     * @param role   1 host 2 attendee
+     */
+	public native void ConfQuickEnter(int eUEType, long szUser, long groupId, int role);
+
 
 
 	/**
@@ -527,4 +539,17 @@ public class ConfRequest {
 	// }
 	// }
 	// };
+
+
+
+	private void OnConfEnter(long gid, int uid, String str, int t) {
+		V2Log.e("OnConfEnter====>" + gid +"  ==" + uid +"   "+ str+"  "+t);
+
+		for (int i = 0; i < this.mCallBacks.size(); i++) {
+			WeakReference<ConfRequestCallback> wf = this.mCallBacks.get(i);
+			if (wf != null && wf.get() != null) {
+				wf.get().OnEnterConfCallback(gid, 0, str, 0);
+			}
+		}
+	}
 }

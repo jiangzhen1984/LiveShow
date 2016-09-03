@@ -19,9 +19,6 @@ public class ImRequest {
 			synchronized (ImRequest.class) {
 				if (mImRequest == null) {
 					mImRequest = new ImRequest();
-					if (!mImRequest.initialize(mImRequest)) {
-						throw new RuntimeException("can't initilaize ImRequest");
-					}
 				}
 			}
 		}
@@ -54,15 +51,7 @@ public class ImRequest {
 		}
 	}
 
-	/**
-	 * @brief 注册jni回调对象
-	 * 
-	 * @param request
-	 *            需要注册的对象
-	 *
-	 * @return 注册结果（true成功, false失败）
-	 */
-	public native boolean initialize(ImRequest request);
+
 
 	/**
 	 * 反注册jni回调对象

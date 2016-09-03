@@ -19,9 +19,6 @@ public class VideoMixerRequest {
 			synchronized (VideoMixerRequest.class) {
 				if (mVideoMixerRequest == null) {
 					mVideoMixerRequest = new VideoMixerRequest();
-					if (!mVideoMixerRequest.initialize(mVideoMixerRequest)) {
-						throw new RuntimeException("can't initilaize VideoMixerRequest");
-					}
 				}
 			}
 		}

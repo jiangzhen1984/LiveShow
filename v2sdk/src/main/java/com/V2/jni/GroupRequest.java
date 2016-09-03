@@ -18,9 +18,6 @@ public class GroupRequest {
 			synchronized (GroupRequest.class) {
 				if (mGroupRequest == null) {
 					mGroupRequest = new GroupRequest();
-					if (!mGroupRequest.initialize(mGroupRequest)) {
-						throw new RuntimeException("can't initilaize GroupRequest");
-					}
 				}
 			}
 		}

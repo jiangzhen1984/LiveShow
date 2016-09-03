@@ -19,9 +19,6 @@ public class WBRequest {
 			synchronized (WBRequest.class) {
 				if (mWBRequest == null) {
 					mWBRequest = new WBRequest();
-					if (!mWBRequest.initialize(mWBRequest)) {
-						throw new RuntimeException("can't initilaize WBRequest");
-					}
 				}
 			}
 		}

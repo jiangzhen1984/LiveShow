@@ -20,9 +20,6 @@ public class FileRequest {
 			synchronized (FileRequest.class) {
 				if (mFileRequest == null) {
 					mFileRequest = new FileRequest();
-					if (!mFileRequest.initialize(mFileRequest)) {
-						throw new RuntimeException("can't initilaize FileRequest");
-					}
 				}
 			}
 		}

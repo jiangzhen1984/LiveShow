@@ -23,10 +23,6 @@ public class ChatRequest {
 			synchronized (ChatRequest.class) {
 				if (mChatRequest == null) {
 					mChatRequest = new ChatRequest();
-					if (!mChatRequest.initialize(mChatRequest)) {
-						throw new RuntimeException(
-								"can't initilaize ChatRequest");
-					}
 				}
 			}
 		}

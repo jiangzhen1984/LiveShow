@@ -18,9 +18,6 @@ public class InteractionRequest {
 	public static synchronized InteractionRequest getInstance() {
 		if (mInteractionRequest == null) {
 			mInteractionRequest = new InteractionRequest();
-			if (!mInteractionRequest.initialize(mInteractionRequest)) {
-				throw new RuntimeException("can't initilaize imrequest");
-			}
 		}
 		return mInteractionRequest;
 	}

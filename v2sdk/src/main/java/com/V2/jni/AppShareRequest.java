@@ -22,9 +22,6 @@ public class AppShareRequest {
 			synchronized (AppShareRequest.class) {
 				if (mAppShareRequest == null) {
 					mAppShareRequest = new AppShareRequest();
-					if (!mAppShareRequest.initialize(mAppShareRequest)) {
-						throw new RuntimeException("can't initilaize AppShareRequest");
-					}
 				}
 			}
 		}
