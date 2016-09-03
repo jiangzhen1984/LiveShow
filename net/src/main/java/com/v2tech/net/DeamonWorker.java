@@ -96,15 +96,17 @@ public class DeamonWorker implements Runnable, NetConnector,
 			while (st == WorkerState.RUNNING) {
 				LocalBind lb = null;
 				while ((lb = pending.poll()) != null) {
+					waiting.offer(lb);
+
 					WebPackage.Packet data = packetTransform.serialize(lb.req);
-					V2Log.i("write==>" + data);
+					V2Log.i("channel ==>" + ch.isWritable()+"  ch:" +ch);
+					V2Log.i("write==>" + data );
 					ChannelFuture cf = ch.writeAndFlush(data);
 					cf.sync();
 					synchronized (lb) {
 						lb.sendflag = true;
 						lb.sendtime = System.currentTimeMillis();
 					}
-					waiting.offer(lb);
 				}
 
 				synchronized (trLock) {
@@ -113,8 +115,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 			}
 
 		} catch (Exception e) {
-			V2Log.e(e);
-			e.printStackTrace();
+			V2Log.e(Thread.currentThread().getName()+"=== >" +e);
 			if (ch == null || !ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
 			}
@@ -169,6 +170,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 		startWorker();
 
+		V2Log.i(" trying to start watch dog");
 		tiemoutWatchDog.requestStart();
 		return cs == ConnectionState.CONNECTED;
 	}
@@ -238,6 +240,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	@Override
 	public void disconnect() {
 		updateWorkerState(WorkerState.REQUEST_STOP);
+		V2Log.w("trying to stop timeout watch dog");
 		tiemoutWatchDog.requestStop();
 	}
 
@@ -341,10 +344,11 @@ public class DeamonWorker implements Runnable, NetConnector,
 		LocalBind lb = null;
 		Iterator<LocalBind> it = waiting.iterator();
 		while (it.hasNext()) {
-			lb = it.next();
-			if (lb.reqId == packet.getRequestId()) {
+			LocalBind tmplb = it.next();
+			if (tmplb.reqId == packet.getRequestId()) {
 				it.remove();
-				waiting.remove(lb);
+				waiting.remove(tmplb);
+				lb = tmplb;
 				break;
 			}
 		}

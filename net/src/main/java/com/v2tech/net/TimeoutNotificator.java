@@ -40,7 +40,6 @@ public class TimeoutNotificator implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			
 			for (LocalBind bind : waiting) {
 				if (bind.timeout) {
 					continue;
@@ -57,9 +56,12 @@ public class TimeoutNotificator implements Runnable {
 					wait(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					break;
 				}
 			}
 		}
+
+		V2Log.i("["+Thread.currentThread().getName()+"]watch dog quit");
 	}
 
 }
