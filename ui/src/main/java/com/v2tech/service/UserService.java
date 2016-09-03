@@ -76,26 +76,36 @@ public class UserService extends AbstractHandler {
 					fl.add(fUser);
 				}
 				loginUser.fansList = fl;
+				loginUser.isNY = false;
+				GlobalHolder.getInstance().setCurrentUser(loginUser);
 			}
 
-			GlobalHolder.getInstance().setCurrentUser(loginUser);
-			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS,
-					caller);
-			if (GlobalHolder.getInstance().getCurrentUser().isNY) {
-				ImRequest.getInstance().ImLogin(mail, passwd,
-						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
-						"", true);
-			} else {
-				if (!TextUtils.isEmpty(lrp.v2account) && !TextUtils.isEmpty(lrp.v2password)) {
-					V2Log.i("====log v2 system with account " + lrp.v2account );
-					 ImRequest.getInstance().ImLogin(lrp.v2account, lrp.v2password,
-					 V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "", false);
-				} else {
-					V2Log.i("====log v2 system with guest register with : " + mail);
-					ImRequest.getInstance().ImRegisterGuest(mail);
-				}
-			}
-			
+
+
+//			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS,
+//					caller);
+//			if (GlobalHolder.getInstance().getCurrentUser().isNY) {
+//				ImRequest.getInstance().ImLogin(mail, passwd,
+//						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
+//						"", true);
+//			} else {
+//				if (!TextUtils.isEmpty(lrp.v2account) && !TextUtils.isEmpty(lrp.v2password)) {
+//					V2Log.i("====log v2 system with account " + lrp.v2account );
+//					 ImRequest.getInstance().ImLogin(lrp.v2account, lrp.v2password,
+//					 V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID, "", false);
+//				} else {
+//					V2Log.i("====log v2 system with guest register with : " + mail);
+//					ImRequest.getInstance().ImRegisterGuest(mail);
+//				}
+//			}
+
+
+			RequestLogInResponse.Result res = RequestLogInResponse.Result
+					.fromInt(0);
+			Message m = Message.obtain(caller.getHandler(), caller.what,
+					new RequestLogInResponse(null, res));
+			m.sendToTarget();
+
 		} else {
 			if (caller != null) {
 				Message m = Message.obtain(caller.getHandler(), caller.what,
@@ -135,16 +145,6 @@ public class UserService extends AbstractHandler {
 			u.nId = lrp.uid;
 			u.isNY = isNY;
 			GlobalHolder.getInstance().setCurrentUser(u);
-			initTimeoutMessage(JNI_REQUEST_LOG_IN, DEFAULT_TIME_OUT_SECS,
-					caller);
-			if (isNY) {
-				ImRequest.getInstance().ImLogin(mail, passwd,
-						V2GlobalEnum.USER_STATUS_ONLINE, V2ClientType.ANDROID,
-						"", true);
-			} else {
-				V2Log.i("====log v2 system with guest ");
-				ImRequest.getInstance().ImRegisterGuest(mail);
-			}
 		} else {
 			if (caller != null) {
 				V2Log.e("Loged in failed ");
@@ -155,7 +155,6 @@ public class UserService extends AbstractHandler {
 	public void logout(MessageListener caller, boolean forlogin) {
 		DeamonWorker.getInstance().requestAsync(
 				new PacketProxy(new LogoutReqPacket(forlogin), null));
-		ImRequest.getInstance().ImLogout();
 		if (caller != null && caller.getHandler() != null) {
 			Message.obtain(caller.getHandler(), caller.getWhat(),
 					new AsyncResult(caller.getObject(), null)).sendToTarget();

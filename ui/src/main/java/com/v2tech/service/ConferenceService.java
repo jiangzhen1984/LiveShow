@@ -113,9 +113,7 @@ public class ConferenceService extends DeviceService {
 		V2Log.i("===  request join meeting  : "+  l.getLid());
 		initTimeoutMessage(JNI_REQUEST_ENTER_CONF, DEFAULT_TIME_OUT_SECS,
 				caller);
-		ConfRequest.getInstance().ConfEnter(l.getLid());
-	//	ConfRequest.getInstance().ConfQuickEnter(2, "test", GlobalHolder.getInstance().getCurrentUserId(), l.getLid(), 1);
-		
+		ConfRequest.getInstance().ConfQuickEnter(2, GlobalHolder.getInstance().getCurrentUser().nId, l.getLid(), 1);
 	}
 	
 	
@@ -161,6 +159,7 @@ public class ConferenceService extends DeviceService {
 	private static Random ran = new Random();
 	/**
 	 * Create conference.
+	 * @deprecated
 	 * <ul>
 	 * </ul>
 	 * 
@@ -198,7 +197,7 @@ public class ConferenceService extends DeviceService {
 	/**
 	 * User request to quit this conference for ever.<br>
 	 * User never receive this conference information any more.
-	 * 
+	 *  @deprecated
 	 * @param l
 	 * @param caller
 	 */
@@ -219,15 +218,27 @@ public class ConferenceService extends DeviceService {
 		
 		initTimeoutMessage(JNI_REQUEST_QUIT_CONFERENCE, DEFAULT_TIME_OUT_SECS,
 				caller);
-		// If conference owner is self, then delete group
-		if (l.getPublisher().getmUserId() == GlobalHolder.getInstance().getCurrentUserId()) {
-			GroupRequest.getInstance().GroupDestroy(
-					Group.GroupType.CONFERENCE.intValue(), l.getLid());
-			// If conference owner isn't self, just leave group
-		} else {
-			GroupRequest.getInstance().GroupLeave(
-					Group.GroupType.CONFERENCE.intValue(), l.getLid());
+		ConfRequest.getInstance().ConfExit(l.getLid());
+	}
+
+
+
+
+	public void createVideo(Live l, MessageListener caller) {
+		if (l == null) {
+			if (caller != null) {
+				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
+						RequestConfCreateResponse.Result.INCORRECT_PAR);
+				sendResult(caller, jniRes);
+			}
+			return;
 		}
+		initTimeoutMessage(JNI_REQUEST_CREATE_CONFERENCE, DEFAULT_TIME_OUT_SECS,
+				caller);
+		long uid = GlobalHolder.getInstance().getCurrentUser().nId;
+		long videoId = uid; //0x2020000000000000L | uid;
+		//2 for android and 1 for host
+		ConfRequest.getInstance().ConfQuickEnter(2, uid, videoId, 1);
 	}
 
 	/**
@@ -483,12 +494,14 @@ public class ConferenceService extends DeviceService {
 			Message.obtain(mCallbackHandler, JNI_REQUEST_ENTER_CONF, jniRes)
 					.sendToTarget();
 //			
-			ConfRequest.getInstance().NotifyConfAllMessage(nConfID);
+//			ConfRequest.getInstance().NotifyConfAllMessage(nConfID);
 //			//
 //			DeamonWorker.getInstance().request(
 //					new PacketProxy(new LiveWatchingReqPacket(GlobalHolder.getInstance().getCurrentUser().nId, nConfID,
 //							LiveWatchingReqPacket.WATCHING), null));
-//			
+//
+
+			VideoRequest.getInstance().UploadVideo(GlobalHolder.getInstance().getCurrentUser().getBackCameraId(), true);
 
 		}
 		

@@ -54,8 +54,7 @@ public class DeviceService extends AbstractHandler {
 		V2Log.i(" request open video   UID:" + userDevice.getUserID()
 				+ " deviceid:" + userDevice.getDeviceID() + "   videoplayer:"
 				+ userDevice.getVp());
-		VideoRequest.getInstance().VideoOpenDevice(0, 0,
-				userDevice.getType().ordinal(), userDevice.getUserID(),
+		VideoRequest.getInstance().VideoOpenDevice( userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestOpenUserVideoDeviceResponse(
 				System.currentTimeMillis() / 1000,
@@ -92,8 +91,7 @@ public class DeviceService extends AbstractHandler {
 		initTimeoutMessage(JNI_REQUEST_CLOSE_VIDEO, DEFAULT_TIME_OUT_SECS,
 				caller);
 
-		VideoRequest.getInstance().VideoCloseDevice(0, 0, 
-				userDevice.getType().ordinal(), userDevice.getUserID(),
+		VideoRequest.getInstance().VideoCloseDevice(userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestCloseUserVideoDeviceResponse(
 				System.currentTimeMillis() / 1000,
@@ -133,8 +131,7 @@ public class DeviceService extends AbstractHandler {
 		V2Log.i(" request open video   UID:" + userDevice.getUserID()
 				+ " deviceid:" + userDevice.getDeviceID() + "   videoplayer:"
 				+ userDevice.getVp());
-		VideoRequest.getInstance().VideoOpenDevice(group.getGroupType().intValue(), group.getmGId(), 
-				userDevice.getType().ordinal(), userDevice.getUserID(),
+		VideoRequest.getInstance().VideoOpenDevice(userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestOpenUserVideoDeviceResponse(
 				System.currentTimeMillis() / 1000,
@@ -173,8 +170,7 @@ public class DeviceService extends AbstractHandler {
 		initTimeoutMessage(JNI_REQUEST_CLOSE_VIDEO, DEFAULT_TIME_OUT_SECS,
 				caller);
 
-		VideoRequest.getInstance().VideoCloseDevice(group.getGroupType().intValue(), group.getmGId(), 
-				userDevice.getType().ordinal(), userDevice.getUserID(),
+		VideoRequest.getInstance().VideoCloseDevice(userDevice.getUserID(),
 				userDevice.getDeviceID(), userDevice.getVp());
 		JNIResponse jniRes = new RequestCloseUserVideoDeviceResponse(
 				System.currentTimeMillis() / 1000,

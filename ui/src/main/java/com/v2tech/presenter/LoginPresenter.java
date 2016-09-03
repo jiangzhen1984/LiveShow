@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.V2.jni.util.V2Log;
 import com.v2tech.net.DeamonWorker;
 import com.v2tech.net.lv.FansQueryReqPacket;
 import com.v2tech.net.lv.FansQueryRespPacket;
@@ -96,7 +97,6 @@ public class LoginPresenter extends BasePresenter {
 	public void startButtonClicked() {
 		ui.showNotificationView(false);
 		Message.obtain(h, LOGIN_ACTION, null).sendToTarget();
-		;
 	}
 
 	public void returnButtonClicked() {
@@ -148,6 +148,7 @@ public class LoginPresenter extends BasePresenter {
 			queryFollowersList();
 			queryFansList();
 			ui.doLoggedIn();
+			V2Log.i("=== log in success ful");
 		} else {
 			ui.showIncorrectMsgIncorrectUsername();
 			ui.showNotificationView(true);

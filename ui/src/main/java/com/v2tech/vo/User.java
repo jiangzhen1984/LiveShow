@@ -634,4 +634,14 @@ public class User implements Serializable, Comparable<User> {
 		}
 	}
 
+
+	public String getFrontCameraId() {
+		return this.nId +":Camera";
+	}
+
+	public String getBackCameraId() {
+		return this.nId +":Camera";
+	}
+
+
 }

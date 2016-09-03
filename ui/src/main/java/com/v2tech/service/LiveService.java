@@ -117,7 +117,7 @@ public class LiveService extends DeviceService {
 						}));
 	}
 
-	public void requestPublish( MessageListener caller) {
+	public void requestPublish(MessageListener caller) {
 		initTimeoutMessage(REQUEST_PUBLISH, DEFAULT_TIME_OUT_SECS, caller);
 		InteractionRequest.getInstance().startLive();
 	}

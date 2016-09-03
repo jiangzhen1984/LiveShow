@@ -823,7 +823,7 @@ public class MainPresenter extends BasePresenter implements
 
         if (opt == VMessageAudioVideoRequestItem.ACTION_REQUEST) {
             if (isBState(B_PUBLISHING_FLAG) && !isBState(B_PUBLISHING_AUDIO_CONNECTED_FLAG)) {
-                LiveConnectionUser lcu = addLiveConnctionUser(uid);
+                LiveConnectionUser lcu = addLiveConnectionUser(uid);
                 this.setBState(B_PUBLISHING_AUDIO_REQUEST_FLAG);
                 ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_AUDIO_REQUEST, true, lcu);
             } else {
@@ -865,7 +865,7 @@ public class MainPresenter extends BasePresenter implements
                 return;
             }
 
-            LiveConnectionUser lcu = addLiveConnctionUser(uid);
+            LiveConnectionUser lcu = addLiveConnectionUser(uid);
             if (isBState(B_PUBLISHING_VIDEO_CONNECTED_FLAG)) {
                 int idx = vpP2pController.getCurrentItemIdx();
                 for (int i = 0; i < liveConnectionUserList.size(); i++) {
@@ -1356,7 +1356,6 @@ public class MainPresenter extends BasePresenter implements
         V2Log.i("==> CREATE VIDEO SHARE CALL BACK:" + resp.getResult());
         if (resp.getResult() == JNIResponse.Result.SUCCESS) {
             setBState(B_PUBLISHING_FLAG);
-            vs.applyForControlPermission(ConferencePermission.SPEAKING, null);
             RequestConfCreateResponse rcr = (RequestConfCreateResponse) resp;
             publishingLive.setLid(rcr.getConfId());
             ls.reportLiveStatus(publishingLive, null);
@@ -1385,7 +1384,7 @@ public class MainPresenter extends BasePresenter implements
                 currentLocation.getLat(), currentLocation.getLng());
         publishingLive.group = new ConferenceGroup(this.publishingLive.getLid(), "", null,
                 null, null);
-        vs.createConference(publishingLive, new MessageListener(h,
+        vs.createVideo(publishingLive, new MessageListener(h,
                 CREATE_VIDEO_SHARE_CALL_BACK, null));
     }
 
@@ -1560,7 +1559,7 @@ public class MainPresenter extends BasePresenter implements
     }
 
 
-    private LiveConnectionUser addLiveConnctionUser(long uid) {
+    private LiveConnectionUser addLiveConnectionUser(long uid) {
         User u = GlobalHolder.getInstance().getUser(uid);
         if (u.ll == null || u.ll.size() <= 0) {
             return null;
