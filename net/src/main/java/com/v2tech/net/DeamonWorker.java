@@ -86,7 +86,9 @@ public class DeamonWorker implements Runnable, NetConnector,
 		boolean reconnectFlag = true;
 		try {
 			updateConnectionState(ConnectionState.CONNECTING);
-			ch = strap.connect(host, port).sync().channel();
+			ChannelFuture cf = strap.connect(host, port);
+			cf.awaitUninterruptibly();
+			ch = cf.channel();
 			if (!ch.isOpen()) {
 				updateConnectionState(ConnectionState.ERROR);
 				updateWorkerState(WorkerState.STOPPED);
@@ -101,8 +103,8 @@ public class DeamonWorker implements Runnable, NetConnector,
 					WebPackage.Packet data = packetTransform.serialize(lb.req);
 					V2Log.i("channel ==>" + ch.isWritable()+"  ch:" +ch);
 					V2Log.i("write==>" + data );
-					ChannelFuture cf = ch.writeAndFlush(data);
-					cf.sync();
+					ch.write(data);
+					ch.flush();
 					synchronized (lb) {
 						lb.sendflag = true;
 						lb.sendtime = System.currentTimeMillis();
@@ -502,14 +504,15 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
+			V2Log.i("===>" + evt);
 			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 
 				WebPackage.Packet.Builder packet = WebPackage.Packet
 						.newBuilder();
 				packet.setPacketType(WebPackage.Packet.type.beat);
 
-				ChannelFuture cf = ctx.channel().writeAndFlush(packet.build());
-				cf.sync();
+				Channel lch = ctx.channel();
+				lch.write(packet.build());
 			}
 		}
 	}
