@@ -7,11 +7,11 @@ public abstract class BasePresenter {
 	
 	protected HandlerThread backendThread;
 	
-	
-	
-	
+	protected  UIState uiState;
+
 	public BasePresenter() {
 		super();
+		uiState = UIState.UNKNOWN;
 		backendThread = new HandlerThread(this.getClass().getName());
 		backendThread.start();
 	}
@@ -22,6 +22,7 @@ public abstract class BasePresenter {
 	}
 
 	public void onUICreated() {
+		uiState = UIState.CREATED;
 		GlobalPresenterManager.getInstance().onPresenterCreated(this);
 	}
 	
@@ -43,6 +44,7 @@ public abstract class BasePresenter {
 	}
 	
 	public  void onUIDestroyed() {
+		uiState = UIState.DESTROYED;
 		destroyBackendThread();
 		GlobalPresenterManager.getInstance().onPresenterDestroyed(this);
 	}
@@ -50,5 +52,14 @@ public abstract class BasePresenter {
 	
 	public void onReturnBtnClicked() {
 		
+	}
+
+
+
+	public enum UIState {
+		UNKNOWN,
+		CREATED,
+		DESTROYED;
+
 	}
 }

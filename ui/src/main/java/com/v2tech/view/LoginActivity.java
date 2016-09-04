@@ -242,6 +242,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
 		super.onDestroy();
 		mUserNameET.removeTextChangedListener(textWatcher);
 		mUserCodeET.removeTextChangedListener(textWatcher);
+		if (proDialog != null) {
+			proDialog.dismiss();
+		}
 	}
 
 

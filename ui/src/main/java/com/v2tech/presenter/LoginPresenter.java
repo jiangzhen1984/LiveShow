@@ -23,258 +23,275 @@ import java.util.Map;
 
 public class LoginPresenter extends BasePresenter {
 
-	private static final int INIT = 1;
-	private static final int LOGIN_ACTION = 2;
-	private static final int GET_CODE_ACTION = 3;
-	private static final int LOGIN_CALLBACK = 4;
-	private static final int LOGOUT_AS_CALLBACK = 5;
+    private static final int INIT = 1;
+    private static final int LOGIN_ACTION = 2;
+    private static final int GET_CODE_ACTION = 3;
+    private static final int LOGIN_CALLBACK = 4;
+    private static final int LOGOUT_AS_CALLBACK = 5;
 
-	public interface LoginPresenterUI {
+    private LocalState localState = LocalState.IDLE;
 
-		String getUserNameText();
+    public interface LoginPresenterUI {
 
-		String getCodeText();
+        String getUserNameText();
 
-		CharSequence getOriginUserNameText();
+        String getCodeText();
 
-		void updateStartButton(boolean enable);
+        CharSequence getOriginUserNameText();
 
-		void appendBlankSpace();
+        void updateStartButton(boolean enable);
 
-		void showLogingInProgress();
+        void appendBlankSpace();
 
-		void doLoggedIn();
+        void showLogingInProgress();
 
-		void doReturned();
+        void doLoggedIn();
 
-		void setPhoneNumberError();
+        void doReturned();
 
-		void showKeyboard();
+        void setPhoneNumberError();
 
-		void doLogonFailed();
-		
-		void showIncorrectMsgIncorrectUsername();
-		
-		void showNotificationView(boolean flag);
-	}
+        void showKeyboard();
 
-	private LoginPresenterUI ui;
-	private UserService us;
+        void doLogonFailed();
 
-	public LoginPresenter(LoginPresenterUI ui) {
-		super();
-		this.ui = ui;
-	}
+        void showIncorrectMsgIncorrectUsername();
 
-	@Override
-	public void onUICreated() {
-		super.onUICreated();
-		h = new LocalHandler(backendThread.getLooper());
-		Message.obtain(h, INIT).sendToTarget();
-	}
-	
-	
+        void showNotificationView(boolean flag);
+    }
 
-	@Override
-	public void onUIStarted() {
-		super.onUIStarted();
-		ui.showKeyboard();
-		ui.showNotificationView(false);
-	}
+    private LoginPresenterUI ui;
+    private UserService us;
 
-	@Override
-	public void onUIDestroyed() {
-		super.onUIDestroyed();
-		us.clearCalledBack();
+    public LoginPresenter(LoginPresenterUI ui) {
+        super();
+        this.ui = ui;
+    }
 
-	}
+    @Override
+    public void onUICreated() {
+        super.onUICreated();
+        h = new LocalHandler(backendThread.getLooper());
+        Message.obtain(h, INIT).sendToTarget();
+    }
 
-	public void verificationCodeButtonClicked() {
-		Message.obtain(h, GET_CODE_ACTION, null).sendToTarget();
-		;
-	}
 
-	public void startButtonClicked() {
-		ui.showNotificationView(false);
-		Message.obtain(h, LOGIN_ACTION, null).sendToTarget();
-	}
+    @Override
+    public void onUIStarted() {
+        super.onUIStarted();
+        ui.showKeyboard();
+        ui.showNotificationView(false);
+    }
 
-	public void returnButtonClicked() {
-		ui.doReturned();
-	}
+    @Override
+    public void onUIDestroyed() {
+        if (localState == LocalState.IDLE) {
+            super.onUIDestroyed();
+            us.clearCalledBack();
+        }
+    }
 
-	public void userNameTextChanged() {
-		CharSequence cs = ui.getOriginUserNameText();
-		int len = cs.length();
-		if ((len == 4 || len == 9)&& cs.charAt(len -1) !=' ') {
-			ui.appendBlankSpace();
-		}
-	}
+    public void verificationCodeButtonClicked() {
+        Message.obtain(h, GET_CODE_ACTION, null).sendToTarget();
+    }
 
-	public void codeTextChanged() {
-		if (!TextUtils.isEmpty(ui.getUserNameText())
-				&& !TextUtils.isEmpty(ui.getCodeText())) {
-			ui.updateStartButton(true);
-		} else {
-			ui.updateStartButton(false);
-		}
-	}
+    public void startButtonClicked() {
+        ui.showNotificationView(false);
+        synchronized (localState) {
+            localState = LocalState.LOGGINGIN;
+        }
+        ui.showLogingInProgress();
+        Message.obtain(h, LOGIN_ACTION, null).sendToTarget();
+    }
 
-	private void doLoginInBack() {
-		User u = GlobalHolder.getInstance().getCurrentUser();
-		if (u != null && u.isNY) {
-			us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null), true);
-		}
-		String username = ui.getUserNameText();
-		String code = ui.getCodeText();
-		us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
-		
-	}
+    public void returnButtonClicked() {
+        ui.doReturned();
+    }
 
-	public void doGetCodeInBack() {
-		String number = ui.getUserNameText();
-		if (TextUtils.isEmpty(number)) {
-			ui.setPhoneNumberError();
-			return;
-		}
-		us.sendVaidationCode(number);
-	}
+    public void userNameTextChanged() {
+        CharSequence cs = ui.getOriginUserNameText();
+        int len = cs.length();
+        if ((len == 4 || len == 9) && cs.charAt(len - 1) != ' ') {
+            ui.appendBlankSpace();
+        }
+    }
 
-	private void handleLoginCallback(JNIResponse resp) {
-		if (resp.getResult() == JNIResponse.Result.SUCCESS) {
-			GlobalHolder.getInstance().getCurrentUser().isNY = false;
-			GlobalHolder.getInstance().getCurrentUser()
-					.setMobile(ui.getUserNameText());
-			queryFollowersList();
-			queryFansList();
-			ui.doLoggedIn();
-			V2Log.i("=== log in success ful");
-		} else {
-			ui.showIncorrectMsgIncorrectUsername();
-			ui.showNotificationView(true);
-			ui.doLogonFailed();
-		}
-	}
+    public void codeTextChanged() {
+        if (!TextUtils.isEmpty(ui.getUserNameText())
+                && !TextUtils.isEmpty(ui.getCodeText())) {
+            ui.updateStartButton(true);
+        } else {
+            ui.updateStartButton(false);
+        }
+    }
 
-	private void queryFollowersList() {
-		FollowsQueryReqPacket req = new FollowsQueryReqPacket();
-		FollowsQueryRespPacket resp = (FollowsQueryRespPacket) DeamonWorker
-				.getInstance().request(req);
+    private void doLoginInBack() {
+        User u = GlobalHolder.getInstance().getCurrentUser();
+        if (u != null && u.isNY) {
+            us.logout(new MessageListener(h, LOGOUT_AS_CALLBACK, null), true);
+        }
+        String username = ui.getUserNameText();
+        String code = ui.getCodeText();
+        us.login(username, code, new MessageListener(h, LOGIN_CALLBACK, null));
 
-		if (!resp.getHeader().isError()) {
-			List<User> tmp;
-			if (resp.follows == null || resp.follows.size() <= 0) {
-				tmp = new ArrayList<User>(0);
-				return;
-			}
-			List<User> fans = new ArrayList<User>(resp.follows.size());
-			User u = null;
-			for (Map<String, String> m : resp.follows) {
-				long id = Long.parseLong(m.get("id"));
-				String v2idStr = m.get("v2id");
-				long v2id = -1;
-				if (v2idStr != null && !v2idStr.isEmpty()) {
-					v2id = Long.parseLong(v2idStr);
-				}
-				u = new User(v2id);
-				u.nId = id;
+    }
 
-				String strfansC = m.get("fansCount");
-				if (!TextUtils.isEmpty(strfansC)) {
-					u.fansCount = Integer.parseInt(strfansC);
-				}
+    public void doGetCodeInBack() {
+        String number = ui.getUserNameText();
+        if (TextUtils.isEmpty(number)) {
+            ui.setPhoneNumberError();
+            return;
+        }
+        us.sendVaidationCode(number);
+    }
 
-				String strFollowCount = m.get("followCount");
-				if (!TextUtils.isEmpty(strFollowCount)) {
-					u.followerCount = Integer.parseInt(strFollowCount);
-				}
+    private void handleLoginCallback(JNIResponse resp) {
+        synchronized (localState) {
+            localState = LocalState.IDLE;
+        }
+        if (resp.getResult() == JNIResponse.Result.SUCCESS) {
+            GlobalHolder.getInstance().getCurrentUser().isNY = false;
+            GlobalHolder.getInstance().getCurrentUser()
+                    .setMobile(ui.getUserNameText());
+            queryFollowersList();
+            queryFansList();
+            ui.doLoggedIn();
+            V2Log.i("=== log in success ful");
+        } else {
+            ui.showIncorrectMsgIncorrectUsername();
+            ui.showNotificationView(true);
+            ui.doLogonFailed();
+        }
+    }
 
-				String strvideoCount = m.get("videoCount");
-				if (!TextUtils.isEmpty(strvideoCount)) {
-					u.videoCount = Integer.parseInt(strvideoCount);
-				}
-				fans.add(u);
-			}
+    private void queryFollowersList() {
+        FollowsQueryReqPacket req = new FollowsQueryReqPacket();
+        FollowsQueryRespPacket resp = (FollowsQueryRespPacket) DeamonWorker
+                .getInstance().request(req);
 
-			tmp = fans;
-			GlobalHolder.getInstance().mMyFollowers = tmp;
-		} else {
-			// TODO query error
-		}
-	}
+        if (!resp.getHeader().isError()) {
+            List<User> tmp;
+            if (resp.follows == null || resp.follows.size() <= 0) {
+                tmp = new ArrayList<User>(0);
+                return;
+            }
+            List<User> fans = new ArrayList<User>(resp.follows.size());
+            User u = null;
+            for (Map<String, String> m : resp.follows) {
+                long id = Long.parseLong(m.get("id"));
+                String v2idStr = m.get("v2id");
+                long v2id = -1;
+                if (v2idStr != null && !v2idStr.isEmpty()) {
+                    v2id = Long.parseLong(v2idStr);
+                }
+                u = new User(v2id);
+                u.nId = id;
 
-	private void queryFansList() {
-		FansQueryReqPacket req = new FansQueryReqPacket();
-		FansQueryRespPacket resp = (FansQueryRespPacket) DeamonWorker
-				.getInstance().request(req);
-		if (!resp.getHeader().isError()) {
-			List<User> tmp;
-			if (resp.fansList == null || resp.fansList.size() <= 0) {
-				tmp = new ArrayList<User>(0);
-			}
-			List<User> fans = new ArrayList<User>(resp.fansList.size());
-			User u = null;
-			for (Map<String, String> m : resp.fansList) {
-				long id = Long.parseLong(m.get("id"));
-				String v2idStr = m.get("v2id");
-				long v2id = -1;
-				if (v2idStr != null && !v2idStr.isEmpty()) {
-					v2id = Long.parseLong(v2idStr);
-				}
-				u = new User(v2id);
-				u.nId = id;
-				String strfansC = m.get("fansCount");
-				if (!TextUtils.isEmpty(strfansC)) {
-					u.fansCount = Integer.parseInt(strfansC);
-				}
+                String strfansC = m.get("fansCount");
+                if (!TextUtils.isEmpty(strfansC)) {
+                    u.fansCount = Integer.parseInt(strfansC);
+                }
 
-				String strFollowCount = m.get("followCount");
-				if (!TextUtils.isEmpty(strFollowCount)) {
-					u.followerCount = Integer.parseInt(strFollowCount);
-				}
+                String strFollowCount = m.get("followCount");
+                if (!TextUtils.isEmpty(strFollowCount)) {
+                    u.followerCount = Integer.parseInt(strFollowCount);
+                }
 
-				String strvideoCount = m.get("videoCount");
-				if (!TextUtils.isEmpty(strvideoCount)) {
-					u.videoCount = Integer.parseInt(strvideoCount);
-				}
-				fans.add(u);
-			}
+                String strvideoCount = m.get("videoCount");
+                if (!TextUtils.isEmpty(strvideoCount)) {
+                    u.videoCount = Integer.parseInt(strvideoCount);
+                }
+                fans.add(u);
+            }
 
-			tmp = fans;
-			GlobalHolder.getInstance().mMyFans = tmp;
-		} else {
-			// TODO query error
-		}
-	}
+            tmp = fans;
+            GlobalHolder.getInstance().mMyFollowers = tmp;
+        } else {
+            // TODO query error
+        }
+    }
 
-	private Handler h;
+    private void queryFansList() {
+        FansQueryReqPacket req = new FansQueryReqPacket();
+        FansQueryRespPacket resp = (FansQueryRespPacket) DeamonWorker
+                .getInstance().request(req);
+        if (!resp.getHeader().isError()) {
+            List<User> tmp;
+            if (resp.fansList == null || resp.fansList.size() <= 0) {
+                tmp = new ArrayList<User>(0);
+            }
+            List<User> fans = new ArrayList<User>(resp.fansList.size());
+            User u = null;
+            for (Map<String, String> m : resp.fansList) {
+                long id = Long.parseLong(m.get("id"));
+                String v2idStr = m.get("v2id");
+                long v2id = -1;
+                if (v2idStr != null && !v2idStr.isEmpty()) {
+                    v2id = Long.parseLong(v2idStr);
+                }
+                u = new User(v2id);
+                u.nId = id;
+                String strfansC = m.get("fansCount");
+                if (!TextUtils.isEmpty(strfansC)) {
+                    u.fansCount = Integer.parseInt(strfansC);
+                }
 
-	class LocalHandler extends Handler {
+                String strFollowCount = m.get("followCount");
+                if (!TextUtils.isEmpty(strFollowCount)) {
+                    u.followerCount = Integer.parseInt(strFollowCount);
+                }
 
-		public LocalHandler(Looper looper) {
-			super(looper);
-		}
+                String strvideoCount = m.get("videoCount");
+                if (!TextUtils.isEmpty(strvideoCount)) {
+                    u.videoCount = Integer.parseInt(strvideoCount);
+                }
+                fans.add(u);
+            }
 
-		@Override
-		public void handleMessage(Message msg) {
-			int w = msg.what;
-			switch (w) {
-			case INIT:
-				us = new UserService();
-				break;
-			case LOGIN_ACTION:
-				//ui.showLogingInProgress();
-				doLoginInBack();
-				break;
-			case GET_CODE_ACTION:
-				doGetCodeInBack();
-				break;
-			case LOGIN_CALLBACK:
-				handleLoginCallback((JNIResponse) msg.obj);
-				break;
-			}
-		}
+            tmp = fans;
+            GlobalHolder.getInstance().mMyFans = tmp;
+        } else {
+            // TODO query error
+        }
+    }
 
-	}
+    private Handler h;
 
+    class LocalHandler extends Handler {
+
+        public LocalHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            int w = msg.what;
+            switch (w) {
+                case INIT:
+                    us = new UserService();
+                    break;
+                case LOGIN_ACTION:
+                    doLoginInBack();
+                    break;
+                case GET_CODE_ACTION:
+                    doGetCodeInBack();
+                    break;
+                case LOGIN_CALLBACK:
+                    handleLoginCallback((JNIResponse) msg.obj);
+                    break;
+            }
+
+            if (uiState == UIState.DESTROYED) {
+                onUIDestroyed();
+                us.clearCalledBack();
+            }
+        }
+    }
+
+
+    enum LocalState {
+        IDLE,
+        GETING_CODE,
+        LOGGINGIN;
+    }
 }
