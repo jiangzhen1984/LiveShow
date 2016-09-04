@@ -36,8 +36,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.google.zxing:core:3.2.0'
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.10'
     compile project(':net')
     compile project(':log')
     compile project(':map')
     compile project(':v2sdk')
+    compile project(':media')
 }
