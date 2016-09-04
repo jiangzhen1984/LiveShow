@@ -1,1 +1,1 @@
-include ':ui', ':net', ':log', ':v2sdk', ':map'
+include ':ui', ':net', ':log', ':v2sdk', ':map', ':media'
