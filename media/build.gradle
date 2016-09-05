@@ -19,11 +19,11 @@ android {
 
 
 task ndkBuild(type: Exec, description: "Task to run ndk-build") {
-    commandLine ndkDir + 'ndk-build', '-C', file('src/main').absolutePath
+    commandLine ndkDir + '/ndk-build', '-C', file('src/main').absolutePath
 }
 
 task cleanNdkBuildClean(type: Exec, description: "nkdbuild clean") {
-    commandLine ndkDir + 'ndk-build', '-C', file('src/main').absolutePath ,'clean'
+    commandLine ndkDir + '/ndk-build', '-C', file('src/main').absolutePath ,'clean'
 }
 
 
