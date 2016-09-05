@@ -53,10 +53,10 @@
 #define HMAC_finish(ctx, dig, dlen)	dlen = SHA256_DIGEST_LENGTH; hmac_sha256_digest(&ctx, SHA256_DIGEST_LENGTH, dig)
 #define HMAC_close(ctx)
 #else	/* USE_OPENSSL */
-#include <openssl/ssl.h>
-#include <openssl/sha.h>
-#include <openssl/hmac.h>
-#include <openssl/rc4.h>
+#include "openssl/ssl.h"
+#include "openssl/sha.h"
+#include "openssl/hmac.h"
+#include "openssl/rc4.h"
 #define HMAC_setup(ctx, key, len)	HMAC_CTX_init(&ctx); HMAC_Init_ex(&ctx, (unsigned char *)key, len, EVP_sha256(), 0)
 #define HMAC_crunch(ctx, buf, len)	HMAC_Update(&ctx, (unsigned char *)buf, len)
 #define HMAC_finish(ctx, dig, dlen)	HMAC_Final(&ctx, (unsigned char *)dig, &dlen);
