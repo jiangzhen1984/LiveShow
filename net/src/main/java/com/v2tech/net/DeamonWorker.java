@@ -21,6 +21,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -304,6 +305,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		if (cs == ConnectionState.IDLE) {
 			strap.group(group).channel(NioSocketChannel.class)
 					.handler(new LocalChannel());
+			strap.option(ChannelOption.SO_KEEPALIVE, true);
 
 		}
 
@@ -450,7 +452,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 			p.addLast(new ProtobufDecoder(WebPackage.Packet
 					.getDefaultInstance()));
 			p.addLast(new ProtobufVarint32LengthFieldPrepender());
-			p.addLast("ping", new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+			p.addLast("ping", new IdleStateHandler(0, 0, 10, TimeUnit.SECONDS));
 
 			p.addLast(new ProtobufEncoder());
 			p.addLast(new ReaderChannel());
@@ -504,7 +506,6 @@ public class DeamonWorker implements Runnable, NetConnector,
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
-			V2Log.i("===>" + evt);
 			if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 
 				WebPackage.Packet.Builder packet = WebPackage.Packet

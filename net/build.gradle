@@ -36,12 +36,11 @@ dependencies {
     compile project(':log')
     testCompile 'junit:junit:4.12'
     compile files('libs/netty-buffer-4.1.0.CR3.jar')
-    compile files('libs/netty-buffer-4.1.0.CR3.jar')
     compile files('libs/netty-codec-4.1.0.CR3.jar')
-    compile files('libs/netty-codec-http-4.1.0.CR3.jar')
+    //compile files('libs/netty-codec-http-4.1.0.CR3.jar')
     compile files('libs/netty-common-4.1.0.CR3.jar')
     compile files('libs/netty-handler-4.1.0.CR6.jar')
     compile files('libs/netty-resolver-4.1.0.CR3.jar')
     compile files('libs/netty-transport-4.1.0.CR3.jar')
-    compile files('libs/protobuf-java-2.4.1.jar')
+    compile "com.google.protobuf:protobuf-java:3.0.0"
 }

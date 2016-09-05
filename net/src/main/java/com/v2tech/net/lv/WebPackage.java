@@ -6,94 +6,309 @@ package com.v2tech.net.lv;
 public final class WebPackage {
   private WebPackage() {}
   public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistry registry) {
+          com.google.protobuf.ExtensionRegistryLite registry) {
   }
-  public interface PacketOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
 
-    // required .Packet.type packetType = 1;
-    boolean hasPacketType();
+  public static void registerAllExtensions(
+          com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+            (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+  public interface PacketOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Packet)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .lv.Packet.type packetType = 1;</code>
+     */
+    int getPacketTypeValue();
+    /**
+     * <code>optional .lv.Packet.type packetType = 1;</code>
+     */
     com.v2tech.net.lv.WebPackage.Packet.type getPacketType();
 
-    // optional string from = 2;
-    boolean hasFrom();
-    String getFrom();
+    /**
+     * <code>optional string from = 2;</code>
+     */
+    java.lang.String getFrom();
+    /**
+     * <code>optional string from = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getFromBytes();
 
-    // optional string to = 3;
-    boolean hasTo();
-    String getTo();
+    /**
+     * <code>optional string to = 3;</code>
+     */
+    java.lang.String getTo();
+    /**
+     * <code>optional string to = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getToBytes();
 
-    // optional string id = 4;
-    boolean hasId();
-    String getId();
+    /**
+     * <code>optional string id = 4;</code>
+     */
+    java.lang.String getId();
+    /**
+     * <code>optional string id = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getIdBytes();
 
-    // optional string method = 5;
-    boolean hasMethod();
-    String getMethod();
+    /**
+     * <code>optional string method = 5;</code>
+     */
+    java.lang.String getMethod();
+    /**
+     * <code>optional string method = 5;</code>
+     */
+    com.google.protobuf.ByteString
+    getMethodBytes();
 
-    // optional string operateType = 6;
-    boolean hasOperateType();
-    String getOperateType();
+    /**
+     * <code>optional string operateType = 6;</code>
+     */
+    java.lang.String getOperateType();
+    /**
+     * <code>optional string operateType = 6;</code>
+     */
+    com.google.protobuf.ByteString
+    getOperateTypeBytes();
 
-    // optional .Result result = 7;
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     boolean hasResult();
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     com.v2tech.net.lv.WebPackage.Result getResult();
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     com.v2tech.net.lv.WebPackage.ResultOrBuilder getResultOrBuilder();
 
-    // optional .Data data = 8;
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     boolean hasData();
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     com.v2tech.net.lv.WebPackage.Data getData();
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     com.v2tech.net.lv.WebPackage.DataOrBuilder getDataOrBuilder();
 
-    // optional string version = 9;
-    boolean hasVersion();
-    String getVersion();
+    /**
+     * <code>optional string version = 9;</code>
+     */
+    java.lang.String getVersion();
+    /**
+     * <code>optional string version = 9;</code>
+     */
+    com.google.protobuf.ByteString
+    getVersionBytes();
   }
-  public static final class Packet extends
-          com.google.protobuf.GeneratedMessage
-          implements PacketOrBuilder {
+  /**
+   * Protobuf type {@code lv.Packet}
+   */
+  public  static final class Packet extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Packet)
+          PacketOrBuilder {
     // Use Packet.newBuilder() to construct.
-    private Packet(Builder builder) {
+    private Packet(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Packet(boolean noInit) {}
-
-    private static final Packet defaultInstance;
-    public static Packet getDefaultInstance() {
-      return defaultInstance;
+    private Packet() {
+      packetType_ = 0;
+      from_ = "";
+      to_ = "";
+      id_ = "";
+      method_ = "";
+      operateType_ = "";
+      version_ = "";
     }
 
-    public Packet getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private Packet(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
 
+              packetType_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              from_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              to_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              id_ = s;
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              method_ = s;
+              break;
+            }
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              operateType_ = s;
+              break;
+            }
+            case 58: {
+              com.v2tech.net.lv.WebPackage.Result.Builder subBuilder = null;
+              if (result_ != null) {
+                subBuilder = result_.toBuilder();
+              }
+              result_ = input.readMessage(com.v2tech.net.lv.WebPackage.Result.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(result_);
+                result_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 66: {
+              com.v2tech.net.lv.WebPackage.Data.Builder subBuilder = null;
+              if (data_ != null) {
+                subBuilder = data_.toBuilder();
+              }
+              data_ = input.readMessage(com.v2tech.net.lv.WebPackage.Data.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(data_);
+                data_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 74: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              version_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Packet_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Packet_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Packet_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Packet_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Packet.class, com.v2tech.net.lv.WebPackage.Packet.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code lv.Packet.type}
+     */
     public enum type
             implements com.google.protobuf.ProtocolMessageEnum {
-      iq(0, 0),
-      msg(1, 1),
-      buffer(2, 2),
-      beat(3, 3),
+      /**
+       * <code>iq = 0;</code>
+       */
+      iq(0),
+      /**
+       * <code>msg = 1;</code>
+       */
+      msg(1),
+      /**
+       * <code>buffer = 2;</code>
+       */
+      buffer(2),
+      /**
+       * <code>beat = 3;</code>
+       */
+      beat(3),
+      UNRECOGNIZED(-1),
       ;
 
+      /**
+       * <code>iq = 0;</code>
+       */
       public static final int iq_VALUE = 0;
+      /**
+       * <code>msg = 1;</code>
+       */
       public static final int msg_VALUE = 1;
+      /**
+       * <code>buffer = 2;</code>
+       */
       public static final int buffer_VALUE = 2;
+      /**
+       * <code>beat = 3;</code>
+       */
       public static final int beat_VALUE = 3;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+                  "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static type valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static type forNumber(int value) {
         switch (value) {
           case 0: return iq;
           case 1: return msg;
@@ -107,17 +322,17 @@ public final class WebPackage {
       internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<type>
-              internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+              type> internalValueMap =
               new com.google.protobuf.Internal.EnumLiteMap<type>() {
                 public type findValueByNumber(int number) {
-                  return type.valueOf(number);
+                  return type.forNumber(number);
                 }
               };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
@@ -128,9 +343,7 @@ public final class WebPackage {
         return com.v2tech.net.lv.WebPackage.Packet.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final type[] VALUES = {
-              iq, msg, buffer, beat,
-      };
+      private static final type[] VALUES = values();
 
       public static type valueOf(
               com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -138,56 +351,64 @@ public final class WebPackage {
           throw new java.lang.IllegalArgumentException(
                   "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private type(int index, int value) {
-        this.index = index;
+      private type(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:Packet.type)
+      // @@protoc_insertion_point(enum_scope:lv.Packet.type)
     }
 
-    private int bitField0_;
-    // required .Packet.type packetType = 1;
     public static final int PACKETTYPE_FIELD_NUMBER = 1;
-    private com.v2tech.net.lv.WebPackage.Packet.type packetType_;
-    public boolean hasPacketType() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public com.v2tech.net.lv.WebPackage.Packet.type getPacketType() {
+    private int packetType_;
+    /**
+     * <code>optional .lv.Packet.type packetType = 1;</code>
+     */
+    public int getPacketTypeValue() {
       return packetType_;
     }
-
-    // optional string from = 2;
-    public static final int FROM_FIELD_NUMBER = 2;
-    private java.lang.Object from_;
-    public boolean hasFrom() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+    /**
+     * <code>optional .lv.Packet.type packetType = 1;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Packet.type getPacketType() {
+      com.v2tech.net.lv.WebPackage.Packet.type result = com.v2tech.net.lv.WebPackage.Packet.type.valueOf(packetType_);
+      return result == null ? com.v2tech.net.lv.WebPackage.Packet.type.UNRECOGNIZED : result;
     }
-    public String getFrom() {
+
+    public static final int FROM_FIELD_NUMBER = 2;
+    private volatile java.lang.Object from_;
+    /**
+     * <code>optional string from = 2;</code>
+     */
+    public java.lang.String getFrom() {
       java.lang.Object ref = from_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          from_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        from_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getFromBytes() {
+    /**
+     * <code>optional string from = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getFromBytes() {
       java.lang.Object ref = from_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         from_ = b;
         return b;
       } else {
@@ -195,31 +416,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string to = 3;
     public static final int TO_FIELD_NUMBER = 3;
-    private java.lang.Object to_;
-    public boolean hasTo() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getTo() {
+    private volatile java.lang.Object to_;
+    /**
+     * <code>optional string to = 3;</code>
+     */
+    public java.lang.String getTo() {
       java.lang.Object ref = to_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          to_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        to_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getToBytes() {
+    /**
+     * <code>optional string to = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getToBytes() {
       java.lang.Object ref = to_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         to_ = b;
         return b;
       } else {
@@ -227,31 +450,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string id = 4;
     public static final int ID_FIELD_NUMBER = 4;
-    private java.lang.Object id_;
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public String getId() {
+    private volatile java.lang.Object id_;
+    /**
+     * <code>optional string id = 4;</code>
+     */
+    public java.lang.String getId() {
       java.lang.Object ref = id_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          id_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getIdBytes() {
+    /**
+     * <code>optional string id = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getIdBytes() {
       java.lang.Object ref = id_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         id_ = b;
         return b;
       } else {
@@ -259,31 +484,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string method = 5;
     public static final int METHOD_FIELD_NUMBER = 5;
-    private java.lang.Object method_;
-    public boolean hasMethod() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    public String getMethod() {
+    private volatile java.lang.Object method_;
+    /**
+     * <code>optional string method = 5;</code>
+     */
+    public java.lang.String getMethod() {
       java.lang.Object ref = method_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          method_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        method_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getMethodBytes() {
+    /**
+     * <code>optional string method = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+    getMethodBytes() {
       java.lang.Object ref = method_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         method_ = b;
         return b;
       } else {
@@ -291,31 +518,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string operateType = 6;
     public static final int OPERATETYPE_FIELD_NUMBER = 6;
-    private java.lang.Object operateType_;
-    public boolean hasOperateType() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public String getOperateType() {
+    private volatile java.lang.Object operateType_;
+    /**
+     * <code>optional string operateType = 6;</code>
+     */
+    public java.lang.String getOperateType() {
       java.lang.Object ref = operateType_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          operateType_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        operateType_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getOperateTypeBytes() {
+    /**
+     * <code>optional string operateType = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOperateTypeBytes() {
       java.lang.Object ref = operateType_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         operateType_ = b;
         return b;
       } else {
@@ -323,57 +552,75 @@ public final class WebPackage {
       }
     }
 
-    // optional .Result result = 7;
     public static final int RESULT_FIELD_NUMBER = 7;
     private com.v2tech.net.lv.WebPackage.Result result_;
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     public boolean hasResult() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return result_ != null;
     }
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     public com.v2tech.net.lv.WebPackage.Result getResult() {
-      return result_;
+      return result_ == null ? com.v2tech.net.lv.WebPackage.Result.getDefaultInstance() : result_;
     }
+    /**
+     * <code>optional .lv.Result result = 7;</code>
+     */
     public com.v2tech.net.lv.WebPackage.ResultOrBuilder getResultOrBuilder() {
-      return result_;
+      return getResult();
     }
 
-    // optional .Data data = 8;
     public static final int DATA_FIELD_NUMBER = 8;
     private com.v2tech.net.lv.WebPackage.Data data_;
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     public boolean hasData() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return data_ != null;
     }
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     public com.v2tech.net.lv.WebPackage.Data getData() {
-      return data_;
+      return data_ == null ? com.v2tech.net.lv.WebPackage.Data.getDefaultInstance() : data_;
     }
+    /**
+     * <code>optional .lv.Data data = 8;</code>
+     */
     public com.v2tech.net.lv.WebPackage.DataOrBuilder getDataOrBuilder() {
-      return data_;
+      return getData();
     }
 
-    // optional string version = 9;
     public static final int VERSION_FIELD_NUMBER = 9;
-    private java.lang.Object version_;
-    public boolean hasVersion() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    public String getVersion() {
+    private volatile java.lang.Object version_;
+    /**
+     * <code>optional string version = 9;</code>
+     */
+    public java.lang.String getVersion() {
       java.lang.Object ref = version_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          version_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        version_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getVersionBytes() {
+    /**
+     * <code>optional string version = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+    getVersionBytes() {
       java.lang.Object ref = version_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         version_ = b;
         return b;
       } else {
@@ -381,208 +628,252 @@ public final class WebPackage {
       }
     }
 
-    private void initFields() {
-      packetType_ = com.v2tech.net.lv.WebPackage.Packet.type.iq;
-      from_ = "";
-      to_ = "";
-      id_ = "";
-      method_ = "";
-      operateType_ = "";
-      result_ = com.v2tech.net.lv.WebPackage.Result.getDefaultInstance();
-      data_ = com.v2tech.net.lv.WebPackage.Data.getDefaultInstance();
-      version_ = "";
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
-      if (!hasPacketType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeEnum(1, packetType_.getNumber());
+      if (packetType_ != com.v2tech.net.lv.WebPackage.Packet.type.iq.getNumber()) {
+        output.writeEnum(1, packetType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getFromBytes());
+      if (!getFromBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, from_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getToBytes());
+      if (!getToBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, to_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getIdBytes());
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, id_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getMethodBytes());
+      if (!getMethodBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, method_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getOperateTypeBytes());
+      if (!getOperateTypeBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, operateType_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(7, result_);
+      if (result_ != null) {
+        output.writeMessage(7, getResult());
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeMessage(8, data_);
+      if (data_ != null) {
+        output.writeMessage(8, getData());
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeBytes(9, getVersionBytes());
+      if (!getVersionBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, version_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (packetType_ != com.v2tech.net.lv.WebPackage.Packet.type.iq.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(1, packetType_.getNumber());
+                .computeEnumSize(1, packetType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!getFromBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, from_);
+      }
+      if (!getToBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, to_);
+      }
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, id_);
+      }
+      if (!getMethodBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, method_);
+      }
+      if (!getOperateTypeBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, operateType_);
+      }
+      if (result_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getFromBytes());
+                .computeMessageSize(7, getResult());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (data_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(3, getToBytes());
+                .computeMessageSize(8, getData());
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, getIdBytes());
+      if (!getVersionBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, version_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(5, getMethodBytes());
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(6, getOperateTypeBytes());
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(7, result_);
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(8, data_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(9, getVersionBytes());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Packet)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Packet other = (com.v2tech.net.lv.WebPackage.Packet) obj;
+
+      boolean result = true;
+      result = result && packetType_ == other.packetType_;
+      result = result && getFrom()
+              .equals(other.getFrom());
+      result = result && getTo()
+              .equals(other.getTo());
+      result = result && getId()
+              .equals(other.getId());
+      result = result && getMethod()
+              .equals(other.getMethod());
+      result = result && getOperateType()
+              .equals(other.getOperateType());
+      result = result && (hasResult() == other.hasResult());
+      if (hasResult()) {
+        result = result && getResult()
+                .equals(other.getResult());
+      }
+      result = result && (hasData() == other.hasData());
+      if (hasData()) {
+        result = result && getData()
+                .equals(other.getData());
+      }
+      result = result && getVersion()
+              .equals(other.getVersion());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + PACKETTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + packetType_;
+      hash = (37 * hash) + FROM_FIELD_NUMBER;
+      hash = (53 * hash) + getFrom().hashCode();
+      hash = (37 * hash) + TO_FIELD_NUMBER;
+      hash = (53 * hash) + getTo().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + METHOD_FIELD_NUMBER;
+      hash = (53 * hash) + getMethod().hashCode();
+      hash = (37 * hash) + OPERATETYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getOperateType().hashCode();
+      if (hasResult()) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResult().hashCode();
+      }
+      if (hasData()) {
+        hash = (37 * hash) + DATA_FIELD_NUMBER;
+        hash = (53 * hash) + getData().hashCode();
+      }
+      hash = (37 * hash) + VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getVersion().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Packet parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Packet prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Packet prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Packet}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.PacketOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Packet)
+            com.v2tech.net.lv.WebPackage.PacketOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Packet_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Packet_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Packet_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Packet_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Packet.class, com.v2tech.net.lv.WebPackage.Packet.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Packet.newBuilder()
@@ -590,58 +881,50 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getResultFieldBuilder();
-          getDataFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
-        packetType_ = com.v2tech.net.lv.WebPackage.Packet.type.iq;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        from_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        to_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        id_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        method_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        operateType_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        if (resultBuilder_ == null) {
-          result_ = com.v2tech.net.lv.WebPackage.Result.getDefaultInstance();
-        } else {
-          resultBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000040);
-        if (dataBuilder_ == null) {
-          data_ = com.v2tech.net.lv.WebPackage.Data.getDefaultInstance();
-        } else {
-          dataBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000080);
-        version_ = "";
-        bitField0_ = (bitField0_ & ~0x00000100);
-        return this;
-      }
+        packetType_ = 0;
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        from_ = "";
+
+        to_ = "";
+
+        id_ = "";
+
+        method_ = "";
+
+        operateType_ = "";
+
+        if (resultBuilder_ == null) {
+          result_ = null;
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+        if (dataBuilder_ == null) {
+          data_ = null;
+        } else {
+          data_ = null;
+          dataBuilder_ = null;
+        }
+        version_ = "";
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Packet.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Packet_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Packet getDefaultInstanceForType() {
@@ -656,69 +939,55 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Packet buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Packet result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Packet buildPartial() {
         com.v2tech.net.lv.WebPackage.Packet result = new com.v2tech.net.lv.WebPackage.Packet(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.packetType_ = packetType_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.from_ = from_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.to_ = to_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.method_ = method_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.operateType_ = operateType_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         if (resultBuilder_ == null) {
           result.result_ = result_;
         } else {
           result.result_ = resultBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
         }
         if (dataBuilder_ == null) {
           result.data_ = data_;
         } else {
           result.data_ = dataBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.version_ = version_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Packet) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Packet)other);
@@ -730,23 +999,28 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Packet other) {
         if (other == com.v2tech.net.lv.WebPackage.Packet.getDefaultInstance()) return this;
-        if (other.hasPacketType()) {
-          setPacketType(other.getPacketType());
+        if (other.packetType_ != 0) {
+          setPacketTypeValue(other.getPacketTypeValue());
         }
-        if (other.hasFrom()) {
-          setFrom(other.getFrom());
+        if (!other.getFrom().isEmpty()) {
+          from_ = other.from_;
+          onChanged();
         }
-        if (other.hasTo()) {
-          setTo(other.getTo());
+        if (!other.getTo().isEmpty()) {
+          to_ = other.to_;
+          onChanged();
         }
-        if (other.hasId()) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
-        if (other.hasMethod()) {
-          setMethod(other.getMethod());
+        if (!other.getMethod().isEmpty()) {
+          method_ = other.method_;
+          onChanged();
         }
-        if (other.hasOperateType()) {
-          setOperateType(other.getOperateType());
+        if (!other.getOperateType().isEmpty()) {
+          operateType_ = other.operateType_;
+          onChanged();
         }
         if (other.hasResult()) {
           mergeResult(other.getResult());
@@ -754,18 +1028,15 @@ public final class WebPackage {
         if (other.hasData()) {
           mergeData(other.getData());
         }
-        if (other.hasVersion()) {
-          setVersion(other.getVersion());
+        if (!other.getVersion().isEmpty()) {
+          version_ = other.version_;
+          onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasPacketType()) {
-
-          return false;
-        }
         return true;
       }
 
@@ -773,308 +1044,431 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              int rawValue = input.readEnum();
-              com.v2tech.net.lv.WebPackage.Packet.type value = com.v2tech.net.lv.WebPackage.Packet.type.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(1, rawValue);
-              } else {
-                bitField0_ |= 0x00000001;
-                packetType_ = value;
-              }
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              from_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              to_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              id_ = input.readBytes();
-              break;
-            }
-            case 42: {
-              bitField0_ |= 0x00000010;
-              method_ = input.readBytes();
-              break;
-            }
-            case 50: {
-              bitField0_ |= 0x00000020;
-              operateType_ = input.readBytes();
-              break;
-            }
-            case 58: {
-              com.v2tech.net.lv.WebPackage.Result.Builder subBuilder = com.v2tech.net.lv.WebPackage.Result.newBuilder();
-              if (hasResult()) {
-                subBuilder.mergeFrom(getResult());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setResult(subBuilder.buildPartial());
-              break;
-            }
-            case 66: {
-              com.v2tech.net.lv.WebPackage.Data.Builder subBuilder = com.v2tech.net.lv.WebPackage.Data.newBuilder();
-              if (hasData()) {
-                subBuilder.mergeFrom(getData());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setData(subBuilder.buildPartial());
-              break;
-            }
-            case 74: {
-              bitField0_ |= 0x00000100;
-              version_ = input.readBytes();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Packet parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Packet) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // required .Packet.type packetType = 1;
-      private com.v2tech.net.lv.WebPackage.Packet.type packetType_ = com.v2tech.net.lv.WebPackage.Packet.type.iq;
-      public boolean hasPacketType() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public com.v2tech.net.lv.WebPackage.Packet.type getPacketType() {
+      private int packetType_ = 0;
+      /**
+       * <code>optional .lv.Packet.type packetType = 1;</code>
+       */
+      public int getPacketTypeValue() {
         return packetType_;
       }
-      public Builder setPacketType(com.v2tech.net.lv.WebPackage.Packet.type value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
+      /**
+       * <code>optional .lv.Packet.type packetType = 1;</code>
+       */
+      public Builder setPacketTypeValue(int value) {
         packetType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional .lv.Packet.type packetType = 1;</code>
+       */
+      public com.v2tech.net.lv.WebPackage.Packet.type getPacketType() {
+        com.v2tech.net.lv.WebPackage.Packet.type result = com.v2tech.net.lv.WebPackage.Packet.type.valueOf(packetType_);
+        return result == null ? com.v2tech.net.lv.WebPackage.Packet.type.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .lv.Packet.type packetType = 1;</code>
+       */
+      public Builder setPacketType(com.v2tech.net.lv.WebPackage.Packet.type value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        packetType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .lv.Packet.type packetType = 1;</code>
+       */
       public Builder clearPacketType() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        packetType_ = com.v2tech.net.lv.WebPackage.Packet.type.iq;
+
+        packetType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string from = 2;
       private java.lang.Object from_ = "";
-      public boolean hasFrom() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getFrom() {
+      /**
+       * <code>optional string from = 2;</code>
+       */
+      public java.lang.String getFrom() {
         java.lang.Object ref = from_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           from_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setFrom(String value) {
+      /**
+       * <code>optional string from = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getFromBytes() {
+        java.lang.Object ref = from_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          from_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string from = 2;</code>
+       */
+      public Builder setFrom(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         from_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string from = 2;</code>
+       */
       public Builder clearFrom() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         from_ = getDefaultInstance().getFrom();
         onChanged();
         return this;
       }
-      void setFrom(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        from_ = value;
-        onChanged();
-      }
-
-      // optional string to = 3;
-      private java.lang.Object to_ = "";
-      public boolean hasTo() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getTo() {
-        java.lang.Object ref = to_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          to_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setTo(String value) {
+      /**
+       * <code>optional string from = 2;</code>
+       */
+      public Builder setFromBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000004;
+        checkByteStringIsUtf8(value);
+
+        from_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object to_ = "";
+      /**
+       * <code>optional string to = 3;</code>
+       */
+      public java.lang.String getTo() {
+        java.lang.Object ref = to_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          to_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string to = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getToBytes() {
+        java.lang.Object ref = to_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          to_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string to = 3;</code>
+       */
+      public Builder setTo(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         to_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string to = 3;</code>
+       */
       public Builder clearTo() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         to_ = getDefaultInstance().getTo();
         onChanged();
         return this;
       }
-      void setTo(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        to_ = value;
-        onChanged();
-      }
-
-      // optional string id = 4;
-      private java.lang.Object id_ = "";
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getId() {
-        java.lang.Object ref = id_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          id_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setId(String value) {
+      /**
+       * <code>optional string to = 3;</code>
+       */
+      public Builder setToBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000008;
+        checkByteStringIsUtf8(value);
+
+        to_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>optional string id = 4;</code>
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string id = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string id = 4;</code>
+       */
+      public Builder setId(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         id_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string id = 4;</code>
+       */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         id_ = getDefaultInstance().getId();
         onChanged();
         return this;
       }
-      void setId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
-        id_ = value;
-        onChanged();
-      }
-
-      // optional string method = 5;
-      private java.lang.Object method_ = "";
-      public boolean hasMethod() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      public String getMethod() {
-        java.lang.Object ref = method_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          method_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setMethod(String value) {
+      /**
+       * <code>optional string id = 4;</code>
+       */
+      public Builder setIdBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000010;
+        checkByteStringIsUtf8(value);
+
+        id_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object method_ = "";
+      /**
+       * <code>optional string method = 5;</code>
+       */
+      public java.lang.String getMethod() {
+        java.lang.Object ref = method_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          method_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string method = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+      getMethodBytes() {
+        java.lang.Object ref = method_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          method_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string method = 5;</code>
+       */
+      public Builder setMethod(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         method_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string method = 5;</code>
+       */
       public Builder clearMethod() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         method_ = getDefaultInstance().getMethod();
         onChanged();
         return this;
       }
-      void setMethod(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000010;
-        method_ = value;
-        onChanged();
-      }
-
-      // optional string operateType = 6;
-      private java.lang.Object operateType_ = "";
-      public boolean hasOperateType() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      public String getOperateType() {
-        java.lang.Object ref = operateType_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          operateType_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setOperateType(String value) {
+      /**
+       * <code>optional string method = 5;</code>
+       */
+      public Builder setMethodBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000020;
+        checkByteStringIsUtf8(value);
+
+        method_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object operateType_ = "";
+      /**
+       * <code>optional string operateType = 6;</code>
+       */
+      public java.lang.String getOperateType() {
+        java.lang.Object ref = operateType_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          operateType_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string operateType = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+      getOperateTypeBytes() {
+        java.lang.Object ref = operateType_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          operateType_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string operateType = 6;</code>
+       */
+      public Builder setOperateType(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         operateType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string operateType = 6;</code>
+       */
       public Builder clearOperateType() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         operateType_ = getDefaultInstance().getOperateType();
         onChanged();
         return this;
       }
-      void setOperateType(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000020;
+      /**
+       * <code>optional string operateType = 6;</code>
+       */
+      public Builder setOperateTypeBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         operateType_ = value;
         onChanged();
+        return this;
       }
 
-      // optional .Result result = 7;
-      private com.v2tech.net.lv.WebPackage.Result result_ = com.v2tech.net.lv.WebPackage.Result.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.v2tech.net.lv.WebPackage.Result result_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Result, com.v2tech.net.lv.WebPackage.Result.Builder, com.v2tech.net.lv.WebPackage.ResultOrBuilder> resultBuilder_;
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public boolean hasResult() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return resultBuilder_ != null || result_ != null;
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Result getResult() {
         if (resultBuilder_ == null) {
-          return result_;
+          return result_ == null ? com.v2tech.net.lv.WebPackage.Result.getDefaultInstance() : result_;
         } else {
           return resultBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public Builder setResult(com.v2tech.net.lv.WebPackage.Result value) {
         if (resultBuilder_ == null) {
           if (value == null) {
@@ -1085,9 +1479,12 @@ public final class WebPackage {
         } else {
           resultBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public Builder setResult(
               com.v2tech.net.lv.WebPackage.Result.Builder builderForValue) {
         if (resultBuilder_ == null) {
@@ -1096,13 +1493,15 @@ public final class WebPackage {
         } else {
           resultBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public Builder mergeResult(com.v2tech.net.lv.WebPackage.Result value) {
         if (resultBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
-                  result_ != com.v2tech.net.lv.WebPackage.Result.getDefaultInstance()) {
+          if (result_ != null) {
             result_ =
                     com.v2tech.net.lv.WebPackage.Result.newBuilder(result_).mergeFrom(value).buildPartial();
           } else {
@@ -1112,38 +1511,52 @@ public final class WebPackage {
         } else {
           resultBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public Builder clearResult() {
         if (resultBuilder_ == null) {
-          result_ = com.v2tech.net.lv.WebPackage.Result.getDefaultInstance();
+          result_ = null;
           onChanged();
         } else {
-          resultBuilder_.clear();
+          result_ = null;
+          resultBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         return this;
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Result.Builder getResultBuilder() {
-        bitField0_ |= 0x00000040;
+
         onChanged();
         return getResultFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ResultOrBuilder getResultOrBuilder() {
         if (resultBuilder_ != null) {
           return resultBuilder_.getMessageOrBuilder();
         } else {
-          return result_;
+          return result_ == null ?
+                  com.v2tech.net.lv.WebPackage.Result.getDefaultInstance() : result_;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
+      /**
+       * <code>optional .lv.Result result = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Result, com.v2tech.net.lv.WebPackage.Result.Builder, com.v2tech.net.lv.WebPackage.ResultOrBuilder>
       getResultFieldBuilder() {
         if (resultBuilder_ == null) {
-          resultBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Result, com.v2tech.net.lv.WebPackage.Result.Builder, com.v2tech.net.lv.WebPackage.ResultOrBuilder>(
-                  result_,
+                  getResult(),
                   getParentForChildren(),
                   isClean());
           result_ = null;
@@ -1151,20 +1564,28 @@ public final class WebPackage {
         return resultBuilder_;
       }
 
-      // optional .Data data = 8;
-      private com.v2tech.net.lv.WebPackage.Data data_ = com.v2tech.net.lv.WebPackage.Data.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.v2tech.net.lv.WebPackage.Data data_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Data, com.v2tech.net.lv.WebPackage.Data.Builder, com.v2tech.net.lv.WebPackage.DataOrBuilder> dataBuilder_;
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public boolean hasData() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return dataBuilder_ != null || data_ != null;
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Data getData() {
         if (dataBuilder_ == null) {
-          return data_;
+          return data_ == null ? com.v2tech.net.lv.WebPackage.Data.getDefaultInstance() : data_;
         } else {
           return dataBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public Builder setData(com.v2tech.net.lv.WebPackage.Data value) {
         if (dataBuilder_ == null) {
           if (value == null) {
@@ -1175,9 +1596,12 @@ public final class WebPackage {
         } else {
           dataBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000080;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public Builder setData(
               com.v2tech.net.lv.WebPackage.Data.Builder builderForValue) {
         if (dataBuilder_ == null) {
@@ -1186,13 +1610,15 @@ public final class WebPackage {
         } else {
           dataBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000080;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public Builder mergeData(com.v2tech.net.lv.WebPackage.Data value) {
         if (dataBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080) &&
-                  data_ != com.v2tech.net.lv.WebPackage.Data.getDefaultInstance()) {
+          if (data_ != null) {
             data_ =
                     com.v2tech.net.lv.WebPackage.Data.newBuilder(data_).mergeFrom(value).buildPartial();
           } else {
@@ -1202,38 +1628,52 @@ public final class WebPackage {
         } else {
           dataBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000080;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public Builder clearData() {
         if (dataBuilder_ == null) {
-          data_ = com.v2tech.net.lv.WebPackage.Data.getDefaultInstance();
+          data_ = null;
           onChanged();
         } else {
-          dataBuilder_.clear();
+          data_ = null;
+          dataBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         return this;
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Data.Builder getDataBuilder() {
-        bitField0_ |= 0x00000080;
+
         onChanged();
         return getDataFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.DataOrBuilder getDataOrBuilder() {
         if (dataBuilder_ != null) {
           return dataBuilder_.getMessageOrBuilder();
         } else {
-          return data_;
+          return data_ == null ?
+                  com.v2tech.net.lv.WebPackage.Data.getDefaultInstance() : data_;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
+      /**
+       * <code>optional .lv.Data data = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Data, com.v2tech.net.lv.WebPackage.Data.Builder, com.v2tech.net.lv.WebPackage.DataOrBuilder>
       getDataFieldBuilder() {
         if (dataBuilder_ == null) {
-          dataBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Data, com.v2tech.net.lv.WebPackage.Data.Builder, com.v2tech.net.lv.WebPackage.DataOrBuilder>(
-                  data_,
+                  getData(),
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -1241,128 +1681,253 @@ public final class WebPackage {
         return dataBuilder_;
       }
 
-      // optional string version = 9;
       private java.lang.Object version_ = "";
-      public boolean hasVersion() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      public String getVersion() {
+      /**
+       * <code>optional string version = 9;</code>
+       */
+      public java.lang.String getVersion() {
         java.lang.Object ref = version_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           version_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setVersion(String value) {
+      /**
+       * <code>optional string version = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+      getVersionBytes() {
+        java.lang.Object ref = version_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          version_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string version = 9;</code>
+       */
+      public Builder setVersion(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000100;
+
         version_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string version = 9;</code>
+       */
       public Builder clearVersion() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         version_ = getDefaultInstance().getVersion();
         onChanged();
         return this;
       }
-      void setVersion(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000100;
+      /**
+       * <code>optional string version = 9;</code>
+       */
+      public Builder setVersionBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         version_ = value;
         onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Packet)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Packet)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Packet)
+    private static final com.v2tech.net.lv.WebPackage.Packet DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Packet(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Packet();
     }
 
-    // @@protoc_insertion_point(class_scope:Packet)
+    public static com.v2tech.net.lv.WebPackage.Packet getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Packet>
+            PARSER = new com.google.protobuf.AbstractParser<Packet>() {
+      public Packet parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Packet(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Packet> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Packet> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Packet getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface ResultOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface ResultOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Result)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional bool result = 1;
-    boolean hasResult();
+    /**
+     * <code>optional bool result = 1;</code>
+     */
     boolean getResult();
 
-    // optional string error = 2;
-    boolean hasError();
-    String getError();
+    /**
+     * <code>optional string error = 2;</code>
+     */
+    java.lang.String getError();
+    /**
+     * <code>optional string error = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getErrorBytes();
   }
-  public static final class Result extends
-          com.google.protobuf.GeneratedMessage
-          implements ResultOrBuilder {
+  /**
+   * Protobuf type {@code lv.Result}
+   */
+  public  static final class Result extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Result)
+          ResultOrBuilder {
     // Use Result.newBuilder() to construct.
-    private Result(Builder builder) {
+    private Result(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Result(boolean noInit) {}
-
-    private static final Result defaultInstance;
-    public static Result getDefaultInstance() {
-      return defaultInstance;
+    private Result() {
+      result_ = false;
+      error_ = "";
     }
 
-    public Result getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private Result(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              result_ = input.readBool();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              error_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Result_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Result_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Result_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Result_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Result.class, com.v2tech.net.lv.WebPackage.Result.Builder.class);
     }
 
-    private int bitField0_;
-    // optional bool result = 1;
     public static final int RESULT_FIELD_NUMBER = 1;
     private boolean result_;
-    public boolean hasResult() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional bool result = 1;</code>
+     */
     public boolean getResult() {
       return result_;
     }
 
-    // optional string error = 2;
     public static final int ERROR_FIELD_NUMBER = 2;
-    private java.lang.Object error_;
-    public boolean hasError() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getError() {
+    private volatile java.lang.Object error_;
+    /**
+     * <code>optional string error = 2;</code>
+     */
+    public java.lang.String getError() {
       java.lang.Object ref = error_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          error_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        error_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getErrorBytes() {
+    /**
+     * <code>optional string error = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getErrorBytes() {
       java.lang.Object ref = error_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         error_ = b;
         return b;
       } else {
@@ -1370,14 +1935,11 @@ public final class WebPackage {
       }
     }
 
-    private void initFields() {
-      result_ = false;
-      error_ = "";
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -1385,133 +1947,160 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (result_ != false) {
         output.writeBool(1, result_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getErrorBytes());
+      if (!getErrorBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, error_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (result_ != false) {
         size += com.google.protobuf.CodedOutputStream
                 .computeBoolSize(1, result_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getErrorBytes());
+      if (!getErrorBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, error_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Result)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Result other = (com.v2tech.net.lv.WebPackage.Result) obj;
+
+      boolean result = true;
+      result = result && (getResult()
+              == other.getResult());
+      result = result && getError()
+              .equals(other.getError());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getResult());
+      hash = (37 * hash) + ERROR_FIELD_NUMBER;
+      hash = (53 * hash) + getError().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Result parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Result prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Result prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Result}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.ResultOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Result)
+            com.v2tech.net.lv.WebPackage.ResultOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Result_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Result_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Result_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Result_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Result.class, com.v2tech.net.lv.WebPackage.Result.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Result.newBuilder()
@@ -1519,34 +2108,28 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         result_ = false;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        error_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        error_ = "";
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Result.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Result_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Result getDefaultInstanceForType() {
@@ -1561,33 +2144,40 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Result buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Result result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Result buildPartial() {
         com.v2tech.net.lv.WebPackage.Result result = new com.v2tech.net.lv.WebPackage.Result(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.result_ = result_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.error_ = error_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Result) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Result)other);
@@ -1599,13 +2189,14 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Result other) {
         if (other == com.v2tech.net.lv.WebPackage.Result.getDefaultInstance()) return this;
-        if (other.hasResult()) {
+        if (other.getResult() != false) {
           setResult(other.getResult());
         }
-        if (other.hasError()) {
-          setError(other.getError());
+        if (!other.getError().isEmpty()) {
+          error_ = other.error_;
+          onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -1617,510 +2208,411 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              result_ = input.readBool();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              error_ = input.readBytes();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Result parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Result) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional bool result = 1;
       private boolean result_ ;
-      public boolean hasResult() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional bool result = 1;</code>
+       */
       public boolean getResult() {
         return result_;
       }
+      /**
+       * <code>optional bool result = 1;</code>
+       */
       public Builder setResult(boolean value) {
-        bitField0_ |= 0x00000001;
+
         result_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional bool result = 1;</code>
+       */
       public Builder clearResult() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         result_ = false;
         onChanged();
         return this;
       }
 
-      // optional string error = 2;
       private java.lang.Object error_ = "";
-      public boolean hasError() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getError() {
+      /**
+       * <code>optional string error = 2;</code>
+       */
+      public java.lang.String getError() {
         java.lang.Object ref = error_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           error_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setError(String value) {
+      /**
+       * <code>optional string error = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getErrorBytes() {
+        java.lang.Object ref = error_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          error_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string error = 2;</code>
+       */
+      public Builder setError(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         error_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string error = 2;</code>
+       */
       public Builder clearError() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         error_ = getDefaultInstance().getError();
         onChanged();
         return this;
       }
-      void setError(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
+      /**
+       * <code>optional string error = 2;</code>
+       */
+      public Builder setErrorBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         error_ = value;
         onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Result)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Result)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Result)
+    private static final com.v2tech.net.lv.WebPackage.Result DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Result(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Result();
     }
 
-    // @@protoc_insertion_point(class_scope:Result)
+    public static com.v2tech.net.lv.WebPackage.Result getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Result>
+            PARSER = new com.google.protobuf.AbstractParser<Result>() {
+      public Result parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Result(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Result> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Result> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Result getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface DataOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface DataOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Data)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional string normal = 1;
-    boolean hasNormal();
-    String getNormal();
+    /**
+     * <code>optional string normal = 1;</code>
+     */
+    java.lang.String getNormal();
+    /**
+     * <code>optional string normal = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getNormalBytes();
 
-    // optional bytes byteDate = 2;
-    boolean hasByteDate();
+    /**
+     * <code>optional bytes byteDate = 2;</code>
+     */
     com.google.protobuf.ByteString getByteDate();
 
-    // optional int64 fromTime = 3;
-    boolean hasFromTime();
+    /**
+     * <code>optional int64 fromTime = 3;</code>
+     */
     long getFromTime();
 
-    // optional int64 toTime = 4;
-    boolean hasToTime();
+    /**
+     * <code>optional int64 toTime = 4;</code>
+     */
     long getToTime();
 
-    // optional int32 sum = 5;
-    boolean hasSum();
+    /**
+     * <code>optional int32 sum = 5;</code>
+     */
     int getSum();
 
-    // optional int32 from = 6;
-    boolean hasFrom();
+    /**
+     * <code>optional int32 from = 6;</code>
+     */
     int getFrom();
 
-    // optional int32 to = 7;
-    boolean hasTo();
+    /**
+     * <code>optional int32 to = 7;</code>
+     */
     int getTo();
 
-    // repeated .Position position = 8;
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Position>
     getPositionList();
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
     com.v2tech.net.lv.WebPackage.Position getPosition(int index);
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
     int getPositionCount();
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.PositionOrBuilder>
     getPositionOrBuilderList();
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
     com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder(
             int index);
 
-    // repeated .User user = 9;
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.User>
     getUserList();
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
     com.v2tech.net.lv.WebPackage.User getUser(int index);
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
     int getUserCount();
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.UserOrBuilder>
     getUserOrBuilderList();
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
     com.v2tech.net.lv.WebPackage.UserOrBuilder getUserOrBuilder(
             int index);
 
-    // repeated .Video video = 10;
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Video>
     getVideoList();
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
     com.v2tech.net.lv.WebPackage.Video getVideo(int index);
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
     int getVideoCount();
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.VideoOrBuilder>
     getVideoOrBuilderList();
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
     com.v2tech.net.lv.WebPackage.VideoOrBuilder getVideoOrBuilder(
             int index);
 
-    // repeated .Gratuity gratuity = 11;
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Gratuity>
     getGratuityList();
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
     com.v2tech.net.lv.WebPackage.Gratuity getGratuity(int index);
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
     int getGratuityCount();
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.GratuityOrBuilder>
     getGratuityOrBuilderList();
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
     com.v2tech.net.lv.WebPackage.GratuityOrBuilder getGratuityOrBuilder(
             int index);
 
-    // repeated .Reward reward = 12;
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Reward>
     getRewardList();
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
     com.v2tech.net.lv.WebPackage.Reward getReward(int index);
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
     int getRewardCount();
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder>
     getRewardOrBuilderList();
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
     com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
             int index);
 
-    // repeated .UserState userState = 13;
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.UserState>
     getUserStateList();
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
     com.v2tech.net.lv.WebPackage.UserState getUserState(int index);
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
     int getUserStateCount();
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.UserStateOrBuilder>
     getUserStateOrBuilderList();
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
     com.v2tech.net.lv.WebPackage.UserStateOrBuilder getUserStateOrBuilder(
             int index);
 
-    // repeated .AssetLog assetLog = 14;
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.AssetLog>
     getAssetLogList();
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
     com.v2tech.net.lv.WebPackage.AssetLog getAssetLog(int index);
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
     int getAssetLogCount();
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>
     getAssetLogOrBuilderList();
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
     com.v2tech.net.lv.WebPackage.AssetLogOrBuilder getAssetLogOrBuilder(
             int index);
 
-    // repeated .ServerBean serverBean = 15;
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.ServerBean>
     getServerBeanList();
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
     com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index);
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
     int getServerBeanCount();
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
     getServerBeanOrBuilderList();
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
     com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
             int index);
   }
-  public static final class Data extends
-          com.google.protobuf.GeneratedMessage
-          implements DataOrBuilder {
+  /**
+   * Protobuf type {@code lv.Data}
+   */
+  public  static final class Data extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Data)
+          DataOrBuilder {
     // Use Data.newBuilder() to construct.
-    private Data(Builder builder) {
+    private Data(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Data(boolean noInit) {}
-
-    private static final Data defaultInstance;
-    public static Data getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public Data getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Data_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Data_fieldAccessorTable;
-    }
-
-    private int bitField0_;
-    // optional string normal = 1;
-    public static final int NORMAL_FIELD_NUMBER = 1;
-    private java.lang.Object normal_;
-    public boolean hasNormal() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public String getNormal() {
-      java.lang.Object ref = normal_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          normal_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getNormalBytes() {
-      java.lang.Object ref = normal_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        normal_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional bytes byteDate = 2;
-    public static final int BYTEDATE_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString byteDate_;
-    public boolean hasByteDate() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public com.google.protobuf.ByteString getByteDate() {
-      return byteDate_;
-    }
-
-    // optional int64 fromTime = 3;
-    public static final int FROMTIME_FIELD_NUMBER = 3;
-    private long fromTime_;
-    public boolean hasFromTime() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public long getFromTime() {
-      return fromTime_;
-    }
-
-    // optional int64 toTime = 4;
-    public static final int TOTIME_FIELD_NUMBER = 4;
-    private long toTime_;
-    public boolean hasToTime() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public long getToTime() {
-      return toTime_;
-    }
-
-    // optional int32 sum = 5;
-    public static final int SUM_FIELD_NUMBER = 5;
-    private int sum_;
-    public boolean hasSum() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    public int getSum() {
-      return sum_;
-    }
-
-    // optional int32 from = 6;
-    public static final int FROM_FIELD_NUMBER = 6;
-    private int from_;
-    public boolean hasFrom() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public int getFrom() {
-      return from_;
-    }
-
-    // optional int32 to = 7;
-    public static final int TO_FIELD_NUMBER = 7;
-    private int to_;
-    public boolean hasTo() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    public int getTo() {
-      return to_;
-    }
-
-    // repeated .Position position = 8;
-    public static final int POSITION_FIELD_NUMBER = 8;
-    private java.util.List<com.v2tech.net.lv.WebPackage.Position> position_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.Position> getPositionList() {
-      return position_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.PositionOrBuilder>
-    getPositionOrBuilderList() {
-      return position_;
-    }
-    public int getPositionCount() {
-      return position_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.Position getPosition(int index) {
-      return position_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder(
-            int index) {
-      return position_.get(index);
-    }
-
-    // repeated .User user = 9;
-    public static final int USER_FIELD_NUMBER = 9;
-    private java.util.List<com.v2tech.net.lv.WebPackage.User> user_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.User> getUserList() {
-      return user_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserOrBuilder>
-    getUserOrBuilderList() {
-      return user_;
-    }
-    public int getUserCount() {
-      return user_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.User getUser(int index) {
-      return user_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.UserOrBuilder getUserOrBuilder(
-            int index) {
-      return user_.get(index);
-    }
-
-    // repeated .Video video = 10;
-    public static final int VIDEO_FIELD_NUMBER = 10;
-    private java.util.List<com.v2tech.net.lv.WebPackage.Video> video_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.Video> getVideoList() {
-      return video_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.VideoOrBuilder>
-    getVideoOrBuilderList() {
-      return video_;
-    }
-    public int getVideoCount() {
-      return video_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.Video getVideo(int index) {
-      return video_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.VideoOrBuilder getVideoOrBuilder(
-            int index) {
-      return video_.get(index);
-    }
-
-    // repeated .Gratuity gratuity = 11;
-    public static final int GRATUITY_FIELD_NUMBER = 11;
-    private java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> gratuity_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> getGratuityList() {
-      return gratuity_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.GratuityOrBuilder>
-    getGratuityOrBuilderList() {
-      return gratuity_;
-    }
-    public int getGratuityCount() {
-      return gratuity_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.Gratuity getGratuity(int index) {
-      return gratuity_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.GratuityOrBuilder getGratuityOrBuilder(
-            int index) {
-      return gratuity_.get(index);
-    }
-
-    // repeated .Reward reward = 12;
-    public static final int REWARD_FIELD_NUMBER = 12;
-    private java.util.List<com.v2tech.net.lv.WebPackage.Reward> reward_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.Reward> getRewardList() {
-      return reward_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder>
-    getRewardOrBuilderList() {
-      return reward_;
-    }
-    public int getRewardCount() {
-      return reward_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.Reward getReward(int index) {
-      return reward_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
-            int index) {
-      return reward_.get(index);
-    }
-
-    // repeated .UserState userState = 13;
-    public static final int USERSTATE_FIELD_NUMBER = 13;
-    private java.util.List<com.v2tech.net.lv.WebPackage.UserState> userState_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.UserState> getUserStateList() {
-      return userState_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserStateOrBuilder>
-    getUserStateOrBuilderList() {
-      return userState_;
-    }
-    public int getUserStateCount() {
-      return userState_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.UserState getUserState(int index) {
-      return userState_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.UserStateOrBuilder getUserStateOrBuilder(
-            int index) {
-      return userState_.get(index);
-    }
-
-    // repeated .AssetLog assetLog = 14;
-    public static final int ASSETLOG_FIELD_NUMBER = 14;
-    private java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> assetLog_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> getAssetLogList() {
-      return assetLog_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>
-    getAssetLogOrBuilderList() {
-      return assetLog_;
-    }
-    public int getAssetLogCount() {
-      return assetLog_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.AssetLog getAssetLog(int index) {
-      return assetLog_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.AssetLogOrBuilder getAssetLogOrBuilder(
-            int index) {
-      return assetLog_.get(index);
-    }
-
-    // repeated .ServerBean serverBean = 15;
-    public static final int SERVERBEAN_FIELD_NUMBER = 15;
-    private java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> serverBean_;
-    public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> getServerBeanList() {
-      return serverBean_;
-    }
-    public java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
-    getServerBeanOrBuilderList() {
-      return serverBean_;
-    }
-    public int getServerBeanCount() {
-      return serverBean_.size();
-    }
-    public com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index) {
-      return serverBean_.get(index);
-    }
-    public com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
-            int index) {
-      return serverBean_.get(index);
-    }
-
-    private void initFields() {
+    private Data() {
       normal_ = "";
       byteDate_ = com.google.protobuf.ByteString.EMPTY;
       fromTime_ = 0L;
@@ -2137,10 +2629,561 @@ public final class WebPackage {
       assetLog_ = java.util.Collections.emptyList();
       serverBean_ = java.util.Collections.emptyList();
     }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Data(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              normal_ = s;
+              break;
+            }
+            case 18: {
+
+              byteDate_ = input.readBytes();
+              break;
+            }
+            case 24: {
+
+              fromTime_ = input.readInt64();
+              break;
+            }
+            case 32: {
+
+              toTime_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              sum_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              from_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              to_ = input.readInt32();
+              break;
+            }
+            case 66: {
+              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+                position_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Position>();
+                mutable_bitField0_ |= 0x00000080;
+              }
+              position_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Position.parser(), extensionRegistry));
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+                user_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.User>();
+                mutable_bitField0_ |= 0x00000100;
+              }
+              user_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.User.parser(), extensionRegistry));
+              break;
+            }
+            case 82: {
+              if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+                video_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Video>();
+                mutable_bitField0_ |= 0x00000200;
+              }
+              video_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Video.parser(), extensionRegistry));
+              break;
+            }
+            case 90: {
+              if (!((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+                gratuity_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Gratuity>();
+                mutable_bitField0_ |= 0x00000400;
+              }
+              gratuity_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Gratuity.parser(), extensionRegistry));
+              break;
+            }
+            case 98: {
+              if (!((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+                reward_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Reward>();
+                mutable_bitField0_ |= 0x00000800;
+              }
+              reward_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Reward.parser(), extensionRegistry));
+              break;
+            }
+            case 106: {
+              if (!((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+                userState_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.UserState>();
+                mutable_bitField0_ |= 0x00001000;
+              }
+              userState_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.UserState.parser(), extensionRegistry));
+              break;
+            }
+            case 114: {
+              if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
+                assetLog_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.AssetLog>();
+                mutable_bitField0_ |= 0x00002000;
+              }
+              assetLog_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.AssetLog.parser(), extensionRegistry));
+              break;
+            }
+            case 122: {
+              if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
+                serverBean_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.ServerBean>();
+                mutable_bitField0_ |= 0x00004000;
+              }
+              serverBean_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.ServerBean.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+          position_ = java.util.Collections.unmodifiableList(position_);
+        }
+        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+          user_ = java.util.Collections.unmodifiableList(user_);
+        }
+        if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+          video_ = java.util.Collections.unmodifiableList(video_);
+        }
+        if (((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+          gratuity_ = java.util.Collections.unmodifiableList(gratuity_);
+        }
+        if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+          reward_ = java.util.Collections.unmodifiableList(reward_);
+        }
+        if (((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+          userState_ = java.util.Collections.unmodifiableList(userState_);
+        }
+        if (((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
+          assetLog_ = java.util.Collections.unmodifiableList(assetLog_);
+        }
+        if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
+          serverBean_ = java.util.Collections.unmodifiableList(serverBean_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Data_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Data_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Data.class, com.v2tech.net.lv.WebPackage.Data.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int NORMAL_FIELD_NUMBER = 1;
+    private volatile java.lang.Object normal_;
+    /**
+     * <code>optional string normal = 1;</code>
+     */
+    public java.lang.String getNormal() {
+      java.lang.Object ref = normal_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        normal_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string normal = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getNormalBytes() {
+      java.lang.Object ref = normal_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        normal_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BYTEDATE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString byteDate_;
+    /**
+     * <code>optional bytes byteDate = 2;</code>
+     */
+    public com.google.protobuf.ByteString getByteDate() {
+      return byteDate_;
+    }
+
+    public static final int FROMTIME_FIELD_NUMBER = 3;
+    private long fromTime_;
+    /**
+     * <code>optional int64 fromTime = 3;</code>
+     */
+    public long getFromTime() {
+      return fromTime_;
+    }
+
+    public static final int TOTIME_FIELD_NUMBER = 4;
+    private long toTime_;
+    /**
+     * <code>optional int64 toTime = 4;</code>
+     */
+    public long getToTime() {
+      return toTime_;
+    }
+
+    public static final int SUM_FIELD_NUMBER = 5;
+    private int sum_;
+    /**
+     * <code>optional int32 sum = 5;</code>
+     */
+    public int getSum() {
+      return sum_;
+    }
+
+    public static final int FROM_FIELD_NUMBER = 6;
+    private int from_;
+    /**
+     * <code>optional int32 from = 6;</code>
+     */
+    public int getFrom() {
+      return from_;
+    }
+
+    public static final int TO_FIELD_NUMBER = 7;
+    private int to_;
+    /**
+     * <code>optional int32 to = 7;</code>
+     */
+    public int getTo() {
+      return to_;
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 8;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Position> position_;
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.Position> getPositionList() {
+      return position_;
+    }
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.PositionOrBuilder>
+    getPositionOrBuilderList() {
+      return position_;
+    }
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
+    public int getPositionCount() {
+      return position_.size();
+    }
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Position getPosition(int index) {
+      return position_.get(index);
+    }
+    /**
+     * <code>repeated .lv.Position position = 8;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder(
+            int index) {
+      return position_.get(index);
+    }
+
+    public static final int USER_FIELD_NUMBER = 9;
+    private java.util.List<com.v2tech.net.lv.WebPackage.User> user_;
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.User> getUserList() {
+      return user_;
+    }
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserOrBuilder>
+    getUserOrBuilderList() {
+      return user_;
+    }
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
+    public int getUserCount() {
+      return user_.size();
+    }
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.User getUser(int index) {
+      return user_.get(index);
+    }
+    /**
+     * <code>repeated .lv.User user = 9;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.UserOrBuilder getUserOrBuilder(
+            int index) {
+      return user_.get(index);
+    }
+
+    public static final int VIDEO_FIELD_NUMBER = 10;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Video> video_;
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.Video> getVideoList() {
+      return video_;
+    }
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.VideoOrBuilder>
+    getVideoOrBuilderList() {
+      return video_;
+    }
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
+    public int getVideoCount() {
+      return video_.size();
+    }
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Video getVideo(int index) {
+      return video_.get(index);
+    }
+    /**
+     * <code>repeated .lv.Video video = 10;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.VideoOrBuilder getVideoOrBuilder(
+            int index) {
+      return video_.get(index);
+    }
+
+    public static final int GRATUITY_FIELD_NUMBER = 11;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> gratuity_;
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> getGratuityList() {
+      return gratuity_;
+    }
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.GratuityOrBuilder>
+    getGratuityOrBuilderList() {
+      return gratuity_;
+    }
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
+    public int getGratuityCount() {
+      return gratuity_.size();
+    }
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Gratuity getGratuity(int index) {
+      return gratuity_.get(index);
+    }
+    /**
+     * <code>repeated .lv.Gratuity gratuity = 11;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.GratuityOrBuilder getGratuityOrBuilder(
+            int index) {
+      return gratuity_.get(index);
+    }
+
+    public static final int REWARD_FIELD_NUMBER = 12;
+    private java.util.List<com.v2tech.net.lv.WebPackage.Reward> reward_;
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.Reward> getRewardList() {
+      return reward_;
+    }
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder>
+    getRewardOrBuilderList() {
+      return reward_;
+    }
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
+    public int getRewardCount() {
+      return reward_.size();
+    }
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Reward getReward(int index) {
+      return reward_.get(index);
+    }
+    /**
+     * <code>repeated .lv.Reward reward = 12;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
+            int index) {
+      return reward_.get(index);
+    }
+
+    public static final int USERSTATE_FIELD_NUMBER = 13;
+    private java.util.List<com.v2tech.net.lv.WebPackage.UserState> userState_;
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.UserState> getUserStateList() {
+      return userState_;
+    }
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserStateOrBuilder>
+    getUserStateOrBuilderList() {
+      return userState_;
+    }
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
+    public int getUserStateCount() {
+      return userState_.size();
+    }
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.UserState getUserState(int index) {
+      return userState_.get(index);
+    }
+    /**
+     * <code>repeated .lv.UserState userState = 13;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.UserStateOrBuilder getUserStateOrBuilder(
+            int index) {
+      return userState_.get(index);
+    }
+
+    public static final int ASSETLOG_FIELD_NUMBER = 14;
+    private java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> assetLog_;
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> getAssetLogList() {
+      return assetLog_;
+    }
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>
+    getAssetLogOrBuilderList() {
+      return assetLog_;
+    }
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
+    public int getAssetLogCount() {
+      return assetLog_.size();
+    }
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.AssetLog getAssetLog(int index) {
+      return assetLog_.get(index);
+    }
+    /**
+     * <code>repeated .lv.AssetLog assetLog = 14;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.AssetLogOrBuilder getAssetLogOrBuilder(
+            int index) {
+      return assetLog_.get(index);
+    }
+
+    public static final int SERVERBEAN_FIELD_NUMBER = 15;
+    private java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> serverBean_;
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
+    public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> getServerBeanList() {
+      return serverBean_;
+    }
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
+    public java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
+    getServerBeanOrBuilderList() {
+      return serverBean_;
+    }
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
+    public int getServerBeanCount() {
+      return serverBean_.size();
+    }
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index) {
+      return serverBean_.get(index);
+    }
+    /**
+     * <code>repeated .lv.ServerBean serverBean = 15;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
+            int index) {
+      return serverBean_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -2148,26 +3191,25 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNormalBytes());
+      if (!getNormalBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, normal_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!byteDate_.isEmpty()) {
         output.writeBytes(2, byteDate_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (fromTime_ != 0L) {
         output.writeInt64(3, fromTime_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (toTime_ != 0L) {
         output.writeInt64(4, toTime_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sum_ != 0) {
         output.writeInt32(5, sum_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (from_ != 0) {
         output.writeInt32(6, from_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (to_ != 0) {
         output.writeInt32(7, to_);
       }
       for (int i = 0; i < position_.size(); i++) {
@@ -2194,40 +3236,37 @@ public final class WebPackage {
       for (int i = 0; i < serverBean_.size(); i++) {
         output.writeMessage(15, serverBean_.get(i));
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(1, getNormalBytes());
+      if (!getNormalBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, normal_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!byteDate_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
                 .computeBytesSize(2, byteDate_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (fromTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(3, fromTime_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (toTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(4, toTime_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sum_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(5, sum_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (from_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(6, from_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (to_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(7, to_);
       }
@@ -2263,109 +3302,209 @@ public final class WebPackage {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(15, serverBean_.get(i));
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Data)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Data other = (com.v2tech.net.lv.WebPackage.Data) obj;
+
+      boolean result = true;
+      result = result && getNormal()
+              .equals(other.getNormal());
+      result = result && getByteDate()
+              .equals(other.getByteDate());
+      result = result && (getFromTime()
+              == other.getFromTime());
+      result = result && (getToTime()
+              == other.getToTime());
+      result = result && (getSum()
+              == other.getSum());
+      result = result && (getFrom()
+              == other.getFrom());
+      result = result && (getTo()
+              == other.getTo());
+      result = result && getPositionList()
+              .equals(other.getPositionList());
+      result = result && getUserList()
+              .equals(other.getUserList());
+      result = result && getVideoList()
+              .equals(other.getVideoList());
+      result = result && getGratuityList()
+              .equals(other.getGratuityList());
+      result = result && getRewardList()
+              .equals(other.getRewardList());
+      result = result && getUserStateList()
+              .equals(other.getUserStateList());
+      result = result && getAssetLogList()
+              .equals(other.getAssetLogList());
+      result = result && getServerBeanList()
+              .equals(other.getServerBeanList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + NORMAL_FIELD_NUMBER;
+      hash = (53 * hash) + getNormal().hashCode();
+      hash = (37 * hash) + BYTEDATE_FIELD_NUMBER;
+      hash = (53 * hash) + getByteDate().hashCode();
+      hash = (37 * hash) + FROMTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getFromTime());
+      hash = (37 * hash) + TOTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getToTime());
+      hash = (37 * hash) + SUM_FIELD_NUMBER;
+      hash = (53 * hash) + getSum();
+      hash = (37 * hash) + FROM_FIELD_NUMBER;
+      hash = (53 * hash) + getFrom();
+      hash = (37 * hash) + TO_FIELD_NUMBER;
+      hash = (53 * hash) + getTo();
+      if (getPositionCount() > 0) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPositionList().hashCode();
+      }
+      if (getUserCount() > 0) {
+        hash = (37 * hash) + USER_FIELD_NUMBER;
+        hash = (53 * hash) + getUserList().hashCode();
+      }
+      if (getVideoCount() > 0) {
+        hash = (37 * hash) + VIDEO_FIELD_NUMBER;
+        hash = (53 * hash) + getVideoList().hashCode();
+      }
+      if (getGratuityCount() > 0) {
+        hash = (37 * hash) + GRATUITY_FIELD_NUMBER;
+        hash = (53 * hash) + getGratuityList().hashCode();
+      }
+      if (getRewardCount() > 0) {
+        hash = (37 * hash) + REWARD_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardList().hashCode();
+      }
+      if (getUserStateCount() > 0) {
+        hash = (37 * hash) + USERSTATE_FIELD_NUMBER;
+        hash = (53 * hash) + getUserStateList().hashCode();
+      }
+      if (getAssetLogCount() > 0) {
+        hash = (37 * hash) + ASSETLOG_FIELD_NUMBER;
+        hash = (53 * hash) + getAssetLogList().hashCode();
+      }
+      if (getServerBeanCount() > 0) {
+        hash = (37 * hash) + SERVERBEAN_FIELD_NUMBER;
+        hash = (53 * hash) + getServerBeanList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Data parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Data prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Data prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Data}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.DataOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Data)
+            com.v2tech.net.lv.WebPackage.DataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Data_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Data_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Data_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Data_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Data.class, com.v2tech.net.lv.WebPackage.Data.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Data.newBuilder()
@@ -2373,12 +3512,14 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getPositionFieldBuilder();
           getUserFieldBuilder();
           getVideoFieldBuilder();
@@ -2389,26 +3530,22 @@ public final class WebPackage {
           getServerBeanFieldBuilder();
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         normal_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         byteDate_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         fromTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         toTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         sum_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         from_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         to_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         if (positionBuilder_ == null) {
           position_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000080);
@@ -2460,13 +3597,9 @@ public final class WebPackage {
         return this;
       }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Data.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Data_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Data getDefaultInstanceForType() {
@@ -2481,47 +3614,16 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Data buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Data result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Data buildPartial() {
         com.v2tech.net.lv.WebPackage.Data result = new com.v2tech.net.lv.WebPackage.Data(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.normal_ = normal_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.byteDate_ = byteDate_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.fromTime_ = fromTime_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.toTime_ = toTime_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.sum_ = sum_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.from_ = from_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.to_ = to_;
         if (positionBuilder_ == null) {
           if (((bitField0_ & 0x00000080) == 0x00000080)) {
@@ -2600,6 +3702,32 @@ public final class WebPackage {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Data) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Data)other);
@@ -2611,25 +3739,26 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Data other) {
         if (other == com.v2tech.net.lv.WebPackage.Data.getDefaultInstance()) return this;
-        if (other.hasNormal()) {
-          setNormal(other.getNormal());
+        if (!other.getNormal().isEmpty()) {
+          normal_ = other.normal_;
+          onChanged();
         }
-        if (other.hasByteDate()) {
+        if (other.getByteDate() != com.google.protobuf.ByteString.EMPTY) {
           setByteDate(other.getByteDate());
         }
-        if (other.hasFromTime()) {
+        if (other.getFromTime() != 0L) {
           setFromTime(other.getFromTime());
         }
-        if (other.hasToTime()) {
+        if (other.getToTime() != 0L) {
           setToTime(other.getToTime());
         }
-        if (other.hasSum()) {
+        if (other.getSum() != 0) {
           setSum(other.getSum());
         }
-        if (other.hasFrom()) {
+        if (other.getFrom() != 0) {
           setFrom(other.getFrom());
         }
-        if (other.hasTo()) {
+        if (other.getTo() != 0) {
           setTo(other.getTo());
         }
         if (positionBuilder_ == null) {
@@ -2651,7 +3780,7 @@ public final class WebPackage {
               position_ = other.position_;
               bitField0_ = (bitField0_ & ~0x00000080);
               positionBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getPositionFieldBuilder() : null;
             } else {
               positionBuilder_.addAllMessages(other.position_);
@@ -2677,7 +3806,7 @@ public final class WebPackage {
               user_ = other.user_;
               bitField0_ = (bitField0_ & ~0x00000100);
               userBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getUserFieldBuilder() : null;
             } else {
               userBuilder_.addAllMessages(other.user_);
@@ -2703,7 +3832,7 @@ public final class WebPackage {
               video_ = other.video_;
               bitField0_ = (bitField0_ & ~0x00000200);
               videoBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getVideoFieldBuilder() : null;
             } else {
               videoBuilder_.addAllMessages(other.video_);
@@ -2729,7 +3858,7 @@ public final class WebPackage {
               gratuity_ = other.gratuity_;
               bitField0_ = (bitField0_ & ~0x00000400);
               gratuityBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getGratuityFieldBuilder() : null;
             } else {
               gratuityBuilder_.addAllMessages(other.gratuity_);
@@ -2755,7 +3884,7 @@ public final class WebPackage {
               reward_ = other.reward_;
               bitField0_ = (bitField0_ & ~0x00000800);
               rewardBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getRewardFieldBuilder() : null;
             } else {
               rewardBuilder_.addAllMessages(other.reward_);
@@ -2781,7 +3910,7 @@ public final class WebPackage {
               userState_ = other.userState_;
               bitField0_ = (bitField0_ & ~0x00001000);
               userStateBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getUserStateFieldBuilder() : null;
             } else {
               userStateBuilder_.addAllMessages(other.userState_);
@@ -2807,7 +3936,7 @@ public final class WebPackage {
               assetLog_ = other.assetLog_;
               bitField0_ = (bitField0_ & ~0x00002000);
               assetLogBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getAssetLogFieldBuilder() : null;
             } else {
               assetLogBuilder_.addAllMessages(other.assetLog_);
@@ -2833,14 +3962,14 @@ public final class WebPackage {
               serverBean_ = other.serverBean_;
               bitField0_ = (bitField0_ & ~0x00004000);
               serverBeanBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getServerBeanFieldBuilder() : null;
             } else {
               serverBeanBuilder_.addAllMessages(other.serverBean_);
             }
           }
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -2852,280 +3981,249 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              normal_ = input.readBytes();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              byteDate_ = input.readBytes();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              fromTime_ = input.readInt64();
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              toTime_ = input.readInt64();
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              sum_ = input.readInt32();
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              from_ = input.readInt32();
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000040;
-              to_ = input.readInt32();
-              break;
-            }
-            case 66: {
-              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = com.v2tech.net.lv.WebPackage.Position.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addPosition(subBuilder.buildPartial());
-              break;
-            }
-            case 74: {
-              com.v2tech.net.lv.WebPackage.User.Builder subBuilder = com.v2tech.net.lv.WebPackage.User.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addUser(subBuilder.buildPartial());
-              break;
-            }
-            case 82: {
-              com.v2tech.net.lv.WebPackage.Video.Builder subBuilder = com.v2tech.net.lv.WebPackage.Video.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addVideo(subBuilder.buildPartial());
-              break;
-            }
-            case 90: {
-              com.v2tech.net.lv.WebPackage.Gratuity.Builder subBuilder = com.v2tech.net.lv.WebPackage.Gratuity.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addGratuity(subBuilder.buildPartial());
-              break;
-            }
-            case 98: {
-              com.v2tech.net.lv.WebPackage.Reward.Builder subBuilder = com.v2tech.net.lv.WebPackage.Reward.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addReward(subBuilder.buildPartial());
-              break;
-            }
-            case 106: {
-              com.v2tech.net.lv.WebPackage.UserState.Builder subBuilder = com.v2tech.net.lv.WebPackage.UserState.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addUserState(subBuilder.buildPartial());
-              break;
-            }
-            case 114: {
-              com.v2tech.net.lv.WebPackage.AssetLog.Builder subBuilder = com.v2tech.net.lv.WebPackage.AssetLog.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addAssetLog(subBuilder.buildPartial());
-              break;
-            }
-            case 122: {
-              com.v2tech.net.lv.WebPackage.ServerBean.Builder subBuilder = com.v2tech.net.lv.WebPackage.ServerBean.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addServerBean(subBuilder.buildPartial());
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Data parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Data) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-
       private int bitField0_;
 
-      // optional string normal = 1;
       private java.lang.Object normal_ = "";
-      public boolean hasNormal() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public String getNormal() {
+      /**
+       * <code>optional string normal = 1;</code>
+       */
+      public java.lang.String getNormal() {
         java.lang.Object ref = normal_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           normal_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setNormal(String value) {
+      /**
+       * <code>optional string normal = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getNormalBytes() {
+        java.lang.Object ref = normal_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          normal_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string normal = 1;</code>
+       */
+      public Builder setNormal(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000001;
+
         normal_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string normal = 1;</code>
+       */
       public Builder clearNormal() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         normal_ = getDefaultInstance().getNormal();
         onChanged();
         return this;
       }
-      void setNormal(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000001;
+      /**
+       * <code>optional string normal = 1;</code>
+       */
+      public Builder setNormalBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         normal_ = value;
         onChanged();
+        return this;
       }
 
-      // optional bytes byteDate = 2;
       private com.google.protobuf.ByteString byteDate_ = com.google.protobuf.ByteString.EMPTY;
-      public boolean hasByteDate() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional bytes byteDate = 2;</code>
+       */
       public com.google.protobuf.ByteString getByteDate() {
         return byteDate_;
       }
+      /**
+       * <code>optional bytes byteDate = 2;</code>
+       */
       public Builder setByteDate(com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         byteDate_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional bytes byteDate = 2;</code>
+       */
       public Builder clearByteDate() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         byteDate_ = getDefaultInstance().getByteDate();
         onChanged();
         return this;
       }
 
-      // optional int64 fromTime = 3;
       private long fromTime_ ;
-      public boolean hasFromTime() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional int64 fromTime = 3;</code>
+       */
       public long getFromTime() {
         return fromTime_;
       }
+      /**
+       * <code>optional int64 fromTime = 3;</code>
+       */
       public Builder setFromTime(long value) {
-        bitField0_ |= 0x00000004;
+
         fromTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 fromTime = 3;</code>
+       */
       public Builder clearFromTime() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         fromTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int64 toTime = 4;
       private long toTime_ ;
-      public boolean hasToTime() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
+      /**
+       * <code>optional int64 toTime = 4;</code>
+       */
       public long getToTime() {
         return toTime_;
       }
+      /**
+       * <code>optional int64 toTime = 4;</code>
+       */
       public Builder setToTime(long value) {
-        bitField0_ |= 0x00000008;
+
         toTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 toTime = 4;</code>
+       */
       public Builder clearToTime() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         toTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int32 sum = 5;
       private int sum_ ;
-      public boolean hasSum() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public int getSum() {
         return sum_;
       }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public Builder setSum(int value) {
-        bitField0_ |= 0x00000010;
+
         sum_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public Builder clearSum() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         sum_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 from = 6;
       private int from_ ;
-      public boolean hasFrom() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
+      /**
+       * <code>optional int32 from = 6;</code>
+       */
       public int getFrom() {
         return from_;
       }
+      /**
+       * <code>optional int32 from = 6;</code>
+       */
       public Builder setFrom(int value) {
-        bitField0_ |= 0x00000020;
+
         from_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 from = 6;</code>
+       */
       public Builder clearFrom() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         from_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 to = 7;
       private int to_ ;
-      public boolean hasTo() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
+      /**
+       * <code>optional int32 to = 7;</code>
+       */
       public int getTo() {
         return to_;
       }
+      /**
+       * <code>optional int32 to = 7;</code>
+       */
       public Builder setTo(int value) {
-        bitField0_ |= 0x00000040;
+
         to_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 to = 7;</code>
+       */
       public Builder clearTo() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         to_ = 0;
         onChanged();
         return this;
       }
 
-      // repeated .Position position = 8;
       private java.util.List<com.v2tech.net.lv.WebPackage.Position> position_ =
               java.util.Collections.emptyList();
       private void ensurePositionIsMutable() {
@@ -3135,9 +4233,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> positionBuilder_;
 
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Position> getPositionList() {
         if (positionBuilder_ == null) {
           return java.util.Collections.unmodifiableList(position_);
@@ -3145,6 +4246,9 @@ public final class WebPackage {
           return positionBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public int getPositionCount() {
         if (positionBuilder_ == null) {
           return position_.size();
@@ -3152,6 +4256,9 @@ public final class WebPackage {
           return positionBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position getPosition(int index) {
         if (positionBuilder_ == null) {
           return position_.get(index);
@@ -3159,6 +4266,9 @@ public final class WebPackage {
           return positionBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder setPosition(
               int index, com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
@@ -3173,6 +4283,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder setPosition(
               int index, com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -3184,6 +4297,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder addPosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
           if (value == null) {
@@ -3197,6 +4313,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder addPosition(
               int index, com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
@@ -3211,6 +4330,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder addPosition(
               com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -3222,6 +4344,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder addPosition(
               int index, com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -3233,17 +4358,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder addAllPosition(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Position> values) {
         if (positionBuilder_ == null) {
           ensurePositionIsMutable();
-          super.addAll(values, position_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, position_);
           onChanged();
         } else {
           positionBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder clearPosition() {
         if (positionBuilder_ == null) {
           position_ = java.util.Collections.emptyList();
@@ -3254,6 +4386,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public Builder removePosition(int index) {
         if (positionBuilder_ == null) {
           ensurePositionIsMutable();
@@ -3264,10 +4399,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder getPositionBuilder(
               int index) {
         return getPositionFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder(
               int index) {
         if (positionBuilder_ == null) {
@@ -3275,6 +4416,9 @@ public final class WebPackage {
           return positionBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.PositionOrBuilder>
       getPositionOrBuilderList() {
         if (positionBuilder_ != null) {
@@ -3283,24 +4427,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(position_);
         }
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder addPositionBuilder() {
         return getPositionFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Position.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder addPositionBuilder(
               int index) {
         return getPositionFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Position.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Position position = 8;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Position.Builder>
       getPositionBuilderList() {
         return getPositionFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>
       getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
-          positionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          positionBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>(
                   position_,
                   ((bitField0_ & 0x00000080) == 0x00000080),
@@ -3311,7 +4464,6 @@ public final class WebPackage {
         return positionBuilder_;
       }
 
-      // repeated .User user = 9;
       private java.util.List<com.v2tech.net.lv.WebPackage.User> user_ =
               java.util.Collections.emptyList();
       private void ensureUserIsMutable() {
@@ -3321,9 +4473,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.User, com.v2tech.net.lv.WebPackage.User.Builder, com.v2tech.net.lv.WebPackage.UserOrBuilder> userBuilder_;
 
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.User> getUserList() {
         if (userBuilder_ == null) {
           return java.util.Collections.unmodifiableList(user_);
@@ -3331,6 +4486,9 @@ public final class WebPackage {
           return userBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public int getUserCount() {
         if (userBuilder_ == null) {
           return user_.size();
@@ -3338,6 +4496,9 @@ public final class WebPackage {
           return userBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.User getUser(int index) {
         if (userBuilder_ == null) {
           return user_.get(index);
@@ -3345,6 +4506,9 @@ public final class WebPackage {
           return userBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder setUser(
               int index, com.v2tech.net.lv.WebPackage.User value) {
         if (userBuilder_ == null) {
@@ -3359,6 +4523,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder setUser(
               int index, com.v2tech.net.lv.WebPackage.User.Builder builderForValue) {
         if (userBuilder_ == null) {
@@ -3370,6 +4537,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder addUser(com.v2tech.net.lv.WebPackage.User value) {
         if (userBuilder_ == null) {
           if (value == null) {
@@ -3383,6 +4553,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder addUser(
               int index, com.v2tech.net.lv.WebPackage.User value) {
         if (userBuilder_ == null) {
@@ -3397,6 +4570,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder addUser(
               com.v2tech.net.lv.WebPackage.User.Builder builderForValue) {
         if (userBuilder_ == null) {
@@ -3408,6 +4584,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder addUser(
               int index, com.v2tech.net.lv.WebPackage.User.Builder builderForValue) {
         if (userBuilder_ == null) {
@@ -3419,17 +4598,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder addAllUser(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.User> values) {
         if (userBuilder_ == null) {
           ensureUserIsMutable();
-          super.addAll(values, user_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, user_);
           onChanged();
         } else {
           userBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder clearUser() {
         if (userBuilder_ == null) {
           user_ = java.util.Collections.emptyList();
@@ -3440,6 +4626,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public Builder removeUser(int index) {
         if (userBuilder_ == null) {
           ensureUserIsMutable();
@@ -3450,10 +4639,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.User.Builder getUserBuilder(
               int index) {
         return getUserFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserOrBuilder getUserOrBuilder(
               int index) {
         if (userBuilder_ == null) {
@@ -3461,6 +4656,9 @@ public final class WebPackage {
           return userBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserOrBuilder>
       getUserOrBuilderList() {
         if (userBuilder_ != null) {
@@ -3469,24 +4667,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(user_);
         }
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.User.Builder addUserBuilder() {
         return getUserFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.User.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.User.Builder addUserBuilder(
               int index) {
         return getUserFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.User.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.User user = 9;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.User.Builder>
       getUserBuilderList() {
         return getUserFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.User, com.v2tech.net.lv.WebPackage.User.Builder, com.v2tech.net.lv.WebPackage.UserOrBuilder>
       getUserFieldBuilder() {
         if (userBuilder_ == null) {
-          userBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          userBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.User, com.v2tech.net.lv.WebPackage.User.Builder, com.v2tech.net.lv.WebPackage.UserOrBuilder>(
                   user_,
                   ((bitField0_ & 0x00000100) == 0x00000100),
@@ -3497,7 +4704,6 @@ public final class WebPackage {
         return userBuilder_;
       }
 
-      // repeated .Video video = 10;
       private java.util.List<com.v2tech.net.lv.WebPackage.Video> video_ =
               java.util.Collections.emptyList();
       private void ensureVideoIsMutable() {
@@ -3507,9 +4713,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Video, com.v2tech.net.lv.WebPackage.Video.Builder, com.v2tech.net.lv.WebPackage.VideoOrBuilder> videoBuilder_;
 
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Video> getVideoList() {
         if (videoBuilder_ == null) {
           return java.util.Collections.unmodifiableList(video_);
@@ -3517,6 +4726,9 @@ public final class WebPackage {
           return videoBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public int getVideoCount() {
         if (videoBuilder_ == null) {
           return video_.size();
@@ -3524,6 +4736,9 @@ public final class WebPackage {
           return videoBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Video getVideo(int index) {
         if (videoBuilder_ == null) {
           return video_.get(index);
@@ -3531,6 +4746,9 @@ public final class WebPackage {
           return videoBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder setVideo(
               int index, com.v2tech.net.lv.WebPackage.Video value) {
         if (videoBuilder_ == null) {
@@ -3545,6 +4763,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder setVideo(
               int index, com.v2tech.net.lv.WebPackage.Video.Builder builderForValue) {
         if (videoBuilder_ == null) {
@@ -3556,6 +4777,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder addVideo(com.v2tech.net.lv.WebPackage.Video value) {
         if (videoBuilder_ == null) {
           if (value == null) {
@@ -3569,6 +4793,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder addVideo(
               int index, com.v2tech.net.lv.WebPackage.Video value) {
         if (videoBuilder_ == null) {
@@ -3583,6 +4810,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder addVideo(
               com.v2tech.net.lv.WebPackage.Video.Builder builderForValue) {
         if (videoBuilder_ == null) {
@@ -3594,6 +4824,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder addVideo(
               int index, com.v2tech.net.lv.WebPackage.Video.Builder builderForValue) {
         if (videoBuilder_ == null) {
@@ -3605,17 +4838,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder addAllVideo(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Video> values) {
         if (videoBuilder_ == null) {
           ensureVideoIsMutable();
-          super.addAll(values, video_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, video_);
           onChanged();
         } else {
           videoBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder clearVideo() {
         if (videoBuilder_ == null) {
           video_ = java.util.Collections.emptyList();
@@ -3626,6 +4866,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public Builder removeVideo(int index) {
         if (videoBuilder_ == null) {
           ensureVideoIsMutable();
@@ -3636,10 +4879,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Video.Builder getVideoBuilder(
               int index) {
         return getVideoFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public com.v2tech.net.lv.WebPackage.VideoOrBuilder getVideoOrBuilder(
               int index) {
         if (videoBuilder_ == null) {
@@ -3647,6 +4896,9 @@ public final class WebPackage {
           return videoBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.VideoOrBuilder>
       getVideoOrBuilderList() {
         if (videoBuilder_ != null) {
@@ -3655,24 +4907,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(video_);
         }
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Video.Builder addVideoBuilder() {
         return getVideoFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Video.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Video.Builder addVideoBuilder(
               int index) {
         return getVideoFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Video.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Video video = 10;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Video.Builder>
       getVideoBuilderList() {
         return getVideoFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Video, com.v2tech.net.lv.WebPackage.Video.Builder, com.v2tech.net.lv.WebPackage.VideoOrBuilder>
       getVideoFieldBuilder() {
         if (videoBuilder_ == null) {
-          videoBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          videoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Video, com.v2tech.net.lv.WebPackage.Video.Builder, com.v2tech.net.lv.WebPackage.VideoOrBuilder>(
                   video_,
                   ((bitField0_ & 0x00000200) == 0x00000200),
@@ -3683,7 +4944,6 @@ public final class WebPackage {
         return videoBuilder_;
       }
 
-      // repeated .Gratuity gratuity = 11;
       private java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> gratuity_ =
               java.util.Collections.emptyList();
       private void ensureGratuityIsMutable() {
@@ -3693,9 +4953,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gratuity, com.v2tech.net.lv.WebPackage.Gratuity.Builder, com.v2tech.net.lv.WebPackage.GratuityOrBuilder> gratuityBuilder_;
 
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gratuity> getGratuityList() {
         if (gratuityBuilder_ == null) {
           return java.util.Collections.unmodifiableList(gratuity_);
@@ -3703,6 +4966,9 @@ public final class WebPackage {
           return gratuityBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public int getGratuityCount() {
         if (gratuityBuilder_ == null) {
           return gratuity_.size();
@@ -3710,6 +4976,9 @@ public final class WebPackage {
           return gratuityBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gratuity getGratuity(int index) {
         if (gratuityBuilder_ == null) {
           return gratuity_.get(index);
@@ -3717,6 +4986,9 @@ public final class WebPackage {
           return gratuityBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder setGratuity(
               int index, com.v2tech.net.lv.WebPackage.Gratuity value) {
         if (gratuityBuilder_ == null) {
@@ -3731,6 +5003,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder setGratuity(
               int index, com.v2tech.net.lv.WebPackage.Gratuity.Builder builderForValue) {
         if (gratuityBuilder_ == null) {
@@ -3742,6 +5017,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder addGratuity(com.v2tech.net.lv.WebPackage.Gratuity value) {
         if (gratuityBuilder_ == null) {
           if (value == null) {
@@ -3755,6 +5033,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder addGratuity(
               int index, com.v2tech.net.lv.WebPackage.Gratuity value) {
         if (gratuityBuilder_ == null) {
@@ -3769,6 +5050,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder addGratuity(
               com.v2tech.net.lv.WebPackage.Gratuity.Builder builderForValue) {
         if (gratuityBuilder_ == null) {
@@ -3780,6 +5064,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder addGratuity(
               int index, com.v2tech.net.lv.WebPackage.Gratuity.Builder builderForValue) {
         if (gratuityBuilder_ == null) {
@@ -3791,17 +5078,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder addAllGratuity(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Gratuity> values) {
         if (gratuityBuilder_ == null) {
           ensureGratuityIsMutable();
-          super.addAll(values, gratuity_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, gratuity_);
           onChanged();
         } else {
           gratuityBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder clearGratuity() {
         if (gratuityBuilder_ == null) {
           gratuity_ = java.util.Collections.emptyList();
@@ -3812,6 +5106,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public Builder removeGratuity(int index) {
         if (gratuityBuilder_ == null) {
           ensureGratuityIsMutable();
@@ -3822,10 +5119,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gratuity.Builder getGratuityBuilder(
               int index) {
         return getGratuityFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public com.v2tech.net.lv.WebPackage.GratuityOrBuilder getGratuityOrBuilder(
               int index) {
         if (gratuityBuilder_ == null) {
@@ -3833,6 +5136,9 @@ public final class WebPackage {
           return gratuityBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.GratuityOrBuilder>
       getGratuityOrBuilderList() {
         if (gratuityBuilder_ != null) {
@@ -3841,24 +5147,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(gratuity_);
         }
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gratuity.Builder addGratuityBuilder() {
         return getGratuityFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Gratuity.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gratuity.Builder addGratuityBuilder(
               int index) {
         return getGratuityFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Gratuity.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gratuity gratuity = 11;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gratuity.Builder>
       getGratuityBuilderList() {
         return getGratuityFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gratuity, com.v2tech.net.lv.WebPackage.Gratuity.Builder, com.v2tech.net.lv.WebPackage.GratuityOrBuilder>
       getGratuityFieldBuilder() {
         if (gratuityBuilder_ == null) {
-          gratuityBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          gratuityBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Gratuity, com.v2tech.net.lv.WebPackage.Gratuity.Builder, com.v2tech.net.lv.WebPackage.GratuityOrBuilder>(
                   gratuity_,
                   ((bitField0_ & 0x00000400) == 0x00000400),
@@ -3869,7 +5184,6 @@ public final class WebPackage {
         return gratuityBuilder_;
       }
 
-      // repeated .Reward reward = 12;
       private java.util.List<com.v2tech.net.lv.WebPackage.Reward> reward_ =
               java.util.Collections.emptyList();
       private void ensureRewardIsMutable() {
@@ -3879,9 +5193,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder> rewardBuilder_;
 
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Reward> getRewardList() {
         if (rewardBuilder_ == null) {
           return java.util.Collections.unmodifiableList(reward_);
@@ -3889,6 +5206,9 @@ public final class WebPackage {
           return rewardBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public int getRewardCount() {
         if (rewardBuilder_ == null) {
           return reward_.size();
@@ -3896,6 +5216,9 @@ public final class WebPackage {
           return rewardBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Reward getReward(int index) {
         if (rewardBuilder_ == null) {
           return reward_.get(index);
@@ -3903,6 +5226,9 @@ public final class WebPackage {
           return rewardBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder setReward(
               int index, com.v2tech.net.lv.WebPackage.Reward value) {
         if (rewardBuilder_ == null) {
@@ -3917,6 +5243,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder setReward(
               int index, com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
         if (rewardBuilder_ == null) {
@@ -3928,6 +5257,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder addReward(com.v2tech.net.lv.WebPackage.Reward value) {
         if (rewardBuilder_ == null) {
           if (value == null) {
@@ -3941,6 +5273,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder addReward(
               int index, com.v2tech.net.lv.WebPackage.Reward value) {
         if (rewardBuilder_ == null) {
@@ -3955,6 +5290,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder addReward(
               com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
         if (rewardBuilder_ == null) {
@@ -3966,6 +5304,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder addReward(
               int index, com.v2tech.net.lv.WebPackage.Reward.Builder builderForValue) {
         if (rewardBuilder_ == null) {
@@ -3977,17 +5318,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder addAllReward(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Reward> values) {
         if (rewardBuilder_ == null) {
           ensureRewardIsMutable();
-          super.addAll(values, reward_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, reward_);
           onChanged();
         } else {
           rewardBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder clearReward() {
         if (rewardBuilder_ == null) {
           reward_ = java.util.Collections.emptyList();
@@ -3998,6 +5346,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public Builder removeReward(int index) {
         if (rewardBuilder_ == null) {
           ensureRewardIsMutable();
@@ -4008,10 +5359,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Reward.Builder getRewardBuilder(
               int index) {
         return getRewardFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public com.v2tech.net.lv.WebPackage.RewardOrBuilder getRewardOrBuilder(
               int index) {
         if (rewardBuilder_ == null) {
@@ -4019,6 +5376,9 @@ public final class WebPackage {
           return rewardBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.RewardOrBuilder>
       getRewardOrBuilderList() {
         if (rewardBuilder_ != null) {
@@ -4027,24 +5387,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(reward_);
         }
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Reward.Builder addRewardBuilder() {
         return getRewardFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Reward.Builder addRewardBuilder(
               int index) {
         return getRewardFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Reward reward = 12;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Reward.Builder>
       getRewardBuilderList() {
         return getRewardFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder>
       getRewardFieldBuilder() {
         if (rewardBuilder_ == null) {
-          rewardBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          rewardBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Reward, com.v2tech.net.lv.WebPackage.Reward.Builder, com.v2tech.net.lv.WebPackage.RewardOrBuilder>(
                   reward_,
                   ((bitField0_ & 0x00000800) == 0x00000800),
@@ -4055,7 +5424,6 @@ public final class WebPackage {
         return rewardBuilder_;
       }
 
-      // repeated .UserState userState = 13;
       private java.util.List<com.v2tech.net.lv.WebPackage.UserState> userState_ =
               java.util.Collections.emptyList();
       private void ensureUserStateIsMutable() {
@@ -4065,9 +5433,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.UserState, com.v2tech.net.lv.WebPackage.UserState.Builder, com.v2tech.net.lv.WebPackage.UserStateOrBuilder> userStateBuilder_;
 
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.UserState> getUserStateList() {
         if (userStateBuilder_ == null) {
           return java.util.Collections.unmodifiableList(userState_);
@@ -4075,6 +5446,9 @@ public final class WebPackage {
           return userStateBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public int getUserStateCount() {
         if (userStateBuilder_ == null) {
           return userState_.size();
@@ -4082,6 +5456,9 @@ public final class WebPackage {
           return userStateBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserState getUserState(int index) {
         if (userStateBuilder_ == null) {
           return userState_.get(index);
@@ -4089,6 +5466,9 @@ public final class WebPackage {
           return userStateBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder setUserState(
               int index, com.v2tech.net.lv.WebPackage.UserState value) {
         if (userStateBuilder_ == null) {
@@ -4103,6 +5483,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder setUserState(
               int index, com.v2tech.net.lv.WebPackage.UserState.Builder builderForValue) {
         if (userStateBuilder_ == null) {
@@ -4114,6 +5497,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder addUserState(com.v2tech.net.lv.WebPackage.UserState value) {
         if (userStateBuilder_ == null) {
           if (value == null) {
@@ -4127,6 +5513,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder addUserState(
               int index, com.v2tech.net.lv.WebPackage.UserState value) {
         if (userStateBuilder_ == null) {
@@ -4141,6 +5530,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder addUserState(
               com.v2tech.net.lv.WebPackage.UserState.Builder builderForValue) {
         if (userStateBuilder_ == null) {
@@ -4152,6 +5544,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder addUserState(
               int index, com.v2tech.net.lv.WebPackage.UserState.Builder builderForValue) {
         if (userStateBuilder_ == null) {
@@ -4163,17 +5558,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder addAllUserState(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.UserState> values) {
         if (userStateBuilder_ == null) {
           ensureUserStateIsMutable();
-          super.addAll(values, userState_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, userState_);
           onChanged();
         } else {
           userStateBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder clearUserState() {
         if (userStateBuilder_ == null) {
           userState_ = java.util.Collections.emptyList();
@@ -4184,6 +5586,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public Builder removeUserState(int index) {
         if (userStateBuilder_ == null) {
           ensureUserStateIsMutable();
@@ -4194,10 +5599,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserState.Builder getUserStateBuilder(
               int index) {
         return getUserStateFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserStateOrBuilder getUserStateOrBuilder(
               int index) {
         if (userStateBuilder_ == null) {
@@ -4205,6 +5616,9 @@ public final class WebPackage {
           return userStateBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.UserStateOrBuilder>
       getUserStateOrBuilderList() {
         if (userStateBuilder_ != null) {
@@ -4213,24 +5627,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(userState_);
         }
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserState.Builder addUserStateBuilder() {
         return getUserStateFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.UserState.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public com.v2tech.net.lv.WebPackage.UserState.Builder addUserStateBuilder(
               int index) {
         return getUserStateFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.UserState.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.UserState userState = 13;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.UserState.Builder>
       getUserStateBuilderList() {
         return getUserStateFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.UserState, com.v2tech.net.lv.WebPackage.UserState.Builder, com.v2tech.net.lv.WebPackage.UserStateOrBuilder>
       getUserStateFieldBuilder() {
         if (userStateBuilder_ == null) {
-          userStateBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          userStateBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.UserState, com.v2tech.net.lv.WebPackage.UserState.Builder, com.v2tech.net.lv.WebPackage.UserStateOrBuilder>(
                   userState_,
                   ((bitField0_ & 0x00001000) == 0x00001000),
@@ -4241,7 +5664,6 @@ public final class WebPackage {
         return userStateBuilder_;
       }
 
-      // repeated .AssetLog assetLog = 14;
       private java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> assetLog_ =
               java.util.Collections.emptyList();
       private void ensureAssetLogIsMutable() {
@@ -4251,9 +5673,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.AssetLog, com.v2tech.net.lv.WebPackage.AssetLog.Builder, com.v2tech.net.lv.WebPackage.AssetLogOrBuilder> assetLogBuilder_;
 
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.AssetLog> getAssetLogList() {
         if (assetLogBuilder_ == null) {
           return java.util.Collections.unmodifiableList(assetLog_);
@@ -4261,6 +5686,9 @@ public final class WebPackage {
           return assetLogBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public int getAssetLogCount() {
         if (assetLogBuilder_ == null) {
           return assetLog_.size();
@@ -4268,6 +5696,9 @@ public final class WebPackage {
           return assetLogBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.AssetLog getAssetLog(int index) {
         if (assetLogBuilder_ == null) {
           return assetLog_.get(index);
@@ -4275,6 +5706,9 @@ public final class WebPackage {
           return assetLogBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder setAssetLog(
               int index, com.v2tech.net.lv.WebPackage.AssetLog value) {
         if (assetLogBuilder_ == null) {
@@ -4289,6 +5723,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder setAssetLog(
               int index, com.v2tech.net.lv.WebPackage.AssetLog.Builder builderForValue) {
         if (assetLogBuilder_ == null) {
@@ -4300,6 +5737,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder addAssetLog(com.v2tech.net.lv.WebPackage.AssetLog value) {
         if (assetLogBuilder_ == null) {
           if (value == null) {
@@ -4313,6 +5753,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder addAssetLog(
               int index, com.v2tech.net.lv.WebPackage.AssetLog value) {
         if (assetLogBuilder_ == null) {
@@ -4327,6 +5770,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder addAssetLog(
               com.v2tech.net.lv.WebPackage.AssetLog.Builder builderForValue) {
         if (assetLogBuilder_ == null) {
@@ -4338,6 +5784,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder addAssetLog(
               int index, com.v2tech.net.lv.WebPackage.AssetLog.Builder builderForValue) {
         if (assetLogBuilder_ == null) {
@@ -4349,17 +5798,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder addAllAssetLog(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.AssetLog> values) {
         if (assetLogBuilder_ == null) {
           ensureAssetLogIsMutable();
-          super.addAll(values, assetLog_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, assetLog_);
           onChanged();
         } else {
           assetLogBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder clearAssetLog() {
         if (assetLogBuilder_ == null) {
           assetLog_ = java.util.Collections.emptyList();
@@ -4370,6 +5826,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public Builder removeAssetLog(int index) {
         if (assetLogBuilder_ == null) {
           ensureAssetLogIsMutable();
@@ -4380,10 +5839,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.AssetLog.Builder getAssetLogBuilder(
               int index) {
         return getAssetLogFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.AssetLogOrBuilder getAssetLogOrBuilder(
               int index) {
         if (assetLogBuilder_ == null) {
@@ -4391,6 +5856,9 @@ public final class WebPackage {
           return assetLogBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>
       getAssetLogOrBuilderList() {
         if (assetLogBuilder_ != null) {
@@ -4399,24 +5867,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(assetLog_);
         }
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.AssetLog.Builder addAssetLogBuilder() {
         return getAssetLogFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.AssetLog.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.AssetLog.Builder addAssetLogBuilder(
               int index) {
         return getAssetLogFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.AssetLog.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.AssetLog assetLog = 14;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.AssetLog.Builder>
       getAssetLogBuilderList() {
         return getAssetLogFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.AssetLog, com.v2tech.net.lv.WebPackage.AssetLog.Builder, com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>
       getAssetLogFieldBuilder() {
         if (assetLogBuilder_ == null) {
-          assetLogBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          assetLogBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.AssetLog, com.v2tech.net.lv.WebPackage.AssetLog.Builder, com.v2tech.net.lv.WebPackage.AssetLogOrBuilder>(
                   assetLog_,
                   ((bitField0_ & 0x00002000) == 0x00002000),
@@ -4427,7 +5904,6 @@ public final class WebPackage {
         return assetLogBuilder_;
       }
 
-      // repeated .ServerBean serverBean = 15;
       private java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> serverBean_ =
               java.util.Collections.emptyList();
       private void ensureServerBeanIsMutable() {
@@ -4437,9 +5913,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder> serverBeanBuilder_;
 
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean> getServerBeanList() {
         if (serverBeanBuilder_ == null) {
           return java.util.Collections.unmodifiableList(serverBean_);
@@ -4447,6 +5926,9 @@ public final class WebPackage {
           return serverBeanBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public int getServerBeanCount() {
         if (serverBeanBuilder_ == null) {
           return serverBean_.size();
@@ -4454,6 +5936,9 @@ public final class WebPackage {
           return serverBeanBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ServerBean getServerBean(int index) {
         if (serverBeanBuilder_ == null) {
           return serverBean_.get(index);
@@ -4461,6 +5946,9 @@ public final class WebPackage {
           return serverBeanBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder setServerBean(
               int index, com.v2tech.net.lv.WebPackage.ServerBean value) {
         if (serverBeanBuilder_ == null) {
@@ -4475,6 +5963,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder setServerBean(
               int index, com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
         if (serverBeanBuilder_ == null) {
@@ -4486,6 +5977,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder addServerBean(com.v2tech.net.lv.WebPackage.ServerBean value) {
         if (serverBeanBuilder_ == null) {
           if (value == null) {
@@ -4499,6 +5993,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder addServerBean(
               int index, com.v2tech.net.lv.WebPackage.ServerBean value) {
         if (serverBeanBuilder_ == null) {
@@ -4513,6 +6010,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder addServerBean(
               com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
         if (serverBeanBuilder_ == null) {
@@ -4524,6 +6024,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder addServerBean(
               int index, com.v2tech.net.lv.WebPackage.ServerBean.Builder builderForValue) {
         if (serverBeanBuilder_ == null) {
@@ -4535,17 +6038,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder addAllServerBean(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.ServerBean> values) {
         if (serverBeanBuilder_ == null) {
           ensureServerBeanIsMutable();
-          super.addAll(values, serverBean_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, serverBean_);
           onChanged();
         } else {
           serverBeanBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder clearServerBean() {
         if (serverBeanBuilder_ == null) {
           serverBean_ = java.util.Collections.emptyList();
@@ -4556,6 +6066,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public Builder removeServerBean(int index) {
         if (serverBeanBuilder_ == null) {
           ensureServerBeanIsMutable();
@@ -4566,10 +6079,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ServerBean.Builder getServerBeanBuilder(
               int index) {
         return getServerBeanFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder getServerBeanOrBuilder(
               int index) {
         if (serverBeanBuilder_ == null) {
@@ -4577,6 +6096,9 @@ public final class WebPackage {
           return serverBeanBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
       getServerBeanOrBuilderList() {
         if (serverBeanBuilder_ != null) {
@@ -4585,24 +6107,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(serverBean_);
         }
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ServerBean.Builder addServerBeanBuilder() {
         return getServerBeanFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public com.v2tech.net.lv.WebPackage.ServerBean.Builder addServerBeanBuilder(
               int index) {
         return getServerBeanFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.ServerBean serverBean = 15;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.ServerBean.Builder>
       getServerBeanBuilderList() {
         return getServerBeanFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>
       getServerBeanFieldBuilder() {
         if (serverBeanBuilder_ == null) {
-          serverBeanBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          serverBeanBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.ServerBean, com.v2tech.net.lv.WebPackage.ServerBean.Builder, com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder>(
                   serverBean_,
                   ((bitField0_ & 0x00004000) == 0x00004000),
@@ -4612,707 +6143,269 @@ public final class WebPackage {
         }
         return serverBeanBuilder_;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:Data)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Data)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Data)
+    private static final com.v2tech.net.lv.WebPackage.Data DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Data(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Data();
     }
 
-    // @@protoc_insertion_point(class_scope:Data)
+    public static com.v2tech.net.lv.WebPackage.Data getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Data>
+            PARSER = new com.google.protobuf.AbstractParser<Data>() {
+      public Data parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Data(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Data> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Data> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Data getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface UserOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface UserOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.User)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 id = 1;
-    boolean hasId();
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
     int getId();
 
-    // optional string phone = 2;
-    boolean hasPhone();
-    String getPhone();
+    /**
+     * <code>optional string phone = 2;</code>
+     */
+    java.lang.String getPhone();
+    /**
+     * <code>optional string phone = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPhoneBytes();
 
-    // optional string name = 3;
-    boolean hasName();
-    String getName();
+    /**
+     * <code>optional string name = 3;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>optional string name = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getNameBytes();
 
-    // optional string pwd = 4;
-    boolean hasPwd();
-    String getPwd();
+    /**
+     * <code>optional string pwd = 4;</code>
+     */
+    java.lang.String getPwd();
+    /**
+     * <code>optional string pwd = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getPwdBytes();
 
-    // optional string pwd2orCode = 5;
-    boolean hasPwd2OrCode();
-    String getPwd2OrCode();
+    /**
+     * <code>optional string pwd2orCode = 5;</code>
+     */
+    java.lang.String getPwd2OrCode();
+    /**
+     * <code>optional string pwd2orCode = 5;</code>
+     */
+    com.google.protobuf.ByteString
+    getPwd2OrCodeBytes();
 
-    // optional string realName = 6;
-    boolean hasRealName();
-    String getRealName();
+    /**
+     * <code>optional string realName = 6;</code>
+     */
+    java.lang.String getRealName();
+    /**
+     * <code>optional string realName = 6;</code>
+     */
+    com.google.protobuf.ByteString
+    getRealNameBytes();
 
-    // optional string headurl = 7;
-    boolean hasHeadurl();
-    String getHeadurl();
+    /**
+     * <code>optional string headurl = 7;</code>
+     */
+    java.lang.String getHeadurl();
+    /**
+     * <code>optional string headurl = 7;</code>
+     */
+    com.google.protobuf.ByteString
+    getHeadurlBytes();
 
-    // optional string signText = 8;
-    boolean hasSignText();
-    String getSignText();
+    /**
+     * <code>optional string signText = 8;</code>
+     */
+    java.lang.String getSignText();
+    /**
+     * <code>optional string signText = 8;</code>
+     */
+    com.google.protobuf.ByteString
+    getSignTextBytes();
 
-    // optional int32 sex = 9;
-    boolean hasSex();
+    /**
+     * <code>optional int32 sex = 9;</code>
+     */
     int getSex();
 
-    // optional string address = 10;
-    boolean hasAddress();
-    String getAddress();
+    /**
+     * <code>optional string address = 10;</code>
+     */
+    java.lang.String getAddress();
+    /**
+     * <code>optional string address = 10;</code>
+     */
+    com.google.protobuf.ByteString
+    getAddressBytes();
 
-    // optional int32 experience = 11;
-    boolean hasExperience();
+    /**
+     * <code>optional int32 experience = 11;</code>
+     */
     int getExperience();
 
-    // optional int32 fansCount = 12;
-    boolean hasFansCount();
+    /**
+     * <code>optional int32 fansCount = 12;</code>
+     */
     int getFansCount();
 
-    // optional int32 followCount = 13;
-    boolean hasFollowCount();
+    /**
+     * <code>optional int32 followCount = 13;</code>
+     */
     int getFollowCount();
 
-    // optional .Position position = 14;
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
     boolean hasPosition();
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
     com.v2tech.net.lv.WebPackage.Position getPosition();
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
     com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder();
 
-    // optional string deviceID = 15;
-    boolean hasDeviceID();
-    String getDeviceID();
+    /**
+     * <code>optional string deviceID = 15;</code>
+     */
+    java.lang.String getDeviceID();
+    /**
+     * <code>optional string deviceID = 15;</code>
+     */
+    com.google.protobuf.ByteString
+    getDeviceIDBytes();
 
-    // optional int32 FollowType = 16;
-    boolean hasFollowType();
+    /**
+     * <code>optional int32 FollowType = 16;</code>
+     */
     int getFollowType();
 
-    // optional string descName = 17;
-    boolean hasDescName();
-    String getDescName();
+    /**
+     * <code>optional string descName = 17;</code>
+     */
+    java.lang.String getDescName();
+    /**
+     * <code>optional string descName = 17;</code>
+     */
+    com.google.protobuf.ByteString
+    getDescNameBytes();
 
-    // optional string v2ID = 18;
-    boolean hasV2ID();
-    String getV2ID();
+    /**
+     * <code>optional string v2ID = 18;</code>
+     */
+    java.lang.String getV2ID();
+    /**
+     * <code>optional string v2ID = 18;</code>
+     */
+    com.google.protobuf.ByteString
+    getV2IDBytes();
 
-    // optional string v2UserName = 19;
-    boolean hasV2UserName();
-    String getV2UserName();
+    /**
+     * <code>optional string v2UserName = 19;</code>
+     */
+    java.lang.String getV2UserName();
+    /**
+     * <code>optional string v2UserName = 19;</code>
+     */
+    com.google.protobuf.ByteString
+    getV2UserNameBytes();
 
-    // optional string v2Pwd = 20;
-    boolean hasV2Pwd();
-    String getV2Pwd();
+    /**
+     * <code>optional string v2Pwd = 20;</code>
+     */
+    java.lang.String getV2Pwd();
+    /**
+     * <code>optional string v2Pwd = 20;</code>
+     */
+    com.google.protobuf.ByteString
+    getV2PwdBytes();
 
-    // optional int32 videoCount = 21;
-    boolean hasVideoCount();
+    /**
+     * <code>optional int32 videoCount = 21;</code>
+     */
     int getVideoCount();
 
-    // optional string v2DeviceID1 = 22;
-    boolean hasV2DeviceID1();
-    String getV2DeviceID1();
+    /**
+     * <code>optional string v2DeviceID1 = 22;</code>
+     */
+    java.lang.String getV2DeviceID1();
+    /**
+     * <code>optional string v2DeviceID1 = 22;</code>
+     */
+    com.google.protobuf.ByteString
+    getV2DeviceID1Bytes();
 
-    // optional string v2DeviceID2 = 23;
-    boolean hasV2DeviceID2();
-    String getV2DeviceID2();
+    /**
+     * <code>optional string v2DeviceID2 = 23;</code>
+     */
+    java.lang.String getV2DeviceID2();
+    /**
+     * <code>optional string v2DeviceID2 = 23;</code>
+     */
+    com.google.protobuf.ByteString
+    getV2DeviceID2Bytes();
   }
-  public static final class User extends
-          com.google.protobuf.GeneratedMessage
-          implements UserOrBuilder {
+  /**
+   * Protobuf type {@code lv.User}
+   */
+  public  static final class User extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.User)
+          UserOrBuilder {
     // Use User.newBuilder() to construct.
-    private User(Builder builder) {
+    private User(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private User(boolean noInit) {}
-
-    private static final User defaultInstance;
-    public static User getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public User getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_User_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_User_fieldAccessorTable;
-    }
-
-    private int bitField0_;
-    // optional int32 id = 1;
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public int getId() {
-      return id_;
-    }
-
-    // optional string phone = 2;
-    public static final int PHONE_FIELD_NUMBER = 2;
-    private java.lang.Object phone_;
-    public boolean hasPhone() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getPhone() {
-      java.lang.Object ref = phone_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          phone_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getPhoneBytes() {
-      java.lang.Object ref = phone_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        phone_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string name = 3;
-    public static final int NAME_FIELD_NUMBER = 3;
-    private java.lang.Object name_;
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          name_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string pwd = 4;
-    public static final int PWD_FIELD_NUMBER = 4;
-    private java.lang.Object pwd_;
-    public boolean hasPwd() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public String getPwd() {
-      java.lang.Object ref = pwd_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          pwd_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getPwdBytes() {
-      java.lang.Object ref = pwd_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        pwd_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string pwd2orCode = 5;
-    public static final int PWD2ORCODE_FIELD_NUMBER = 5;
-    private java.lang.Object pwd2OrCode_;
-    public boolean hasPwd2OrCode() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    public String getPwd2OrCode() {
-      java.lang.Object ref = pwd2OrCode_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          pwd2OrCode_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getPwd2OrCodeBytes() {
-      java.lang.Object ref = pwd2OrCode_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        pwd2OrCode_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string realName = 6;
-    public static final int REALNAME_FIELD_NUMBER = 6;
-    private java.lang.Object realName_;
-    public boolean hasRealName() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public String getRealName() {
-      java.lang.Object ref = realName_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          realName_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getRealNameBytes() {
-      java.lang.Object ref = realName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        realName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string headurl = 7;
-    public static final int HEADURL_FIELD_NUMBER = 7;
-    private java.lang.Object headurl_;
-    public boolean hasHeadurl() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    public String getHeadurl() {
-      java.lang.Object ref = headurl_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          headurl_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getHeadurlBytes() {
-      java.lang.Object ref = headurl_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        headurl_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string signText = 8;
-    public static final int SIGNTEXT_FIELD_NUMBER = 8;
-    private java.lang.Object signText_;
-    public boolean hasSignText() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    public String getSignText() {
-      java.lang.Object ref = signText_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          signText_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getSignTextBytes() {
-      java.lang.Object ref = signText_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        signText_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional int32 sex = 9;
-    public static final int SEX_FIELD_NUMBER = 9;
-    private int sex_;
-    public boolean hasSex() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    public int getSex() {
-      return sex_;
-    }
-
-    // optional string address = 10;
-    public static final int ADDRESS_FIELD_NUMBER = 10;
-    private java.lang.Object address_;
-    public boolean hasAddress() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    public String getAddress() {
-      java.lang.Object ref = address_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          address_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getAddressBytes() {
-      java.lang.Object ref = address_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        address_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional int32 experience = 11;
-    public static final int EXPERIENCE_FIELD_NUMBER = 11;
-    private int experience_;
-    public boolean hasExperience() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    public int getExperience() {
-      return experience_;
-    }
-
-    // optional int32 fansCount = 12;
-    public static final int FANSCOUNT_FIELD_NUMBER = 12;
-    private int fansCount_;
-    public boolean hasFansCount() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    public int getFansCount() {
-      return fansCount_;
-    }
-
-    // optional int32 followCount = 13;
-    public static final int FOLLOWCOUNT_FIELD_NUMBER = 13;
-    private int followCount_;
-    public boolean hasFollowCount() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    public int getFollowCount() {
-      return followCount_;
-    }
-
-    // optional .Position position = 14;
-    public static final int POSITION_FIELD_NUMBER = 14;
-    private com.v2tech.net.lv.WebPackage.Position position_;
-    public boolean hasPosition() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    public com.v2tech.net.lv.WebPackage.Position getPosition() {
-      return position_;
-    }
-    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
-      return position_;
-    }
-
-    // optional string deviceID = 15;
-    public static final int DEVICEID_FIELD_NUMBER = 15;
-    private java.lang.Object deviceID_;
-    public boolean hasDeviceID() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    public String getDeviceID() {
-      java.lang.Object ref = deviceID_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          deviceID_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getDeviceIDBytes() {
-      java.lang.Object ref = deviceID_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        deviceID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional int32 FollowType = 16;
-    public static final int FOLLOWTYPE_FIELD_NUMBER = 16;
-    private int followType_;
-    public boolean hasFollowType() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    public int getFollowType() {
-      return followType_;
-    }
-
-    // optional string descName = 17;
-    public static final int DESCNAME_FIELD_NUMBER = 17;
-    private java.lang.Object descName_;
-    public boolean hasDescName() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    public String getDescName() {
-      java.lang.Object ref = descName_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          descName_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getDescNameBytes() {
-      java.lang.Object ref = descName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        descName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string v2ID = 18;
-    public static final int V2ID_FIELD_NUMBER = 18;
-    private java.lang.Object v2ID_;
-    public boolean hasV2ID() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    public String getV2ID() {
-      java.lang.Object ref = v2ID_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          v2ID_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getV2IDBytes() {
-      java.lang.Object ref = v2ID_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        v2ID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string v2UserName = 19;
-    public static final int V2USERNAME_FIELD_NUMBER = 19;
-    private java.lang.Object v2UserName_;
-    public boolean hasV2UserName() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    public String getV2UserName() {
-      java.lang.Object ref = v2UserName_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          v2UserName_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getV2UserNameBytes() {
-      java.lang.Object ref = v2UserName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        v2UserName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string v2Pwd = 20;
-    public static final int V2PWD_FIELD_NUMBER = 20;
-    private java.lang.Object v2Pwd_;
-    public boolean hasV2Pwd() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    public String getV2Pwd() {
-      java.lang.Object ref = v2Pwd_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          v2Pwd_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getV2PwdBytes() {
-      java.lang.Object ref = v2Pwd_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        v2Pwd_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional int32 videoCount = 21;
-    public static final int VIDEOCOUNT_FIELD_NUMBER = 21;
-    private int videoCount_;
-    public boolean hasVideoCount() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    public int getVideoCount() {
-      return videoCount_;
-    }
-
-    // optional string v2DeviceID1 = 22;
-    public static final int V2DEVICEID1_FIELD_NUMBER = 22;
-    private java.lang.Object v2DeviceID1_;
-    public boolean hasV2DeviceID1() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    public String getV2DeviceID1() {
-      java.lang.Object ref = v2DeviceID1_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          v2DeviceID1_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getV2DeviceID1Bytes() {
-      java.lang.Object ref = v2DeviceID1_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        v2DeviceID1_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string v2DeviceID2 = 23;
-    public static final int V2DEVICEID2_FIELD_NUMBER = 23;
-    private java.lang.Object v2DeviceID2_;
-    public boolean hasV2DeviceID2() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    public String getV2DeviceID2() {
-      java.lang.Object ref = v2DeviceID2_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          v2DeviceID2_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getV2DeviceID2Bytes() {
-      java.lang.Object ref = v2DeviceID2_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        v2DeviceID2_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private void initFields() {
+    private User() {
       id_ = 0;
       phone_ = "";
       name_ = "";
@@ -5326,7 +6419,6 @@ public final class WebPackage {
       experience_ = 0;
       fansCount_ = 0;
       followCount_ = 0;
-      position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
       deviceID_ = "";
       followType_ = 0;
       descName_ = "";
@@ -5337,10 +6429,792 @@ public final class WebPackage {
       v2DeviceID1_ = "";
       v2DeviceID2_ = "";
     }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private User(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              phone_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pwd_ = s;
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pwd2OrCode_ = s;
+              break;
+            }
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              realName_ = s;
+              break;
+            }
+            case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              headurl_ = s;
+              break;
+            }
+            case 66: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              signText_ = s;
+              break;
+            }
+            case 72: {
+
+              sex_ = input.readInt32();
+              break;
+            }
+            case 82: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              address_ = s;
+              break;
+            }
+            case 88: {
+
+              experience_ = input.readInt32();
+              break;
+            }
+            case 96: {
+
+              fansCount_ = input.readInt32();
+              break;
+            }
+            case 104: {
+
+              followCount_ = input.readInt32();
+              break;
+            }
+            case 114: {
+              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = null;
+              if (position_ != null) {
+                subBuilder = position_.toBuilder();
+              }
+              position_ = input.readMessage(com.v2tech.net.lv.WebPackage.Position.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(position_);
+                position_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 122: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              deviceID_ = s;
+              break;
+            }
+            case 128: {
+
+              followType_ = input.readInt32();
+              break;
+            }
+            case 138: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              descName_ = s;
+              break;
+            }
+            case 146: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              v2ID_ = s;
+              break;
+            }
+            case 154: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              v2UserName_ = s;
+              break;
+            }
+            case 162: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              v2Pwd_ = s;
+              break;
+            }
+            case 168: {
+
+              videoCount_ = input.readInt32();
+              break;
+            }
+            case 178: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              v2DeviceID1_ = s;
+              break;
+            }
+            case 186: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              v2DeviceID2_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_User_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_User_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.User.class, com.v2tech.net.lv.WebPackage.User.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    public int getId() {
+      return id_;
+    }
+
+    public static final int PHONE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object phone_;
+    /**
+     * <code>optional string phone = 2;</code>
+     */
+    public java.lang.String getPhone() {
+      java.lang.Object ref = phone_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        phone_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string phone = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPhoneBytes() {
+      java.lang.Object ref = phone_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        phone_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NAME_FIELD_NUMBER = 3;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>optional string name = 3;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string name = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PWD_FIELD_NUMBER = 4;
+    private volatile java.lang.Object pwd_;
+    /**
+     * <code>optional string pwd = 4;</code>
+     */
+    public java.lang.String getPwd() {
+      java.lang.Object ref = pwd_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pwd_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string pwd = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPwdBytes() {
+      java.lang.Object ref = pwd_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pwd_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PWD2ORCODE_FIELD_NUMBER = 5;
+    private volatile java.lang.Object pwd2OrCode_;
+    /**
+     * <code>optional string pwd2orCode = 5;</code>
+     */
+    public java.lang.String getPwd2OrCode() {
+      java.lang.Object ref = pwd2OrCode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pwd2OrCode_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string pwd2orCode = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPwd2OrCodeBytes() {
+      java.lang.Object ref = pwd2OrCode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pwd2OrCode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REALNAME_FIELD_NUMBER = 6;
+    private volatile java.lang.Object realName_;
+    /**
+     * <code>optional string realName = 6;</code>
+     */
+    public java.lang.String getRealName() {
+      java.lang.Object ref = realName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        realName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string realName = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+    getRealNameBytes() {
+      java.lang.Object ref = realName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        realName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int HEADURL_FIELD_NUMBER = 7;
+    private volatile java.lang.Object headurl_;
+    /**
+     * <code>optional string headurl = 7;</code>
+     */
+    public java.lang.String getHeadurl() {
+      java.lang.Object ref = headurl_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        headurl_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string headurl = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+    getHeadurlBytes() {
+      java.lang.Object ref = headurl_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        headurl_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIGNTEXT_FIELD_NUMBER = 8;
+    private volatile java.lang.Object signText_;
+    /**
+     * <code>optional string signText = 8;</code>
+     */
+    public java.lang.String getSignText() {
+      java.lang.Object ref = signText_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        signText_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string signText = 8;</code>
+     */
+    public com.google.protobuf.ByteString
+    getSignTextBytes() {
+      java.lang.Object ref = signText_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        signText_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SEX_FIELD_NUMBER = 9;
+    private int sex_;
+    /**
+     * <code>optional int32 sex = 9;</code>
+     */
+    public int getSex() {
+      return sex_;
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 10;
+    private volatile java.lang.Object address_;
+    /**
+     * <code>optional string address = 10;</code>
+     */
+    public java.lang.String getAddress() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        address_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string address = 10;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAddressBytes() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        address_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXPERIENCE_FIELD_NUMBER = 11;
+    private int experience_;
+    /**
+     * <code>optional int32 experience = 11;</code>
+     */
+    public int getExperience() {
+      return experience_;
+    }
+
+    public static final int FANSCOUNT_FIELD_NUMBER = 12;
+    private int fansCount_;
+    /**
+     * <code>optional int32 fansCount = 12;</code>
+     */
+    public int getFansCount() {
+      return fansCount_;
+    }
+
+    public static final int FOLLOWCOUNT_FIELD_NUMBER = 13;
+    private int followCount_;
+    /**
+     * <code>optional int32 followCount = 13;</code>
+     */
+    public int getFollowCount() {
+      return followCount_;
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 14;
+    private com.v2tech.net.lv.WebPackage.Position position_;
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
+    public boolean hasPosition() {
+      return position_ != null;
+    }
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Position getPosition() {
+      return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
+    }
+    /**
+     * <code>optional .lv.Position position = 14;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
+      return getPosition();
+    }
+
+    public static final int DEVICEID_FIELD_NUMBER = 15;
+    private volatile java.lang.Object deviceID_;
+    /**
+     * <code>optional string deviceID = 15;</code>
+     */
+    public java.lang.String getDeviceID() {
+      java.lang.Object ref = deviceID_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        deviceID_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string deviceID = 15;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDeviceIDBytes() {
+      java.lang.Object ref = deviceID_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        deviceID_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FOLLOWTYPE_FIELD_NUMBER = 16;
+    private int followType_;
+    /**
+     * <code>optional int32 FollowType = 16;</code>
+     */
+    public int getFollowType() {
+      return followType_;
+    }
+
+    public static final int DESCNAME_FIELD_NUMBER = 17;
+    private volatile java.lang.Object descName_;
+    /**
+     * <code>optional string descName = 17;</code>
+     */
+    public java.lang.String getDescName() {
+      java.lang.Object ref = descName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        descName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string descName = 17;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDescNameBytes() {
+      java.lang.Object ref = descName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        descName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int V2ID_FIELD_NUMBER = 18;
+    private volatile java.lang.Object v2ID_;
+    /**
+     * <code>optional string v2ID = 18;</code>
+     */
+    public java.lang.String getV2ID() {
+      java.lang.Object ref = v2ID_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        v2ID_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string v2ID = 18;</code>
+     */
+    public com.google.protobuf.ByteString
+    getV2IDBytes() {
+      java.lang.Object ref = v2ID_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        v2ID_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int V2USERNAME_FIELD_NUMBER = 19;
+    private volatile java.lang.Object v2UserName_;
+    /**
+     * <code>optional string v2UserName = 19;</code>
+     */
+    public java.lang.String getV2UserName() {
+      java.lang.Object ref = v2UserName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        v2UserName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string v2UserName = 19;</code>
+     */
+    public com.google.protobuf.ByteString
+    getV2UserNameBytes() {
+      java.lang.Object ref = v2UserName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        v2UserName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int V2PWD_FIELD_NUMBER = 20;
+    private volatile java.lang.Object v2Pwd_;
+    /**
+     * <code>optional string v2Pwd = 20;</code>
+     */
+    public java.lang.String getV2Pwd() {
+      java.lang.Object ref = v2Pwd_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        v2Pwd_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string v2Pwd = 20;</code>
+     */
+    public com.google.protobuf.ByteString
+    getV2PwdBytes() {
+      java.lang.Object ref = v2Pwd_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        v2Pwd_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VIDEOCOUNT_FIELD_NUMBER = 21;
+    private int videoCount_;
+    /**
+     * <code>optional int32 videoCount = 21;</code>
+     */
+    public int getVideoCount() {
+      return videoCount_;
+    }
+
+    public static final int V2DEVICEID1_FIELD_NUMBER = 22;
+    private volatile java.lang.Object v2DeviceID1_;
+    /**
+     * <code>optional string v2DeviceID1 = 22;</code>
+     */
+    public java.lang.String getV2DeviceID1() {
+      java.lang.Object ref = v2DeviceID1_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        v2DeviceID1_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string v2DeviceID1 = 22;</code>
+     */
+    public com.google.protobuf.ByteString
+    getV2DeviceID1Bytes() {
+      java.lang.Object ref = v2DeviceID1_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        v2DeviceID1_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int V2DEVICEID2_FIELD_NUMBER = 23;
+    private volatile java.lang.Object v2DeviceID2_;
+    /**
+     * <code>optional string v2DeviceID2 = 23;</code>
+     */
+    public java.lang.String getV2DeviceID2() {
+      java.lang.Object ref = v2DeviceID2_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        v2DeviceID2_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string v2DeviceID2 = 23;</code>
+     */
+    public com.google.protobuf.ByteString
+    getV2DeviceID2Bytes() {
+      java.lang.Object ref = v2DeviceID2_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        v2DeviceID2_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -5348,280 +7222,381 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getPhoneBytes());
+      if (!getPhoneBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, phone_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getNameBytes());
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getPwdBytes());
+      if (!getPwdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, pwd_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getPwd2OrCodeBytes());
+      if (!getPwd2OrCodeBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, pwd2OrCode_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getRealNameBytes());
+      if (!getRealNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, realName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeBytes(7, getHeadurlBytes());
+      if (!getHeadurlBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, headurl_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeBytes(8, getSignTextBytes());
+      if (!getSignTextBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, signText_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (sex_ != 0) {
         output.writeInt32(9, sex_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBytes(10, getAddressBytes());
+      if (!getAddressBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, address_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (experience_ != 0) {
         output.writeInt32(11, experience_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (fansCount_ != 0) {
         output.writeInt32(12, fansCount_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (followCount_ != 0) {
         output.writeInt32(13, followCount_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        output.writeMessage(14, position_);
+      if (position_ != null) {
+        output.writeMessage(14, getPosition());
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeBytes(15, getDeviceIDBytes());
+      if (!getDeviceIDBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 15, deviceID_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (followType_ != 0) {
         output.writeInt32(16, followType_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        output.writeBytes(17, getDescNameBytes());
+      if (!getDescNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, descName_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        output.writeBytes(18, getV2IDBytes());
+      if (!getV2IDBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 18, v2ID_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeBytes(19, getV2UserNameBytes());
+      if (!getV2UserNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 19, v2UserName_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        output.writeBytes(20, getV2PwdBytes());
+      if (!getV2PwdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 20, v2Pwd_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (videoCount_ != 0) {
         output.writeInt32(21, videoCount_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        output.writeBytes(22, getV2DeviceID1Bytes());
+      if (!getV2DeviceID1Bytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 22, v2DeviceID1_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        output.writeBytes(23, getV2DeviceID2Bytes());
+      if (!getV2DeviceID2Bytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 23, v2DeviceID2_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getPhoneBytes());
+      if (!getPhoneBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, phone_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(3, getNameBytes());
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, getPwdBytes());
+      if (!getPwdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, pwd_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(5, getPwd2OrCodeBytes());
+      if (!getPwd2OrCodeBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, pwd2OrCode_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(6, getRealNameBytes());
+      if (!getRealNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, realName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(7, getHeadurlBytes());
+      if (!getHeadurlBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, headurl_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(8, getSignTextBytes());
+      if (!getSignTextBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, signText_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (sex_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(9, sex_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(10, getAddressBytes());
+      if (!getAddressBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, address_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (experience_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(11, experience_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (fansCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(12, fansCount_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (followCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(13, followCount_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (position_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(14, position_);
+                .computeMessageSize(14, getPosition());
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(15, getDeviceIDBytes());
+      if (!getDeviceIDBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, deviceID_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (followType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(16, followType_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(17, getDescNameBytes());
+      if (!getDescNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, descName_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(18, getV2IDBytes());
+      if (!getV2IDBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, v2ID_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(19, getV2UserNameBytes());
+      if (!getV2UserNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(19, v2UserName_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(20, getV2PwdBytes());
+      if (!getV2PwdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(20, v2Pwd_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (videoCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(21, videoCount_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(22, getV2DeviceID1Bytes());
+      if (!getV2DeviceID1Bytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, v2DeviceID1_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(23, getV2DeviceID2Bytes());
+      if (!getV2DeviceID2Bytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(23, v2DeviceID2_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.User)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.User other = (com.v2tech.net.lv.WebPackage.User) obj;
+
+      boolean result = true;
+      result = result && (getId()
+              == other.getId());
+      result = result && getPhone()
+              .equals(other.getPhone());
+      result = result && getName()
+              .equals(other.getName());
+      result = result && getPwd()
+              .equals(other.getPwd());
+      result = result && getPwd2OrCode()
+              .equals(other.getPwd2OrCode());
+      result = result && getRealName()
+              .equals(other.getRealName());
+      result = result && getHeadurl()
+              .equals(other.getHeadurl());
+      result = result && getSignText()
+              .equals(other.getSignText());
+      result = result && (getSex()
+              == other.getSex());
+      result = result && getAddress()
+              .equals(other.getAddress());
+      result = result && (getExperience()
+              == other.getExperience());
+      result = result && (getFansCount()
+              == other.getFansCount());
+      result = result && (getFollowCount()
+              == other.getFollowCount());
+      result = result && (hasPosition() == other.hasPosition());
+      if (hasPosition()) {
+        result = result && getPosition()
+                .equals(other.getPosition());
+      }
+      result = result && getDeviceID()
+              .equals(other.getDeviceID());
+      result = result && (getFollowType()
+              == other.getFollowType());
+      result = result && getDescName()
+              .equals(other.getDescName());
+      result = result && getV2ID()
+              .equals(other.getV2ID());
+      result = result && getV2UserName()
+              .equals(other.getV2UserName());
+      result = result && getV2Pwd()
+              .equals(other.getV2Pwd());
+      result = result && (getVideoCount()
+              == other.getVideoCount());
+      result = result && getV2DeviceID1()
+              .equals(other.getV2DeviceID1());
+      result = result && getV2DeviceID2()
+              .equals(other.getV2DeviceID2());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + PHONE_FIELD_NUMBER;
+      hash = (53 * hash) + getPhone().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + PWD_FIELD_NUMBER;
+      hash = (53 * hash) + getPwd().hashCode();
+      hash = (37 * hash) + PWD2ORCODE_FIELD_NUMBER;
+      hash = (53 * hash) + getPwd2OrCode().hashCode();
+      hash = (37 * hash) + REALNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getRealName().hashCode();
+      hash = (37 * hash) + HEADURL_FIELD_NUMBER;
+      hash = (53 * hash) + getHeadurl().hashCode();
+      hash = (37 * hash) + SIGNTEXT_FIELD_NUMBER;
+      hash = (53 * hash) + getSignText().hashCode();
+      hash = (37 * hash) + SEX_FIELD_NUMBER;
+      hash = (53 * hash) + getSex();
+      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAddress().hashCode();
+      hash = (37 * hash) + EXPERIENCE_FIELD_NUMBER;
+      hash = (53 * hash) + getExperience();
+      hash = (37 * hash) + FANSCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getFansCount();
+      hash = (37 * hash) + FOLLOWCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getFollowCount();
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      hash = (37 * hash) + DEVICEID_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceID().hashCode();
+      hash = (37 * hash) + FOLLOWTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getFollowType();
+      hash = (37 * hash) + DESCNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getDescName().hashCode();
+      hash = (37 * hash) + V2ID_FIELD_NUMBER;
+      hash = (53 * hash) + getV2ID().hashCode();
+      hash = (37 * hash) + V2USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getV2UserName().hashCode();
+      hash = (37 * hash) + V2PWD_FIELD_NUMBER;
+      hash = (53 * hash) + getV2Pwd().hashCode();
+      hash = (37 * hash) + VIDEOCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoCount();
+      hash = (37 * hash) + V2DEVICEID1_FIELD_NUMBER;
+      hash = (53 * hash) + getV2DeviceID1().hashCode();
+      hash = (37 * hash) + V2DEVICEID2_FIELD_NUMBER;
+      hash = (53 * hash) + getV2DeviceID2().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.User parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.User parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.User parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.User prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.User prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.User}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.UserOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.User)
+            com.v2tech.net.lv.WebPackage.UserOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_User_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_User_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_User_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_User_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.User.class, com.v2tech.net.lv.WebPackage.User.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.User.newBuilder()
@@ -5629,81 +7604,74 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPositionFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        phone_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        pwd_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        pwd2OrCode_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        realName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        headurl_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
-        signText_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
-        sex_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000100);
-        address_ = "";
-        bitField0_ = (bitField0_ & ~0x00000200);
-        experience_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000400);
-        fansCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000800);
-        followCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00001000);
-        if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-        } else {
-          positionBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00002000);
-        deviceID_ = "";
-        bitField0_ = (bitField0_ & ~0x00004000);
-        followType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00008000);
-        descName_ = "";
-        bitField0_ = (bitField0_ & ~0x00010000);
-        v2ID_ = "";
-        bitField0_ = (bitField0_ & ~0x00020000);
-        v2UserName_ = "";
-        bitField0_ = (bitField0_ & ~0x00040000);
-        v2Pwd_ = "";
-        bitField0_ = (bitField0_ & ~0x00080000);
-        videoCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00100000);
-        v2DeviceID1_ = "";
-        bitField0_ = (bitField0_ & ~0x00200000);
-        v2DeviceID2_ = "";
-        bitField0_ = (bitField0_ & ~0x00400000);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        phone_ = "";
+
+        name_ = "";
+
+        pwd_ = "";
+
+        pwd2OrCode_ = "";
+
+        realName_ = "";
+
+        headurl_ = "";
+
+        signText_ = "";
+
+        sex_ = 0;
+
+        address_ = "";
+
+        experience_ = 0;
+
+        fansCount_ = 0;
+
+        followCount_ = 0;
+
+        if (positionBuilder_ == null) {
+          position_ = null;
+        } else {
+          position_ = null;
+          positionBuilder_ = null;
+        }
+        deviceID_ = "";
+
+        followType_ = 0;
+
+        descName_ = "";
+
+        v2ID_ = "";
+
+        v2UserName_ = "";
+
+        v2Pwd_ = "";
+
+        videoCount_ = 0;
+
+        v2DeviceID1_ = "";
+
+        v2DeviceID2_ = "";
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.User.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_User_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.User getDefaultInstanceForType() {
@@ -5718,121 +7686,65 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.User buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.User result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.User buildPartial() {
         com.v2tech.net.lv.WebPackage.User result = new com.v2tech.net.lv.WebPackage.User(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.phone_ = phone_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.pwd_ = pwd_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.pwd2OrCode_ = pwd2OrCode_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.realName_ = realName_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.headurl_ = headurl_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.signText_ = signText_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.sex_ = sex_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.address_ = address_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.experience_ = experience_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.fansCount_ = fansCount_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.followCount_ = followCount_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         if (positionBuilder_ == null) {
           result.position_ = position_;
         } else {
           result.position_ = positionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.deviceID_ = deviceID_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.followType_ = followType_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.descName_ = descName_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.v2ID_ = v2ID_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
         result.v2UserName_ = v2UserName_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
         result.v2Pwd_ = v2Pwd_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
         result.videoCount_ = videoCount_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
-        }
         result.v2DeviceID1_ = v2DeviceID1_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00400000;
-        }
         result.v2DeviceID2_ = v2DeviceID2_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.User) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.User)other);
@@ -5844,76 +7756,91 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.User other) {
         if (other == com.v2tech.net.lv.WebPackage.User.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasPhone()) {
-          setPhone(other.getPhone());
+        if (!other.getPhone().isEmpty()) {
+          phone_ = other.phone_;
+          onChanged();
         }
-        if (other.hasName()) {
-          setName(other.getName());
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
         }
-        if (other.hasPwd()) {
-          setPwd(other.getPwd());
+        if (!other.getPwd().isEmpty()) {
+          pwd_ = other.pwd_;
+          onChanged();
         }
-        if (other.hasPwd2OrCode()) {
-          setPwd2OrCode(other.getPwd2OrCode());
+        if (!other.getPwd2OrCode().isEmpty()) {
+          pwd2OrCode_ = other.pwd2OrCode_;
+          onChanged();
         }
-        if (other.hasRealName()) {
-          setRealName(other.getRealName());
+        if (!other.getRealName().isEmpty()) {
+          realName_ = other.realName_;
+          onChanged();
         }
-        if (other.hasHeadurl()) {
-          setHeadurl(other.getHeadurl());
+        if (!other.getHeadurl().isEmpty()) {
+          headurl_ = other.headurl_;
+          onChanged();
         }
-        if (other.hasSignText()) {
-          setSignText(other.getSignText());
+        if (!other.getSignText().isEmpty()) {
+          signText_ = other.signText_;
+          onChanged();
         }
-        if (other.hasSex()) {
+        if (other.getSex() != 0) {
           setSex(other.getSex());
         }
-        if (other.hasAddress()) {
-          setAddress(other.getAddress());
+        if (!other.getAddress().isEmpty()) {
+          address_ = other.address_;
+          onChanged();
         }
-        if (other.hasExperience()) {
+        if (other.getExperience() != 0) {
           setExperience(other.getExperience());
         }
-        if (other.hasFansCount()) {
+        if (other.getFansCount() != 0) {
           setFansCount(other.getFansCount());
         }
-        if (other.hasFollowCount()) {
+        if (other.getFollowCount() != 0) {
           setFollowCount(other.getFollowCount());
         }
         if (other.hasPosition()) {
           mergePosition(other.getPosition());
         }
-        if (other.hasDeviceID()) {
-          setDeviceID(other.getDeviceID());
+        if (!other.getDeviceID().isEmpty()) {
+          deviceID_ = other.deviceID_;
+          onChanged();
         }
-        if (other.hasFollowType()) {
+        if (other.getFollowType() != 0) {
           setFollowType(other.getFollowType());
         }
-        if (other.hasDescName()) {
-          setDescName(other.getDescName());
+        if (!other.getDescName().isEmpty()) {
+          descName_ = other.descName_;
+          onChanged();
         }
-        if (other.hasV2ID()) {
-          setV2ID(other.getV2ID());
+        if (!other.getV2ID().isEmpty()) {
+          v2ID_ = other.v2ID_;
+          onChanged();
         }
-        if (other.hasV2UserName()) {
-          setV2UserName(other.getV2UserName());
+        if (!other.getV2UserName().isEmpty()) {
+          v2UserName_ = other.v2UserName_;
+          onChanged();
         }
-        if (other.hasV2Pwd()) {
-          setV2Pwd(other.getV2Pwd());
+        if (!other.getV2Pwd().isEmpty()) {
+          v2Pwd_ = other.v2Pwd_;
+          onChanged();
         }
-        if (other.hasVideoCount()) {
+        if (other.getVideoCount() != 0) {
           setVideoCount(other.getVideoCount());
         }
-        if (other.hasV2DeviceID1()) {
-          setV2DeviceID1(other.getV2DeviceID1());
+        if (!other.getV2DeviceID1().isEmpty()) {
+          v2DeviceID1_ = other.v2DeviceID1_;
+          onChanged();
         }
-        if (other.hasV2DeviceID2()) {
-          setV2DeviceID2(other.getV2DeviceID2());
+        if (!other.getV2DeviceID2().isEmpty()) {
+          v2DeviceID2_ = other.v2DeviceID2_;
+          onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -5925,557 +7852,724 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              phone_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              name_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              pwd_ = input.readBytes();
-              break;
-            }
-            case 42: {
-              bitField0_ |= 0x00000010;
-              pwd2OrCode_ = input.readBytes();
-              break;
-            }
-            case 50: {
-              bitField0_ |= 0x00000020;
-              realName_ = input.readBytes();
-              break;
-            }
-            case 58: {
-              bitField0_ |= 0x00000040;
-              headurl_ = input.readBytes();
-              break;
-            }
-            case 66: {
-              bitField0_ |= 0x00000080;
-              signText_ = input.readBytes();
-              break;
-            }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              sex_ = input.readInt32();
-              break;
-            }
-            case 82: {
-              bitField0_ |= 0x00000200;
-              address_ = input.readBytes();
-              break;
-            }
-            case 88: {
-              bitField0_ |= 0x00000400;
-              experience_ = input.readInt32();
-              break;
-            }
-            case 96: {
-              bitField0_ |= 0x00000800;
-              fansCount_ = input.readInt32();
-              break;
-            }
-            case 104: {
-              bitField0_ |= 0x00001000;
-              followCount_ = input.readInt32();
-              break;
-            }
-            case 114: {
-              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = com.v2tech.net.lv.WebPackage.Position.newBuilder();
-              if (hasPosition()) {
-                subBuilder.mergeFrom(getPosition());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setPosition(subBuilder.buildPartial());
-              break;
-            }
-            case 122: {
-              bitField0_ |= 0x00004000;
-              deviceID_ = input.readBytes();
-              break;
-            }
-            case 128: {
-              bitField0_ |= 0x00008000;
-              followType_ = input.readInt32();
-              break;
-            }
-            case 138: {
-              bitField0_ |= 0x00010000;
-              descName_ = input.readBytes();
-              break;
-            }
-            case 146: {
-              bitField0_ |= 0x00020000;
-              v2ID_ = input.readBytes();
-              break;
-            }
-            case 154: {
-              bitField0_ |= 0x00040000;
-              v2UserName_ = input.readBytes();
-              break;
-            }
-            case 162: {
-              bitField0_ |= 0x00080000;
-              v2Pwd_ = input.readBytes();
-              break;
-            }
-            case 168: {
-              bitField0_ |= 0x00100000;
-              videoCount_ = input.readInt32();
-              break;
-            }
-            case 178: {
-              bitField0_ |= 0x00200000;
-              v2DeviceID1_ = input.readBytes();
-              break;
-            }
-            case 186: {
-              bitField0_ |= 0x00400000;
-              v2DeviceID2_ = input.readBytes();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.User parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.User) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 id = 1;
       private int id_ ;
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public int getId() {
         return id_;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+
         id_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         id_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string phone = 2;
       private java.lang.Object phone_ = "";
-      public boolean hasPhone() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getPhone() {
+      /**
+       * <code>optional string phone = 2;</code>
+       */
+      public java.lang.String getPhone() {
         java.lang.Object ref = phone_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           phone_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setPhone(String value) {
+      /**
+       * <code>optional string phone = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPhoneBytes() {
+        java.lang.Object ref = phone_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          phone_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string phone = 2;</code>
+       */
+      public Builder setPhone(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         phone_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string phone = 2;</code>
+       */
       public Builder clearPhone() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         phone_ = getDefaultInstance().getPhone();
         onChanged();
         return this;
       }
-      void setPhone(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        phone_ = value;
-        onChanged();
-      }
-
-      // optional string name = 3;
-      private java.lang.Object name_ = "";
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          name_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setName(String value) {
+      /**
+       * <code>optional string phone = 2;</code>
+       */
+      public Builder setPhoneBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000004;
+        checkByteStringIsUtf8(value);
+
+        phone_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>optional string name = 3;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string name = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string name = 3;</code>
+       */
+      public Builder setName(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string name = 3;</code>
+       */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
-      void setName(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        name_ = value;
-        onChanged();
-      }
-
-      // optional string pwd = 4;
-      private java.lang.Object pwd_ = "";
-      public boolean hasPwd() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getPwd() {
-        java.lang.Object ref = pwd_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          pwd_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setPwd(String value) {
+      /**
+       * <code>optional string name = 3;</code>
+       */
+      public Builder setNameBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000008;
+        checkByteStringIsUtf8(value);
+
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object pwd_ = "";
+      /**
+       * <code>optional string pwd = 4;</code>
+       */
+      public java.lang.String getPwd() {
+        java.lang.Object ref = pwd_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pwd_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string pwd = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPwdBytes() {
+        java.lang.Object ref = pwd_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pwd_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string pwd = 4;</code>
+       */
+      public Builder setPwd(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         pwd_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string pwd = 4;</code>
+       */
       public Builder clearPwd() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         pwd_ = getDefaultInstance().getPwd();
         onChanged();
         return this;
       }
-      void setPwd(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
-        pwd_ = value;
-        onChanged();
-      }
-
-      // optional string pwd2orCode = 5;
-      private java.lang.Object pwd2OrCode_ = "";
-      public boolean hasPwd2OrCode() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      public String getPwd2OrCode() {
-        java.lang.Object ref = pwd2OrCode_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          pwd2OrCode_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setPwd2OrCode(String value) {
+      /**
+       * <code>optional string pwd = 4;</code>
+       */
+      public Builder setPwdBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000010;
+        checkByteStringIsUtf8(value);
+
+        pwd_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object pwd2OrCode_ = "";
+      /**
+       * <code>optional string pwd2orCode = 5;</code>
+       */
+      public java.lang.String getPwd2OrCode() {
+        java.lang.Object ref = pwd2OrCode_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pwd2OrCode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string pwd2orCode = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPwd2OrCodeBytes() {
+        java.lang.Object ref = pwd2OrCode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pwd2OrCode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string pwd2orCode = 5;</code>
+       */
+      public Builder setPwd2OrCode(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         pwd2OrCode_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string pwd2orCode = 5;</code>
+       */
       public Builder clearPwd2OrCode() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         pwd2OrCode_ = getDefaultInstance().getPwd2OrCode();
         onChanged();
         return this;
       }
-      void setPwd2OrCode(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000010;
-        pwd2OrCode_ = value;
-        onChanged();
-      }
-
-      // optional string realName = 6;
-      private java.lang.Object realName_ = "";
-      public boolean hasRealName() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      public String getRealName() {
-        java.lang.Object ref = realName_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          realName_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setRealName(String value) {
+      /**
+       * <code>optional string pwd2orCode = 5;</code>
+       */
+      public Builder setPwd2OrCodeBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000020;
+        checkByteStringIsUtf8(value);
+
+        pwd2OrCode_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object realName_ = "";
+      /**
+       * <code>optional string realName = 6;</code>
+       */
+      public java.lang.String getRealName() {
+        java.lang.Object ref = realName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          realName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string realName = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+      getRealNameBytes() {
+        java.lang.Object ref = realName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          realName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string realName = 6;</code>
+       */
+      public Builder setRealName(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         realName_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string realName = 6;</code>
+       */
       public Builder clearRealName() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         realName_ = getDefaultInstance().getRealName();
         onChanged();
         return this;
       }
-      void setRealName(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000020;
-        realName_ = value;
-        onChanged();
-      }
-
-      // optional string headurl = 7;
-      private java.lang.Object headurl_ = "";
-      public boolean hasHeadurl() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      public String getHeadurl() {
-        java.lang.Object ref = headurl_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          headurl_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setHeadurl(String value) {
+      /**
+       * <code>optional string realName = 6;</code>
+       */
+      public Builder setRealNameBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000040;
+        checkByteStringIsUtf8(value);
+
+        realName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object headurl_ = "";
+      /**
+       * <code>optional string headurl = 7;</code>
+       */
+      public java.lang.String getHeadurl() {
+        java.lang.Object ref = headurl_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          headurl_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string headurl = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+      getHeadurlBytes() {
+        java.lang.Object ref = headurl_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          headurl_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string headurl = 7;</code>
+       */
+      public Builder setHeadurl(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         headurl_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string headurl = 7;</code>
+       */
       public Builder clearHeadurl() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         headurl_ = getDefaultInstance().getHeadurl();
         onChanged();
         return this;
       }
-      void setHeadurl(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000040;
-        headurl_ = value;
-        onChanged();
-      }
-
-      // optional string signText = 8;
-      private java.lang.Object signText_ = "";
-      public boolean hasSignText() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      public String getSignText() {
-        java.lang.Object ref = signText_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          signText_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setSignText(String value) {
+      /**
+       * <code>optional string headurl = 7;</code>
+       */
+      public Builder setHeadurlBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000080;
+        checkByteStringIsUtf8(value);
+
+        headurl_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object signText_ = "";
+      /**
+       * <code>optional string signText = 8;</code>
+       */
+      public java.lang.String getSignText() {
+        java.lang.Object ref = signText_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          signText_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string signText = 8;</code>
+       */
+      public com.google.protobuf.ByteString
+      getSignTextBytes() {
+        java.lang.Object ref = signText_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          signText_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string signText = 8;</code>
+       */
+      public Builder setSignText(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         signText_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string signText = 8;</code>
+       */
       public Builder clearSignText() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         signText_ = getDefaultInstance().getSignText();
         onChanged();
         return this;
       }
-      void setSignText(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000080;
+      /**
+       * <code>optional string signText = 8;</code>
+       */
+      public Builder setSignTextBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         signText_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int32 sex = 9;
       private int sex_ ;
-      public boolean hasSex() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
+      /**
+       * <code>optional int32 sex = 9;</code>
+       */
       public int getSex() {
         return sex_;
       }
+      /**
+       * <code>optional int32 sex = 9;</code>
+       */
       public Builder setSex(int value) {
-        bitField0_ |= 0x00000100;
+
         sex_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 sex = 9;</code>
+       */
       public Builder clearSex() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         sex_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string address = 10;
       private java.lang.Object address_ = "";
-      public boolean hasAddress() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      public String getAddress() {
+      /**
+       * <code>optional string address = 10;</code>
+       */
+      public java.lang.String getAddress() {
         java.lang.Object ref = address_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           address_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setAddress(String value) {
+      /**
+       * <code>optional string address = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAddressBytes() {
+        java.lang.Object ref = address_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          address_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string address = 10;</code>
+       */
+      public Builder setAddress(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000200;
+
         address_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string address = 10;</code>
+       */
       public Builder clearAddress() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         address_ = getDefaultInstance().getAddress();
         onChanged();
         return this;
       }
-      void setAddress(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000200;
+      /**
+       * <code>optional string address = 10;</code>
+       */
+      public Builder setAddressBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         address_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int32 experience = 11;
       private int experience_ ;
-      public boolean hasExperience() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
+      /**
+       * <code>optional int32 experience = 11;</code>
+       */
       public int getExperience() {
         return experience_;
       }
+      /**
+       * <code>optional int32 experience = 11;</code>
+       */
       public Builder setExperience(int value) {
-        bitField0_ |= 0x00000400;
+
         experience_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 experience = 11;</code>
+       */
       public Builder clearExperience() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         experience_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 fansCount = 12;
       private int fansCount_ ;
-      public boolean hasFansCount() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
+      /**
+       * <code>optional int32 fansCount = 12;</code>
+       */
       public int getFansCount() {
         return fansCount_;
       }
+      /**
+       * <code>optional int32 fansCount = 12;</code>
+       */
       public Builder setFansCount(int value) {
-        bitField0_ |= 0x00000800;
+
         fansCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 fansCount = 12;</code>
+       */
       public Builder clearFansCount() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         fansCount_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 followCount = 13;
       private int followCount_ ;
-      public boolean hasFollowCount() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
+      /**
+       * <code>optional int32 followCount = 13;</code>
+       */
       public int getFollowCount() {
         return followCount_;
       }
+      /**
+       * <code>optional int32 followCount = 13;</code>
+       */
       public Builder setFollowCount(int value) {
-        bitField0_ |= 0x00001000;
+
         followCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 followCount = 13;</code>
+       */
       public Builder clearFollowCount() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         followCount_ = 0;
         onChanged();
         return this;
       }
 
-      // optional .Position position = 14;
-      private com.v2tech.net.lv.WebPackage.Position position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.v2tech.net.lv.WebPackage.Position position_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> positionBuilder_;
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public boolean hasPosition() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
+        return positionBuilder_ != null || position_ != null;
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position getPosition() {
         if (positionBuilder_ == null) {
-          return position_;
+          return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         } else {
           return positionBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public Builder setPosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
           if (value == null) {
@@ -6486,9 +8580,12 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public Builder setPosition(
               com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -6497,13 +8594,15 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public Builder mergePosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) == 0x00002000) &&
-                  position_ != com.v2tech.net.lv.WebPackage.Position.getDefaultInstance()) {
+          if (position_ != null) {
             position_ =
                     com.v2tech.net.lv.WebPackage.Position.newBuilder(position_).mergeFrom(value).buildPartial();
           } else {
@@ -6513,38 +8612,52 @@ public final class WebPackage {
         } else {
           positionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public Builder clearPosition() {
         if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+          position_ = null;
           onChanged();
         } else {
-          positionBuilder_.clear();
+          position_ = null;
+          positionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder getPositionBuilder() {
-        bitField0_ |= 0x00002000;
+
         onChanged();
         return getPositionFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
       public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
         if (positionBuilder_ != null) {
           return positionBuilder_.getMessageOrBuilder();
         } else {
-          return position_;
+          return position_ == null ?
+                  com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
+      /**
+       * <code>optional .lv.Position position = 14;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>
       getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
-          positionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>(
-                  position_,
+                  getPosition(),
                   getParentForChildren(),
                   isClean());
           position_ = null;
@@ -6552,394 +8665,720 @@ public final class WebPackage {
         return positionBuilder_;
       }
 
-      // optional string deviceID = 15;
       private java.lang.Object deviceID_ = "";
-      public boolean hasDeviceID() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      public String getDeviceID() {
+      /**
+       * <code>optional string deviceID = 15;</code>
+       */
+      public java.lang.String getDeviceID() {
         java.lang.Object ref = deviceID_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           deviceID_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setDeviceID(String value) {
+      /**
+       * <code>optional string deviceID = 15;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDeviceIDBytes() {
+        java.lang.Object ref = deviceID_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          deviceID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string deviceID = 15;</code>
+       */
+      public Builder setDeviceID(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00004000;
+
         deviceID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string deviceID = 15;</code>
+       */
       public Builder clearDeviceID() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         deviceID_ = getDefaultInstance().getDeviceID();
         onChanged();
         return this;
       }
-      void setDeviceID(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00004000;
+      /**
+       * <code>optional string deviceID = 15;</code>
+       */
+      public Builder setDeviceIDBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         deviceID_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int32 FollowType = 16;
       private int followType_ ;
-      public boolean hasFollowType() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
+      /**
+       * <code>optional int32 FollowType = 16;</code>
+       */
       public int getFollowType() {
         return followType_;
       }
+      /**
+       * <code>optional int32 FollowType = 16;</code>
+       */
       public Builder setFollowType(int value) {
-        bitField0_ |= 0x00008000;
+
         followType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 FollowType = 16;</code>
+       */
       public Builder clearFollowType() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         followType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string descName = 17;
       private java.lang.Object descName_ = "";
-      public boolean hasDescName() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      public String getDescName() {
+      /**
+       * <code>optional string descName = 17;</code>
+       */
+      public java.lang.String getDescName() {
         java.lang.Object ref = descName_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           descName_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setDescName(String value) {
+      /**
+       * <code>optional string descName = 17;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDescNameBytes() {
+        java.lang.Object ref = descName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          descName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string descName = 17;</code>
+       */
+      public Builder setDescName(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00010000;
+
         descName_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string descName = 17;</code>
+       */
       public Builder clearDescName() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         descName_ = getDefaultInstance().getDescName();
         onChanged();
         return this;
       }
-      void setDescName(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00010000;
-        descName_ = value;
-        onChanged();
-      }
-
-      // optional string v2ID = 18;
-      private java.lang.Object v2ID_ = "";
-      public boolean hasV2ID() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      public String getV2ID() {
-        java.lang.Object ref = v2ID_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          v2ID_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setV2ID(String value) {
+      /**
+       * <code>optional string descName = 17;</code>
+       */
+      public Builder setDescNameBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00020000;
+        checkByteStringIsUtf8(value);
+
+        descName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object v2ID_ = "";
+      /**
+       * <code>optional string v2ID = 18;</code>
+       */
+      public java.lang.String getV2ID() {
+        java.lang.Object ref = v2ID_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          v2ID_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string v2ID = 18;</code>
+       */
+      public com.google.protobuf.ByteString
+      getV2IDBytes() {
+        java.lang.Object ref = v2ID_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          v2ID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string v2ID = 18;</code>
+       */
+      public Builder setV2ID(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         v2ID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string v2ID = 18;</code>
+       */
       public Builder clearV2ID() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         v2ID_ = getDefaultInstance().getV2ID();
         onChanged();
         return this;
       }
-      void setV2ID(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00020000;
-        v2ID_ = value;
-        onChanged();
-      }
-
-      // optional string v2UserName = 19;
-      private java.lang.Object v2UserName_ = "";
-      public boolean hasV2UserName() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      public String getV2UserName() {
-        java.lang.Object ref = v2UserName_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          v2UserName_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setV2UserName(String value) {
+      /**
+       * <code>optional string v2ID = 18;</code>
+       */
+      public Builder setV2IDBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00040000;
+        checkByteStringIsUtf8(value);
+
+        v2ID_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object v2UserName_ = "";
+      /**
+       * <code>optional string v2UserName = 19;</code>
+       */
+      public java.lang.String getV2UserName() {
+        java.lang.Object ref = v2UserName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          v2UserName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string v2UserName = 19;</code>
+       */
+      public com.google.protobuf.ByteString
+      getV2UserNameBytes() {
+        java.lang.Object ref = v2UserName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          v2UserName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string v2UserName = 19;</code>
+       */
+      public Builder setV2UserName(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         v2UserName_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string v2UserName = 19;</code>
+       */
       public Builder clearV2UserName() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         v2UserName_ = getDefaultInstance().getV2UserName();
         onChanged();
         return this;
       }
-      void setV2UserName(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00040000;
-        v2UserName_ = value;
-        onChanged();
-      }
-
-      // optional string v2Pwd = 20;
-      private java.lang.Object v2Pwd_ = "";
-      public boolean hasV2Pwd() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      public String getV2Pwd() {
-        java.lang.Object ref = v2Pwd_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          v2Pwd_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setV2Pwd(String value) {
+      /**
+       * <code>optional string v2UserName = 19;</code>
+       */
+      public Builder setV2UserNameBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00080000;
+        checkByteStringIsUtf8(value);
+
+        v2UserName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object v2Pwd_ = "";
+      /**
+       * <code>optional string v2Pwd = 20;</code>
+       */
+      public java.lang.String getV2Pwd() {
+        java.lang.Object ref = v2Pwd_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          v2Pwd_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string v2Pwd = 20;</code>
+       */
+      public com.google.protobuf.ByteString
+      getV2PwdBytes() {
+        java.lang.Object ref = v2Pwd_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          v2Pwd_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string v2Pwd = 20;</code>
+       */
+      public Builder setV2Pwd(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         v2Pwd_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string v2Pwd = 20;</code>
+       */
       public Builder clearV2Pwd() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+
         v2Pwd_ = getDefaultInstance().getV2Pwd();
         onChanged();
         return this;
       }
-      void setV2Pwd(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00080000;
+      /**
+       * <code>optional string v2Pwd = 20;</code>
+       */
+      public Builder setV2PwdBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         v2Pwd_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int32 videoCount = 21;
       private int videoCount_ ;
-      public boolean hasVideoCount() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
+      /**
+       * <code>optional int32 videoCount = 21;</code>
+       */
       public int getVideoCount() {
         return videoCount_;
       }
+      /**
+       * <code>optional int32 videoCount = 21;</code>
+       */
       public Builder setVideoCount(int value) {
-        bitField0_ |= 0x00100000;
+
         videoCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 videoCount = 21;</code>
+       */
       public Builder clearVideoCount() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+
         videoCount_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string v2DeviceID1 = 22;
       private java.lang.Object v2DeviceID1_ = "";
-      public boolean hasV2DeviceID1() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      public String getV2DeviceID1() {
+      /**
+       * <code>optional string v2DeviceID1 = 22;</code>
+       */
+      public java.lang.String getV2DeviceID1() {
         java.lang.Object ref = v2DeviceID1_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           v2DeviceID1_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setV2DeviceID1(String value) {
+      /**
+       * <code>optional string v2DeviceID1 = 22;</code>
+       */
+      public com.google.protobuf.ByteString
+      getV2DeviceID1Bytes() {
+        java.lang.Object ref = v2DeviceID1_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          v2DeviceID1_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string v2DeviceID1 = 22;</code>
+       */
+      public Builder setV2DeviceID1(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00200000;
+
         v2DeviceID1_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string v2DeviceID1 = 22;</code>
+       */
       public Builder clearV2DeviceID1() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+
         v2DeviceID1_ = getDefaultInstance().getV2DeviceID1();
         onChanged();
         return this;
       }
-      void setV2DeviceID1(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00200000;
-        v2DeviceID1_ = value;
-        onChanged();
-      }
-
-      // optional string v2DeviceID2 = 23;
-      private java.lang.Object v2DeviceID2_ = "";
-      public boolean hasV2DeviceID2() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      public String getV2DeviceID2() {
-        java.lang.Object ref = v2DeviceID2_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          v2DeviceID2_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setV2DeviceID2(String value) {
+      /**
+       * <code>optional string v2DeviceID1 = 22;</code>
+       */
+      public Builder setV2DeviceID1Bytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00400000;
+        checkByteStringIsUtf8(value);
+
+        v2DeviceID1_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object v2DeviceID2_ = "";
+      /**
+       * <code>optional string v2DeviceID2 = 23;</code>
+       */
+      public java.lang.String getV2DeviceID2() {
+        java.lang.Object ref = v2DeviceID2_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          v2DeviceID2_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string v2DeviceID2 = 23;</code>
+       */
+      public com.google.protobuf.ByteString
+      getV2DeviceID2Bytes() {
+        java.lang.Object ref = v2DeviceID2_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          v2DeviceID2_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string v2DeviceID2 = 23;</code>
+       */
+      public Builder setV2DeviceID2(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         v2DeviceID2_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string v2DeviceID2 = 23;</code>
+       */
       public Builder clearV2DeviceID2() {
-        bitField0_ = (bitField0_ & ~0x00400000);
+
         v2DeviceID2_ = getDefaultInstance().getV2DeviceID2();
         onChanged();
         return this;
       }
-      void setV2DeviceID2(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00400000;
+      /**
+       * <code>optional string v2DeviceID2 = 23;</code>
+       */
+      public Builder setV2DeviceID2Bytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         v2DeviceID2_ = value;
         onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:User)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.User)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.User)
+    private static final com.v2tech.net.lv.WebPackage.User DEFAULT_INSTANCE;
     static {
-      defaultInstance = new User(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.User();
     }
 
-    // @@protoc_insertion_point(class_scope:User)
+    public static com.v2tech.net.lv.WebPackage.User getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<User>
+            PARSER = new com.google.protobuf.AbstractParser<User>() {
+      public User parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new User(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<User> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<User> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.User getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface PositionOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface PositionOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Position)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional double longitude = 1;
-    boolean hasLongitude();
+    /**
+     * <code>optional double longitude = 1;</code>
+     */
     double getLongitude();
 
-    // optional double latitude = 2;
-    boolean hasLatitude();
+    /**
+     * <code>optional double latitude = 2;</code>
+     */
     double getLatitude();
 
-    // optional int32 radius = 3;
-    boolean hasRadius();
+    /**
+     * <code>optional int32 radius = 3;</code>
+     */
     int getRadius();
   }
-  public static final class Position extends
-          com.google.protobuf.GeneratedMessage
-          implements PositionOrBuilder {
+  /**
+   * Protobuf type {@code lv.Position}
+   */
+  public  static final class Position extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Position)
+          PositionOrBuilder {
     // Use Position.newBuilder() to construct.
-    private Position(Builder builder) {
+    private Position(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Position(boolean noInit) {}
-
-    private static final Position defaultInstance;
-    public static Position getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public Position getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Position_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Position_fieldAccessorTable;
-    }
-
-    private int bitField0_;
-    // optional double longitude = 1;
-    public static final int LONGITUDE_FIELD_NUMBER = 1;
-    private double longitude_;
-    public boolean hasLongitude() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public double getLongitude() {
-      return longitude_;
-    }
-
-    // optional double latitude = 2;
-    public static final int LATITUDE_FIELD_NUMBER = 2;
-    private double latitude_;
-    public boolean hasLatitude() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public double getLatitude() {
-      return latitude_;
-    }
-
-    // optional int32 radius = 3;
-    public static final int RADIUS_FIELD_NUMBER = 3;
-    private int radius_;
-    public boolean hasRadius() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public int getRadius() {
-      return radius_;
-    }
-
-    private void initFields() {
+    private Position() {
       longitude_ = 0D;
       latitude_ = 0D;
       radius_ = 0;
     }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Position(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 9: {
+
+              longitude_ = input.readDouble();
+              break;
+            }
+            case 17: {
+
+              latitude_ = input.readDouble();
+              break;
+            }
+            case 24: {
+
+              radius_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Position_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Position_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Position.class, com.v2tech.net.lv.WebPackage.Position.Builder.class);
+    }
+
+    public static final int LONGITUDE_FIELD_NUMBER = 1;
+    private double longitude_;
+    /**
+     * <code>optional double longitude = 1;</code>
+     */
+    public double getLongitude() {
+      return longitude_;
+    }
+
+    public static final int LATITUDE_FIELD_NUMBER = 2;
+    private double latitude_;
+    /**
+     * <code>optional double latitude = 2;</code>
+     */
+    public double getLatitude() {
+      return latitude_;
+    }
+
+    public static final int RADIUS_FIELD_NUMBER = 3;
+    private int radius_;
+    /**
+     * <code>optional int32 radius = 3;</code>
+     */
+    public int getRadius() {
+      return radius_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -6947,140 +9386,177 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (longitude_ != 0D) {
         output.writeDouble(1, longitude_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (latitude_ != 0D) {
         output.writeDouble(2, latitude_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (radius_ != 0) {
         output.writeInt32(3, radius_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (longitude_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
                 .computeDoubleSize(1, longitude_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (latitude_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
                 .computeDoubleSize(2, latitude_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (radius_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(3, radius_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Position)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Position other = (com.v2tech.net.lv.WebPackage.Position) obj;
+
+      boolean result = true;
+      result = result && (
+              java.lang.Double.doubleToLongBits(getLongitude())
+                      == java.lang.Double.doubleToLongBits(
+                      other.getLongitude()));
+      result = result && (
+              java.lang.Double.doubleToLongBits(getLatitude())
+                      == java.lang.Double.doubleToLongBits(
+                      other.getLatitude()));
+      result = result && (getRadius()
+              == other.getRadius());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + LONGITUDE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              java.lang.Double.doubleToLongBits(getLongitude()));
+      hash = (37 * hash) + LATITUDE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              java.lang.Double.doubleToLongBits(getLatitude()));
+      hash = (37 * hash) + RADIUS_FIELD_NUMBER;
+      hash = (53 * hash) + getRadius();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Position parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Position prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Position prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Position}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.PositionOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Position)
+            com.v2tech.net.lv.WebPackage.PositionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Position_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Position_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Position_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Position_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Position.class, com.v2tech.net.lv.WebPackage.Position.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Position.newBuilder()
@@ -7088,36 +9564,30 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         longitude_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        latitude_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        radius_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        latitude_ = 0D;
+
+        radius_ = 0;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Position.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Position_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Position getDefaultInstanceForType() {
@@ -7132,37 +9602,41 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Position buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Position result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Position buildPartial() {
         com.v2tech.net.lv.WebPackage.Position result = new com.v2tech.net.lv.WebPackage.Position(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.longitude_ = longitude_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.latitude_ = latitude_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.radius_ = radius_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Position) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Position)other);
@@ -7174,16 +9648,16 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Position other) {
         if (other == com.v2tech.net.lv.WebPackage.Position.getDefaultInstance()) return this;
-        if (other.hasLongitude()) {
+        if (other.getLongitude() != 0D) {
           setLongitude(other.getLongitude());
         }
-        if (other.hasLatitude()) {
+        if (other.getLatitude() != 0D) {
           setLatitude(other.getLatitude());
         }
-        if (other.hasRadius()) {
+        if (other.getRadius() != 0) {
           setRadius(other.getRadius());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -7195,373 +9669,243 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 9: {
-              bitField0_ |= 0x00000001;
-              longitude_ = input.readDouble();
-              break;
-            }
-            case 17: {
-              bitField0_ |= 0x00000002;
-              latitude_ = input.readDouble();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              radius_ = input.readInt32();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Position parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Position) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional double longitude = 1;
       private double longitude_ ;
-      public boolean hasLongitude() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional double longitude = 1;</code>
+       */
       public double getLongitude() {
         return longitude_;
       }
+      /**
+       * <code>optional double longitude = 1;</code>
+       */
       public Builder setLongitude(double value) {
-        bitField0_ |= 0x00000001;
+
         longitude_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional double longitude = 1;</code>
+       */
       public Builder clearLongitude() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         longitude_ = 0D;
         onChanged();
         return this;
       }
 
-      // optional double latitude = 2;
       private double latitude_ ;
-      public boolean hasLatitude() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional double latitude = 2;</code>
+       */
       public double getLatitude() {
         return latitude_;
       }
+      /**
+       * <code>optional double latitude = 2;</code>
+       */
       public Builder setLatitude(double value) {
-        bitField0_ |= 0x00000002;
+
         latitude_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional double latitude = 2;</code>
+       */
       public Builder clearLatitude() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         latitude_ = 0D;
         onChanged();
         return this;
       }
 
-      // optional int32 radius = 3;
       private int radius_ ;
-      public boolean hasRadius() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional int32 radius = 3;</code>
+       */
       public int getRadius() {
         return radius_;
       }
+      /**
+       * <code>optional int32 radius = 3;</code>
+       */
       public Builder setRadius(int value) {
-        bitField0_ |= 0x00000004;
+
         radius_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 radius = 3;</code>
+       */
       public Builder clearRadius() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         radius_ = 0;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:Position)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Position)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Position)
+    private static final com.v2tech.net.lv.WebPackage.Position DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Position(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Position();
     }
 
-    // @@protoc_insertion_point(class_scope:Position)
+    public static com.v2tech.net.lv.WebPackage.Position getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Position>
+            PARSER = new com.google.protobuf.AbstractParser<Position>() {
+      public Position parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Position(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Position> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Position> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Position getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface VideoOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface VideoOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Video)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 id = 1;
-    boolean hasId();
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
     int getId();
 
-    // optional string videoNum = 2;
-    boolean hasVideoNum();
-    String getVideoNum();
+    /**
+     * <code>optional string videoNum = 2;</code>
+     */
+    java.lang.String getVideoNum();
+    /**
+     * <code>optional string videoNum = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getVideoNumBytes();
 
-    // optional int32 userId = 3;
-    boolean hasUserId();
+    /**
+     * <code>optional int32 userId = 3;</code>
+     */
     int getUserId();
 
-    // optional .Position position = 4;
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
     boolean hasPosition();
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
     com.v2tech.net.lv.WebPackage.Position getPosition();
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
     com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder();
 
-    // optional int32 sum = 5;
-    boolean hasSum();
+    /**
+     * <code>optional int32 sum = 5;</code>
+     */
     int getSum();
 
-    // optional int32 userCount = 6;
-    boolean hasUserCount();
+    /**
+     * <code>optional int32 userCount = 6;</code>
+     */
     int getUserCount();
 
-    // optional int32 likeCount = 7;
-    boolean hasLikeCount();
+    /**
+     * <code>optional int32 likeCount = 7;</code>
+     */
     int getLikeCount();
 
-    // optional float gratuityCount = 8;
-    boolean hasGratuityCount();
+    /**
+     * <code>optional float gratuityCount = 8;</code>
+     */
     float getGratuityCount();
 
-    // optional int32 degree = 9;
-    boolean hasDegree();
+    /**
+     * <code>optional int32 degree = 9;</code>
+     */
     int getDegree();
 
-    // optional int32 resultType = 10;
-    boolean hasResultType();
+    /**
+     * <code>optional int32 resultType = 10;</code>
+     */
     int getResultType();
 
-    // optional bool HLSMode = 11;
-    boolean hasHLSMode();
+    /**
+     * <code>optional bool HLSMode = 11;</code>
+     */
     boolean getHLSMode();
 
-    // optional string videoPwd = 12;
-    boolean hasVideoPwd();
-    String getVideoPwd();
+    /**
+     * <code>optional string videoPwd = 12;</code>
+     */
+    java.lang.String getVideoPwd();
+    /**
+     * <code>optional string videoPwd = 12;</code>
+     */
+    com.google.protobuf.ByteString
+    getVideoPwdBytes();
   }
-  public static final class Video extends
-          com.google.protobuf.GeneratedMessage
-          implements VideoOrBuilder {
+  /**
+   * Protobuf type {@code lv.Video}
+   */
+  public  static final class Video extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Video)
+          VideoOrBuilder {
     // Use Video.newBuilder() to construct.
-    private Video(Builder builder) {
+    private Video(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Video(boolean noInit) {}
-
-    private static final Video defaultInstance;
-    public static Video getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public Video getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Video_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Video_fieldAccessorTable;
-    }
-
-    private int bitField0_;
-    // optional int32 id = 1;
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public int getId() {
-      return id_;
-    }
-
-    // optional string videoNum = 2;
-    public static final int VIDEONUM_FIELD_NUMBER = 2;
-    private java.lang.Object videoNum_;
-    public boolean hasVideoNum() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getVideoNum() {
-      java.lang.Object ref = videoNum_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          videoNum_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getVideoNumBytes() {
-      java.lang.Object ref = videoNum_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        videoNum_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional int32 userId = 3;
-    public static final int USERID_FIELD_NUMBER = 3;
-    private int userId_;
-    public boolean hasUserId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public int getUserId() {
-      return userId_;
-    }
-
-    // optional .Position position = 4;
-    public static final int POSITION_FIELD_NUMBER = 4;
-    private com.v2tech.net.lv.WebPackage.Position position_;
-    public boolean hasPosition() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public com.v2tech.net.lv.WebPackage.Position getPosition() {
-      return position_;
-    }
-    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
-      return position_;
-    }
-
-    // optional int32 sum = 5;
-    public static final int SUM_FIELD_NUMBER = 5;
-    private int sum_;
-    public boolean hasSum() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    public int getSum() {
-      return sum_;
-    }
-
-    // optional int32 userCount = 6;
-    public static final int USERCOUNT_FIELD_NUMBER = 6;
-    private int userCount_;
-    public boolean hasUserCount() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public int getUserCount() {
-      return userCount_;
-    }
-
-    // optional int32 likeCount = 7;
-    public static final int LIKECOUNT_FIELD_NUMBER = 7;
-    private int likeCount_;
-    public boolean hasLikeCount() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    public int getLikeCount() {
-      return likeCount_;
-    }
-
-    // optional float gratuityCount = 8;
-    public static final int GRATUITYCOUNT_FIELD_NUMBER = 8;
-    private float gratuityCount_;
-    public boolean hasGratuityCount() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    public float getGratuityCount() {
-      return gratuityCount_;
-    }
-
-    // optional int32 degree = 9;
-    public static final int DEGREE_FIELD_NUMBER = 9;
-    private int degree_;
-    public boolean hasDegree() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    public int getDegree() {
-      return degree_;
-    }
-
-    // optional int32 resultType = 10;
-    public static final int RESULTTYPE_FIELD_NUMBER = 10;
-    private int resultType_;
-    public boolean hasResultType() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    public int getResultType() {
-      return resultType_;
-    }
-
-    // optional bool HLSMode = 11;
-    public static final int HLSMODE_FIELD_NUMBER = 11;
-    private boolean hLSMode_;
-    public boolean hasHLSMode() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    public boolean getHLSMode() {
-      return hLSMode_;
-    }
-
-    // optional string videoPwd = 12;
-    public static final int VIDEOPWD_FIELD_NUMBER = 12;
-    private java.lang.Object videoPwd_;
-    public boolean hasVideoPwd() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    public String getVideoPwd() {
-      java.lang.Object ref = videoPwd_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          videoPwd_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getVideoPwdBytes() {
-      java.lang.Object ref = videoPwd_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        videoPwd_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private void initFields() {
+    private Video() {
       id_ = 0;
       videoNum_ = "";
       userId_ = 0;
-      position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
       sum_ = 0;
       userCount_ = 0;
       likeCount_ = 0;
@@ -7571,10 +9915,300 @@ public final class WebPackage {
       hLSMode_ = false;
       videoPwd_ = "";
     }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Video(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              videoNum_ = s;
+              break;
+            }
+            case 24: {
+
+              userId_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = null;
+              if (position_ != null) {
+                subBuilder = position_.toBuilder();
+              }
+              position_ = input.readMessage(com.v2tech.net.lv.WebPackage.Position.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(position_);
+                position_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 40: {
+
+              sum_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              userCount_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              likeCount_ = input.readInt32();
+              break;
+            }
+            case 69: {
+
+              gratuityCount_ = input.readFloat();
+              break;
+            }
+            case 72: {
+
+              degree_ = input.readInt32();
+              break;
+            }
+            case 80: {
+
+              resultType_ = input.readInt32();
+              break;
+            }
+            case 88: {
+
+              hLSMode_ = input.readBool();
+              break;
+            }
+            case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              videoPwd_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Video_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Video_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Video.class, com.v2tech.net.lv.WebPackage.Video.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    public int getId() {
+      return id_;
+    }
+
+    public static final int VIDEONUM_FIELD_NUMBER = 2;
+    private volatile java.lang.Object videoNum_;
+    /**
+     * <code>optional string videoNum = 2;</code>
+     */
+    public java.lang.String getVideoNum() {
+      java.lang.Object ref = videoNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        videoNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string videoNum = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getVideoNumBytes() {
+      java.lang.Object ref = videoNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        videoNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERID_FIELD_NUMBER = 3;
+    private int userId_;
+    /**
+     * <code>optional int32 userId = 3;</code>
+     */
+    public int getUserId() {
+      return userId_;
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 4;
+    private com.v2tech.net.lv.WebPackage.Position position_;
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
+    public boolean hasPosition() {
+      return position_ != null;
+    }
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Position getPosition() {
+      return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
+    }
+    /**
+     * <code>optional .lv.Position position = 4;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
+      return getPosition();
+    }
+
+    public static final int SUM_FIELD_NUMBER = 5;
+    private int sum_;
+    /**
+     * <code>optional int32 sum = 5;</code>
+     */
+    public int getSum() {
+      return sum_;
+    }
+
+    public static final int USERCOUNT_FIELD_NUMBER = 6;
+    private int userCount_;
+    /**
+     * <code>optional int32 userCount = 6;</code>
+     */
+    public int getUserCount() {
+      return userCount_;
+    }
+
+    public static final int LIKECOUNT_FIELD_NUMBER = 7;
+    private int likeCount_;
+    /**
+     * <code>optional int32 likeCount = 7;</code>
+     */
+    public int getLikeCount() {
+      return likeCount_;
+    }
+
+    public static final int GRATUITYCOUNT_FIELD_NUMBER = 8;
+    private float gratuityCount_;
+    /**
+     * <code>optional float gratuityCount = 8;</code>
+     */
+    public float getGratuityCount() {
+      return gratuityCount_;
+    }
+
+    public static final int DEGREE_FIELD_NUMBER = 9;
+    private int degree_;
+    /**
+     * <code>optional int32 degree = 9;</code>
+     */
+    public int getDegree() {
+      return degree_;
+    }
+
+    public static final int RESULTTYPE_FIELD_NUMBER = 10;
+    private int resultType_;
+    /**
+     * <code>optional int32 resultType = 10;</code>
+     */
+    public int getResultType() {
+      return resultType_;
+    }
+
+    public static final int HLSMODE_FIELD_NUMBER = 11;
+    private boolean hLSMode_;
+    /**
+     * <code>optional bool HLSMode = 11;</code>
+     */
+    public boolean getHLSMode() {
+      return hLSMode_;
+    }
+
+    public static final int VIDEOPWD_FIELD_NUMBER = 12;
+    private volatile java.lang.Object videoPwd_;
+    /**
+     * <code>optional string videoPwd = 12;</code>
+     */
+    public java.lang.String getVideoPwd() {
+      java.lang.Object ref = videoPwd_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        videoPwd_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string videoPwd = 12;</code>
+     */
+    public com.google.protobuf.ByteString
+    getVideoPwdBytes() {
+      java.lang.Object ref = videoPwd_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        videoPwd_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -7582,203 +10216,277 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getVideoNumBytes());
+      if (!getVideoNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, videoNum_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (userId_ != 0) {
         output.writeInt32(3, userId_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(4, position_);
+      if (position_ != null) {
+        output.writeMessage(4, getPosition());
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sum_ != 0) {
         output.writeInt32(5, sum_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (userCount_ != 0) {
         output.writeInt32(6, userCount_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (likeCount_ != 0) {
         output.writeInt32(7, likeCount_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (gratuityCount_ != 0F) {
         output.writeFloat(8, gratuityCount_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (degree_ != 0) {
         output.writeInt32(9, degree_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (resultType_ != 0) {
         output.writeInt32(10, resultType_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (hLSMode_ != false) {
         output.writeBool(11, hLSMode_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeBytes(12, getVideoPwdBytes());
+      if (!getVideoPwdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, videoPwd_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getVideoNumBytes());
+      if (!getVideoNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, videoNum_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (userId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(3, userId_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (position_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(4, position_);
+                .computeMessageSize(4, getPosition());
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sum_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(5, sum_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (userCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(6, userCount_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (likeCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(7, likeCount_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (gratuityCount_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
                 .computeFloatSize(8, gratuityCount_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (degree_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(9, degree_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (resultType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(10, resultType_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (hLSMode_ != false) {
         size += com.google.protobuf.CodedOutputStream
                 .computeBoolSize(11, hLSMode_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(12, getVideoPwdBytes());
+      if (!getVideoPwdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, videoPwd_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Video)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Video other = (com.v2tech.net.lv.WebPackage.Video) obj;
+
+      boolean result = true;
+      result = result && (getId()
+              == other.getId());
+      result = result && getVideoNum()
+              .equals(other.getVideoNum());
+      result = result && (getUserId()
+              == other.getUserId());
+      result = result && (hasPosition() == other.hasPosition());
+      if (hasPosition()) {
+        result = result && getPosition()
+                .equals(other.getPosition());
+      }
+      result = result && (getSum()
+              == other.getSum());
+      result = result && (getUserCount()
+              == other.getUserCount());
+      result = result && (getLikeCount()
+              == other.getLikeCount());
+      result = result && (
+              java.lang.Float.floatToIntBits(getGratuityCount())
+                      == java.lang.Float.floatToIntBits(
+                      other.getGratuityCount()));
+      result = result && (getDegree()
+              == other.getDegree());
+      result = result && (getResultType()
+              == other.getResultType());
+      result = result && (getHLSMode()
+              == other.getHLSMode());
+      result = result && getVideoPwd()
+              .equals(other.getVideoPwd());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + VIDEONUM_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoNum().hashCode();
+      hash = (37 * hash) + USERID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId();
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      hash = (37 * hash) + SUM_FIELD_NUMBER;
+      hash = (53 * hash) + getSum();
+      hash = (37 * hash) + USERCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getUserCount();
+      hash = (37 * hash) + LIKECOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getLikeCount();
+      hash = (37 * hash) + GRATUITYCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getGratuityCount());
+      hash = (37 * hash) + DEGREE_FIELD_NUMBER;
+      hash = (53 * hash) + getDegree();
+      hash = (37 * hash) + RESULTTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getResultType();
+      hash = (37 * hash) + HLSMODE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getHLSMode());
+      hash = (37 * hash) + VIDEOPWD_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoPwd().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Video parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Video prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Video prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Video}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.VideoOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Video)
+            com.v2tech.net.lv.WebPackage.VideoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Video_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Video_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Video_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Video_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Video.class, com.v2tech.net.lv.WebPackage.Video.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Video.newBuilder()
@@ -7786,59 +10494,52 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPositionFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        videoNum_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        userId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-        } else {
-          positionBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000008);
-        sum_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        userCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        likeCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000040);
-        gratuityCount_ = 0F;
-        bitField0_ = (bitField0_ & ~0x00000080);
-        degree_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000100);
-        resultType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000200);
-        hLSMode_ = false;
-        bitField0_ = (bitField0_ & ~0x00000400);
-        videoPwd_ = "";
-        bitField0_ = (bitField0_ & ~0x00000800);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        videoNum_ = "";
+
+        userId_ = 0;
+
+        if (positionBuilder_ == null) {
+          position_ = null;
+        } else {
+          position_ = null;
+          positionBuilder_ = null;
+        }
+        sum_ = 0;
+
+        userCount_ = 0;
+
+        likeCount_ = 0;
+
+        gratuityCount_ = 0F;
+
+        degree_ = 0;
+
+        resultType_ = 0;
+
+        hLSMode_ = false;
+
+        videoPwd_ = "";
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Video.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Video_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Video getDefaultInstanceForType() {
@@ -7853,77 +10554,54 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Video buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Video result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Video buildPartial() {
         com.v2tech.net.lv.WebPackage.Video result = new com.v2tech.net.lv.WebPackage.Video(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.videoNum_ = videoNum_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.userId_ = userId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         if (positionBuilder_ == null) {
           result.position_ = position_;
         } else {
           result.position_ = positionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.sum_ = sum_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.userCount_ = userCount_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.likeCount_ = likeCount_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.gratuityCount_ = gratuityCount_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.degree_ = degree_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.resultType_ = resultType_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.hLSMode_ = hLSMode_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.videoPwd_ = videoPwd_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Video) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Video)other);
@@ -7935,43 +10613,45 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Video other) {
         if (other == com.v2tech.net.lv.WebPackage.Video.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasVideoNum()) {
-          setVideoNum(other.getVideoNum());
+        if (!other.getVideoNum().isEmpty()) {
+          videoNum_ = other.videoNum_;
+          onChanged();
         }
-        if (other.hasUserId()) {
+        if (other.getUserId() != 0) {
           setUserId(other.getUserId());
         }
         if (other.hasPosition()) {
           mergePosition(other.getPosition());
         }
-        if (other.hasSum()) {
+        if (other.getSum() != 0) {
           setSum(other.getSum());
         }
-        if (other.hasUserCount()) {
+        if (other.getUserCount() != 0) {
           setUserCount(other.getUserCount());
         }
-        if (other.hasLikeCount()) {
+        if (other.getLikeCount() != 0) {
           setLikeCount(other.getLikeCount());
         }
-        if (other.hasGratuityCount()) {
+        if (other.getGratuityCount() != 0F) {
           setGratuityCount(other.getGratuityCount());
         }
-        if (other.hasDegree()) {
+        if (other.getDegree() != 0) {
           setDegree(other.getDegree());
         }
-        if (other.hasResultType()) {
+        if (other.getResultType() != 0) {
           setResultType(other.getResultType());
         }
-        if (other.hasHLSMode()) {
+        if (other.getHLSMode() != false) {
           setHLSMode(other.getHLSMode());
         }
-        if (other.hasVideoPwd()) {
-          setVideoPwd(other.getVideoPwd());
+        if (!other.getVideoPwd().isEmpty()) {
+          videoPwd_ = other.videoPwd_;
+          onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -7983,187 +10663,163 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              videoNum_ = input.readBytes();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              userId_ = input.readInt32();
-              break;
-            }
-            case 34: {
-              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = com.v2tech.net.lv.WebPackage.Position.newBuilder();
-              if (hasPosition()) {
-                subBuilder.mergeFrom(getPosition());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setPosition(subBuilder.buildPartial());
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              sum_ = input.readInt32();
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              userCount_ = input.readInt32();
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000040;
-              likeCount_ = input.readInt32();
-              break;
-            }
-            case 69: {
-              bitField0_ |= 0x00000080;
-              gratuityCount_ = input.readFloat();
-              break;
-            }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              degree_ = input.readInt32();
-              break;
-            }
-            case 80: {
-              bitField0_ |= 0x00000200;
-              resultType_ = input.readInt32();
-              break;
-            }
-            case 88: {
-              bitField0_ |= 0x00000400;
-              hLSMode_ = input.readBool();
-              break;
-            }
-            case 98: {
-              bitField0_ |= 0x00000800;
-              videoPwd_ = input.readBytes();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Video parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Video) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 id = 1;
       private int id_ ;
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public int getId() {
         return id_;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+
         id_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         id_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string videoNum = 2;
       private java.lang.Object videoNum_ = "";
-      public boolean hasVideoNum() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getVideoNum() {
+      /**
+       * <code>optional string videoNum = 2;</code>
+       */
+      public java.lang.String getVideoNum() {
         java.lang.Object ref = videoNum_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           videoNum_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setVideoNum(String value) {
+      /**
+       * <code>optional string videoNum = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getVideoNumBytes() {
+        java.lang.Object ref = videoNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          videoNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string videoNum = 2;</code>
+       */
+      public Builder setVideoNum(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         videoNum_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string videoNum = 2;</code>
+       */
       public Builder clearVideoNum() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         videoNum_ = getDefaultInstance().getVideoNum();
         onChanged();
         return this;
       }
-      void setVideoNum(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
+      /**
+       * <code>optional string videoNum = 2;</code>
+       */
+      public Builder setVideoNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         videoNum_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int32 userId = 3;
       private int userId_ ;
-      public boolean hasUserId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional int32 userId = 3;</code>
+       */
       public int getUserId() {
         return userId_;
       }
+      /**
+       * <code>optional int32 userId = 3;</code>
+       */
       public Builder setUserId(int value) {
-        bitField0_ |= 0x00000004;
+
         userId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 userId = 3;</code>
+       */
       public Builder clearUserId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         userId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional .Position position = 4;
-      private com.v2tech.net.lv.WebPackage.Position position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.v2tech.net.lv.WebPackage.Position position_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> positionBuilder_;
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public boolean hasPosition() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return positionBuilder_ != null || position_ != null;
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position getPosition() {
         if (positionBuilder_ == null) {
-          return position_;
+          return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         } else {
           return positionBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public Builder setPosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
           if (value == null) {
@@ -8174,9 +10830,12 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public Builder setPosition(
               com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -8185,13 +10844,15 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public Builder mergePosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008) &&
-                  position_ != com.v2tech.net.lv.WebPackage.Position.getDefaultInstance()) {
+          if (position_ != null) {
             position_ =
                     com.v2tech.net.lv.WebPackage.Position.newBuilder(position_).mergeFrom(value).buildPartial();
           } else {
@@ -8201,38 +10862,52 @@ public final class WebPackage {
         } else {
           positionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public Builder clearPosition() {
         if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+          position_ = null;
           onChanged();
         } else {
-          positionBuilder_.clear();
+          position_ = null;
+          positionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder getPositionBuilder() {
-        bitField0_ |= 0x00000008;
+
         onChanged();
         return getPositionFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
         if (positionBuilder_ != null) {
           return positionBuilder_.getMessageOrBuilder();
         } else {
-          return position_;
+          return position_ == null ?
+                  com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
+      /**
+       * <code>optional .lv.Position position = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>
       getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
-          positionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>(
-                  position_,
+                  getPosition(),
                   getParentForChildren(),
                   isClean());
           position_ = null;
@@ -8240,276 +10915,512 @@ public final class WebPackage {
         return positionBuilder_;
       }
 
-      // optional int32 sum = 5;
       private int sum_ ;
-      public boolean hasSum() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public int getSum() {
         return sum_;
       }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public Builder setSum(int value) {
-        bitField0_ |= 0x00000010;
+
         sum_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 sum = 5;</code>
+       */
       public Builder clearSum() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         sum_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 userCount = 6;
       private int userCount_ ;
-      public boolean hasUserCount() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
+      /**
+       * <code>optional int32 userCount = 6;</code>
+       */
       public int getUserCount() {
         return userCount_;
       }
+      /**
+       * <code>optional int32 userCount = 6;</code>
+       */
       public Builder setUserCount(int value) {
-        bitField0_ |= 0x00000020;
+
         userCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 userCount = 6;</code>
+       */
       public Builder clearUserCount() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         userCount_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 likeCount = 7;
       private int likeCount_ ;
-      public boolean hasLikeCount() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
+      /**
+       * <code>optional int32 likeCount = 7;</code>
+       */
       public int getLikeCount() {
         return likeCount_;
       }
+      /**
+       * <code>optional int32 likeCount = 7;</code>
+       */
       public Builder setLikeCount(int value) {
-        bitField0_ |= 0x00000040;
+
         likeCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 likeCount = 7;</code>
+       */
       public Builder clearLikeCount() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         likeCount_ = 0;
         onChanged();
         return this;
       }
 
-      // optional float gratuityCount = 8;
       private float gratuityCount_ ;
-      public boolean hasGratuityCount() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
+      /**
+       * <code>optional float gratuityCount = 8;</code>
+       */
       public float getGratuityCount() {
         return gratuityCount_;
       }
+      /**
+       * <code>optional float gratuityCount = 8;</code>
+       */
       public Builder setGratuityCount(float value) {
-        bitField0_ |= 0x00000080;
+
         gratuityCount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional float gratuityCount = 8;</code>
+       */
       public Builder clearGratuityCount() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         gratuityCount_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional int32 degree = 9;
       private int degree_ ;
-      public boolean hasDegree() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
+      /**
+       * <code>optional int32 degree = 9;</code>
+       */
       public int getDegree() {
         return degree_;
       }
+      /**
+       * <code>optional int32 degree = 9;</code>
+       */
       public Builder setDegree(int value) {
-        bitField0_ |= 0x00000100;
+
         degree_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 degree = 9;</code>
+       */
       public Builder clearDegree() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         degree_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 resultType = 10;
       private int resultType_ ;
-      public boolean hasResultType() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
+      /**
+       * <code>optional int32 resultType = 10;</code>
+       */
       public int getResultType() {
         return resultType_;
       }
+      /**
+       * <code>optional int32 resultType = 10;</code>
+       */
       public Builder setResultType(int value) {
-        bitField0_ |= 0x00000200;
+
         resultType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 resultType = 10;</code>
+       */
       public Builder clearResultType() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         resultType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional bool HLSMode = 11;
       private boolean hLSMode_ ;
-      public boolean hasHLSMode() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
+      /**
+       * <code>optional bool HLSMode = 11;</code>
+       */
       public boolean getHLSMode() {
         return hLSMode_;
       }
+      /**
+       * <code>optional bool HLSMode = 11;</code>
+       */
       public Builder setHLSMode(boolean value) {
-        bitField0_ |= 0x00000400;
+
         hLSMode_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional bool HLSMode = 11;</code>
+       */
       public Builder clearHLSMode() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         hLSMode_ = false;
         onChanged();
         return this;
       }
 
-      // optional string videoPwd = 12;
       private java.lang.Object videoPwd_ = "";
-      public boolean hasVideoPwd() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      public String getVideoPwd() {
+      /**
+       * <code>optional string videoPwd = 12;</code>
+       */
+      public java.lang.String getVideoPwd() {
         java.lang.Object ref = videoPwd_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           videoPwd_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setVideoPwd(String value) {
+      /**
+       * <code>optional string videoPwd = 12;</code>
+       */
+      public com.google.protobuf.ByteString
+      getVideoPwdBytes() {
+        java.lang.Object ref = videoPwd_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          videoPwd_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string videoPwd = 12;</code>
+       */
+      public Builder setVideoPwd(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000800;
+
         videoPwd_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string videoPwd = 12;</code>
+       */
       public Builder clearVideoPwd() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         videoPwd_ = getDefaultInstance().getVideoPwd();
         onChanged();
         return this;
       }
-      void setVideoPwd(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000800;
+      /**
+       * <code>optional string videoPwd = 12;</code>
+       */
+      public Builder setVideoPwdBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         videoPwd_ = value;
         onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Video)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Video)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Video)
+    private static final com.v2tech.net.lv.WebPackage.Video DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Video(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Video();
     }
 
-    // @@protoc_insertion_point(class_scope:Video)
+    public static com.v2tech.net.lv.WebPackage.Video getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Video>
+            PARSER = new com.google.protobuf.AbstractParser<Video>() {
+      public Video parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Video(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Video> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Video> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Video getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface GratuityOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface GratuityOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Gratuity)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 giftType = 1;
-    boolean hasGiftType();
+    /**
+     * <code>optional int32 giftType = 1;</code>
+     */
     int getGiftType();
 
-    // optional int32 toUserID = 2;
-    boolean hasToUserID();
+    /**
+     * <code>optional int32 toUserID = 2;</code>
+     */
     int getToUserID();
 
-    // optional int32 fromUserID = 3;
-    boolean hasFromUserID();
+    /**
+     * <code>optional int32 fromUserID = 3;</code>
+     */
     int getFromUserID();
 
-    // optional float amount = 4;
-    boolean hasAmount();
+    /**
+     * <code>optional float amount = 4;</code>
+     */
     float getAmount();
 
-    // optional float sumOrRemain = 5;
-    boolean hasSumOrRemain();
+    /**
+     * <code>optional float sumOrRemain = 5;</code>
+     */
     float getSumOrRemain();
 
-    // optional .Gratuity.Answer answer = 6;
-    boolean hasAnswer();
+    /**
+     * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+     */
+    int getAnswerValue();
+    /**
+     * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+     */
     com.v2tech.net.lv.WebPackage.Gratuity.Answer getAnswer();
 
-    // optional int32 videoId = 7;
-    boolean hasVideoId();
+    /**
+     * <code>optional int32 videoId = 7;</code>
+     */
     int getVideoId();
   }
-  public static final class Gratuity extends
-          com.google.protobuf.GeneratedMessage
-          implements GratuityOrBuilder {
+  /**
+   * Protobuf type {@code lv.Gratuity}
+   */
+  public  static final class Gratuity extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Gratuity)
+          GratuityOrBuilder {
     // Use Gratuity.newBuilder() to construct.
-    private Gratuity(Builder builder) {
+    private Gratuity(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Gratuity(boolean noInit) {}
-
-    private static final Gratuity defaultInstance;
-    public static Gratuity getDefaultInstance() {
-      return defaultInstance;
+    private Gratuity() {
+      giftType_ = 0;
+      toUserID_ = 0;
+      fromUserID_ = 0;
+      amount_ = 0F;
+      sumOrRemain_ = 0F;
+      answer_ = 0;
+      videoId_ = 0;
     }
 
-    public Gratuity getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private Gratuity(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              giftType_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              toUserID_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              fromUserID_ = input.readInt32();
+              break;
+            }
+            case 37: {
+
+              amount_ = input.readFloat();
+              break;
+            }
+            case 45: {
+
+              sumOrRemain_ = input.readFloat();
+              break;
+            }
+            case 48: {
+              int rawValue = input.readEnum();
+
+              answer_ = rawValue;
+              break;
+            }
+            case 56: {
+
+              videoId_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Gratuity_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Gratuity_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Gratuity_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Gratuity_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Gratuity.class, com.v2tech.net.lv.WebPackage.Gratuity.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code lv.Gratuity.Answer}
+     */
     public enum Answer
             implements com.google.protobuf.ProtocolMessageEnum {
-      receive(0, 0),
-      accept(1, 1),
-      refuse(2, 2),
-      cancel(3, 3),
+      /**
+       * <code>receive = 0;</code>
+       */
+      receive(0),
+      /**
+       * <code>accept = 1;</code>
+       */
+      accept(1),
+      /**
+       * <code>refuse = 2;</code>
+       */
+      refuse(2),
+      /**
+       * <code>cancel = 3;</code>
+       */
+      cancel(3),
+      UNRECOGNIZED(-1),
       ;
 
+      /**
+       * <code>receive = 0;</code>
+       */
       public static final int receive_VALUE = 0;
+      /**
+       * <code>accept = 1;</code>
+       */
       public static final int accept_VALUE = 1;
+      /**
+       * <code>refuse = 2;</code>
+       */
       public static final int refuse_VALUE = 2;
+      /**
+       * <code>cancel = 3;</code>
+       */
       public static final int cancel_VALUE = 3;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+                  "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static Answer valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static Answer forNumber(int value) {
         switch (value) {
           case 0: return receive;
           case 1: return accept;
@@ -8523,17 +11434,17 @@ public final class WebPackage {
       internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<Answer>
-              internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+              Answer> internalValueMap =
               new com.google.protobuf.Internal.EnumLiteMap<Answer>() {
                 public Answer findValueByNumber(int number) {
-                  return Answer.valueOf(number);
+                  return Answer.forNumber(number);
                 }
               };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
@@ -8544,9 +11455,7 @@ public final class WebPackage {
         return com.v2tech.net.lv.WebPackage.Gratuity.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final Answer[] VALUES = {
-              receive, accept, refuse, cancel,
-      };
+      private static final Answer[] VALUES = values();
 
       public static Answer valueOf(
               com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -8554,104 +11463,96 @@ public final class WebPackage {
           throw new java.lang.IllegalArgumentException(
                   "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private Answer(int index, int value) {
-        this.index = index;
+      private Answer(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:Gratuity.Answer)
+      // @@protoc_insertion_point(enum_scope:lv.Gratuity.Answer)
     }
 
-    private int bitField0_;
-    // optional int32 giftType = 1;
     public static final int GIFTTYPE_FIELD_NUMBER = 1;
     private int giftType_;
-    public boolean hasGiftType() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional int32 giftType = 1;</code>
+     */
     public int getGiftType() {
       return giftType_;
     }
 
-    // optional int32 toUserID = 2;
     public static final int TOUSERID_FIELD_NUMBER = 2;
     private int toUserID_;
-    public boolean hasToUserID() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
+    /**
+     * <code>optional int32 toUserID = 2;</code>
+     */
     public int getToUserID() {
       return toUserID_;
     }
 
-    // optional int32 fromUserID = 3;
     public static final int FROMUSERID_FIELD_NUMBER = 3;
     private int fromUserID_;
-    public boolean hasFromUserID() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
+    /**
+     * <code>optional int32 fromUserID = 3;</code>
+     */
     public int getFromUserID() {
       return fromUserID_;
     }
 
-    // optional float amount = 4;
     public static final int AMOUNT_FIELD_NUMBER = 4;
     private float amount_;
-    public boolean hasAmount() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
+    /**
+     * <code>optional float amount = 4;</code>
+     */
     public float getAmount() {
       return amount_;
     }
 
-    // optional float sumOrRemain = 5;
     public static final int SUMORREMAIN_FIELD_NUMBER = 5;
     private float sumOrRemain_;
-    public boolean hasSumOrRemain() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
+    /**
+     * <code>optional float sumOrRemain = 5;</code>
+     */
     public float getSumOrRemain() {
       return sumOrRemain_;
     }
 
-    // optional .Gratuity.Answer answer = 6;
     public static final int ANSWER_FIELD_NUMBER = 6;
-    private com.v2tech.net.lv.WebPackage.Gratuity.Answer answer_;
-    public boolean hasAnswer() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public com.v2tech.net.lv.WebPackage.Gratuity.Answer getAnswer() {
+    private int answer_;
+    /**
+     * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+     */
+    public int getAnswerValue() {
       return answer_;
     }
+    /**
+     * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Gratuity.Answer getAnswer() {
+      com.v2tech.net.lv.WebPackage.Gratuity.Answer result = com.v2tech.net.lv.WebPackage.Gratuity.Answer.valueOf(answer_);
+      return result == null ? com.v2tech.net.lv.WebPackage.Gratuity.Answer.UNRECOGNIZED : result;
+    }
 
-    // optional int32 videoId = 7;
     public static final int VIDEOID_FIELD_NUMBER = 7;
     private int videoId_;
-    public boolean hasVideoId() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
+    /**
+     * <code>optional int32 videoId = 7;</code>
+     */
     public int getVideoId() {
       return videoId_;
     }
 
-    private void initFields() {
-      giftType_ = 0;
-      toUserID_ = 0;
-      fromUserID_ = 0;
-      amount_ = 0F;
-      sumOrRemain_ = 0F;
-      answer_ = com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive;
-      videoId_ = 0;
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -8659,168 +11560,220 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (giftType_ != 0) {
         output.writeInt32(1, giftType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (toUserID_ != 0) {
         output.writeInt32(2, toUserID_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (fromUserID_ != 0) {
         output.writeInt32(3, fromUserID_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (amount_ != 0F) {
         output.writeFloat(4, amount_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sumOrRemain_ != 0F) {
         output.writeFloat(5, sumOrRemain_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeEnum(6, answer_.getNumber());
+      if (answer_ != com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive.getNumber()) {
+        output.writeEnum(6, answer_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (videoId_ != 0) {
         output.writeInt32(7, videoId_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (giftType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, giftType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (toUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(2, toUserID_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (fromUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(3, fromUserID_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (amount_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
                 .computeFloatSize(4, amount_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (sumOrRemain_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
                 .computeFloatSize(5, sumOrRemain_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (answer_ != com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(6, answer_.getNumber());
+                .computeEnumSize(6, answer_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (videoId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(7, videoId_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Gratuity)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Gratuity other = (com.v2tech.net.lv.WebPackage.Gratuity) obj;
+
+      boolean result = true;
+      result = result && (getGiftType()
+              == other.getGiftType());
+      result = result && (getToUserID()
+              == other.getToUserID());
+      result = result && (getFromUserID()
+              == other.getFromUserID());
+      result = result && (
+              java.lang.Float.floatToIntBits(getAmount())
+                      == java.lang.Float.floatToIntBits(
+                      other.getAmount()));
+      result = result && (
+              java.lang.Float.floatToIntBits(getSumOrRemain())
+                      == java.lang.Float.floatToIntBits(
+                      other.getSumOrRemain()));
+      result = result && answer_ == other.answer_;
+      result = result && (getVideoId()
+              == other.getVideoId());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + GIFTTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getGiftType();
+      hash = (37 * hash) + TOUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getToUserID();
+      hash = (37 * hash) + FROMUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getFromUserID();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getAmount());
+      hash = (37 * hash) + SUMORREMAIN_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getSumOrRemain());
+      hash = (37 * hash) + ANSWER_FIELD_NUMBER;
+      hash = (53 * hash) + answer_;
+      hash = (37 * hash) + VIDEOID_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gratuity parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Gratuity prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Gratuity prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Gratuity}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.GratuityOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Gratuity)
+            com.v2tech.net.lv.WebPackage.GratuityOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Gratuity_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gratuity_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Gratuity_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gratuity_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Gratuity.class, com.v2tech.net.lv.WebPackage.Gratuity.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Gratuity.newBuilder()
@@ -8828,44 +11781,38 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         giftType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        toUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        fromUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        amount_ = 0F;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        sumOrRemain_ = 0F;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        answer_ = com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        videoId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000040);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        toUserID_ = 0;
+
+        fromUserID_ = 0;
+
+        amount_ = 0F;
+
+        sumOrRemain_ = 0F;
+
+        answer_ = 0;
+
+        videoId_ = 0;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Gratuity.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gratuity_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Gratuity getDefaultInstanceForType() {
@@ -8880,53 +11827,45 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Gratuity buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Gratuity result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Gratuity buildPartial() {
         com.v2tech.net.lv.WebPackage.Gratuity result = new com.v2tech.net.lv.WebPackage.Gratuity(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.giftType_ = giftType_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.toUserID_ = toUserID_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.fromUserID_ = fromUserID_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.amount_ = amount_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.sumOrRemain_ = sumOrRemain_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.answer_ = answer_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.videoId_ = videoId_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Gratuity) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Gratuity)other);
@@ -8938,28 +11877,28 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Gratuity other) {
         if (other == com.v2tech.net.lv.WebPackage.Gratuity.getDefaultInstance()) return this;
-        if (other.hasGiftType()) {
+        if (other.getGiftType() != 0) {
           setGiftType(other.getGiftType());
         }
-        if (other.hasToUserID()) {
+        if (other.getToUserID() != 0) {
           setToUserID(other.getToUserID());
         }
-        if (other.hasFromUserID()) {
+        if (other.getFromUserID() != 0) {
           setFromUserID(other.getFromUserID());
         }
-        if (other.hasAmount()) {
+        if (other.getAmount() != 0F) {
           setAmount(other.getAmount());
         }
-        if (other.hasSumOrRemain()) {
+        if (other.getSumOrRemain() != 0F) {
           setSumOrRemain(other.getSumOrRemain());
         }
-        if (other.hasAnswer()) {
-          setAnswer(other.getAnswer());
+        if (other.answer_ != 0) {
+          setAnswerValue(other.getAnswerValue());
         }
-        if (other.hasVideoId()) {
+        if (other.getVideoId() != 0) {
           setVideoId(other.getVideoId());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -8971,338 +11910,591 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              giftType_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              toUserID_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              fromUserID_ = input.readInt32();
-              break;
-            }
-            case 37: {
-              bitField0_ |= 0x00000008;
-              amount_ = input.readFloat();
-              break;
-            }
-            case 45: {
-              bitField0_ |= 0x00000010;
-              sumOrRemain_ = input.readFloat();
-              break;
-            }
-            case 48: {
-              int rawValue = input.readEnum();
-              com.v2tech.net.lv.WebPackage.Gratuity.Answer value = com.v2tech.net.lv.WebPackage.Gratuity.Answer.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(6, rawValue);
-              } else {
-                bitField0_ |= 0x00000020;
-                answer_ = value;
-              }
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000040;
-              videoId_ = input.readInt32();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Gratuity parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Gratuity) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 giftType = 1;
       private int giftType_ ;
-      public boolean hasGiftType() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public int getGiftType() {
         return giftType_;
       }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public Builder setGiftType(int value) {
-        bitField0_ |= 0x00000001;
+
         giftType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public Builder clearGiftType() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         giftType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 toUserID = 2;
       private int toUserID_ ;
-      public boolean hasToUserID() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public int getToUserID() {
         return toUserID_;
       }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public Builder setToUserID(int value) {
-        bitField0_ |= 0x00000002;
+
         toUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public Builder clearToUserID() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         toUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 fromUserID = 3;
       private int fromUserID_ ;
-      public boolean hasFromUserID() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional int32 fromUserID = 3;</code>
+       */
       public int getFromUserID() {
         return fromUserID_;
       }
+      /**
+       * <code>optional int32 fromUserID = 3;</code>
+       */
       public Builder setFromUserID(int value) {
-        bitField0_ |= 0x00000004;
+
         fromUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 fromUserID = 3;</code>
+       */
       public Builder clearFromUserID() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         fromUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // optional float amount = 4;
       private float amount_ ;
-      public boolean hasAmount() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
+      /**
+       * <code>optional float amount = 4;</code>
+       */
       public float getAmount() {
         return amount_;
       }
+      /**
+       * <code>optional float amount = 4;</code>
+       */
       public Builder setAmount(float value) {
-        bitField0_ |= 0x00000008;
+
         amount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional float amount = 4;</code>
+       */
       public Builder clearAmount() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         amount_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional float sumOrRemain = 5;
       private float sumOrRemain_ ;
-      public boolean hasSumOrRemain() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
+      /**
+       * <code>optional float sumOrRemain = 5;</code>
+       */
       public float getSumOrRemain() {
         return sumOrRemain_;
       }
+      /**
+       * <code>optional float sumOrRemain = 5;</code>
+       */
       public Builder setSumOrRemain(float value) {
-        bitField0_ |= 0x00000010;
+
         sumOrRemain_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional float sumOrRemain = 5;</code>
+       */
       public Builder clearSumOrRemain() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         sumOrRemain_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional .Gratuity.Answer answer = 6;
-      private com.v2tech.net.lv.WebPackage.Gratuity.Answer answer_ = com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive;
-      public boolean hasAnswer() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      public com.v2tech.net.lv.WebPackage.Gratuity.Answer getAnswer() {
+      private int answer_ = 0;
+      /**
+       * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+       */
+      public int getAnswerValue() {
         return answer_;
       }
-      public Builder setAnswer(com.v2tech.net.lv.WebPackage.Gratuity.Answer value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000020;
+      /**
+       * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+       */
+      public Builder setAnswerValue(int value) {
         answer_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+       */
+      public com.v2tech.net.lv.WebPackage.Gratuity.Answer getAnswer() {
+        com.v2tech.net.lv.WebPackage.Gratuity.Answer result = com.v2tech.net.lv.WebPackage.Gratuity.Answer.valueOf(answer_);
+        return result == null ? com.v2tech.net.lv.WebPackage.Gratuity.Answer.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+       */
+      public Builder setAnswer(com.v2tech.net.lv.WebPackage.Gratuity.Answer value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        answer_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .lv.Gratuity.Answer answer = 6;</code>
+       */
       public Builder clearAnswer() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        answer_ = com.v2tech.net.lv.WebPackage.Gratuity.Answer.receive;
+
+        answer_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 videoId = 7;
       private int videoId_ ;
-      public boolean hasVideoId() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
+      /**
+       * <code>optional int32 videoId = 7;</code>
+       */
       public int getVideoId() {
         return videoId_;
       }
+      /**
+       * <code>optional int32 videoId = 7;</code>
+       */
       public Builder setVideoId(int value) {
-        bitField0_ |= 0x00000040;
+
         videoId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 videoId = 7;</code>
+       */
       public Builder clearVideoId() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         videoId_ = 0;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:Gratuity)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Gratuity)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Gratuity)
+    private static final com.v2tech.net.lv.WebPackage.Gratuity DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Gratuity(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Gratuity();
     }
 
-    // @@protoc_insertion_point(class_scope:Gratuity)
+    public static com.v2tech.net.lv.WebPackage.Gratuity getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Gratuity>
+            PARSER = new com.google.protobuf.AbstractParser<Gratuity>() {
+      public Gratuity parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Gratuity(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Gratuity> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Gratuity> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Gratuity getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface RewardOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface RewardOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Reward)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 id = 1;
-    boolean hasId();
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
     int getId();
 
-    // optional int32 powerTime = 2;
-    boolean hasPowerTime();
+    /**
+     * <code>optional int32 powerTime = 2;</code>
+     */
     int getPowerTime();
 
-    // optional int64 releaseTime = 3;
-    boolean hasReleaseTime();
+    /**
+     * <code>optional int64 releaseTime = 3;</code>
+     */
     long getReleaseTime();
 
-    // repeated .Gift gift = 4;
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Gift>
     getGiftList();
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     com.v2tech.net.lv.WebPackage.Gift getGift(int index);
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     int getGiftCount();
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
     getGiftOrBuilderList();
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
             int index);
 
-    // optional int32 fromUserID = 5;
-    boolean hasFromUserID();
+    /**
+     * <code>optional int32 fromUserID = 5;</code>
+     */
     int getFromUserID();
 
-    // optional int32 answerUserID = 6;
-    boolean hasAnswerUserID();
+    /**
+     * <code>optional int32 answerUserID = 6;</code>
+     */
     int getAnswerUserID();
 
-    // optional .Reward.Operate operate = 7;
-    boolean hasOperate();
+    /**
+     * <code>optional .lv.Reward.Operate operate = 7;</code>
+     */
+    int getOperateValue();
+    /**
+     * <code>optional .lv.Reward.Operate operate = 7;</code>
+     */
     com.v2tech.net.lv.WebPackage.Reward.Operate getOperate();
 
-    // optional string desc = 8;
-    boolean hasDesc();
-    String getDesc();
+    /**
+     * <code>optional string desc = 8;</code>
+     */
+    java.lang.String getDesc();
+    /**
+     * <code>optional string desc = 8;</code>
+     */
+    com.google.protobuf.ByteString
+    getDescBytes();
 
-    // optional .Position position = 9;
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     boolean hasPosition();
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     com.v2tech.net.lv.WebPackage.Position getPosition();
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder();
 
-    // optional int32 pushSum = 10;
-    boolean hasPushSum();
+    /**
+     * <code>optional int32 pushSum = 10;</code>
+     */
     int getPushSum();
 
-    // optional string appealDesc = 11;
-    boolean hasAppealDesc();
-    String getAppealDesc();
+    /**
+     * <code>optional string appealDesc = 11;</code>
+     */
+    java.lang.String getAppealDesc();
+    /**
+     * <code>optional string appealDesc = 11;</code>
+     */
+    com.google.protobuf.ByteString
+    getAppealDescBytes();
 
-    // optional int64 appealTime = 12;
-    boolean hasAppealTime();
+    /**
+     * <code>optional int64 appealTime = 12;</code>
+     */
     long getAppealTime();
   }
-  public static final class Reward extends
-          com.google.protobuf.GeneratedMessage
-          implements RewardOrBuilder {
+  /**
+   * Protobuf type {@code lv.Reward}
+   */
+  public  static final class Reward extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Reward)
+          RewardOrBuilder {
     // Use Reward.newBuilder() to construct.
-    private Reward(Builder builder) {
+    private Reward(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Reward(boolean noInit) {}
-
-    private static final Reward defaultInstance;
-    public static Reward getDefaultInstance() {
-      return defaultInstance;
+    private Reward() {
+      id_ = 0;
+      powerTime_ = 0;
+      releaseTime_ = 0L;
+      gift_ = java.util.Collections.emptyList();
+      fromUserID_ = 0;
+      answerUserID_ = 0;
+      operate_ = 0;
+      desc_ = "";
+      pushSum_ = 0;
+      appealDesc_ = "";
+      appealTime_ = 0L;
     }
 
-    public Reward getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private Reward(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              powerTime_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              releaseTime_ = input.readInt64();
+              break;
+            }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                gift_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Gift>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              gift_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Gift.parser(), extensionRegistry));
+              break;
+            }
+            case 40: {
+
+              fromUserID_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              answerUserID_ = input.readInt32();
+              break;
+            }
+            case 56: {
+              int rawValue = input.readEnum();
+
+              operate_ = rawValue;
+              break;
+            }
+            case 66: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              desc_ = s;
+              break;
+            }
+            case 74: {
+              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = null;
+              if (position_ != null) {
+                subBuilder = position_.toBuilder();
+              }
+              position_ = input.readMessage(com.v2tech.net.lv.WebPackage.Position.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(position_);
+                position_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 80: {
+
+              pushSum_ = input.readInt32();
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              appealDesc_ = s;
+              break;
+            }
+            case 96: {
+
+              appealTime_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          gift_ = java.util.Collections.unmodifiableList(gift_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Reward_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Reward_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Reward_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Reward_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Reward.class, com.v2tech.net.lv.WebPackage.Reward.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code lv.Reward.Operate}
+     */
     public enum Operate
             implements com.google.protobuf.ProtocolMessageEnum {
-      release(0, 0),
-      cancle(1, 1),
-      pay(2, 2),
-      answer(3, 3),
-      appeal(4, 4),
+      /**
+       * <code>release = 0;</code>
+       */
+      release(0),
+      /**
+       * <code>cancle = 1;</code>
+       */
+      cancle(1),
+      /**
+       * <code>pay = 2;</code>
+       */
+      pay(2),
+      /**
+       * <code>answer = 3;</code>
+       */
+      answer(3),
+      /**
+       * <code>appeal = 4;</code>
+       */
+      appeal(4),
+      UNRECOGNIZED(-1),
       ;
 
+      /**
+       * <code>release = 0;</code>
+       */
       public static final int release_VALUE = 0;
+      /**
+       * <code>cancle = 1;</code>
+       */
       public static final int cancle_VALUE = 1;
+      /**
+       * <code>pay = 2;</code>
+       */
       public static final int pay_VALUE = 2;
+      /**
+       * <code>answer = 3;</code>
+       */
       public static final int answer_VALUE = 3;
+      /**
+       * <code>appeal = 4;</code>
+       */
       public static final int appeal_VALUE = 4;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+                  "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static Operate valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static Operate forNumber(int value) {
         switch (value) {
           case 0: return release;
           case 1: return cancle;
@@ -9317,17 +12509,17 @@ public final class WebPackage {
       internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<Operate>
-              internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+              Operate> internalValueMap =
               new com.google.protobuf.Internal.EnumLiteMap<Operate>() {
                 public Operate findValueByNumber(int number) {
-                  return Operate.valueOf(number);
+                  return Operate.forNumber(number);
                 }
               };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
@@ -9338,9 +12530,7 @@ public final class WebPackage {
         return com.v2tech.net.lv.WebPackage.Reward.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final Operate[] VALUES = {
-              release, cancle, pay, answer, appeal,
-      };
+      private static final Operate[] VALUES = values();
 
       public static Operate valueOf(
               com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -9348,127 +12538,145 @@ public final class WebPackage {
           throw new java.lang.IllegalArgumentException(
                   "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private Operate(int index, int value) {
-        this.index = index;
+      private Operate(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:Reward.Operate)
+      // @@protoc_insertion_point(enum_scope:lv.Reward.Operate)
     }
 
     private int bitField0_;
-    // optional int32 id = 1;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
     public int getId() {
       return id_;
     }
 
-    // optional int32 powerTime = 2;
     public static final int POWERTIME_FIELD_NUMBER = 2;
     private int powerTime_;
-    public boolean hasPowerTime() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
+    /**
+     * <code>optional int32 powerTime = 2;</code>
+     */
     public int getPowerTime() {
       return powerTime_;
     }
 
-    // optional int64 releaseTime = 3;
     public static final int RELEASETIME_FIELD_NUMBER = 3;
     private long releaseTime_;
-    public boolean hasReleaseTime() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
+    /**
+     * <code>optional int64 releaseTime = 3;</code>
+     */
     public long getReleaseTime() {
       return releaseTime_;
     }
 
-    // repeated .Gift gift = 4;
     public static final int GIFT_FIELD_NUMBER = 4;
     private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_;
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
       return gift_;
     }
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
     getGiftOrBuilderList() {
       return gift_;
     }
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     public int getGiftCount() {
       return gift_.size();
     }
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
       return gift_.get(index);
     }
+    /**
+     * <code>repeated .lv.Gift gift = 4;</code>
+     */
     public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
             int index) {
       return gift_.get(index);
     }
 
-    // optional int32 fromUserID = 5;
     public static final int FROMUSERID_FIELD_NUMBER = 5;
     private int fromUserID_;
-    public boolean hasFromUserID() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
+    /**
+     * <code>optional int32 fromUserID = 5;</code>
+     */
     public int getFromUserID() {
       return fromUserID_;
     }
 
-    // optional int32 answerUserID = 6;
     public static final int ANSWERUSERID_FIELD_NUMBER = 6;
     private int answerUserID_;
-    public boolean hasAnswerUserID() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
+    /**
+     * <code>optional int32 answerUserID = 6;</code>
+     */
     public int getAnswerUserID() {
       return answerUserID_;
     }
 
-    // optional .Reward.Operate operate = 7;
     public static final int OPERATE_FIELD_NUMBER = 7;
-    private com.v2tech.net.lv.WebPackage.Reward.Operate operate_;
-    public boolean hasOperate() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+    private int operate_;
+    /**
+     * <code>optional .lv.Reward.Operate operate = 7;</code>
+     */
+    public int getOperateValue() {
       return operate_;
     }
-
-    // optional string desc = 8;
-    public static final int DESC_FIELD_NUMBER = 8;
-    private java.lang.Object desc_;
-    public boolean hasDesc() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+    /**
+     * <code>optional .lv.Reward.Operate operate = 7;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+      com.v2tech.net.lv.WebPackage.Reward.Operate result = com.v2tech.net.lv.WebPackage.Reward.Operate.valueOf(operate_);
+      return result == null ? com.v2tech.net.lv.WebPackage.Reward.Operate.UNRECOGNIZED : result;
     }
-    public String getDesc() {
+
+    public static final int DESC_FIELD_NUMBER = 8;
+    private volatile java.lang.Object desc_;
+    /**
+     * <code>optional string desc = 8;</code>
+     */
+    public java.lang.String getDesc() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          desc_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        desc_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getDescBytes() {
+    /**
+     * <code>optional string desc = 8;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDescBytes() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         desc_ = b;
         return b;
       } else {
@@ -9476,54 +12684,63 @@ public final class WebPackage {
       }
     }
 
-    // optional .Position position = 9;
     public static final int POSITION_FIELD_NUMBER = 9;
     private com.v2tech.net.lv.WebPackage.Position position_;
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     public boolean hasPosition() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return position_ != null;
     }
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     public com.v2tech.net.lv.WebPackage.Position getPosition() {
-      return position_;
+      return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
     }
+    /**
+     * <code>optional .lv.Position position = 9;</code>
+     */
     public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
-      return position_;
+      return getPosition();
     }
 
-    // optional int32 pushSum = 10;
     public static final int PUSHSUM_FIELD_NUMBER = 10;
     private int pushSum_;
-    public boolean hasPushSum() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
+    /**
+     * <code>optional int32 pushSum = 10;</code>
+     */
     public int getPushSum() {
       return pushSum_;
     }
 
-    // optional string appealDesc = 11;
     public static final int APPEALDESC_FIELD_NUMBER = 11;
-    private java.lang.Object appealDesc_;
-    public boolean hasAppealDesc() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    public String getAppealDesc() {
+    private volatile java.lang.Object appealDesc_;
+    /**
+     * <code>optional string appealDesc = 11;</code>
+     */
+    public java.lang.String getAppealDesc() {
       java.lang.Object ref = appealDesc_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          appealDesc_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        appealDesc_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getAppealDescBytes() {
+    /**
+     * <code>optional string appealDesc = 11;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAppealDescBytes() {
       java.lang.Object ref = appealDesc_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         appealDesc_ = b;
         return b;
       } else {
@@ -9531,34 +12748,20 @@ public final class WebPackage {
       }
     }
 
-    // optional int64 appealTime = 12;
     public static final int APPEALTIME_FIELD_NUMBER = 12;
     private long appealTime_;
-    public boolean hasAppealTime() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
+    /**
+     * <code>optional int64 appealTime = 12;</code>
+     */
     public long getAppealTime() {
       return appealTime_;
     }
 
-    private void initFields() {
-      id_ = 0;
-      powerTime_ = 0;
-      releaseTime_ = 0L;
-      gift_ = java.util.Collections.emptyList();
-      fromUserID_ = 0;
-      answerUserID_ = 0;
-      operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
-      desc_ = "";
-      position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-      pushSum_ = 0;
-      appealDesc_ = "";
-      appealTime_ = 0L;
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -9566,61 +12769,58 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (powerTime_ != 0) {
         output.writeInt32(2, powerTime_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (releaseTime_ != 0L) {
         output.writeInt64(3, releaseTime_);
       }
       for (int i = 0; i < gift_.size(); i++) {
         output.writeMessage(4, gift_.get(i));
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (fromUserID_ != 0) {
         output.writeInt32(5, fromUserID_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (answerUserID_ != 0) {
         output.writeInt32(6, answerUserID_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeEnum(7, operate_.getNumber());
+      if (operate_ != com.v2tech.net.lv.WebPackage.Reward.Operate.release.getNumber()) {
+        output.writeEnum(7, operate_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeBytes(8, getDescBytes());
+      if (!getDescBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, desc_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeMessage(9, position_);
+      if (position_ != null) {
+        output.writeMessage(9, getPosition());
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (pushSum_ != 0) {
         output.writeInt32(10, pushSum_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBytes(11, getAppealDescBytes());
+      if (!getAppealDescBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, appealDesc_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (appealTime_ != 0L) {
         output.writeInt64(12, appealTime_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (powerTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(2, powerTime_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (releaseTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(3, releaseTime_);
       }
@@ -9628,141 +12828,217 @@ public final class WebPackage {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(4, gift_.get(i));
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (fromUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(5, fromUserID_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (answerUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(6, answerUserID_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (operate_ != com.v2tech.net.lv.WebPackage.Reward.Operate.release.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(7, operate_.getNumber());
+                .computeEnumSize(7, operate_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (!getDescBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, desc_);
+      }
+      if (position_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(8, getDescBytes());
+                .computeMessageSize(9, getPosition());
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(9, position_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (pushSum_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(10, pushSum_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(11, getAppealDescBytes());
+      if (!getAppealDescBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, appealDesc_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (appealTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(12, appealTime_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Reward)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Reward other = (com.v2tech.net.lv.WebPackage.Reward) obj;
+
+      boolean result = true;
+      result = result && (getId()
+              == other.getId());
+      result = result && (getPowerTime()
+              == other.getPowerTime());
+      result = result && (getReleaseTime()
+              == other.getReleaseTime());
+      result = result && getGiftList()
+              .equals(other.getGiftList());
+      result = result && (getFromUserID()
+              == other.getFromUserID());
+      result = result && (getAnswerUserID()
+              == other.getAnswerUserID());
+      result = result && operate_ == other.operate_;
+      result = result && getDesc()
+              .equals(other.getDesc());
+      result = result && (hasPosition() == other.hasPosition());
+      if (hasPosition()) {
+        result = result && getPosition()
+                .equals(other.getPosition());
+      }
+      result = result && (getPushSum()
+              == other.getPushSum());
+      result = result && getAppealDesc()
+              .equals(other.getAppealDesc());
+      result = result && (getAppealTime()
+              == other.getAppealTime());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + POWERTIME_FIELD_NUMBER;
+      hash = (53 * hash) + getPowerTime();
+      hash = (37 * hash) + RELEASETIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getReleaseTime());
+      if (getGiftCount() > 0) {
+        hash = (37 * hash) + GIFT_FIELD_NUMBER;
+        hash = (53 * hash) + getGiftList().hashCode();
+      }
+      hash = (37 * hash) + FROMUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getFromUserID();
+      hash = (37 * hash) + ANSWERUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getAnswerUserID();
+      hash = (37 * hash) + OPERATE_FIELD_NUMBER;
+      hash = (53 * hash) + operate_;
+      hash = (37 * hash) + DESC_FIELD_NUMBER;
+      hash = (53 * hash) + getDesc().hashCode();
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      hash = (37 * hash) + PUSHSUM_FIELD_NUMBER;
+      hash = (53 * hash) + getPushSum();
+      hash = (37 * hash) + APPEALDESC_FIELD_NUMBER;
+      hash = (53 * hash) + getAppealDesc().hashCode();
+      hash = (37 * hash) + APPEALTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAppealTime());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Reward parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Reward prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Reward prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Reward}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.RewardOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Reward)
+            com.v2tech.net.lv.WebPackage.RewardOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Reward_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Reward_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Reward_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Reward_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Reward.class, com.v2tech.net.lv.WebPackage.Reward.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Reward.newBuilder()
@@ -9770,28 +13046,25 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getGiftFieldBuilder();
-          getPositionFieldBuilder();
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         powerTime_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         releaseTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         if (giftBuilder_ == null) {
           gift_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000008);
@@ -9799,35 +13072,31 @@ public final class WebPackage {
           giftBuilder_.clear();
         }
         fromUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        answerUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
-        bitField0_ = (bitField0_ & ~0x00000040);
-        desc_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
-        if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-        } else {
-          positionBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000100);
-        pushSum_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000200);
-        appealDesc_ = "";
-        bitField0_ = (bitField0_ & ~0x00000400);
-        appealTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000800);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        answerUserID_ = 0;
+
+        operate_ = 0;
+
+        desc_ = "";
+
+        if (positionBuilder_ == null) {
+          position_ = null;
+        } else {
+          position_ = null;
+          positionBuilder_ = null;
+        }
+        pushSum_ = 0;
+
+        appealDesc_ = "";
+
+        appealTime_ = 0L;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Reward.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Reward_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Reward getDefaultInstanceForType() {
@@ -9842,31 +13111,12 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Reward buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Reward result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Reward buildPartial() {
         com.v2tech.net.lv.WebPackage.Reward result = new com.v2tech.net.lv.WebPackage.Reward(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.powerTime_ = powerTime_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.releaseTime_ = releaseTime_;
         if (giftBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008)) {
@@ -9877,47 +13127,49 @@ public final class WebPackage {
         } else {
           result.gift_ = giftBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.fromUserID_ = fromUserID_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.answerUserID_ = answerUserID_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.operate_ = operate_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.desc_ = desc_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000080;
-        }
         if (positionBuilder_ == null) {
           result.position_ = position_;
         } else {
           result.position_ = positionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.pushSum_ = pushSum_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.appealDesc_ = appealDesc_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.appealTime_ = appealTime_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Reward) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Reward)other);
@@ -9929,13 +13181,13 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Reward other) {
         if (other == com.v2tech.net.lv.WebPackage.Reward.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasPowerTime()) {
+        if (other.getPowerTime() != 0) {
           setPowerTime(other.getPowerTime());
         }
-        if (other.hasReleaseTime()) {
+        if (other.getReleaseTime() != 0L) {
           setReleaseTime(other.getReleaseTime());
         }
         if (giftBuilder_ == null) {
@@ -9957,38 +13209,40 @@ public final class WebPackage {
               gift_ = other.gift_;
               bitField0_ = (bitField0_ & ~0x00000008);
               giftBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getGiftFieldBuilder() : null;
             } else {
               giftBuilder_.addAllMessages(other.gift_);
             }
           }
         }
-        if (other.hasFromUserID()) {
+        if (other.getFromUserID() != 0) {
           setFromUserID(other.getFromUserID());
         }
-        if (other.hasAnswerUserID()) {
+        if (other.getAnswerUserID() != 0) {
           setAnswerUserID(other.getAnswerUserID());
         }
-        if (other.hasOperate()) {
-          setOperate(other.getOperate());
+        if (other.operate_ != 0) {
+          setOperateValue(other.getOperateValue());
         }
-        if (other.hasDesc()) {
-          setDesc(other.getDesc());
+        if (!other.getDesc().isEmpty()) {
+          desc_ = other.desc_;
+          onChanged();
         }
         if (other.hasPosition()) {
           mergePosition(other.getPosition());
         }
-        if (other.hasPushSum()) {
+        if (other.getPushSum() != 0) {
           setPushSum(other.getPushSum());
         }
-        if (other.hasAppealDesc()) {
-          setAppealDesc(other.getAppealDesc());
+        if (!other.getAppealDesc().isEmpty()) {
+          appealDesc_ = other.appealDesc_;
+          onChanged();
         }
-        if (other.hasAppealTime()) {
+        if (other.getAppealTime() != 0L) {
           setAppealTime(other.getAppealTime());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -10000,166 +13254,99 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              powerTime_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              releaseTime_ = input.readInt64();
-              break;
-            }
-            case 34: {
-              com.v2tech.net.lv.WebPackage.Gift.Builder subBuilder = com.v2tech.net.lv.WebPackage.Gift.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addGift(subBuilder.buildPartial());
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              fromUserID_ = input.readInt32();
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              answerUserID_ = input.readInt32();
-              break;
-            }
-            case 56: {
-              int rawValue = input.readEnum();
-              com.v2tech.net.lv.WebPackage.Reward.Operate value = com.v2tech.net.lv.WebPackage.Reward.Operate.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(7, rawValue);
-              } else {
-                bitField0_ |= 0x00000040;
-                operate_ = value;
-              }
-              break;
-            }
-            case 66: {
-              bitField0_ |= 0x00000080;
-              desc_ = input.readBytes();
-              break;
-            }
-            case 74: {
-              com.v2tech.net.lv.WebPackage.Position.Builder subBuilder = com.v2tech.net.lv.WebPackage.Position.newBuilder();
-              if (hasPosition()) {
-                subBuilder.mergeFrom(getPosition());
-              }
-              input.readMessage(subBuilder, extensionRegistry);
-              setPosition(subBuilder.buildPartial());
-              break;
-            }
-            case 80: {
-              bitField0_ |= 0x00000200;
-              pushSum_ = input.readInt32();
-              break;
-            }
-            case 90: {
-              bitField0_ |= 0x00000400;
-              appealDesc_ = input.readBytes();
-              break;
-            }
-            case 96: {
-              bitField0_ |= 0x00000800;
-              appealTime_ = input.readInt64();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Reward parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Reward) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-
       private int bitField0_;
 
-      // optional int32 id = 1;
       private int id_ ;
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public int getId() {
         return id_;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+
         id_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         id_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 powerTime = 2;
       private int powerTime_ ;
-      public boolean hasPowerTime() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional int32 powerTime = 2;</code>
+       */
       public int getPowerTime() {
         return powerTime_;
       }
+      /**
+       * <code>optional int32 powerTime = 2;</code>
+       */
       public Builder setPowerTime(int value) {
-        bitField0_ |= 0x00000002;
+
         powerTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 powerTime = 2;</code>
+       */
       public Builder clearPowerTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         powerTime_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int64 releaseTime = 3;
       private long releaseTime_ ;
-      public boolean hasReleaseTime() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional int64 releaseTime = 3;</code>
+       */
       public long getReleaseTime() {
         return releaseTime_;
       }
+      /**
+       * <code>optional int64 releaseTime = 3;</code>
+       */
       public Builder setReleaseTime(long value) {
-        bitField0_ |= 0x00000004;
+
         releaseTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 releaseTime = 3;</code>
+       */
       public Builder clearReleaseTime() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         releaseTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // repeated .Gift gift = 4;
       private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_ =
               java.util.Collections.emptyList();
       private void ensureGiftIsMutable() {
@@ -10169,9 +13356,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder> giftBuilder_;
 
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
         if (giftBuilder_ == null) {
           return java.util.Collections.unmodifiableList(gift_);
@@ -10179,6 +13369,9 @@ public final class WebPackage {
           return giftBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public int getGiftCount() {
         if (giftBuilder_ == null) {
           return gift_.size();
@@ -10186,6 +13379,9 @@ public final class WebPackage {
           return giftBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
         if (giftBuilder_ == null) {
           return gift_.get(index);
@@ -10193,6 +13389,9 @@ public final class WebPackage {
           return giftBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder setGift(
               int index, com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
@@ -10207,6 +13406,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder setGift(
               int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -10218,6 +13420,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder addGift(com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
           if (value == null) {
@@ -10231,6 +13436,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder addGift(
               int index, com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
@@ -10245,6 +13453,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder addGift(
               com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -10256,6 +13467,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder addGift(
               int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -10267,17 +13481,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder addAllGift(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Gift> values) {
         if (giftBuilder_ == null) {
           ensureGiftIsMutable();
-          super.addAll(values, gift_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, gift_);
           onChanged();
         } else {
           giftBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder clearGift() {
         if (giftBuilder_ == null) {
           gift_ = java.util.Collections.emptyList();
@@ -10288,6 +13509,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public Builder removeGift(int index) {
         if (giftBuilder_ == null) {
           ensureGiftIsMutable();
@@ -10298,10 +13522,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder getGiftBuilder(
               int index) {
         return getGiftFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
               int index) {
         if (giftBuilder_ == null) {
@@ -10309,6 +13539,9 @@ public final class WebPackage {
           return giftBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
       getGiftOrBuilderList() {
         if (giftBuilder_ != null) {
@@ -10317,24 +13550,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(gift_);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder() {
         return getGiftFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder(
               int index) {
         return getGiftFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gift gift = 4;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gift.Builder>
       getGiftBuilderList() {
         return getGiftFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder>
       getGiftFieldBuilder() {
         if (giftBuilder_ == null) {
-          giftBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          giftBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder>(
                   gift_,
                   ((bitField0_ & 0x00000008) == 0x00000008),
@@ -10345,122 +13587,193 @@ public final class WebPackage {
         return giftBuilder_;
       }
 
-      // optional int32 fromUserID = 5;
       private int fromUserID_ ;
-      public boolean hasFromUserID() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
+      /**
+       * <code>optional int32 fromUserID = 5;</code>
+       */
       public int getFromUserID() {
         return fromUserID_;
       }
+      /**
+       * <code>optional int32 fromUserID = 5;</code>
+       */
       public Builder setFromUserID(int value) {
-        bitField0_ |= 0x00000010;
+
         fromUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 fromUserID = 5;</code>
+       */
       public Builder clearFromUserID() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         fromUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 answerUserID = 6;
       private int answerUserID_ ;
-      public boolean hasAnswerUserID() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
+      /**
+       * <code>optional int32 answerUserID = 6;</code>
+       */
       public int getAnswerUserID() {
         return answerUserID_;
       }
+      /**
+       * <code>optional int32 answerUserID = 6;</code>
+       */
       public Builder setAnswerUserID(int value) {
-        bitField0_ |= 0x00000020;
+
         answerUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 answerUserID = 6;</code>
+       */
       public Builder clearAnswerUserID() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         answerUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // optional .Reward.Operate operate = 7;
-      private com.v2tech.net.lv.WebPackage.Reward.Operate operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
-      public boolean hasOperate() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+      private int operate_ = 0;
+      /**
+       * <code>optional .lv.Reward.Operate operate = 7;</code>
+       */
+      public int getOperateValue() {
         return operate_;
       }
-      public Builder setOperate(com.v2tech.net.lv.WebPackage.Reward.Operate value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000040;
+      /**
+       * <code>optional .lv.Reward.Operate operate = 7;</code>
+       */
+      public Builder setOperateValue(int value) {
         operate_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional .lv.Reward.Operate operate = 7;</code>
+       */
+      public com.v2tech.net.lv.WebPackage.Reward.Operate getOperate() {
+        com.v2tech.net.lv.WebPackage.Reward.Operate result = com.v2tech.net.lv.WebPackage.Reward.Operate.valueOf(operate_);
+        return result == null ? com.v2tech.net.lv.WebPackage.Reward.Operate.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .lv.Reward.Operate operate = 7;</code>
+       */
+      public Builder setOperate(com.v2tech.net.lv.WebPackage.Reward.Operate value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        operate_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .lv.Reward.Operate operate = 7;</code>
+       */
       public Builder clearOperate() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        operate_ = com.v2tech.net.lv.WebPackage.Reward.Operate.release;
+
+        operate_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string desc = 8;
       private java.lang.Object desc_ = "";
-      public boolean hasDesc() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      public String getDesc() {
+      /**
+       * <code>optional string desc = 8;</code>
+       */
+      public java.lang.String getDesc() {
         java.lang.Object ref = desc_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           desc_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setDesc(String value) {
+      /**
+       * <code>optional string desc = 8;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDescBytes() {
+        java.lang.Object ref = desc_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          desc_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string desc = 8;</code>
+       */
+      public Builder setDesc(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000080;
+
         desc_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string desc = 8;</code>
+       */
       public Builder clearDesc() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         desc_ = getDefaultInstance().getDesc();
         onChanged();
         return this;
       }
-      void setDesc(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000080;
+      /**
+       * <code>optional string desc = 8;</code>
+       */
+      public Builder setDescBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         desc_ = value;
         onChanged();
+        return this;
       }
 
-      // optional .Position position = 9;
-      private com.v2tech.net.lv.WebPackage.Position position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.v2tech.net.lv.WebPackage.Position position_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder> positionBuilder_;
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public boolean hasPosition() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return positionBuilder_ != null || position_ != null;
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position getPosition() {
         if (positionBuilder_ == null) {
-          return position_;
+          return position_ == null ? com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         } else {
           return positionBuilder_.getMessage();
         }
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public Builder setPosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
           if (value == null) {
@@ -10471,9 +13784,12 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public Builder setPosition(
               com.v2tech.net.lv.WebPackage.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
@@ -10482,13 +13798,15 @@ public final class WebPackage {
         } else {
           positionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public Builder mergePosition(com.v2tech.net.lv.WebPackage.Position value) {
         if (positionBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) == 0x00000100) &&
-                  position_ != com.v2tech.net.lv.WebPackage.Position.getDefaultInstance()) {
+          if (position_ != null) {
             position_ =
                     com.v2tech.net.lv.WebPackage.Position.newBuilder(position_).mergeFrom(value).buildPartial();
           } else {
@@ -10498,38 +13816,52 @@ public final class WebPackage {
         } else {
           positionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public Builder clearPosition() {
         if (positionBuilder_ == null) {
-          position_ = com.v2tech.net.lv.WebPackage.Position.getDefaultInstance();
+          position_ = null;
           onChanged();
         } else {
-          positionBuilder_.clear();
+          position_ = null;
+          positionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         return this;
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Position.Builder getPositionBuilder() {
-        bitField0_ |= 0x00000100;
+
         onChanged();
         return getPositionFieldBuilder().getBuilder();
       }
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
       public com.v2tech.net.lv.WebPackage.PositionOrBuilder getPositionOrBuilder() {
         if (positionBuilder_ != null) {
           return positionBuilder_.getMessageOrBuilder();
         } else {
-          return position_;
+          return position_ == null ?
+                  com.v2tech.net.lv.WebPackage.Position.getDefaultInstance() : position_;
         }
       }
-      private com.google.protobuf.SingleFieldBuilder<
+      /**
+       * <code>optional .lv.Position position = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>
       getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
-          positionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Position, com.v2tech.net.lv.WebPackage.Position.Builder, com.v2tech.net.lv.WebPackage.PositionOrBuilder>(
-                  position_,
+                  getPosition(),
                   getParentForChildren(),
                   isClean());
           position_ = null;
@@ -10537,178 +13869,306 @@ public final class WebPackage {
         return positionBuilder_;
       }
 
-      // optional int32 pushSum = 10;
       private int pushSum_ ;
-      public boolean hasPushSum() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
+      /**
+       * <code>optional int32 pushSum = 10;</code>
+       */
       public int getPushSum() {
         return pushSum_;
       }
+      /**
+       * <code>optional int32 pushSum = 10;</code>
+       */
       public Builder setPushSum(int value) {
-        bitField0_ |= 0x00000200;
+
         pushSum_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 pushSum = 10;</code>
+       */
       public Builder clearPushSum() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         pushSum_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string appealDesc = 11;
       private java.lang.Object appealDesc_ = "";
-      public boolean hasAppealDesc() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      public String getAppealDesc() {
+      /**
+       * <code>optional string appealDesc = 11;</code>
+       */
+      public java.lang.String getAppealDesc() {
         java.lang.Object ref = appealDesc_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           appealDesc_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setAppealDesc(String value) {
+      /**
+       * <code>optional string appealDesc = 11;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAppealDescBytes() {
+        java.lang.Object ref = appealDesc_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          appealDesc_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string appealDesc = 11;</code>
+       */
+      public Builder setAppealDesc(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000400;
+
         appealDesc_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string appealDesc = 11;</code>
+       */
       public Builder clearAppealDesc() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         appealDesc_ = getDefaultInstance().getAppealDesc();
         onChanged();
         return this;
       }
-      void setAppealDesc(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000400;
+      /**
+       * <code>optional string appealDesc = 11;</code>
+       */
+      public Builder setAppealDescBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         appealDesc_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int64 appealTime = 12;
       private long appealTime_ ;
-      public boolean hasAppealTime() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
+      /**
+       * <code>optional int64 appealTime = 12;</code>
+       */
       public long getAppealTime() {
         return appealTime_;
       }
+      /**
+       * <code>optional int64 appealTime = 12;</code>
+       */
       public Builder setAppealTime(long value) {
-        bitField0_ |= 0x00000800;
+
         appealTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 appealTime = 12;</code>
+       */
       public Builder clearAppealTime() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         appealTime_ = 0L;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:Reward)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Reward)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Reward)
+    private static final com.v2tech.net.lv.WebPackage.Reward DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Reward(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Reward();
     }
 
-    // @@protoc_insertion_point(class_scope:Reward)
+    public static com.v2tech.net.lv.WebPackage.Reward getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Reward>
+            PARSER = new com.google.protobuf.AbstractParser<Reward>() {
+      public Reward parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Reward(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Reward> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Reward> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Reward getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface GiftOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface GiftOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.Gift)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 giftType = 1;
-    boolean hasGiftType();
+    /**
+     * <code>optional int32 giftType = 1;</code>
+     */
     int getGiftType();
 
-    // optional float amount = 2;
-    boolean hasAmount();
+    /**
+     * <code>optional float amount = 2;</code>
+     */
     float getAmount();
 
-    // optional float sumOrRemain = 3;
-    boolean hasSumOrRemain();
+    /**
+     * <code>optional float sumOrRemain = 3;</code>
+     */
     float getSumOrRemain();
   }
-  public static final class Gift extends
-          com.google.protobuf.GeneratedMessage
-          implements GiftOrBuilder {
+  /**
+   * Protobuf type {@code lv.Gift}
+   */
+  public  static final class Gift extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.Gift)
+          GiftOrBuilder {
     // Use Gift.newBuilder() to construct.
-    private Gift(Builder builder) {
+    private Gift(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Gift(boolean noInit) {}
-
-    private static final Gift defaultInstance;
-    public static Gift getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public Gift getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Gift_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_Gift_fieldAccessorTable;
-    }
-
-    private int bitField0_;
-    // optional int32 giftType = 1;
-    public static final int GIFTTYPE_FIELD_NUMBER = 1;
-    private int giftType_;
-    public boolean hasGiftType() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public int getGiftType() {
-      return giftType_;
-    }
-
-    // optional float amount = 2;
-    public static final int AMOUNT_FIELD_NUMBER = 2;
-    private float amount_;
-    public boolean hasAmount() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public float getAmount() {
-      return amount_;
-    }
-
-    // optional float sumOrRemain = 3;
-    public static final int SUMORREMAIN_FIELD_NUMBER = 3;
-    private float sumOrRemain_;
-    public boolean hasSumOrRemain() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public float getSumOrRemain() {
-      return sumOrRemain_;
-    }
-
-    private void initFields() {
+    private Gift() {
       giftType_ = 0;
       amount_ = 0F;
       sumOrRemain_ = 0F;
     }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Gift(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              giftType_ = input.readInt32();
+              break;
+            }
+            case 21: {
+
+              amount_ = input.readFloat();
+              break;
+            }
+            case 29: {
+
+              sumOrRemain_ = input.readFloat();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Gift_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_Gift_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.Gift.class, com.v2tech.net.lv.WebPackage.Gift.Builder.class);
+    }
+
+    public static final int GIFTTYPE_FIELD_NUMBER = 1;
+    private int giftType_;
+    /**
+     * <code>optional int32 giftType = 1;</code>
+     */
+    public int getGiftType() {
+      return giftType_;
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 2;
+    private float amount_;
+    /**
+     * <code>optional float amount = 2;</code>
+     */
+    public float getAmount() {
+      return amount_;
+    }
+
+    public static final int SUMORREMAIN_FIELD_NUMBER = 3;
+    private float sumOrRemain_;
+    /**
+     * <code>optional float sumOrRemain = 3;</code>
+     */
+    public float getSumOrRemain() {
+      return sumOrRemain_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -10716,140 +14176,177 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (giftType_ != 0) {
         output.writeInt32(1, giftType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (amount_ != 0F) {
         output.writeFloat(2, amount_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (sumOrRemain_ != 0F) {
         output.writeFloat(3, sumOrRemain_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (giftType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, giftType_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (amount_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
                 .computeFloatSize(2, amount_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (sumOrRemain_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
                 .computeFloatSize(3, sumOrRemain_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.Gift)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.Gift other = (com.v2tech.net.lv.WebPackage.Gift) obj;
+
+      boolean result = true;
+      result = result && (getGiftType()
+              == other.getGiftType());
+      result = result && (
+              java.lang.Float.floatToIntBits(getAmount())
+                      == java.lang.Float.floatToIntBits(
+                      other.getAmount()));
+      result = result && (
+              java.lang.Float.floatToIntBits(getSumOrRemain())
+                      == java.lang.Float.floatToIntBits(
+                      other.getSumOrRemain()));
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + GIFTTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getGiftType();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getAmount());
+      hash = (37 * hash) + SUMORREMAIN_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+              getSumOrRemain());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.Gift parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Gift prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.Gift prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.Gift}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.GiftOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.Gift)
+            com.v2tech.net.lv.WebPackage.GiftOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Gift_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gift_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_Gift_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gift_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.Gift.class, com.v2tech.net.lv.WebPackage.Gift.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.Gift.newBuilder()
@@ -10857,36 +14354,30 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         giftType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        amount_ = 0F;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        sumOrRemain_ = 0F;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        amount_ = 0F;
+
+        sumOrRemain_ = 0F;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.Gift.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_Gift_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.Gift getDefaultInstanceForType() {
@@ -10901,37 +14392,41 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.Gift buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.Gift result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.Gift buildPartial() {
         com.v2tech.net.lv.WebPackage.Gift result = new com.v2tech.net.lv.WebPackage.Gift(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.giftType_ = giftType_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.amount_ = amount_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.sumOrRemain_ = sumOrRemain_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.Gift) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.Gift)other);
@@ -10943,16 +14438,16 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.Gift other) {
         if (other == com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance()) return this;
-        if (other.hasGiftType()) {
+        if (other.getGiftType() != 0) {
           setGiftType(other.getGiftType());
         }
-        if (other.hasAmount()) {
+        if (other.getAmount() != 0F) {
           setAmount(other.getAmount());
         }
-        if (other.hasSumOrRemain()) {
+        if (other.getSumOrRemain() != 0F) {
           setSumOrRemain(other.getSumOrRemain());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -10964,186 +14459,334 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              giftType_ = input.readInt32();
-              break;
-            }
-            case 21: {
-              bitField0_ |= 0x00000002;
-              amount_ = input.readFloat();
-              break;
-            }
-            case 29: {
-              bitField0_ |= 0x00000004;
-              sumOrRemain_ = input.readFloat();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.Gift parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.Gift) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 giftType = 1;
       private int giftType_ ;
-      public boolean hasGiftType() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public int getGiftType() {
         return giftType_;
       }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public Builder setGiftType(int value) {
-        bitField0_ |= 0x00000001;
+
         giftType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 giftType = 1;</code>
+       */
       public Builder clearGiftType() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         giftType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional float amount = 2;
       private float amount_ ;
-      public boolean hasAmount() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional float amount = 2;</code>
+       */
       public float getAmount() {
         return amount_;
       }
+      /**
+       * <code>optional float amount = 2;</code>
+       */
       public Builder setAmount(float value) {
-        bitField0_ |= 0x00000002;
+
         amount_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional float amount = 2;</code>
+       */
       public Builder clearAmount() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         amount_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional float sumOrRemain = 3;
       private float sumOrRemain_ ;
-      public boolean hasSumOrRemain() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
+      /**
+       * <code>optional float sumOrRemain = 3;</code>
+       */
       public float getSumOrRemain() {
         return sumOrRemain_;
       }
+      /**
+       * <code>optional float sumOrRemain = 3;</code>
+       */
       public Builder setSumOrRemain(float value) {
-        bitField0_ |= 0x00000004;
+
         sumOrRemain_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional float sumOrRemain = 3;</code>
+       */
       public Builder clearSumOrRemain() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         sumOrRemain_ = 0F;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:Gift)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.Gift)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.Gift)
+    private static final com.v2tech.net.lv.WebPackage.Gift DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Gift(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.Gift();
     }
 
-    // @@protoc_insertion_point(class_scope:Gift)
+    public static com.v2tech.net.lv.WebPackage.Gift getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Gift>
+            PARSER = new com.google.protobuf.AbstractParser<Gift>() {
+      public Gift parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Gift(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Gift> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Gift> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.Gift getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface UserStateOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface UserStateOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.UserState)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 userId = 1;
-    boolean hasUserId();
+    /**
+     * <code>optional int32 userId = 1;</code>
+     */
     int getUserId();
 
-    // optional int32 operateId = 2;
-    boolean hasOperateId();
+    /**
+     * <code>optional int32 operateId = 2;</code>
+     */
     int getOperateId();
 
-    // optional .UserState.State state = 3;
-    boolean hasState();
+    /**
+     * <code>optional .lv.UserState.State state = 3;</code>
+     */
+    int getStateValue();
+    /**
+     * <code>optional .lv.UserState.State state = 3;</code>
+     */
     com.v2tech.net.lv.WebPackage.UserState.State getState();
 
-    // optional string desc = 4;
-    boolean hasDesc();
-    String getDesc();
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    java.lang.String getDesc();
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getDescBytes();
   }
-  public static final class UserState extends
-          com.google.protobuf.GeneratedMessage
-          implements UserStateOrBuilder {
+  /**
+   * Protobuf type {@code lv.UserState}
+   */
+  public  static final class UserState extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.UserState)
+          UserStateOrBuilder {
     // Use UserState.newBuilder() to construct.
-    private UserState(Builder builder) {
+    private UserState(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UserState(boolean noInit) {}
-
-    private static final UserState defaultInstance;
-    public static UserState getDefaultInstance() {
-      return defaultInstance;
+    private UserState() {
+      userId_ = 0;
+      operateId_ = 0;
+      state_ = 0;
+      desc_ = "";
     }
 
-    public UserState getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private UserState(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              userId_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              operateId_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              int rawValue = input.readEnum();
+
+              state_ = rawValue;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              desc_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_UserState_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_UserState_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_UserState_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_UserState_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.UserState.class, com.v2tech.net.lv.WebPackage.UserState.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code lv.UserState.State}
+     */
     public enum State
             implements com.google.protobuf.ProtocolMessageEnum {
-      online(0, 0),
-      offline(1, 1),
-      p2pVideo(2, 2),
-      MultiVideo(3, 3),
-      other(4, 4),
+      /**
+       * <code>online = 0;</code>
+       */
+      online(0),
+      /**
+       * <code>offline = 1;</code>
+       */
+      offline(1),
+      /**
+       * <code>p2pVideo = 2;</code>
+       */
+      p2pVideo(2),
+      /**
+       * <code>MultiVideo = 3;</code>
+       */
+      MultiVideo(3),
+      /**
+       * <code>other = 4;</code>
+       */
+      other(4),
+      UNRECOGNIZED(-1),
       ;
 
+      /**
+       * <code>online = 0;</code>
+       */
       public static final int online_VALUE = 0;
+      /**
+       * <code>offline = 1;</code>
+       */
       public static final int offline_VALUE = 1;
+      /**
+       * <code>p2pVideo = 2;</code>
+       */
       public static final int p2pVideo_VALUE = 2;
+      /**
+       * <code>MultiVideo = 3;</code>
+       */
       public static final int MultiVideo_VALUE = 3;
+      /**
+       * <code>other = 4;</code>
+       */
       public static final int other_VALUE = 4;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+                  "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static State valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static State forNumber(int value) {
         switch (value) {
           case 0: return online;
           case 1: return offline;
@@ -11158,17 +14801,17 @@ public final class WebPackage {
       internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<State>
-              internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+              State> internalValueMap =
               new com.google.protobuf.Internal.EnumLiteMap<State>() {
                 public State findValueByNumber(int number) {
-                  return State.valueOf(number);
+                  return State.forNumber(number);
                 }
               };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
@@ -11179,9 +14822,7 @@ public final class WebPackage {
         return com.v2tech.net.lv.WebPackage.UserState.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final State[] VALUES = {
-              online, offline, p2pVideo, MultiVideo, other,
-      };
+      private static final State[] VALUES = values();
 
       public static State valueOf(
               com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -11189,76 +14830,82 @@ public final class WebPackage {
           throw new java.lang.IllegalArgumentException(
                   "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private State(int index, int value) {
-        this.index = index;
+      private State(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:UserState.State)
+      // @@protoc_insertion_point(enum_scope:lv.UserState.State)
     }
 
-    private int bitField0_;
-    // optional int32 userId = 1;
     public static final int USERID_FIELD_NUMBER = 1;
     private int userId_;
-    public boolean hasUserId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional int32 userId = 1;</code>
+     */
     public int getUserId() {
       return userId_;
     }
 
-    // optional int32 operateId = 2;
     public static final int OPERATEID_FIELD_NUMBER = 2;
     private int operateId_;
-    public boolean hasOperateId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
+    /**
+     * <code>optional int32 operateId = 2;</code>
+     */
     public int getOperateId() {
       return operateId_;
     }
 
-    // optional .UserState.State state = 3;
     public static final int STATE_FIELD_NUMBER = 3;
-    private com.v2tech.net.lv.WebPackage.UserState.State state_;
-    public boolean hasState() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public com.v2tech.net.lv.WebPackage.UserState.State getState() {
+    private int state_;
+    /**
+     * <code>optional .lv.UserState.State state = 3;</code>
+     */
+    public int getStateValue() {
       return state_;
     }
-
-    // optional string desc = 4;
-    public static final int DESC_FIELD_NUMBER = 4;
-    private java.lang.Object desc_;
-    public boolean hasDesc() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+    /**
+     * <code>optional .lv.UserState.State state = 3;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.UserState.State getState() {
+      com.v2tech.net.lv.WebPackage.UserState.State result = com.v2tech.net.lv.WebPackage.UserState.State.valueOf(state_);
+      return result == null ? com.v2tech.net.lv.WebPackage.UserState.State.UNRECOGNIZED : result;
     }
-    public String getDesc() {
+
+    public static final int DESC_FIELD_NUMBER = 4;
+    private volatile java.lang.Object desc_;
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    public java.lang.String getDesc() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          desc_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        desc_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getDescBytes() {
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDescBytes() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         desc_ = b;
         return b;
       } else {
@@ -11266,16 +14913,11 @@ public final class WebPackage {
       }
     }
 
-    private void initFields() {
-      userId_ = 0;
-      operateId_ = 0;
-      state_ = com.v2tech.net.lv.WebPackage.UserState.State.online;
-      desc_ = "";
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -11283,147 +14925,180 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (userId_ != 0) {
         output.writeInt32(1, userId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (operateId_ != 0) {
         output.writeInt32(2, operateId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeEnum(3, state_.getNumber());
+      if (state_ != com.v2tech.net.lv.WebPackage.UserState.State.online.getNumber()) {
+        output.writeEnum(3, state_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getDescBytes());
+      if (!getDescBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, desc_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (userId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, userId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (operateId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(2, operateId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (state_ != com.v2tech.net.lv.WebPackage.UserState.State.online.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(3, state_.getNumber());
+                .computeEnumSize(3, state_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, getDescBytes());
+      if (!getDescBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, desc_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.UserState)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.UserState other = (com.v2tech.net.lv.WebPackage.UserState) obj;
+
+      boolean result = true;
+      result = result && (getUserId()
+              == other.getUserId());
+      result = result && (getOperateId()
+              == other.getOperateId());
+      result = result && state_ == other.state_;
+      result = result && getDesc()
+              .equals(other.getDesc());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + USERID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId();
+      hash = (37 * hash) + OPERATEID_FIELD_NUMBER;
+      hash = (53 * hash) + getOperateId();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + state_;
+      hash = (37 * hash) + DESC_FIELD_NUMBER;
+      hash = (53 * hash) + getDesc().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.UserState parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.UserState prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.UserState prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.UserState}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.UserStateOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.UserState)
+            com.v2tech.net.lv.WebPackage.UserStateOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_UserState_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_UserState_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_UserState_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_UserState_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.UserState.class, com.v2tech.net.lv.WebPackage.UserState.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.UserState.newBuilder()
@@ -11431,38 +15106,32 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         userId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        operateId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        state_ = com.v2tech.net.lv.WebPackage.UserState.State.online;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        desc_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        operateId_ = 0;
+
+        state_ = 0;
+
+        desc_ = "";
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.UserState.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_UserState_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.UserState getDefaultInstanceForType() {
@@ -11477,41 +15146,42 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.UserState buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.UserState result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.UserState buildPartial() {
         com.v2tech.net.lv.WebPackage.UserState result = new com.v2tech.net.lv.WebPackage.UserState(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.userId_ = userId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.operateId_ = operateId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.state_ = state_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.desc_ = desc_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.UserState) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.UserState)other);
@@ -11523,19 +15193,20 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.UserState other) {
         if (other == com.v2tech.net.lv.WebPackage.UserState.getDefaultInstance()) return this;
-        if (other.hasUserId()) {
+        if (other.getUserId() != 0) {
           setUserId(other.getUserId());
         }
-        if (other.hasOperateId()) {
+        if (other.getOperateId() != 0) {
           setOperateId(other.getOperateId());
         }
-        if (other.hasState()) {
-          setState(other.getState());
+        if (other.state_ != 0) {
+          setStateValue(other.getStateValue());
         }
-        if (other.hasDesc()) {
-          setDesc(other.getDesc());
+        if (!other.getDesc().isEmpty()) {
+          desc_ = other.desc_;
+          onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -11547,282 +15218,568 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              userId_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              operateId_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              int rawValue = input.readEnum();
-              com.v2tech.net.lv.WebPackage.UserState.State value = com.v2tech.net.lv.WebPackage.UserState.State.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(3, rawValue);
-              } else {
-                bitField0_ |= 0x00000004;
-                state_ = value;
-              }
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              desc_ = input.readBytes();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.UserState parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.UserState) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 userId = 1;
       private int userId_ ;
-      public boolean hasUserId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 userId = 1;</code>
+       */
       public int getUserId() {
         return userId_;
       }
+      /**
+       * <code>optional int32 userId = 1;</code>
+       */
       public Builder setUserId(int value) {
-        bitField0_ |= 0x00000001;
+
         userId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 userId = 1;</code>
+       */
       public Builder clearUserId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         userId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 operateId = 2;
       private int operateId_ ;
-      public boolean hasOperateId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional int32 operateId = 2;</code>
+       */
       public int getOperateId() {
         return operateId_;
       }
+      /**
+       * <code>optional int32 operateId = 2;</code>
+       */
       public Builder setOperateId(int value) {
-        bitField0_ |= 0x00000002;
+
         operateId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 operateId = 2;</code>
+       */
       public Builder clearOperateId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         operateId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional .UserState.State state = 3;
-      private com.v2tech.net.lv.WebPackage.UserState.State state_ = com.v2tech.net.lv.WebPackage.UserState.State.online;
-      public boolean hasState() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public com.v2tech.net.lv.WebPackage.UserState.State getState() {
+      private int state_ = 0;
+      /**
+       * <code>optional .lv.UserState.State state = 3;</code>
+       */
+      public int getStateValue() {
         return state_;
       }
-      public Builder setState(com.v2tech.net.lv.WebPackage.UserState.State value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000004;
+      /**
+       * <code>optional .lv.UserState.State state = 3;</code>
+       */
+      public Builder setStateValue(int value) {
         state_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional .lv.UserState.State state = 3;</code>
+       */
+      public com.v2tech.net.lv.WebPackage.UserState.State getState() {
+        com.v2tech.net.lv.WebPackage.UserState.State result = com.v2tech.net.lv.WebPackage.UserState.State.valueOf(state_);
+        return result == null ? com.v2tech.net.lv.WebPackage.UserState.State.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .lv.UserState.State state = 3;</code>
+       */
+      public Builder setState(com.v2tech.net.lv.WebPackage.UserState.State value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        state_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .lv.UserState.State state = 3;</code>
+       */
       public Builder clearState() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        state_ = com.v2tech.net.lv.WebPackage.UserState.State.online;
+
+        state_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string desc = 4;
       private java.lang.Object desc_ = "";
-      public boolean hasDesc() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getDesc() {
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public java.lang.String getDesc() {
         java.lang.Object ref = desc_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           desc_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setDesc(String value) {
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDescBytes() {
+        java.lang.Object ref = desc_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          desc_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public Builder setDesc(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000008;
+
         desc_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string desc = 4;</code>
+       */
       public Builder clearDesc() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         desc_ = getDefaultInstance().getDesc();
         onChanged();
         return this;
       }
-      void setDesc(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public Builder setDescBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         desc_ = value;
         onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:UserState)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.UserState)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.UserState)
+    private static final com.v2tech.net.lv.WebPackage.UserState DEFAULT_INSTANCE;
     static {
-      defaultInstance = new UserState(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.UserState();
     }
 
-    // @@protoc_insertion_point(class_scope:UserState)
+    public static com.v2tech.net.lv.WebPackage.UserState getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UserState>
+            PARSER = new com.google.protobuf.AbstractParser<UserState>() {
+      public UserState parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new UserState(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<UserState> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UserState> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.UserState getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface AssetLogOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface AssetLogOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.AssetLog)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 fromUserID = 1;
-    boolean hasFromUserID();
+    /**
+     * <code>optional int32 fromUserID = 1;</code>
+     */
     int getFromUserID();
 
-    // optional int32 toUserID = 2;
-    boolean hasToUserID();
+    /**
+     * <code>optional int32 toUserID = 2;</code>
+     */
     int getToUserID();
 
-    // repeated .Gift gift = 3;
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     java.util.List<com.v2tech.net.lv.WebPackage.Gift>
     getGiftList();
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     com.v2tech.net.lv.WebPackage.Gift getGift(int index);
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     int getGiftCount();
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
     getGiftOrBuilderList();
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
             int index);
 
-    // optional string desc = 4;
-    boolean hasDesc();
-    String getDesc();
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    java.lang.String getDesc();
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getDescBytes();
 
-    // optional .AssetLog.OperateType operateType = 5;
-    boolean hasOperateType();
+    /**
+     * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+     */
+    int getOperateTypeValue();
+    /**
+     * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+     */
     com.v2tech.net.lv.WebPackage.AssetLog.OperateType getOperateType();
 
-    // optional int64 operateTime = 6;
-    boolean hasOperateTime();
+    /**
+     * <code>optional int64 operateTime = 6;</code>
+     */
     long getOperateTime();
 
-    // optional int32 soType = 7;
-    boolean hasSoType();
+    /**
+     * <code>optional int32 soType = 7;</code>
+     */
     int getSoType();
 
-    // optional int32 payType = 8;
-    boolean hasPayType();
+    /**
+     * <code>optional int32 payType = 8;</code>
+     */
     int getPayType();
 
-    // optional int64 payTime = 9;
-    boolean hasPayTime();
+    /**
+     * <code>optional int64 payTime = 9;</code>
+     */
     long getPayTime();
 
-    // optional int32 videoId = 10;
-    boolean hasVideoId();
+    /**
+     * <code>optional int32 videoId = 10;</code>
+     */
     int getVideoId();
 
-    // optional int32 rewardId = 11;
-    boolean hasRewardId();
+    /**
+     * <code>optional int32 rewardId = 11;</code>
+     */
     int getRewardId();
 
-    // optional string appealDesc = 12;
-    boolean hasAppealDesc();
-    String getAppealDesc();
+    /**
+     * <code>optional string appealDesc = 12;</code>
+     */
+    java.lang.String getAppealDesc();
+    /**
+     * <code>optional string appealDesc = 12;</code>
+     */
+    com.google.protobuf.ByteString
+    getAppealDescBytes();
 
-    // optional int64 appealTime = 13;
-    boolean hasAppealTime();
+    /**
+     * <code>optional int64 appealTime = 13;</code>
+     */
     long getAppealTime();
   }
-  public static final class AssetLog extends
-          com.google.protobuf.GeneratedMessage
-          implements AssetLogOrBuilder {
+  /**
+   * Protobuf type {@code lv.AssetLog}
+   */
+  public  static final class AssetLog extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.AssetLog)
+          AssetLogOrBuilder {
     // Use AssetLog.newBuilder() to construct.
-    private AssetLog(Builder builder) {
+    private AssetLog(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private AssetLog(boolean noInit) {}
-
-    private static final AssetLog defaultInstance;
-    public static AssetLog getDefaultInstance() {
-      return defaultInstance;
+    private AssetLog() {
+      fromUserID_ = 0;
+      toUserID_ = 0;
+      gift_ = java.util.Collections.emptyList();
+      desc_ = "";
+      operateType_ = 0;
+      operateTime_ = 0L;
+      soType_ = 0;
+      payType_ = 0;
+      payTime_ = 0L;
+      videoId_ = 0;
+      rewardId_ = 0;
+      appealDesc_ = "";
+      appealTime_ = 0L;
     }
 
-    public AssetLog getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private AssetLog(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              fromUserID_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              toUserID_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                gift_ = new java.util.ArrayList<com.v2tech.net.lv.WebPackage.Gift>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              gift_.add(
+                      input.readMessage(com.v2tech.net.lv.WebPackage.Gift.parser(), extensionRegistry));
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              desc_ = s;
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+
+              operateType_ = rawValue;
+              break;
+            }
+            case 48: {
+
+              operateTime_ = input.readInt64();
+              break;
+            }
+            case 56: {
+
+              soType_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              payType_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              payTime_ = input.readInt64();
+              break;
+            }
+            case 80: {
+
+              videoId_ = input.readInt32();
+              break;
+            }
+            case 88: {
+
+              rewardId_ = input.readInt32();
+              break;
+            }
+            case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              appealDesc_ = s;
+              break;
+            }
+            case 104: {
+
+              appealTime_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          gift_ = java.util.Collections.unmodifiableList(gift_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_AssetLog_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_AssetLog_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_AssetLog_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_AssetLog_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.AssetLog.class, com.v2tech.net.lv.WebPackage.AssetLog.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code lv.AssetLog.OperateType}
+     */
     public enum OperateType
             implements com.google.protobuf.ProtocolMessageEnum {
-      recharge(0, 0),
-      cash(1, 1),
-      gratuity(2, 2),
-      reward(3, 3),
-      all(4, 4),
-      income(5, 5),
-      payout(6, 6),
+      /**
+       * <code>recharge = 0;</code>
+       */
+      recharge(0),
+      /**
+       * <code>cash = 1;</code>
+       */
+      cash(1),
+      /**
+       * <code>gratuity = 2;</code>
+       */
+      gratuity(2),
+      /**
+       * <code>reward = 3;</code>
+       */
+      reward(3),
+      /**
+       * <code>all = 4;</code>
+       */
+      all(4),
+      /**
+       * <code>income = 5;</code>
+       */
+      income(5),
+      /**
+       * <code>payout = 6;</code>
+       */
+      payout(6),
+      UNRECOGNIZED(-1),
       ;
 
+      /**
+       * <code>recharge = 0;</code>
+       */
       public static final int recharge_VALUE = 0;
+      /**
+       * <code>cash = 1;</code>
+       */
       public static final int cash_VALUE = 1;
+      /**
+       * <code>gratuity = 2;</code>
+       */
       public static final int gratuity_VALUE = 2;
+      /**
+       * <code>reward = 3;</code>
+       */
       public static final int reward_VALUE = 3;
+      /**
+       * <code>all = 4;</code>
+       */
       public static final int all_VALUE = 4;
+      /**
+       * <code>income = 5;</code>
+       */
       public static final int income_VALUE = 5;
+      /**
+       * <code>payout = 6;</code>
+       */
       public static final int payout_VALUE = 6;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+                  "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static OperateType valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static OperateType forNumber(int value) {
         switch (value) {
           case 0: return recharge;
           case 1: return cash;
@@ -11839,17 +15796,17 @@ public final class WebPackage {
       internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<OperateType>
-              internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+              OperateType> internalValueMap =
               new com.google.protobuf.Internal.EnumLiteMap<OperateType>() {
                 public OperateType findValueByNumber(int number) {
-                  return OperateType.valueOf(number);
+                  return OperateType.forNumber(number);
                 }
               };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
@@ -11860,9 +15817,7 @@ public final class WebPackage {
         return com.v2tech.net.lv.WebPackage.AssetLog.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final OperateType[] VALUES = {
-              recharge, cash, gratuity, reward, all, income, payout,
-      };
+      private static final OperateType[] VALUES = values();
 
       public static OperateType valueOf(
               com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -11870,87 +15825,102 @@ public final class WebPackage {
           throw new java.lang.IllegalArgumentException(
                   "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private OperateType(int index, int value) {
-        this.index = index;
+      private OperateType(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:AssetLog.OperateType)
+      // @@protoc_insertion_point(enum_scope:lv.AssetLog.OperateType)
     }
 
     private int bitField0_;
-    // optional int32 fromUserID = 1;
     public static final int FROMUSERID_FIELD_NUMBER = 1;
     private int fromUserID_;
-    public boolean hasFromUserID() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional int32 fromUserID = 1;</code>
+     */
     public int getFromUserID() {
       return fromUserID_;
     }
 
-    // optional int32 toUserID = 2;
     public static final int TOUSERID_FIELD_NUMBER = 2;
     private int toUserID_;
-    public boolean hasToUserID() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
+    /**
+     * <code>optional int32 toUserID = 2;</code>
+     */
     public int getToUserID() {
       return toUserID_;
     }
 
-    // repeated .Gift gift = 3;
     public static final int GIFT_FIELD_NUMBER = 3;
     private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_;
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
       return gift_;
     }
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
     getGiftOrBuilderList() {
       return gift_;
     }
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     public int getGiftCount() {
       return gift_.size();
     }
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
       return gift_.get(index);
     }
+    /**
+     * <code>repeated .lv.Gift gift = 3;</code>
+     */
     public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
             int index) {
       return gift_.get(index);
     }
 
-    // optional string desc = 4;
     public static final int DESC_FIELD_NUMBER = 4;
-    private java.lang.Object desc_;
-    public boolean hasDesc() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getDesc() {
+    private volatile java.lang.Object desc_;
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    public java.lang.String getDesc() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          desc_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        desc_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getDescBytes() {
+    /**
+     * <code>optional string desc = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDescBytes() {
       java.lang.Object ref = desc_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         desc_ = b;
         return b;
       } else {
@@ -11958,101 +15928,103 @@ public final class WebPackage {
       }
     }
 
-    // optional .AssetLog.OperateType operateType = 5;
     public static final int OPERATETYPE_FIELD_NUMBER = 5;
-    private com.v2tech.net.lv.WebPackage.AssetLog.OperateType operateType_;
-    public boolean hasOperateType() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public com.v2tech.net.lv.WebPackage.AssetLog.OperateType getOperateType() {
+    private int operateType_;
+    /**
+     * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+     */
+    public int getOperateTypeValue() {
       return operateType_;
     }
+    /**
+     * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+     */
+    public com.v2tech.net.lv.WebPackage.AssetLog.OperateType getOperateType() {
+      com.v2tech.net.lv.WebPackage.AssetLog.OperateType result = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.valueOf(operateType_);
+      return result == null ? com.v2tech.net.lv.WebPackage.AssetLog.OperateType.UNRECOGNIZED : result;
+    }
 
-    // optional int64 operateTime = 6;
     public static final int OPERATETIME_FIELD_NUMBER = 6;
     private long operateTime_;
-    public boolean hasOperateTime() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
+    /**
+     * <code>optional int64 operateTime = 6;</code>
+     */
     public long getOperateTime() {
       return operateTime_;
     }
 
-    // optional int32 soType = 7;
     public static final int SOTYPE_FIELD_NUMBER = 7;
     private int soType_;
-    public boolean hasSoType() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
+    /**
+     * <code>optional int32 soType = 7;</code>
+     */
     public int getSoType() {
       return soType_;
     }
 
-    // optional int32 payType = 8;
     public static final int PAYTYPE_FIELD_NUMBER = 8;
     private int payType_;
-    public boolean hasPayType() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
+    /**
+     * <code>optional int32 payType = 8;</code>
+     */
     public int getPayType() {
       return payType_;
     }
 
-    // optional int64 payTime = 9;
     public static final int PAYTIME_FIELD_NUMBER = 9;
     private long payTime_;
-    public boolean hasPayTime() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
+    /**
+     * <code>optional int64 payTime = 9;</code>
+     */
     public long getPayTime() {
       return payTime_;
     }
 
-    // optional int32 videoId = 10;
     public static final int VIDEOID_FIELD_NUMBER = 10;
     private int videoId_;
-    public boolean hasVideoId() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
+    /**
+     * <code>optional int32 videoId = 10;</code>
+     */
     public int getVideoId() {
       return videoId_;
     }
 
-    // optional int32 rewardId = 11;
     public static final int REWARDID_FIELD_NUMBER = 11;
     private int rewardId_;
-    public boolean hasRewardId() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
+    /**
+     * <code>optional int32 rewardId = 11;</code>
+     */
     public int getRewardId() {
       return rewardId_;
     }
 
-    // optional string appealDesc = 12;
     public static final int APPEALDESC_FIELD_NUMBER = 12;
-    private java.lang.Object appealDesc_;
-    public boolean hasAppealDesc() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    public String getAppealDesc() {
+    private volatile java.lang.Object appealDesc_;
+    /**
+     * <code>optional string appealDesc = 12;</code>
+     */
+    public java.lang.String getAppealDesc() {
       java.lang.Object ref = appealDesc_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          appealDesc_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        appealDesc_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getAppealDescBytes() {
+    /**
+     * <code>optional string appealDesc = 12;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAppealDescBytes() {
       java.lang.Object ref = appealDesc_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         appealDesc_ = b;
         return b;
       } else {
@@ -12060,35 +16032,20 @@ public final class WebPackage {
       }
     }
 
-    // optional int64 appealTime = 13;
     public static final int APPEALTIME_FIELD_NUMBER = 13;
     private long appealTime_;
-    public boolean hasAppealTime() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
+    /**
+     * <code>optional int64 appealTime = 13;</code>
+     */
     public long getAppealTime() {
       return appealTime_;
     }
 
-    private void initFields() {
-      fromUserID_ = 0;
-      toUserID_ = 0;
-      gift_ = java.util.Collections.emptyList();
-      desc_ = "";
-      operateType_ = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge;
-      operateTime_ = 0L;
-      soType_ = 0;
-      payType_ = 0;
-      payTime_ = 0L;
-      videoId_ = 0;
-      rewardId_ = 0;
-      appealDesc_ = "";
-      appealTime_ = 0L;
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -12096,60 +16053,57 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (fromUserID_ != 0) {
         output.writeInt32(1, fromUserID_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (toUserID_ != 0) {
         output.writeInt32(2, toUserID_);
       }
       for (int i = 0; i < gift_.size(); i++) {
         output.writeMessage(3, gift_.get(i));
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(4, getDescBytes());
+      if (!getDescBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, desc_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeEnum(5, operateType_.getNumber());
+      if (operateType_ != com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge.getNumber()) {
+        output.writeEnum(5, operateType_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (operateTime_ != 0L) {
         output.writeInt64(6, operateTime_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (soType_ != 0) {
         output.writeInt32(7, soType_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (payType_ != 0) {
         output.writeInt32(8, payType_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (payTime_ != 0L) {
         output.writeInt64(9, payTime_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (videoId_ != 0) {
         output.writeInt32(10, videoId_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (rewardId_ != 0) {
         output.writeInt32(11, rewardId_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        output.writeBytes(12, getAppealDescBytes());
+      if (!getAppealDescBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, appealDesc_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (appealTime_ != 0L) {
         output.writeInt64(13, appealTime_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (fromUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, fromUserID_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (toUserID_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(2, toUserID_);
       }
@@ -12157,149 +16111,225 @@ public final class WebPackage {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(3, gift_.get(i));
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, getDescBytes());
+      if (!getDescBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, desc_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (operateType_ != com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeEnumSize(5, operateType_.getNumber());
+                .computeEnumSize(5, operateType_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (operateTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(6, operateTime_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (soType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(7, soType_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (payType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(8, payType_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (payTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(9, payTime_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (videoId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(10, videoId_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (rewardId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(11, rewardId_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(12, getAppealDescBytes());
+      if (!getAppealDescBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, appealDesc_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (appealTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(13, appealTime_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.AssetLog)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.AssetLog other = (com.v2tech.net.lv.WebPackage.AssetLog) obj;
+
+      boolean result = true;
+      result = result && (getFromUserID()
+              == other.getFromUserID());
+      result = result && (getToUserID()
+              == other.getToUserID());
+      result = result && getGiftList()
+              .equals(other.getGiftList());
+      result = result && getDesc()
+              .equals(other.getDesc());
+      result = result && operateType_ == other.operateType_;
+      result = result && (getOperateTime()
+              == other.getOperateTime());
+      result = result && (getSoType()
+              == other.getSoType());
+      result = result && (getPayType()
+              == other.getPayType());
+      result = result && (getPayTime()
+              == other.getPayTime());
+      result = result && (getVideoId()
+              == other.getVideoId());
+      result = result && (getRewardId()
+              == other.getRewardId());
+      result = result && getAppealDesc()
+              .equals(other.getAppealDesc());
+      result = result && (getAppealTime()
+              == other.getAppealTime());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + FROMUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getFromUserID();
+      hash = (37 * hash) + TOUSERID_FIELD_NUMBER;
+      hash = (53 * hash) + getToUserID();
+      if (getGiftCount() > 0) {
+        hash = (37 * hash) + GIFT_FIELD_NUMBER;
+        hash = (53 * hash) + getGiftList().hashCode();
+      }
+      hash = (37 * hash) + DESC_FIELD_NUMBER;
+      hash = (53 * hash) + getDesc().hashCode();
+      hash = (37 * hash) + OPERATETYPE_FIELD_NUMBER;
+      hash = (53 * hash) + operateType_;
+      hash = (37 * hash) + OPERATETIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getOperateTime());
+      hash = (37 * hash) + SOTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getSoType();
+      hash = (37 * hash) + PAYTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getPayType();
+      hash = (37 * hash) + PAYTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getPayTime());
+      hash = (37 * hash) + VIDEOID_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoId();
+      hash = (37 * hash) + REWARDID_FIELD_NUMBER;
+      hash = (53 * hash) + getRewardId();
+      hash = (37 * hash) + APPEALDESC_FIELD_NUMBER;
+      hash = (53 * hash) + getAppealDesc().hashCode();
+      hash = (37 * hash) + APPEALTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAppealTime());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.AssetLog parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.AssetLog prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.AssetLog prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.AssetLog}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.AssetLogOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.AssetLog)
+            com.v2tech.net.lv.WebPackage.AssetLogOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_AssetLog_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_AssetLog_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_AssetLog_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_AssetLog_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.AssetLog.class, com.v2tech.net.lv.WebPackage.AssetLog.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.AssetLog.newBuilder()
@@ -12307,25 +16337,23 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getGiftFieldBuilder();
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         fromUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         toUserID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         if (giftBuilder_ == null) {
           gift_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000004);
@@ -12333,35 +16361,31 @@ public final class WebPackage {
           giftBuilder_.clear();
         }
         desc_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        operateType_ = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        operateTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        soType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000040);
-        payType_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000080);
-        payTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
-        videoId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000200);
-        rewardId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000400);
-        appealDesc_ = "";
-        bitField0_ = (bitField0_ & ~0x00000800);
-        appealTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00001000);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        operateType_ = 0;
+
+        operateTime_ = 0L;
+
+        soType_ = 0;
+
+        payType_ = 0;
+
+        payTime_ = 0L;
+
+        videoId_ = 0;
+
+        rewardId_ = 0;
+
+        appealDesc_ = "";
+
+        appealTime_ = 0L;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.AssetLog.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_AssetLog_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.AssetLog getDefaultInstanceForType() {
@@ -12376,27 +16400,11 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.AssetLog buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.AssetLog result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.AssetLog buildPartial() {
         com.v2tech.net.lv.WebPackage.AssetLog result = new com.v2tech.net.lv.WebPackage.AssetLog(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.fromUserID_ = fromUserID_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.toUserID_ = toUserID_;
         if (giftBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
@@ -12407,51 +16415,47 @@ public final class WebPackage {
         } else {
           result.gift_ = giftBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.desc_ = desc_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.operateType_ = operateType_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.operateTime_ = operateTime_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.soType_ = soType_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.payType_ = payType_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.payTime_ = payTime_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.videoId_ = videoId_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.rewardId_ = rewardId_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.appealDesc_ = appealDesc_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.appealTime_ = appealTime_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.AssetLog) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.AssetLog)other);
@@ -12463,10 +16467,10 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.AssetLog other) {
         if (other == com.v2tech.net.lv.WebPackage.AssetLog.getDefaultInstance()) return this;
-        if (other.hasFromUserID()) {
+        if (other.getFromUserID() != 0) {
           setFromUserID(other.getFromUserID());
         }
-        if (other.hasToUserID()) {
+        if (other.getToUserID() != 0) {
           setToUserID(other.getToUserID());
         }
         if (giftBuilder_ == null) {
@@ -12488,44 +16492,46 @@ public final class WebPackage {
               gift_ = other.gift_;
               bitField0_ = (bitField0_ & ~0x00000004);
               giftBuilder_ =
-                      com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getGiftFieldBuilder() : null;
             } else {
               giftBuilder_.addAllMessages(other.gift_);
             }
           }
         }
-        if (other.hasDesc()) {
-          setDesc(other.getDesc());
+        if (!other.getDesc().isEmpty()) {
+          desc_ = other.desc_;
+          onChanged();
         }
-        if (other.hasOperateType()) {
-          setOperateType(other.getOperateType());
+        if (other.operateType_ != 0) {
+          setOperateTypeValue(other.getOperateTypeValue());
         }
-        if (other.hasOperateTime()) {
+        if (other.getOperateTime() != 0L) {
           setOperateTime(other.getOperateTime());
         }
-        if (other.hasSoType()) {
+        if (other.getSoType() != 0) {
           setSoType(other.getSoType());
         }
-        if (other.hasPayType()) {
+        if (other.getPayType() != 0) {
           setPayType(other.getPayType());
         }
-        if (other.hasPayTime()) {
+        if (other.getPayTime() != 0L) {
           setPayTime(other.getPayTime());
         }
-        if (other.hasVideoId()) {
+        if (other.getVideoId() != 0) {
           setVideoId(other.getVideoId());
         }
-        if (other.hasRewardId()) {
+        if (other.getRewardId() != 0) {
           setRewardId(other.getRewardId());
         }
-        if (other.hasAppealDesc()) {
-          setAppealDesc(other.getAppealDesc());
+        if (!other.getAppealDesc().isEmpty()) {
+          appealDesc_ = other.appealDesc_;
+          onChanged();
         }
-        if (other.hasAppealTime()) {
+        if (other.getAppealTime() != 0L) {
           setAppealTime(other.getAppealTime());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -12537,146 +16543,73 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              fromUserID_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              toUserID_ = input.readInt32();
-              break;
-            }
-            case 26: {
-              com.v2tech.net.lv.WebPackage.Gift.Builder subBuilder = com.v2tech.net.lv.WebPackage.Gift.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addGift(subBuilder.buildPartial());
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              desc_ = input.readBytes();
-              break;
-            }
-            case 40: {
-              int rawValue = input.readEnum();
-              com.v2tech.net.lv.WebPackage.AssetLog.OperateType value = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(5, rawValue);
-              } else {
-                bitField0_ |= 0x00000010;
-                operateType_ = value;
-              }
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              operateTime_ = input.readInt64();
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000040;
-              soType_ = input.readInt32();
-              break;
-            }
-            case 64: {
-              bitField0_ |= 0x00000080;
-              payType_ = input.readInt32();
-              break;
-            }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              payTime_ = input.readInt64();
-              break;
-            }
-            case 80: {
-              bitField0_ |= 0x00000200;
-              videoId_ = input.readInt32();
-              break;
-            }
-            case 88: {
-              bitField0_ |= 0x00000400;
-              rewardId_ = input.readInt32();
-              break;
-            }
-            case 98: {
-              bitField0_ |= 0x00000800;
-              appealDesc_ = input.readBytes();
-              break;
-            }
-            case 104: {
-              bitField0_ |= 0x00001000;
-              appealTime_ = input.readInt64();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.AssetLog parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.AssetLog) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-
       private int bitField0_;
 
-      // optional int32 fromUserID = 1;
       private int fromUserID_ ;
-      public boolean hasFromUserID() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 fromUserID = 1;</code>
+       */
       public int getFromUserID() {
         return fromUserID_;
       }
+      /**
+       * <code>optional int32 fromUserID = 1;</code>
+       */
       public Builder setFromUserID(int value) {
-        bitField0_ |= 0x00000001;
+
         fromUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 fromUserID = 1;</code>
+       */
       public Builder clearFromUserID() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         fromUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 toUserID = 2;
       private int toUserID_ ;
-      public boolean hasToUserID() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public int getToUserID() {
         return toUserID_;
       }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public Builder setToUserID(int value) {
-        bitField0_ |= 0x00000002;
+
         toUserID_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 toUserID = 2;</code>
+       */
       public Builder clearToUserID() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         toUserID_ = 0;
         onChanged();
         return this;
       }
 
-      // repeated .Gift gift = 3;
       private java.util.List<com.v2tech.net.lv.WebPackage.Gift> gift_ =
               java.util.Collections.emptyList();
       private void ensureGiftIsMutable() {
@@ -12686,9 +16619,12 @@ public final class WebPackage {
         }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder> giftBuilder_;
 
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gift> getGiftList() {
         if (giftBuilder_ == null) {
           return java.util.Collections.unmodifiableList(gift_);
@@ -12696,6 +16632,9 @@ public final class WebPackage {
           return giftBuilder_.getMessageList();
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public int getGiftCount() {
         if (giftBuilder_ == null) {
           return gift_.size();
@@ -12703,6 +16642,9 @@ public final class WebPackage {
           return giftBuilder_.getCount();
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift getGift(int index) {
         if (giftBuilder_ == null) {
           return gift_.get(index);
@@ -12710,6 +16652,9 @@ public final class WebPackage {
           return giftBuilder_.getMessage(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder setGift(
               int index, com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
@@ -12724,6 +16669,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder setGift(
               int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -12735,6 +16683,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder addGift(com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
           if (value == null) {
@@ -12748,6 +16699,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder addGift(
               int index, com.v2tech.net.lv.WebPackage.Gift value) {
         if (giftBuilder_ == null) {
@@ -12762,6 +16716,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder addGift(
               com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -12773,6 +16730,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder addGift(
               int index, com.v2tech.net.lv.WebPackage.Gift.Builder builderForValue) {
         if (giftBuilder_ == null) {
@@ -12784,17 +16744,24 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder addAllGift(
               java.lang.Iterable<? extends com.v2tech.net.lv.WebPackage.Gift> values) {
         if (giftBuilder_ == null) {
           ensureGiftIsMutable();
-          super.addAll(values, gift_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, gift_);
           onChanged();
         } else {
           giftBuilder_.addAllMessages(values);
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder clearGift() {
         if (giftBuilder_ == null) {
           gift_ = java.util.Collections.emptyList();
@@ -12805,6 +16772,9 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public Builder removeGift(int index) {
         if (giftBuilder_ == null) {
           ensureGiftIsMutable();
@@ -12815,10 +16785,16 @@ public final class WebPackage {
         }
         return this;
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder getGiftBuilder(
               int index) {
         return getGiftFieldBuilder().getBuilder(index);
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public com.v2tech.net.lv.WebPackage.GiftOrBuilder getGiftOrBuilder(
               int index) {
         if (giftBuilder_ == null) {
@@ -12826,6 +16802,9 @@ public final class WebPackage {
           return giftBuilder_.getMessageOrBuilder(index);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public java.util.List<? extends com.v2tech.net.lv.WebPackage.GiftOrBuilder>
       getGiftOrBuilderList() {
         if (giftBuilder_ != null) {
@@ -12834,24 +16813,33 @@ public final class WebPackage {
           return java.util.Collections.unmodifiableList(gift_);
         }
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder() {
         return getGiftFieldBuilder().addBuilder(
                 com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public com.v2tech.net.lv.WebPackage.Gift.Builder addGiftBuilder(
               int index) {
         return getGiftFieldBuilder().addBuilder(
                 index, com.v2tech.net.lv.WebPackage.Gift.getDefaultInstance());
       }
+      /**
+       * <code>repeated .lv.Gift gift = 3;</code>
+       */
       public java.util.List<com.v2tech.net.lv.WebPackage.Gift.Builder>
       getGiftBuilderList() {
         return getGiftFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
               com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder>
       getGiftFieldBuilder() {
         if (giftBuilder_ == null) {
-          giftBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          giftBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   com.v2tech.net.lv.WebPackage.Gift, com.v2tech.net.lv.WebPackage.Gift.Builder, com.v2tech.net.lv.WebPackage.GiftOrBuilder>(
                   gift_,
                   ((bitField0_ & 0x00000004) == 0x00000004),
@@ -12862,347 +16850,593 @@ public final class WebPackage {
         return giftBuilder_;
       }
 
-      // optional string desc = 4;
       private java.lang.Object desc_ = "";
-      public boolean hasDesc() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getDesc() {
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public java.lang.String getDesc() {
         java.lang.Object ref = desc_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           desc_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setDesc(String value) {
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDescBytes() {
+        java.lang.Object ref = desc_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          desc_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public Builder setDesc(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000008;
+
         desc_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string desc = 4;</code>
+       */
       public Builder clearDesc() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         desc_ = getDefaultInstance().getDesc();
         onChanged();
         return this;
       }
-      void setDesc(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
-        desc_ = value;
-        onChanged();
-      }
-
-      // optional .AssetLog.OperateType operateType = 5;
-      private com.v2tech.net.lv.WebPackage.AssetLog.OperateType operateType_ = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge;
-      public boolean hasOperateType() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      public com.v2tech.net.lv.WebPackage.AssetLog.OperateType getOperateType() {
-        return operateType_;
-      }
-      public Builder setOperateType(com.v2tech.net.lv.WebPackage.AssetLog.OperateType value) {
+      /**
+       * <code>optional string desc = 4;</code>
+       */
+      public Builder setDescBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000010;
+        checkByteStringIsUtf8(value);
+
+        desc_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int operateType_ = 0;
+      /**
+       * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+       */
+      public int getOperateTypeValue() {
+        return operateType_;
+      }
+      /**
+       * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+       */
+      public Builder setOperateTypeValue(int value) {
         operateType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+       */
+      public com.v2tech.net.lv.WebPackage.AssetLog.OperateType getOperateType() {
+        com.v2tech.net.lv.WebPackage.AssetLog.OperateType result = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.valueOf(operateType_);
+        return result == null ? com.v2tech.net.lv.WebPackage.AssetLog.OperateType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+       */
+      public Builder setOperateType(com.v2tech.net.lv.WebPackage.AssetLog.OperateType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        operateType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .lv.AssetLog.OperateType operateType = 5;</code>
+       */
       public Builder clearOperateType() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        operateType_ = com.v2tech.net.lv.WebPackage.AssetLog.OperateType.recharge;
+
+        operateType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int64 operateTime = 6;
       private long operateTime_ ;
-      public boolean hasOperateTime() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
+      /**
+       * <code>optional int64 operateTime = 6;</code>
+       */
       public long getOperateTime() {
         return operateTime_;
       }
+      /**
+       * <code>optional int64 operateTime = 6;</code>
+       */
       public Builder setOperateTime(long value) {
-        bitField0_ |= 0x00000020;
+
         operateTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 operateTime = 6;</code>
+       */
       public Builder clearOperateTime() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         operateTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int32 soType = 7;
       private int soType_ ;
-      public boolean hasSoType() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
+      /**
+       * <code>optional int32 soType = 7;</code>
+       */
       public int getSoType() {
         return soType_;
       }
+      /**
+       * <code>optional int32 soType = 7;</code>
+       */
       public Builder setSoType(int value) {
-        bitField0_ |= 0x00000040;
+
         soType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 soType = 7;</code>
+       */
       public Builder clearSoType() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         soType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 payType = 8;
       private int payType_ ;
-      public boolean hasPayType() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
+      /**
+       * <code>optional int32 payType = 8;</code>
+       */
       public int getPayType() {
         return payType_;
       }
+      /**
+       * <code>optional int32 payType = 8;</code>
+       */
       public Builder setPayType(int value) {
-        bitField0_ |= 0x00000080;
+
         payType_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 payType = 8;</code>
+       */
       public Builder clearPayType() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         payType_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int64 payTime = 9;
       private long payTime_ ;
-      public boolean hasPayTime() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
+      /**
+       * <code>optional int64 payTime = 9;</code>
+       */
       public long getPayTime() {
         return payTime_;
       }
+      /**
+       * <code>optional int64 payTime = 9;</code>
+       */
       public Builder setPayTime(long value) {
-        bitField0_ |= 0x00000100;
+
         payTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 payTime = 9;</code>
+       */
       public Builder clearPayTime() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         payTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int32 videoId = 10;
       private int videoId_ ;
-      public boolean hasVideoId() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
+      /**
+       * <code>optional int32 videoId = 10;</code>
+       */
       public int getVideoId() {
         return videoId_;
       }
+      /**
+       * <code>optional int32 videoId = 10;</code>
+       */
       public Builder setVideoId(int value) {
-        bitField0_ |= 0x00000200;
+
         videoId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 videoId = 10;</code>
+       */
       public Builder clearVideoId() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         videoId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional int32 rewardId = 11;
       private int rewardId_ ;
-      public boolean hasRewardId() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
+      /**
+       * <code>optional int32 rewardId = 11;</code>
+       */
       public int getRewardId() {
         return rewardId_;
       }
+      /**
+       * <code>optional int32 rewardId = 11;</code>
+       */
       public Builder setRewardId(int value) {
-        bitField0_ |= 0x00000400;
+
         rewardId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 rewardId = 11;</code>
+       */
       public Builder clearRewardId() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         rewardId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string appealDesc = 12;
       private java.lang.Object appealDesc_ = "";
-      public boolean hasAppealDesc() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      public String getAppealDesc() {
+      /**
+       * <code>optional string appealDesc = 12;</code>
+       */
+      public java.lang.String getAppealDesc() {
         java.lang.Object ref = appealDesc_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           appealDesc_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setAppealDesc(String value) {
+      /**
+       * <code>optional string appealDesc = 12;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAppealDescBytes() {
+        java.lang.Object ref = appealDesc_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          appealDesc_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string appealDesc = 12;</code>
+       */
+      public Builder setAppealDesc(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000800;
+
         appealDesc_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string appealDesc = 12;</code>
+       */
       public Builder clearAppealDesc() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         appealDesc_ = getDefaultInstance().getAppealDesc();
         onChanged();
         return this;
       }
-      void setAppealDesc(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000800;
+      /**
+       * <code>optional string appealDesc = 12;</code>
+       */
+      public Builder setAppealDescBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         appealDesc_ = value;
         onChanged();
+        return this;
       }
 
-      // optional int64 appealTime = 13;
       private long appealTime_ ;
-      public boolean hasAppealTime() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
+      /**
+       * <code>optional int64 appealTime = 13;</code>
+       */
       public long getAppealTime() {
         return appealTime_;
       }
+      /**
+       * <code>optional int64 appealTime = 13;</code>
+       */
       public Builder setAppealTime(long value) {
-        bitField0_ |= 0x00001000;
+
         appealTime_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int64 appealTime = 13;</code>
+       */
       public Builder clearAppealTime() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         appealTime_ = 0L;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:AssetLog)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.AssetLog)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.AssetLog)
+    private static final com.v2tech.net.lv.WebPackage.AssetLog DEFAULT_INSTANCE;
     static {
-      defaultInstance = new AssetLog(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.AssetLog();
     }
 
-    // @@protoc_insertion_point(class_scope:AssetLog)
+    public static com.v2tech.net.lv.WebPackage.AssetLog getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<AssetLog>
+            PARSER = new com.google.protobuf.AbstractParser<AssetLog>() {
+      public AssetLog parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new AssetLog(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<AssetLog> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AssetLog> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.AssetLog getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  public interface ServerBeanOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+  public interface ServerBeanOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:lv.ServerBean)
+          com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 serverId = 1;
-    boolean hasServerId();
+    /**
+     * <code>optional int32 serverId = 1;</code>
+     */
     int getServerId();
 
-    // optional string addr_zk = 2;
-    boolean hasAddrZk();
-    String getAddrZk();
+    /**
+     * <code>optional string addr_zk = 2;</code>
+     */
+    java.lang.String getAddrZk();
+    /**
+     * <code>optional string addr_zk = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getAddrZkBytes();
 
-    // optional string addr_buffer = 3;
-    boolean hasAddrBuffer();
-    String getAddrBuffer();
+    /**
+     * <code>optional string addr_buffer = 3;</code>
+     */
+    java.lang.String getAddrBuffer();
+    /**
+     * <code>optional string addr_buffer = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getAddrBufferBytes();
 
-    // optional string addr_web = 4;
-    boolean hasAddrWeb();
-    String getAddrWeb();
+    /**
+     * <code>optional string addr_web = 4;</code>
+     */
+    java.lang.String getAddrWeb();
+    /**
+     * <code>optional string addr_web = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getAddrWebBytes();
 
-    // optional bool add = 5;
-    boolean hasAdd();
+    /**
+     * <code>optional bool add = 5;</code>
+     */
     boolean getAdd();
   }
-  public static final class ServerBean extends
-          com.google.protobuf.GeneratedMessage
-          implements ServerBeanOrBuilder {
+  /**
+   * Protobuf type {@code lv.ServerBean}
+   */
+  public  static final class ServerBean extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:lv.ServerBean)
+          ServerBeanOrBuilder {
     // Use ServerBean.newBuilder() to construct.
-    private ServerBean(Builder builder) {
+    private ServerBean(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private ServerBean(boolean noInit) {}
-
-    private static final ServerBean defaultInstance;
-    public static ServerBean getDefaultInstance() {
-      return defaultInstance;
+    private ServerBean() {
+      serverId_ = 0;
+      addrZk_ = "";
+      addrBuffer_ = "";
+      addrWeb_ = "";
+      add_ = false;
     }
 
-    public ServerBean getDefaultInstanceForType() {
-      return defaultInstance;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
+    private ServerBean(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
 
+              serverId_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              addrZk_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              addrBuffer_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              addrWeb_ = s;
+              break;
+            }
+            case 40: {
+
+              add_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_descriptor;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_ServerBean_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-      return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_fieldAccessorTable;
+      return com.v2tech.net.lv.WebPackage.internal_static_lv_ServerBean_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.v2tech.net.lv.WebPackage.ServerBean.class, com.v2tech.net.lv.WebPackage.ServerBean.Builder.class);
     }
 
-    private int bitField0_;
-    // optional int32 serverId = 1;
     public static final int SERVERID_FIELD_NUMBER = 1;
     private int serverId_;
-    public boolean hasServerId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+    /**
+     * <code>optional int32 serverId = 1;</code>
+     */
     public int getServerId() {
       return serverId_;
     }
 
-    // optional string addr_zk = 2;
     public static final int ADDR_ZK_FIELD_NUMBER = 2;
-    private java.lang.Object addrZk_;
-    public boolean hasAddrZk() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getAddrZk() {
+    private volatile java.lang.Object addrZk_;
+    /**
+     * <code>optional string addr_zk = 2;</code>
+     */
+    public java.lang.String getAddrZk() {
       java.lang.Object ref = addrZk_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          addrZk_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        addrZk_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getAddrZkBytes() {
+    /**
+     * <code>optional string addr_zk = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAddrZkBytes() {
       java.lang.Object ref = addrZk_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         addrZk_ = b;
         return b;
       } else {
@@ -13210,31 +17444,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string addr_buffer = 3;
     public static final int ADDR_BUFFER_FIELD_NUMBER = 3;
-    private java.lang.Object addrBuffer_;
-    public boolean hasAddrBuffer() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getAddrBuffer() {
+    private volatile java.lang.Object addrBuffer_;
+    /**
+     * <code>optional string addr_buffer = 3;</code>
+     */
+    public java.lang.String getAddrBuffer() {
       java.lang.Object ref = addrBuffer_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          addrBuffer_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        addrBuffer_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getAddrBufferBytes() {
+    /**
+     * <code>optional string addr_buffer = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAddrBufferBytes() {
       java.lang.Object ref = addrBuffer_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         addrBuffer_ = b;
         return b;
       } else {
@@ -13242,31 +17478,33 @@ public final class WebPackage {
       }
     }
 
-    // optional string addr_web = 4;
     public static final int ADDR_WEB_FIELD_NUMBER = 4;
-    private java.lang.Object addrWeb_;
-    public boolean hasAddrWeb() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public String getAddrWeb() {
+    private volatile java.lang.Object addrWeb_;
+    /**
+     * <code>optional string addr_web = 4;</code>
+     */
+    public java.lang.String getAddrWeb() {
       java.lang.Object ref = addrWeb_;
-      if (ref instanceof String) {
-        return (String) ref;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          addrWeb_ = s;
-        }
+        java.lang.String s = bs.toStringUtf8();
+        addrWeb_ = s;
         return s;
       }
     }
-    private com.google.protobuf.ByteString getAddrWebBytes() {
+    /**
+     * <code>optional string addr_web = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAddrWebBytes() {
       java.lang.Object ref = addrWeb_;
-      if (ref instanceof String) {
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
         addrWeb_ = b;
         return b;
       } else {
@@ -13274,27 +17512,20 @@ public final class WebPackage {
       }
     }
 
-    // optional bool add = 5;
     public static final int ADD_FIELD_NUMBER = 5;
     private boolean add_;
-    public boolean hasAdd() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
+    /**
+     * <code>optional bool add = 5;</code>
+     */
     public boolean getAdd() {
       return add_;
     }
 
-    private void initFields() {
-      serverId_ = 0;
-      addrZk_ = "";
-      addrBuffer_ = "";
-      addrWeb_ = "";
-      add_ = false;
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -13302,154 +17533,191 @@ public final class WebPackage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (serverId_ != 0) {
         output.writeInt32(1, serverId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getAddrZkBytes());
+      if (!getAddrZkBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, addrZk_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getAddrBufferBytes());
+      if (!getAddrBufferBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, addrBuffer_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getAddrWebBytes());
+      if (!getAddrWebBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, addrWeb_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (add_ != false) {
         output.writeBool(5, add_);
       }
-      getUnknownFields().writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (serverId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, serverId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getAddrZkBytes());
+      if (!getAddrZkBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, addrZk_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(3, getAddrBufferBytes());
+      if (!getAddrBufferBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, addrBuffer_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, getAddrWebBytes());
+      if (!getAddrWebBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, addrWeb_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (add_ != false) {
         size += com.google.protobuf.CodedOutputStream
                 .computeBoolSize(5, add_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-      return super.writeReplace();
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.v2tech.net.lv.WebPackage.ServerBean)) {
+        return super.equals(obj);
+      }
+      com.v2tech.net.lv.WebPackage.ServerBean other = (com.v2tech.net.lv.WebPackage.ServerBean) obj;
+
+      boolean result = true;
+      result = result && (getServerId()
+              == other.getServerId());
+      result = result && getAddrZk()
+              .equals(other.getAddrZk());
+      result = result && getAddrBuffer()
+              .equals(other.getAddrBuffer());
+      result = result && getAddrWeb()
+              .equals(other.getAddrWeb());
+      result = result && (getAdd()
+              == other.getAdd());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SERVERID_FIELD_NUMBER;
+      hash = (53 * hash) + getServerId();
+      hash = (37 * hash) + ADDR_ZK_FIELD_NUMBER;
+      hash = (53 * hash) + getAddrZk().hashCode();
+      hash = (37 * hash) + ADDR_BUFFER_FIELD_NUMBER;
+      hash = (53 * hash) + getAddrBuffer().hashCode();
+      hash = (37 * hash) + ADDR_WEB_FIELD_NUMBER;
+      hash = (53 * hash) + getAddrWeb().hashCode();
+      hash = (37 * hash) + ADD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getAdd());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-              .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(java.io.InputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
     }
     public static com.v2tech.net.lv.WebPackage.ServerBean parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-              .buildParsed();
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.ServerBean prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.v2tech.net.lv.WebPackage.ServerBean prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+    /**
+     * Protobuf type {@code lv.ServerBean}
+     */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder {
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:lv.ServerBean)
+            com.v2tech.net.lv.WebPackage.ServerBeanOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_descriptor;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_ServerBean_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.v2tech.net.lv.WebPackage.internal_static_ServerBean_fieldAccessorTable;
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_ServerBean_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.v2tech.net.lv.WebPackage.ServerBean.class, com.v2tech.net.lv.WebPackage.ServerBean.Builder.class);
       }
 
       // Construct using com.v2tech.net.lv.WebPackage.ServerBean.newBuilder()
@@ -13457,40 +17725,34 @@ public final class WebPackage {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(BuilderParent parent) {
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         serverId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        addrZk_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        addrBuffer_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        addrWeb_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        add_ = false;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        return this;
-      }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+        addrZk_ = "";
+
+        addrBuffer_ = "";
+
+        addrWeb_ = "";
+
+        add_ = false;
+
+        return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
-        return com.v2tech.net.lv.WebPackage.ServerBean.getDescriptor();
+        return com.v2tech.net.lv.WebPackage.internal_static_lv_ServerBean_descriptor;
       }
 
       public com.v2tech.net.lv.WebPackage.ServerBean getDefaultInstanceForType() {
@@ -13505,45 +17767,43 @@ public final class WebPackage {
         return result;
       }
 
-      private com.v2tech.net.lv.WebPackage.ServerBean buildParsed()
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        com.v2tech.net.lv.WebPackage.ServerBean result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-                  result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-
       public com.v2tech.net.lv.WebPackage.ServerBean buildPartial() {
         com.v2tech.net.lv.WebPackage.ServerBean result = new com.v2tech.net.lv.WebPackage.ServerBean(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.serverId_ = serverId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.addrZk_ = addrZk_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.addrBuffer_ = addrBuffer_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.addrWeb_ = addrWeb_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.add_ = add_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.v2tech.net.lv.WebPackage.ServerBean) {
           return mergeFrom((com.v2tech.net.lv.WebPackage.ServerBean)other);
@@ -13555,22 +17815,25 @@ public final class WebPackage {
 
       public Builder mergeFrom(com.v2tech.net.lv.WebPackage.ServerBean other) {
         if (other == com.v2tech.net.lv.WebPackage.ServerBean.getDefaultInstance()) return this;
-        if (other.hasServerId()) {
+        if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
-        if (other.hasAddrZk()) {
-          setAddrZk(other.getAddrZk());
+        if (!other.getAddrZk().isEmpty()) {
+          addrZk_ = other.addrZk_;
+          onChanged();
         }
-        if (other.hasAddrBuffer()) {
-          setAddrBuffer(other.getAddrBuffer());
+        if (!other.getAddrBuffer().isEmpty()) {
+          addrBuffer_ = other.addrBuffer_;
+          onChanged();
         }
-        if (other.hasAddrWeb()) {
-          setAddrWeb(other.getAddrWeb());
+        if (!other.getAddrWeb().isEmpty()) {
+          addrWeb_ = other.addrWeb_;
+          onChanged();
         }
-        if (other.hasAdd()) {
+        if (other.getAdd() != false) {
           setAdd(other.getAdd());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
         return this;
       }
 
@@ -13582,454 +17845,470 @@ public final class WebPackage {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder(
-                        this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              serverId_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              addrZk_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              addrBuffer_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              addrWeb_ = input.readBytes();
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              add_ = input.readBool();
-              break;
-            }
+        com.v2tech.net.lv.WebPackage.ServerBean parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.v2tech.net.lv.WebPackage.ServerBean) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
 
-      private int bitField0_;
-
-      // optional int32 serverId = 1;
       private int serverId_ ;
-      public boolean hasServerId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+      /**
+       * <code>optional int32 serverId = 1;</code>
+       */
       public int getServerId() {
         return serverId_;
       }
+      /**
+       * <code>optional int32 serverId = 1;</code>
+       */
       public Builder setServerId(int value) {
-        bitField0_ |= 0x00000001;
+
         serverId_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional int32 serverId = 1;</code>
+       */
       public Builder clearServerId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         serverId_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string addr_zk = 2;
       private java.lang.Object addrZk_ = "";
-      public boolean hasAddrZk() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getAddrZk() {
+      /**
+       * <code>optional string addr_zk = 2;</code>
+       */
+      public java.lang.String getAddrZk() {
         java.lang.Object ref = addrZk_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           addrZk_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setAddrZk(String value) {
+      /**
+       * <code>optional string addr_zk = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAddrZkBytes() {
+        java.lang.Object ref = addrZk_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          addrZk_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string addr_zk = 2;</code>
+       */
+      public Builder setAddrZk(
+              java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+
         addrZk_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string addr_zk = 2;</code>
+       */
       public Builder clearAddrZk() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         addrZk_ = getDefaultInstance().getAddrZk();
         onChanged();
         return this;
       }
-      void setAddrZk(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        addrZk_ = value;
-        onChanged();
-      }
-
-      // optional string addr_buffer = 3;
-      private java.lang.Object addrBuffer_ = "";
-      public boolean hasAddrBuffer() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getAddrBuffer() {
-        java.lang.Object ref = addrBuffer_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          addrBuffer_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setAddrBuffer(String value) {
+      /**
+       * <code>optional string addr_zk = 2;</code>
+       */
+      public Builder setAddrZkBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000004;
+        checkByteStringIsUtf8(value);
+
+        addrZk_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object addrBuffer_ = "";
+      /**
+       * <code>optional string addr_buffer = 3;</code>
+       */
+      public java.lang.String getAddrBuffer() {
+        java.lang.Object ref = addrBuffer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          addrBuffer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string addr_buffer = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAddrBufferBytes() {
+        java.lang.Object ref = addrBuffer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          addrBuffer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string addr_buffer = 3;</code>
+       */
+      public Builder setAddrBuffer(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         addrBuffer_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string addr_buffer = 3;</code>
+       */
       public Builder clearAddrBuffer() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         addrBuffer_ = getDefaultInstance().getAddrBuffer();
         onChanged();
         return this;
       }
-      void setAddrBuffer(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        addrBuffer_ = value;
-        onChanged();
-      }
-
-      // optional string addr_web = 4;
-      private java.lang.Object addrWeb_ = "";
-      public boolean hasAddrWeb() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getAddrWeb() {
-        java.lang.Object ref = addrWeb_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          addrWeb_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setAddrWeb(String value) {
+      /**
+       * <code>optional string addr_buffer = 3;</code>
+       */
+      public Builder setAddrBufferBytes(
+              com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000008;
+        checkByteStringIsUtf8(value);
+
+        addrBuffer_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object addrWeb_ = "";
+      /**
+       * <code>optional string addr_web = 4;</code>
+       */
+      public java.lang.String getAddrWeb() {
+        java.lang.Object ref = addrWeb_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          addrWeb_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string addr_web = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAddrWebBytes() {
+        java.lang.Object ref = addrWeb_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          addrWeb_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string addr_web = 4;</code>
+       */
+      public Builder setAddrWeb(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
         addrWeb_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional string addr_web = 4;</code>
+       */
       public Builder clearAddrWeb() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         addrWeb_ = getDefaultInstance().getAddrWeb();
         onChanged();
         return this;
       }
-      void setAddrWeb(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
+      /**
+       * <code>optional string addr_web = 4;</code>
+       */
+      public Builder setAddrWebBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         addrWeb_ = value;
         onChanged();
+        return this;
       }
 
-      // optional bool add = 5;
       private boolean add_ ;
-      public boolean hasAdd() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
+      /**
+       * <code>optional bool add = 5;</code>
+       */
       public boolean getAdd() {
         return add_;
       }
+      /**
+       * <code>optional bool add = 5;</code>
+       */
       public Builder setAdd(boolean value) {
-        bitField0_ |= 0x00000010;
+
         add_ = value;
         onChanged();
         return this;
       }
+      /**
+       * <code>optional bool add = 5;</code>
+       */
       public Builder clearAdd() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         add_ = false;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-      // @@protoc_insertion_point(builder_scope:ServerBean)
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lv.ServerBean)
     }
 
+    // @@protoc_insertion_point(class_scope:lv.ServerBean)
+    private static final com.v2tech.net.lv.WebPackage.ServerBean DEFAULT_INSTANCE;
     static {
-      defaultInstance = new ServerBean(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.v2tech.net.lv.WebPackage.ServerBean();
     }
 
-    // @@protoc_insertion_point(class_scope:ServerBean)
+    public static com.v2tech.net.lv.WebPackage.ServerBean getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ServerBean>
+            PARSER = new com.google.protobuf.AbstractParser<ServerBean>() {
+      public ServerBean parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ServerBean(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ServerBean> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ServerBean> getParserForType() {
+      return PARSER;
+    }
+
+    public com.v2tech.net.lv.WebPackage.ServerBean getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Packet_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Packet_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Result_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Result_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Data_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Data_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_User_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_User_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Position_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Position_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Video_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Video_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Gratuity_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Gratuity_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Reward_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Reward_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_Gift_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_Gift_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_UserState_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_UserState_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_AssetLog_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_AssetLog_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_ServerBean_descriptor;
-  private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_ServerBean_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Packet_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Packet_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Result_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Result_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Data_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Data_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_User_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_User_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Position_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Position_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Video_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Video_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Gratuity_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Gratuity_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Reward_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Reward_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_Gift_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_Gift_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_UserState_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_UserState_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_AssetLog_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_AssetLog_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_lv_ServerBean_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_lv_ServerBean_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
   getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
           descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\014packet.proto\"\343\001\n\006Packet\022 \n\npacketType\030" +
-                    "\001 \002(\0162\014.Packet.type\022\014\n\004from\030\002 \001(\t\022\n\n\002to\030" +
-                    "\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006method\030\005 \001(\t\022\023\n\013ope" +
-                    "rateType\030\006 \001(\t\022\027\n\006result\030\007 \001(\0132\007.Result\022" +
-                    "\023\n\004data\030\010 \001(\0132\005.Data\022\017\n\007version\030\t \001(\t\"-\n" +
-                    "\004type\022\006\n\002iq\020\000\022\007\n\003msg\020\001\022\n\n\006buffer\020\002\022\010\n\004be" +
-                    "at\020\003\"\'\n\006Result\022\016\n\006result\030\001 \001(\010\022\r\n\005error\030" +
-                    "\002 \001(\t\"\315\002\n\004Data\022\016\n\006normal\030\001 \001(\t\022\020\n\010byteDa" +
-                    "te\030\002 \001(\014\022\020\n\010fromTime\030\003 \001(\003\022\016\n\006toTime\030\004 \001" +
-                    "(\003\022\013\n\003sum\030\005 \001(\005\022\014\n\004from\030\006 \001(\005\022\n\n\002to\030\007 \001(",
-            "\005\022\033\n\010position\030\010 \003(\0132\t.Position\022\023\n\004user\030\t" +
-                    " \003(\0132\005.User\022\025\n\005video\030\n \003(\0132\006.Video\022\033\n\010gr" +
-                    "atuity\030\013 \003(\0132\t.Gratuity\022\027\n\006reward\030\014 \003(\0132" +
-                    "\007.Reward\022\035\n\tuserState\030\r \003(\0132\n.UserState\022" +
-                    "\033\n\010assetLog\030\016 \003(\0132\t.AssetLog\022\037\n\nserverBe" +
-                    "an\030\017 \003(\0132\013.ServerBean\"\243\003\n\004User\022\n\n\002id\030\001 \001" +
-                    "(\005\022\r\n\005phone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004" +
-                    " \001(\t\022\022\n\npwd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001" +
-                    "(\t\022\017\n\007headurl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n" +
-                    "\003sex\030\t \001(\005\022\017\n\007address\030\n \001(\t\022\022\n\nexperienc",
-            "e\030\013 \001(\005\022\021\n\tfansCount\030\014 \001(\005\022\023\n\013followCoun" +
-                    "t\030\r \001(\005\022\033\n\010position\030\016 \001(\0132\t.Position\022\020\n\010" +
+            "\n\014packet.proto\022\002lv\"\354\001\n\006Packet\022#\n\npacketT" +
+                    "ype\030\001 \001(\0162\017.lv.Packet.type\022\014\n\004from\030\002 \001(\t" +
+                    "\022\n\n\002to\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006method\030\005 \001(\t" +
+                    "\022\023\n\013operateType\030\006 \001(\t\022\032\n\006result\030\007 \001(\0132\n." +
+                    "lv.Result\022\026\n\004data\030\010 \001(\0132\010.lv.Data\022\017\n\007ver" +
+                    "sion\030\t \001(\t\"-\n\004type\022\006\n\002iq\020\000\022\007\n\003msg\020\001\022\n\n\006b" +
+                    "uffer\020\002\022\010\n\004beat\020\003\"\'\n\006Result\022\016\n\006result\030\001 " +
+                    "\001(\010\022\r\n\005error\030\002 \001(\t\"\345\002\n\004Data\022\016\n\006normal\030\001 " +
+                    "\001(\t\022\020\n\010byteDate\030\002 \001(\014\022\020\n\010fromTime\030\003 \001(\003\022" +
+                    "\016\n\006toTime\030\004 \001(\003\022\013\n\003sum\030\005 \001(\005\022\014\n\004from\030\006 \001",
+            "(\005\022\n\n\002to\030\007 \001(\005\022\036\n\010position\030\010 \003(\0132\014.lv.Po" +
+                    "sition\022\026\n\004user\030\t \003(\0132\010.lv.User\022\030\n\005video\030" +
+                    "\n \003(\0132\t.lv.Video\022\036\n\010gratuity\030\013 \003(\0132\014.lv." +
+                    "Gratuity\022\032\n\006reward\030\014 \003(\0132\n.lv.Reward\022 \n\t" +
+                    "userState\030\r \003(\0132\r.lv.UserState\022\036\n\010assetL" +
+                    "og\030\016 \003(\0132\014.lv.AssetLog\022\"\n\nserverBean\030\017 \003" +
+                    "(\0132\016.lv.ServerBean\"\246\003\n\004User\022\n\n\002id\030\001 \001(\005\022" +
+                    "\r\n\005phone\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\013\n\003pwd\030\004 \001(" +
+                    "\t\022\022\n\npwd2orCode\030\005 \001(\t\022\020\n\010realName\030\006 \001(\t\022" +
+                    "\017\n\007headurl\030\007 \001(\t\022\020\n\010signText\030\010 \001(\t\022\013\n\003se",
+            "x\030\t \001(\005\022\017\n\007address\030\n \001(\t\022\022\n\nexperience\030\013" +
+                    " \001(\005\022\021\n\tfansCount\030\014 \001(\005\022\023\n\013followCount\030\r" +
+                    " \001(\005\022\036\n\010position\030\016 \001(\0132\014.lv.Position\022\020\n\010" +
                     "deviceID\030\017 \001(\t\022\022\n\nFollowType\030\020 \001(\005\022\020\n\010de" +
                     "scName\030\021 \001(\t\022\014\n\004v2ID\030\022 \001(\t\022\022\n\nv2UserName" +
                     "\030\023 \001(\t\022\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(" +
                     "\005\022\023\n\013v2DeviceID1\030\026 \001(\t\022\023\n\013v2DeviceID2\030\027 " +
                     "\001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010la" +
-                    "titude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\343\001\n\005Video\022\n" +
-                    "\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003" +
-                    " \001(\005\022\033\n\010position\030\004 \001(\0132\t.Position\022\013\n\003sum",
-            "\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tlikeCount\030\007" +
-                    " \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006degree\030\t " +
-                    "\001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSMode\030\013 \001(\010" +
-                    "\022\020\n\010videoPwd\030\014 \001(\t\"\325\001\n\010Gratuity\022\020\n\010giftT" +
-                    "ype\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUserI" +
-                    "D\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemain\030\005" +
-                    " \001(\002\022 \n\006answer\030\006 \001(\0162\020.Gratuity.Answer\022\017" +
-                    "\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007receive\020\000\022\n" +
-                    "\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003\"\306\002\n\006R" +
-                    "eward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerTime\030\002 \001(\005\022\023\n\013",
-            "releaseTime\030\003 \001(\003\022\023\n\004gift\030\004 \003(\0132\005.Gift\022\022" +
-                    "\n\nfromUserID\030\005 \001(\005\022\024\n\014answerUserID\030\006 \001(\005" +
-                    "\022 \n\007operate\030\007 \001(\0162\017.Reward.Operate\022\014\n\004de" +
-                    "sc\030\010 \001(\t\022\033\n\010position\030\t \001(\0132\t.Position\022\017\n" +
-                    "\007pushSum\030\n \001(\005\022\022\n\nappealDesc\030\013 \001(\t\022\022\n\nap" +
-                    "pealTime\030\014 \001(\003\"C\n\007Operate\022\013\n\007release\020\000\022\n" +
-                    "\n\006cancle\020\001\022\007\n\003pay\020\002\022\n\n\006answer\020\003\022\n\n\006appea" +
-                    "l\020\004\"=\n\004Gift\022\020\n\010giftType\030\001 \001(\005\022\016\n\006amount\030" +
-                    "\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(\002\"\250\001\n\tUserState" +
-                    "\022\016\n\006userId\030\001 \001(\005\022\021\n\toperateId\030\002 \001(\005\022\037\n\005s",
-            "tate\030\003 \001(\0162\020.UserState.State\022\014\n\004desc\030\004 \001" +
-                    "(\t\"I\n\005State\022\n\n\006online\020\000\022\013\n\007offline\020\001\022\014\n\010" +
-                    "p2pVideo\020\002\022\016\n\nMultiVideo\020\003\022\t\n\005other\020\004\"\363\002" +
-                    "\n\010AssetLog\022\022\n\nfromUserID\030\001 \001(\005\022\020\n\010toUser" +
-                    "ID\030\002 \001(\005\022\023\n\004gift\030\003 \003(\0132\005.Gift\022\014\n\004desc\030\004 " +
-                    "\001(\t\022*\n\013operateType\030\005 \001(\0162\025.AssetLog.Oper" +
-                    "ateType\022\023\n\013operateTime\030\006 \001(\003\022\016\n\006soType\030\007" +
-                    " \001(\005\022\017\n\007payType\030\010 \001(\005\022\017\n\007payTime\030\t \001(\003\022\017" +
-                    "\n\007videoId\030\n \001(\005\022\020\n\010rewardId\030\013 \001(\005\022\022\n\napp" +
-                    "ealDesc\030\014 \001(\t\022\022\n\nappealTime\030\r \001(\003\"`\n\013Ope",
-            "rateType\022\014\n\010recharge\020\000\022\010\n\004cash\020\001\022\014\n\010grat" +
-                    "uity\020\002\022\n\n\006reward\020\003\022\007\n\003all\020\004\022\n\n\006income\020\005\022" +
-                    "\n\n\006payout\020\006\"c\n\nServerBean\022\020\n\010serverId\030\001 " +
-                    "\001(\005\022\017\n\007addr_zk\030\002 \001(\t\022\023\n\013addr_buffer\030\003 \001(" +
-                    "\t\022\020\n\010addr_web\030\004 \001(\t\022\013\n\003add\030\005 \001(\010B\037\n\021com." +
-                    "v2tech.net.lvB\nWebPackage"
+                    "titude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\346\001\n\005Video\022\n" +
+                    "\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003",
+            " \001(\005\022\036\n\010position\030\004 \001(\0132\014.lv.Position\022\013\n\003" +
+                    "sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tlikeCoun" +
+                    "t\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006degree" +
+                    "\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSMode\030\013 " +
+                    "\001(\010\022\020\n\010videoPwd\030\014 \001(\t\"\330\001\n\010Gratuity\022\020\n\010gi" +
+                    "ftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUs" +
+                    "erID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemai" +
+                    "n\030\005 \001(\002\022#\n\006answer\030\006 \001(\0162\023.lv.Gratuity.An" +
+                    "swer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007recei" +
+                    "ve\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003",
+            "\"\317\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerTime\030\002 \001" +
+                    "(\005\022\023\n\013releaseTime\030\003 \001(\003\022\026\n\004gift\030\004 \003(\0132\010." +
+                    "lv.Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014answerUse" +
+                    "rID\030\006 \001(\005\022#\n\007operate\030\007 \001(\0162\022.lv.Reward.O" +
+                    "perate\022\014\n\004desc\030\010 \001(\t\022\036\n\010position\030\t \001(\0132\014" +
+                    ".lv.Position\022\017\n\007pushSum\030\n \001(\005\022\022\n\nappealD" +
+                    "esc\030\013 \001(\t\022\022\n\nappealTime\030\014 \001(\003\"C\n\007Operate" +
+                    "\022\013\n\007release\020\000\022\n\n\006cancle\020\001\022\007\n\003pay\020\002\022\n\n\006an" +
+                    "swer\020\003\022\n\n\006appeal\020\004\"=\n\004Gift\022\020\n\010giftType\030\001" +
+                    " \001(\005\022\016\n\006amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(",
+            "\002\"\253\001\n\tUserState\022\016\n\006userId\030\001 \001(\005\022\021\n\topera" +
+                    "teId\030\002 \001(\005\022\"\n\005state\030\003 \001(\0162\023.lv.UserState" +
+                    ".State\022\014\n\004desc\030\004 \001(\t\"I\n\005State\022\n\n\006online\020" +
+                    "\000\022\013\n\007offline\020\001\022\014\n\010p2pVideo\020\002\022\016\n\nMultiVid" +
+                    "eo\020\003\022\t\n\005other\020\004\"\371\002\n\010AssetLog\022\022\n\nfromUser" +
+                    "ID\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\026\n\004gift\030\003 \003(\013" +
+                    "2\010.lv.Gift\022\014\n\004desc\030\004 \001(\t\022-\n\013operateType\030" +
+                    "\005 \001(\0162\030.lv.AssetLog.OperateType\022\023\n\013opera" +
+                    "teTime\030\006 \001(\003\022\016\n\006soType\030\007 \001(\005\022\017\n\007payType\030" +
+                    "\010 \001(\005\022\017\n\007payTime\030\t \001(\003\022\017\n\007videoId\030\n \001(\005\022",
+            "\020\n\010rewardId\030\013 \001(\005\022\022\n\nappealDesc\030\014 \001(\t\022\022\n" +
+                    "\nappealTime\030\r \001(\003\"`\n\013OperateType\022\014\n\010rech" +
+                    "arge\020\000\022\010\n\004cash\020\001\022\014\n\010gratuity\020\002\022\n\n\006reward" +
+                    "\020\003\022\007\n\003all\020\004\022\n\n\006income\020\005\022\n\n\006payout\020\006\"c\n\nS" +
+                    "erverBean\022\020\n\010serverId\030\001 \001(\005\022\017\n\007addr_zk\030\002" +
+                    " \001(\t\022\023\n\013addr_buffer\030\003 \001(\t\022\020\n\010addr_web\030\004 " +
+                    "\001(\t\022\013\n\003add\030\005 \001(\010B\037\n\021com.v2tech.net.lvB\nW" +
+                    "ebPackageb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-            new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+            new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
               public com.google.protobuf.ExtensionRegistry assignDescriptors(
                       com.google.protobuf.Descriptors.FileDescriptor root) {
                 descriptor = root;
-                internal_static_Packet_descriptor =
-                        getDescriptor().getMessageTypes().get(0);
-                internal_static_Packet_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Packet_descriptor,
-                        new java.lang.String[] { "PacketType", "From", "To", "Id", "Method", "OperateType", "Result", "Data", "Version", },
-                        com.v2tech.net.lv.WebPackage.Packet.class,
-                        com.v2tech.net.lv.WebPackage.Packet.Builder.class);
-                internal_static_Result_descriptor =
-                        getDescriptor().getMessageTypes().get(1);
-                internal_static_Result_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Result_descriptor,
-                        new java.lang.String[] { "Result", "Error", },
-                        com.v2tech.net.lv.WebPackage.Result.class,
-                        com.v2tech.net.lv.WebPackage.Result.Builder.class);
-                internal_static_Data_descriptor =
-                        getDescriptor().getMessageTypes().get(2);
-                internal_static_Data_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Data_descriptor,
-                        new java.lang.String[] { "Normal", "ByteDate", "FromTime", "ToTime", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", "Reward", "UserState", "AssetLog", "ServerBean", },
-                        com.v2tech.net.lv.WebPackage.Data.class,
-                        com.v2tech.net.lv.WebPackage.Data.Builder.class);
-                internal_static_User_descriptor =
-                        getDescriptor().getMessageTypes().get(3);
-                internal_static_User_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_User_descriptor,
-                        new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", "VideoCount", "V2DeviceID1", "V2DeviceID2", },
-                        com.v2tech.net.lv.WebPackage.User.class,
-                        com.v2tech.net.lv.WebPackage.User.Builder.class);
-                internal_static_Position_descriptor =
-                        getDescriptor().getMessageTypes().get(4);
-                internal_static_Position_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Position_descriptor,
-                        new java.lang.String[] { "Longitude", "Latitude", "Radius", },
-                        com.v2tech.net.lv.WebPackage.Position.class,
-                        com.v2tech.net.lv.WebPackage.Position.Builder.class);
-                internal_static_Video_descriptor =
-                        getDescriptor().getMessageTypes().get(5);
-                internal_static_Video_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Video_descriptor,
-                        new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", "Degree", "ResultType", "HLSMode", "VideoPwd", },
-                        com.v2tech.net.lv.WebPackage.Video.class,
-                        com.v2tech.net.lv.WebPackage.Video.Builder.class);
-                internal_static_Gratuity_descriptor =
-                        getDescriptor().getMessageTypes().get(6);
-                internal_static_Gratuity_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Gratuity_descriptor,
-                        new java.lang.String[] { "GiftType", "ToUserID", "FromUserID", "Amount", "SumOrRemain", "Answer", "VideoId", },
-                        com.v2tech.net.lv.WebPackage.Gratuity.class,
-                        com.v2tech.net.lv.WebPackage.Gratuity.Builder.class);
-                internal_static_Reward_descriptor =
-                        getDescriptor().getMessageTypes().get(7);
-                internal_static_Reward_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Reward_descriptor,
-                        new java.lang.String[] { "Id", "PowerTime", "ReleaseTime", "Gift", "FromUserID", "AnswerUserID", "Operate", "Desc", "Position", "PushSum", "AppealDesc", "AppealTime", },
-                        com.v2tech.net.lv.WebPackage.Reward.class,
-                        com.v2tech.net.lv.WebPackage.Reward.Builder.class);
-                internal_static_Gift_descriptor =
-                        getDescriptor().getMessageTypes().get(8);
-                internal_static_Gift_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_Gift_descriptor,
-                        new java.lang.String[] { "GiftType", "Amount", "SumOrRemain", },
-                        com.v2tech.net.lv.WebPackage.Gift.class,
-                        com.v2tech.net.lv.WebPackage.Gift.Builder.class);
-                internal_static_UserState_descriptor =
-                        getDescriptor().getMessageTypes().get(9);
-                internal_static_UserState_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_UserState_descriptor,
-                        new java.lang.String[] { "UserId", "OperateId", "State", "Desc", },
-                        com.v2tech.net.lv.WebPackage.UserState.class,
-                        com.v2tech.net.lv.WebPackage.UserState.Builder.class);
-                internal_static_AssetLog_descriptor =
-                        getDescriptor().getMessageTypes().get(10);
-                internal_static_AssetLog_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_AssetLog_descriptor,
-                        new java.lang.String[] { "FromUserID", "ToUserID", "Gift", "Desc", "OperateType", "OperateTime", "SoType", "PayType", "PayTime", "VideoId", "RewardId", "AppealDesc", "AppealTime", },
-                        com.v2tech.net.lv.WebPackage.AssetLog.class,
-                        com.v2tech.net.lv.WebPackage.AssetLog.Builder.class);
-                internal_static_ServerBean_descriptor =
-                        getDescriptor().getMessageTypes().get(11);
-                internal_static_ServerBean_fieldAccessorTable = new
-                        com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                        internal_static_ServerBean_descriptor,
-                        new java.lang.String[] { "ServerId", "AddrZk", "AddrBuffer", "AddrWeb", "Add", },
-                        com.v2tech.net.lv.WebPackage.ServerBean.class,
-                        com.v2tech.net.lv.WebPackage.ServerBean.Builder.class);
                 return null;
               }
             };
@@ -14037,6 +18316,78 @@ public final class WebPackage {
             .internalBuildGeneratedFileFrom(descriptorData,
                     new com.google.protobuf.Descriptors.FileDescriptor[] {
                     }, assigner);
+    internal_static_lv_Packet_descriptor =
+            getDescriptor().getMessageTypes().get(0);
+    internal_static_lv_Packet_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Packet_descriptor,
+            new java.lang.String[] { "PacketType", "From", "To", "Id", "Method", "OperateType", "Result", "Data", "Version", });
+    internal_static_lv_Result_descriptor =
+            getDescriptor().getMessageTypes().get(1);
+    internal_static_lv_Result_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Result_descriptor,
+            new java.lang.String[] { "Result", "Error", });
+    internal_static_lv_Data_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+    internal_static_lv_Data_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Data_descriptor,
+            new java.lang.String[] { "Normal", "ByteDate", "FromTime", "ToTime", "Sum", "From", "To", "Position", "User", "Video", "Gratuity", "Reward", "UserState", "AssetLog", "ServerBean", });
+    internal_static_lv_User_descriptor =
+            getDescriptor().getMessageTypes().get(3);
+    internal_static_lv_User_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_User_descriptor,
+            new java.lang.String[] { "Id", "Phone", "Name", "Pwd", "Pwd2OrCode", "RealName", "Headurl", "SignText", "Sex", "Address", "Experience", "FansCount", "FollowCount", "Position", "DeviceID", "FollowType", "DescName", "V2ID", "V2UserName", "V2Pwd", "VideoCount", "V2DeviceID1", "V2DeviceID2", });
+    internal_static_lv_Position_descriptor =
+            getDescriptor().getMessageTypes().get(4);
+    internal_static_lv_Position_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Position_descriptor,
+            new java.lang.String[] { "Longitude", "Latitude", "Radius", });
+    internal_static_lv_Video_descriptor =
+            getDescriptor().getMessageTypes().get(5);
+    internal_static_lv_Video_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Video_descriptor,
+            new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", "Degree", "ResultType", "HLSMode", "VideoPwd", });
+    internal_static_lv_Gratuity_descriptor =
+            getDescriptor().getMessageTypes().get(6);
+    internal_static_lv_Gratuity_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Gratuity_descriptor,
+            new java.lang.String[] { "GiftType", "ToUserID", "FromUserID", "Amount", "SumOrRemain", "Answer", "VideoId", });
+    internal_static_lv_Reward_descriptor =
+            getDescriptor().getMessageTypes().get(7);
+    internal_static_lv_Reward_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Reward_descriptor,
+            new java.lang.String[] { "Id", "PowerTime", "ReleaseTime", "Gift", "FromUserID", "AnswerUserID", "Operate", "Desc", "Position", "PushSum", "AppealDesc", "AppealTime", });
+    internal_static_lv_Gift_descriptor =
+            getDescriptor().getMessageTypes().get(8);
+    internal_static_lv_Gift_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_Gift_descriptor,
+            new java.lang.String[] { "GiftType", "Amount", "SumOrRemain", });
+    internal_static_lv_UserState_descriptor =
+            getDescriptor().getMessageTypes().get(9);
+    internal_static_lv_UserState_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_UserState_descriptor,
+            new java.lang.String[] { "UserId", "OperateId", "State", "Desc", });
+    internal_static_lv_AssetLog_descriptor =
+            getDescriptor().getMessageTypes().get(10);
+    internal_static_lv_AssetLog_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_AssetLog_descriptor,
+            new java.lang.String[] { "FromUserID", "ToUserID", "Gift", "Desc", "OperateType", "OperateTime", "SoType", "PayType", "PayTime", "VideoId", "RewardId", "AppealDesc", "AppealTime", });
+    internal_static_lv_ServerBean_descriptor =
+            getDescriptor().getMessageTypes().get(11);
+    internal_static_lv_ServerBean_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_lv_ServerBean_descriptor,
+            new java.lang.String[] { "ServerId", "AddrZk", "AddrBuffer", "AddrWeb", "Add", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -1,5 +1,7 @@
 package com.v2tech.net.lv;
 
+import android.text.TextUtils;
+
 import com.V2.jni.util.V2Log;
 import com.v2tech.net.pkt.Packet;
 import com.v2tech.net.pkt.PacketProxy;
@@ -16,7 +18,7 @@ import java.util.Map;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "1.2.0";
+	private static final String VERSION = "1.3.0";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){
@@ -153,7 +155,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraLoginResponse(WebPackage.Packet webPackage) {
         LoginRespPacket lrp = new LoginRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(webPackage.getResult().hasError());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
         lrp.getHeader().setErrorMsg(webPackage.getResult().getError());
 
         if (!lrp.getHeader().isError()) {
@@ -211,7 +215,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraCommonResponse(WebPackage.Packet webPackage) {
         ResponsePacket lrp = new ResponsePacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(webPackage.getResult().hasError());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
         lrp.getHeader().setErrorMsg(webPackage.getResult().getError());
         return lrp;
     }
@@ -260,7 +266,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 
     private Packet extraLiveQueryResponse(WebPackage.Packet webPackage) {
         LiveQueryRespPacket lrp = new LiveQueryRespPacket();
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
 
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
         List<WebPackage.Video> videoList = webPackage.getData().getVideoList();
@@ -285,7 +293,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraGetSMSResponse(WebPackage.Packet webPackage) {
         GetCodeRespPacket gcp = new GetCodeRespPacket();
         gcp.setRequestId(Long.valueOf(webPackage.getId()));
-        gcp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            gcp.setErrorFlag(true);
+        }
         return gcp;
     }
 
@@ -363,7 +373,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 
     private Packet extraPublisVideoIndication(WebPackage.Packet webPackage) {
         LivePublishIndPacket lrp = new LivePublishIndPacket();
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
         
         
 		if (webPackage.getData().getVideoCount() > 0) {
@@ -413,8 +425,10 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         	lid = webPackage.getData().getVideo(0).getId();
         }
         int type = Integer.parseInt(webPackage.getData().getNormal());
-        LiveWatchingIndPacket lrp = new LiveWatchingIndPacket(uid, lid, type);    
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        LiveWatchingIndPacket lrp = new LiveWatchingIndPacket(uid, lid, type);
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
     	return lrp;
     }
 
@@ -422,9 +436,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         LivePublishRespPacket lrp = new LivePublishRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
         lrp.setErrorFlag(!webPackage.getResult().getResult());
-        
-        
-        if(!webPackage.getResult().getResult()){
+
+
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
         	  V2Log.e("=== extraPublisVideoResponse error no result");
               lrp.setErrorFlag(true);
               return lrp;
@@ -490,7 +504,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraFollowsQueryResponse(WebPackage.Packet webPackage) {
         FollowsQueryRespPacket lrp = new FollowsQueryRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
 
         List<WebPackage.User> userList = webPackage.getData().getUserList();
         List<Map<String, String>> list = new ArrayList<Map<String, String>>(userList.size());
@@ -542,7 +558,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraFansQueryResponse(WebPackage.Packet webPackage) {
         FansQueryRespPacket lrp = new FansQueryRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
 
         List<WebPackage.User> userList = webPackage.getData().getUserList();
         List<Map<String, String>> list = new ArrayList<Map<String, String>>(userList.size());
@@ -565,7 +583,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     private Packet extraWatcherListQueryResponse(WebPackage.Packet webPackage) {
         WatcherListQueryRespPacket lrp = new WatcherListQueryRespPacket();
         lrp.setRequestId(Long.valueOf(webPackage.getId()));
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
 
         if (lrp.getHeader().isError()) {
             return lrp;
@@ -677,7 +697,9 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     
     private Packet extraInquiryIndication(WebPackage.Packet webPackage) {
     	InquiryIndPacket lrp = new InquiryIndPacket();
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (!TextUtils.isEmpty(webPackage.getResult().getError())) {
+            lrp.setErrorFlag(true);
+        }
         if (webPackage.getData().getRewardCount() > 0) {
         	com.v2tech.net.lv.WebPackage.Reward re = webPackage.getData().getRewardList().get(0);
         	lrp.inquiryUserId = re.getFromUserID();
@@ -707,10 +729,10 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
     
     private Packet extraInquiryResponse(WebPackage.Packet webPackage) {
     	InquiryRespPacket lrp = new InquiryRespPacket();
-    	if (webPackage.getResult().hasError()) {
-    		V2Log.e("===>>>" + webPackage.getResult().getError());
-    	}
-        lrp.setErrorFlag(!webPackage.getResult().getResult());
+        if (webPackage.getResult().getError() != null) {
+            lrp.setErrorFlag(true);
+        }
+        V2Log.e("===>>>" + webPackage.getResult().getError());
         if (webPackage.getData().getRewardCount() < 0) {
         	 lrp.setErrorFlag(true);
         	 V2Log.e("Award failed no award data");
