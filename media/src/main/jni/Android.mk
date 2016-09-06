@@ -29,7 +29,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := rtmpclient
-LOCAL_SRC_FILES := rtmpclient.c
+LOCAL_SRC_FILES := rtmpclient.c rtmpclient-jni.c
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../librtmp/
 
