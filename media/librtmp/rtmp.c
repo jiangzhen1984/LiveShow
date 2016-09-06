@@ -66,6 +66,15 @@ static const char *my_dhm_G = "4";
 TLS_CTX RTMP_TLS_ctx;
 #endif
 
+
+
+
+#include <android/api-level.h>
+
+
+extern sighandler_t signal(int, sighandler_t);
+
+
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
 
@@ -2610,7 +2619,7 @@ PublisherAuth(RTMP *r, AVal *description)
           b64enc(md5sum_val, MD5_DIGEST_LENGTH, salted2, SALTED2_LEN);
           RTMP_Log(RTMP_LOGDEBUG, "%s, b64(md5_1) = %s", __FUNCTION__, salted2);
 
-            challenge2_data = rand();
+            challenge2_data = (int)lrand48();
 
             b64enc((unsigned char *) &challenge2_data, sizeof(int), challenge2, CHALLENGE2_LEN);
             RTMP_Log(RTMP_LOGDEBUG, "%s, b64(%d) = %s", __FUNCTION__, challenge2_data, challenge2);
@@ -2761,7 +2770,7 @@ PublisherAuth(RTMP *r, AVal *description)
           /* FIXME: handle case where user==NULL or nonce==NULL */
 
           sprintf(nchex, "%08x", nc);
-          sprintf(cnonce, "%08x", rand());
+          sprintf(cnonce, "%08x", (int)lrand48());
 
           /* hash1 = hexenc(md5(user + ":" + realm + ":" + password)) */
 	  MD5_Init(&md5ctx);
@@ -3762,7 +3771,7 @@ HandShake(RTMP *r, int FP9HandShake)
     clientsig[i] = 0xff;
 #else
   for (i = 8; i < RTMP_SIG_SIZE; i++)
-    clientsig[i] = (char)(rand() % 256);
+    clientsig[i] = (char)((int)lrand48() % 256);
 #endif
 
   if (!WriteN(r, clientbuf, RTMP_SIG_SIZE + 1))
@@ -3834,7 +3843,7 @@ SHandShake(RTMP *r)
     serversig[i] = 0xff;
 #else
   for (i = 8; i < RTMP_SIG_SIZE; i++)
-    serversig[i] = (char)(rand() % 256);
+    serversig[i] = (char)((int)lrand48() % 256);
 #endif
 
   if (!WriteN(r, serverbuf, RTMP_SIG_SIZE + 1))
