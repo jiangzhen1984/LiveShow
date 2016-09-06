@@ -14,7 +14,7 @@
 
 
 
-static jint jni_rtmp_client_init(JNIEnv * env, jobject thiz) {
+static jint jni_client_init(JNIEnv * env, jobject thiz) {
    jint ret = RET_SUCCESS;
 
    ret = rtmp_client_initialize();
@@ -23,7 +23,7 @@ static jint jni_rtmp_client_init(JNIEnv * env, jobject thiz) {
    return ret;
 }
 
-static jboolean jni_rtmp_client_release(JNIEnv * env, jobject thiz, jint cid) {
+static jboolean jni_client_release(JNIEnv * env, jobject thiz, jint cid) {
    int ret;
    ret = rtmp_client_release(cid);
    LOG_2(" relase rtmp client %d   ret: %d", cid, ret);
@@ -35,6 +35,7 @@ static jboolean jni_setup_url(JNIEnv * env, jobject thiz, jint cid, jstring url,
      int ret = RET_SUCCESS;
      jboolean cp = JNI_TRUE;
      const char * czurl = (*env)->GetStringUTFChars(env, url, &cp);
+     LOG_1(" setup url  : %s", czurl);
      ret = rtmp_client_setup_url(cid, wFlag == JNI_TRUE? CLIENT_TYPE_WRITE : CLIENT_TYPE_READ, czurl);
      LOG_1(" setup url  ret: %d", ret);
      return ret == RET_SUCCESS ? JNI_TRUE : JNI_FALSE;
@@ -57,7 +58,7 @@ static jboolean jni_client_resume(JNIEnv * env, jobject thiz, jint cid) {
 }
 
 
-static int jin_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf, int size) {
+static int jni_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf, int size) {
 
     int ret = RET_SUCCESS;
     int len = -1;
@@ -67,7 +68,7 @@ static int jin_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf
 
     len = (*env)->GetArrayLength(env, jbuf);
     len = size > len ? len : size;
-    char * buf = (char *)malloc(len);
+    char * buf = (char *)malloc(len * sizeof(jbyte));
     if (buf == NULL) {
          return -1;
     } 
@@ -94,7 +95,7 @@ static int jni_client_write(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbu
 
      len = (*env)->GetArrayLength(env, jbuf);
      len = size > len? len : size;
-     buf = (char *) malloc(len);
+     buf = (char *) malloc(len * sizeof(jbyte));
  
      (*env)->GetByteArrayRegion(env, jbuf, 0, len, buf);
      ret = rtmp_client_write(cid, buf, len);
@@ -103,3 +104,55 @@ static int jni_client_write(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbu
      return ret;
 }
 
+
+
+static JNINativeMethod methods[] = {
+     { "nativeInit", "()I", (void *)jni_client_init },
+     { "nativeRelase", "(I)Z", (void *)jni_client_release },
+     { "nativeOpenURL", "(ILjava/lang/String;Z)Z", (void *)jni_setup_url },
+     { "nativePause", "(I)Z", (void *)jni_client_pause },
+     { "nativeResume", "(I)Z", (void *)jni_client_resume },
+     { "nativeRead", "(I[BI)I", (void *)jni_client_read },
+     { "nativeWrite", "(I[BI)I", (void *)jni_client_write },
+    
+};
+
+
+typedef union {
+    JNIEnv* env;
+    void* venv;
+} UnionJNIEnvToVoid;
+
+jint JNI_OnLoad(JavaVM* vm, void * reserved) {
+    UnionJNIEnvToVoid uenv;
+    uenv.venv = NULL;
+    jint result = -1;
+    JNIEnv* env = NULL;
+    jclass clazz;
+    const char * clazzname = "com/cmedia/rtmp/RtmpClient";
+    
+    LOG_N("JNI_OnLoad");
+    if ((*vm)->GetEnv(vm, &uenv.venv, JNI_VERSION_1_4) != JNI_OK) {
+        LOG_N("ERROR: GetEnv failed");
+        goto bail;
+    }
+    env = uenv.env;
+
+    clazz = (*env)->FindClass(env, clazzname);
+    if (clazz == NULL) {
+        LOG_1("ERROR: registerNatives failed class not found %s", clazzname);
+        goto bail;
+    }
+
+    
+    if ((*env)->RegisterNatives(env, clazz,
+                 methods, sizeof(methods) / sizeof(methods[0])) < 0 ) {
+        LOG_N("ERROR: registerNatives failed");
+        goto bail;
+    }
+    
+    result = JNI_VERSION_1_4;
+    
+bail:
+    return result;
+}

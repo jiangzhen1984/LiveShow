@@ -1,9 +1,13 @@
 
 #include "rtmpclient.h"
 #include <stdlib.h>
+#include <android/log.h>
 #include "rtmp.h"
 
+
+#define TAG "RTMP-CLIENT"
 #define MAX_CLIENT_COUNT  (16)
+
 
 
 
@@ -11,9 +15,10 @@
 static RTMPClient * clients[MAX_CLIENT_COUNT];
 
 
-
+static ClientId generator = 0;
 ClientId generate_client_id(void) {
-   return RET_SUCCESS;
+   //TODO add lock
+   return ++generator;
 }
 
 
@@ -77,7 +82,7 @@ int rtmp_client_initialize(void) {
    prc->prtmp = prtmp;
    clients[idx] = prc;
 
-   return RET_SUCCESS;
+   return prc->client_id;
 }
 
 
@@ -128,6 +133,7 @@ int rtmp_client_setup_url(ClientId cid, int type, const char * url) {
     ret = find_rtmp_client(cid, &prtmpc);
 
     if (ret != RET_SUCCESS) {
+        __android_log_print(ANDROID_LOG_ERROR, TAG, "Not Found client:%d", cid);
         return ret;
     }
 

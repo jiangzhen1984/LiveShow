@@ -6,7 +6,8 @@ package com.cmedia.rtmp;
 public class RtmpClient {
 
     static {
-        System.loadLibrary("librtmpclient");
+        System.loadLibrary("rtmp");
+        System.loadLibrary("rtmpclient");
     }
 
     private int clientId;
@@ -45,7 +46,7 @@ public class RtmpClient {
     }
 
     private void checkClientId() {
-        if (clientId < 0) {
+        if (clientId <= 0) {
             throw new RuntimeException("init rtmp client error: "+ clientId);
         }
     }

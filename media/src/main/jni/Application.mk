@@ -1,2 +1,2 @@
 APP_ABI := armeabi
-APP_PLATFORM := 19
+APP_PLATFORM := android-21

@@ -19,6 +19,7 @@ LOCAL_STATIC_LIBRARIES := libssl-prebuilt
 LOCAL_STATIC_LIBRARIES += libcrypto-prebuilt
 LOCAL_SHARED_LIBRARIES := libz
 LOCAL_LDLIBS := -lz 
+LOCAL_LDLIBS += -llog
 
 
 LOCAL_C_INCLUDES := \
@@ -34,6 +35,7 @@ LOCAL_SRC_FILES := rtmpclient.c rtmpclient-jni.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../librtmp/
 
 LOCAL_SHARED_LIBRARIES := rtmp
+LOCAL_LDLIBS := -llog
 
 include $(BUILD_SHARED_LIBRARY)
 

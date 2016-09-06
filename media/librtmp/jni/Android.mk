@@ -17,8 +17,8 @@ LOCAL_MODULE    := librtmp
 LOCAL_SRC_FILES := ../amf.c  ../hashswf.c  ../log.c  ../parseurl.c  ../rtmp.c
 LOCAL_STATIC_LIBRARIES := libssl-prebuilt
 LOCAL_STATIC_LIBRARIES += libcrypto-prebuilt
-LOCAL_SHARED_LIBRARIES := libsignal
 LOCAL_LDLIBS := -lz
+LOCAL_LDLIBS := -llog
 
 
 LOCAL_C_INCLUDES := \
