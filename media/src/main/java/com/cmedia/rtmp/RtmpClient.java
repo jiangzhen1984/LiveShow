@@ -34,9 +34,9 @@ public class RtmpClient {
     }
 
 
-    public int read(byte[] buf, int len) {
+    public int read(byte[] buf, int offset, int len) {
         checkClientId();
-        return nativeRead(clientId, buf, len);
+        return nativeRead(clientId, buf, offset, len);
     }
 
 
@@ -66,7 +66,7 @@ public class RtmpClient {
     private native boolean nativeResume(int clientId);
 
 
-    private native int nativeRead(int clientId, byte[] buf, int size);
+    private native int nativeRead(int clientId, byte[] buf, int offset, int size);
 
 
     private native int nativeWrite(int clientId, byte[] buf, int size);

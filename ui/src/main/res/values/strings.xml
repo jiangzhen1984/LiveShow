@@ -169,6 +169,7 @@
     <string name="personal_setting_avatar_btn_photo_choose_from_album_text">从相册中选择</string>
     <string name="personal_setting_avatar_btn_cancel_text">取消</string>
     <string name="personal_setting_avatar_btn_pic_save_text">保存图片</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 
 </resources>

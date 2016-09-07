@@ -233,6 +233,7 @@ public class MainPresenter extends BasePresenter implements
         } else {
             ui.showPersonelUI();
         }
+
     }
 
 
@@ -322,6 +323,7 @@ public class MainPresenter extends BasePresenter implements
             vpP2pController.setItemListener(this);
         }
         startLocationScan();
+
     }
 
     @Override
@@ -1358,6 +1360,7 @@ public class MainPresenter extends BasePresenter implements
             setBState(B_PUBLISHING_FLAG);
             RequestConfCreateResponse rcr = (RequestConfCreateResponse) resp;
             publishingLive.setLid(rcr.getConfId());
+            publishingLive.setUrl(rcr.getData());
             ls.reportLiveStatus(publishingLive, null);
         } else {
             ui.showDebugMsg("create error");
@@ -1554,6 +1557,7 @@ public class MainPresenter extends BasePresenter implements
         vl.surfaveViewIdx = vpController.getCurrentItemIdx();
         vs.requestEnterConference(vl.live, new MessageListener(h,
                 WATCHING_REQUEST_CALLBACK, null));
+        //TODO open rtmp
         updateLiveScreen(vl.live);
         setBState(B_WATCHING_FLAG);
     }

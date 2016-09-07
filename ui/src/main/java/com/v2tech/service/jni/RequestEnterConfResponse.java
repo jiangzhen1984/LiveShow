@@ -15,6 +15,7 @@ public class RequestEnterConfResponse extends JNIResponse {
 	long nConfID;
 	long nTime;
 	Conference conf;
+	String data;
 
 	/**
 	 * This class is wrapper that wrap{@link com.V2.jni.ConfRequestCallback#OnEnterConfCallback(long, long,
@@ -32,6 +33,7 @@ public class RequestEnterConfResponse extends JNIResponse {
 		this.nConfID = nConfID;
 		this.nTime = nTime;
 		this.conf = Conference.formConferenceConfigXml(szConfData);
+		this.data = szConfData;
 	}
 	
 	
@@ -41,5 +43,10 @@ public class RequestEnterConfResponse extends JNIResponse {
 	
 	public Conference getConf() {
 		return this.conf;
+	}
+
+
+	public String getData() {
+		return data;
 	}
 }

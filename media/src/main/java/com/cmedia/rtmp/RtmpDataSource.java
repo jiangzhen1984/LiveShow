@@ -17,6 +17,7 @@ public class RtmpDataSource implements UriDataSource  {
 
     private Uri uri;
     private RtmpClient rtmpClient;
+    boolean setup;
 
     public RtmpDataSource(Uri uri) {
         this.uri = uri;
@@ -30,23 +31,22 @@ public class RtmpDataSource implements UriDataSource  {
 
     @Override
     public long open(DataSpec dataSpec) throws IOException {
-        boolean ret = rtmpClient.openURL(dataSpec.uri.toString(), false);
-        V2Log.i(" rtmp set url result: "+ ret+"  ==> "+ uri.toString());
+        if (!setup) {
+            boolean ret = rtmpClient.openURL(dataSpec.uri.toString(), false);
+            V2Log.i(" rtmp set url result: " + ret + "  ==> " + uri.toString());
+            setup = true;
+        }
         return C.LENGTH_UNBOUNDED;
     }
 
     @Override
     public void close() throws IOException {
-        rtmpClient.release();
+       // rtmpClient.release();
     }
 
     @Override
     public int read(byte[] buffer, int offset, int readLength) throws IOException {
-        byte[] buf = new byte[readLength];
-        int len = rtmpClient.read(buf, readLength);
-        if (len > 0) {
-            System.arraycopy(buf, 0, buffer, offset, len);
-        }
+        int len = rtmpClient.read(buffer, offset, readLength);
         return len;
     }
 }

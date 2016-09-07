@@ -150,6 +150,13 @@ int rtmp_client_setup_url(ClientId cid, int type, const char * url) {
     if ((type & CLIENT_TYPE_WRITE) == CLIENT_TYPE_WRITE) {
         RTMP_EnableWrite(prtmpc->prtmp);
     }
+
+    ret = RTMP_ConnectStream(prtmpc->prtmp, 0);
+ 
+    if (!ret) {
+        __android_log_print(ANDROID_LOG_ERROR, TAG, "connect stream failed :%d", cid);
+        return ERROR_CONNECT_FAILED;
+    }
   
     return RET_SUCCESS;
 }

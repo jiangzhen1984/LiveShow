@@ -1,11 +1,5 @@
 package com.v2tech.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.os.Handler;
 import android.os.Message;
 
@@ -15,7 +9,6 @@ import com.V2.jni.ChatRequestCallbackAdapter;
 import com.V2.jni.ConfRequest;
 import com.V2.jni.ConfRequestCallbackAdapter;
 import com.V2.jni.GroupRequest;
-import com.V2.jni.GroupRequestCallbackAdapter;
 import com.V2.jni.ImRequest;
 import com.V2.jni.VideoMixerRequest;
 import com.V2.jni.VideoRequest;
@@ -47,6 +40,12 @@ import com.v2tech.vo.group.Group;
 import com.v2tech.vo.group.Group.GroupType;
 import com.v2tech.vo.msg.VMessage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class ConferenceService extends DeviceService {
 
@@ -70,7 +69,6 @@ public class ConferenceService extends DeviceService {
 
 	private VideoRequestCB videoCallback;
 	private ConfRequestCB confCallback;
-	private GroupRequestCB groupCallback;
 	private MixerRequestCB mrCallback;
 	private ChatRequestCB mcrCallback;
 
@@ -86,8 +84,6 @@ public class ConferenceService extends DeviceService {
 		VideoRequest.getInstance().addCallback(videoCallback);
 		confCallback = new ConfRequestCB(this);
 		ConfRequest.getInstance().addCallback(confCallback);
-		groupCallback = new GroupRequestCB(this);
-		GroupRequest.getInstance().addCallback(groupCallback);
 		mrCallback = new MixerRequestCB(this);
 		VideoMixerRequest.getInstance().addCallbacks(mrCallback);
 		mcrCallback = new ChatRequestCB();
@@ -135,7 +131,7 @@ public class ConferenceService extends DeviceService {
 		if (l == null) {
 			if (caller != null && caller.getHandler() != null) {
 				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
-						RequestConfCreateResponse.Result.INCORRECT_PAR);
+						"", RequestConfCreateResponse.Result.INCORRECT_PAR);
 				sendResult(caller, jniRes);
 			}
 			return;
@@ -173,7 +169,7 @@ public class ConferenceService extends DeviceService {
 	public void createConference(Live l, MessageListener caller) {
 		if (l == null) {
 			if (caller != null && caller.getHandler() != null) {
-				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
+				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,"",
 						RequestConfCreateResponse.Result.FAILED);
 				sendResult(caller, jniRes);
 			}
@@ -204,7 +200,7 @@ public class ConferenceService extends DeviceService {
 	public void quitConference(Live l, MessageListener caller) {
 		if (l == null) {
 			if (caller != null) {
-				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
+				JNIResponse jniRes = new RequestConfCreateResponse(0, 0, "",
 						RequestConfCreateResponse.Result.INCORRECT_PAR);
 				sendResult(caller, jniRes);
 			}
@@ -227,7 +223,7 @@ public class ConferenceService extends DeviceService {
 	public void createVideo(Live l, MessageListener caller) {
 		if (l == null) {
 			if (caller != null) {
-				JNIResponse jniRes = new RequestConfCreateResponse(0, 0,
+				JNIResponse jniRes = new RequestConfCreateResponse(0, 0, "",
 						RequestConfCreateResponse.Result.INCORRECT_PAR);
 				sendResult(caller, jniRes);
 			}
@@ -453,7 +449,6 @@ public class ConferenceService extends DeviceService {
 		super.clearCalledBack();
 		VideoRequest.getInstance().removeCallback(videoCallback);
 		ConfRequest.getInstance().removeCallback(confCallback);
-		GroupRequest.getInstance().removeCallback(groupCallback);
 		VideoMixerRequest.getInstance().removeCallback(mrCallback);
 		ChatRequest.getInstance().removeChatRequestCallback(mcrCallback);
 	}
@@ -482,7 +477,7 @@ public class ConferenceService extends DeviceService {
 			V2Log.i("OnEnterConfCallback====>config ID : "+nConfID+"  data==>" +szConfData+"   " +nJoinResult+"   =>");
 
 			JNIResponse jniConfCreateRes = new RequestConfCreateResponse(
-					nConfID, 0, RequestConfCreateResponse.Result.SUCCESS);
+					nConfID, 0, szConfData, RequestConfCreateResponse.Result.SUCCESS);
 			Message.obtain(mCallbackHandler, JNI_REQUEST_CREATE_CONFERENCE,
 					jniConfCreateRes).sendToTarget();
 			
@@ -628,35 +623,6 @@ public class ConferenceService extends DeviceService {
 
 	}
 
-	class GroupRequestCB extends GroupRequestCallbackAdapter {
-
-		public GroupRequestCB(Handler mCallbackHandler) {
-		}
-
-//		@Override
-//		public void OnModifyGroupInfoCallback(V2Group group) {
-//			if (group == null) {
-//				return;
-//			}
-//			if (group.type == Group.GroupType.CONFERENCE.intValue()) {
-//				ConferenceGroup cache = (ConferenceGroup) GlobalHolder
-//						.getInstance().findGroupById(group.id);
-//
-//				// if doesn't find matched group, mean this is new group
-//				if (cache == null) {
-//
-//				} else {
-//					cache.setSyn(group.isSync);
-//						notifyListenerWithPending(KEY_SYNC_LISTNER,
-//								(cache.isSyn() ? 1 : 0), 0, null);
-//
-//				}
-//
-//			}
-//		}
-
-	}
-	
 	
 	class ChatRequestCB extends ChatRequestCallbackAdapter {
 

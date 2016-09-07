@@ -38,6 +38,7 @@ static jboolean jni_setup_url(JNIEnv * env, jobject thiz, jint cid, jstring url,
      LOG_1(" setup url  : %s", czurl);
      ret = rtmp_client_setup_url(cid, wFlag == JNI_TRUE? CLIENT_TYPE_WRITE : CLIENT_TYPE_READ, czurl);
      LOG_1(" setup url  ret: %d", ret);
+      (*env)->ReleaseStringUTFChars(env, url, czurl);
      return ret == RET_SUCCESS ? JNI_TRUE : JNI_FALSE;
 }
 
@@ -58,10 +59,10 @@ static jboolean jni_client_resume(JNIEnv * env, jobject thiz, jint cid) {
 }
 
 
-static int jni_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf, int size) {
+static int jni_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf, jint offset, jint size) {
 
-    int ret = RET_SUCCESS;
     int len = -1;
+    int readLen = -1;
     if (jbuf == NULL) {
          return -1;
     }
@@ -72,15 +73,15 @@ static int jni_client_read(JNIEnv * env, jobject thiz, jint cid, jbyteArray jbuf
     if (buf == NULL) {
          return -1;
     } 
-    ret = rtmp_client_read(cid, buf, len);
+    readLen = rtmp_client_read(cid, buf, len);
    
-    if (ret > 0) {
-          (*env)->SetByteArrayRegion(env, jbuf, 0, len, buf);
+    if (readLen > 0) {
+          (*env)->SetByteArrayRegion(env, jbuf, offset, readLen, buf);
     }
 
     free(buf);
     
-    return ret;
+    return readLen;
 }
 
 
@@ -112,7 +113,7 @@ static JNINativeMethod methods[] = {
      { "nativeOpenURL", "(ILjava/lang/String;Z)Z", (void *)jni_setup_url },
      { "nativePause", "(I)Z", (void *)jni_client_pause },
      { "nativeResume", "(I)Z", (void *)jni_client_resume },
-     { "nativeRead", "(I[BI)I", (void *)jni_client_read },
+     { "nativeRead", "(I[BII)I", (void *)jni_client_read },
      { "nativeWrite", "(I[BI)I", (void *)jni_client_write },
     
 };

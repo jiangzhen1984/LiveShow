@@ -1,15 +1,17 @@
 package v2av;
 
-import java.nio.ByteBuffer;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import com.V2.jni.util.V2Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
+
+import com.V2.jni.util.V2Log;
+
+import java.nio.ByteBuffer;
 
 public class VideoPlayer implements SurfaceHolder.Callback {
 
@@ -39,6 +41,8 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	private Bitmap[] screens;
 	
 	boolean renderingVideo;
+
+	private Surface surface;
 
 	
 	// private int mDisplayMode = 0; //0,1,2
@@ -320,8 +324,8 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// TODO Auto-generated method stub
-		
+		V2Log.i(" VideoPLayer update surface");
+		this.surface = holder.getSurface();
 	}
 
 
@@ -331,6 +335,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		this.recycleBitmap();
 	}
 
+
+	public Surface getSurface() {
+		return this.surface;
+	}
 
 	/*
 	 * Called by native
