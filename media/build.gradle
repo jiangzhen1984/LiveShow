@@ -35,4 +35,6 @@ clean.dependsOn 'cleanNdkBuildClean'
 
 dependencies {
     testCompile 'junit:junit:4.12'
+    compile project(':log')
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.10'
 }
