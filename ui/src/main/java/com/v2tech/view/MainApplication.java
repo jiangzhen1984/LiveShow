@@ -28,6 +28,7 @@ import com.V2.jni.VideoRequest;
 import com.V2.jni.WBRequest;
 import com.V2.jni.util.V2Log;
 import com.baidu.mapapi.SDKInitializer;
+import com.cmedia.rtmp.RtmpClient;
 import com.v2tech.BuildConfig;
 import com.v2tech.misc.CrashHandler;
 import com.v2tech.misc.LogCollectionWorker;
@@ -58,6 +59,7 @@ public class MainApplication extends Application {
 		if (!BuildConfig.DEBUG) {
 			CrashHandler.getInstance().init(this);
 		}
+
 	}
 
 	@Override

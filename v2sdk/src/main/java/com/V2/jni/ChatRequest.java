@@ -23,6 +23,7 @@ public class ChatRequest {
 			synchronized (ChatRequest.class) {
 				if (mChatRequest == null) {
 					mChatRequest = new ChatRequest();
+					mChatRequest.initialize(mChatRequest);
 				}
 			}
 		}
@@ -118,6 +119,9 @@ public class ChatRequest {
 	 *            接受数据的ID
 	 */
 	public native void ChatMonitorRecvBinary(int nBinaryType, String szBinaryID);
+
+
+	public native void CreateChatChannel(long userId);
 
 	/**
 	 * @brief 收到文字聊天消息的回调函数

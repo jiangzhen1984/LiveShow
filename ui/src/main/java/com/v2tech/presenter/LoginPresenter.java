@@ -11,6 +11,7 @@ import com.v2tech.net.lv.FansQueryReqPacket;
 import com.v2tech.net.lv.FansQueryRespPacket;
 import com.v2tech.net.lv.FollowsQueryReqPacket;
 import com.v2tech.net.lv.FollowsQueryRespPacket;
+import com.v2tech.net.pkt.ResponsePacket;
 import com.v2tech.service.GlobalHolder;
 import com.v2tech.service.MessageListener;
 import com.v2tech.service.UserService;
@@ -166,8 +167,15 @@ public class LoginPresenter extends BasePresenter {
 
     private void queryFollowersList() {
         FollowsQueryReqPacket req = new FollowsQueryReqPacket();
-        FollowsQueryRespPacket resp = (FollowsQueryRespPacket) DeamonWorker
+        ResponsePacket rep = DeamonWorker
                 .getInstance().request(req);
+
+        if (rep.getHeader().isError()) {
+            V2Log.e(" query followers error " + rep);
+            return;
+        }
+
+        FollowsQueryRespPacket resp = (FollowsQueryRespPacket) rep;
 
         if (!resp.getHeader().isError()) {
             List<User> tmp;
@@ -213,8 +221,16 @@ public class LoginPresenter extends BasePresenter {
 
     private void queryFansList() {
         FansQueryReqPacket req = new FansQueryReqPacket();
-        FansQueryRespPacket resp = (FansQueryRespPacket) DeamonWorker
+        ResponsePacket rep = DeamonWorker
                 .getInstance().request(req);
+
+        if (rep.getHeader().isError()) {
+            V2Log.e(" query queryFansList error " + rep);
+            return;
+        }
+
+        FansQueryRespPacket resp = (FansQueryRespPacket) rep;
+
         if (!resp.getHeader().isError()) {
             List<User> tmp;
             if (resp.fansList == null || resp.fansList.size() <= 0) {
