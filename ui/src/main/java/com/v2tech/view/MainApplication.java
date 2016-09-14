@@ -157,14 +157,9 @@ public class MainApplication extends Application {
 		VideoRequest.getInstance();
 		ConfRequest.getInstance();
 		AudioRequest.getInstance();
-		WBRequest.getInstance();
 		ChatRequest.getInstance();
 		VideoMixerRequest.getInstance();
 		FileRequest.getInstance();
-		SipRequest.getInstance();
-		AppShareRequest.getInstance();
-
-		InteractionRequest.getInstance();// .Initialize(VideoBCRequest.getInstance());
 
 		// Start deamon service
 		getApplicationContext().startService(

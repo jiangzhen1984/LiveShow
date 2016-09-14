@@ -262,8 +262,7 @@ public class MainPresenter extends BasePresenter implements
 
     public boolean closeLocalCameraIfNecessary() {
         if (isState(LOCAL_CAMERA_OPENING)) {
-            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-                    .getInstance().getCurrentUserId(), "", null);
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, 0, "", null);
             vs.requestCloseVideoDevice(duc, null);
             unsetState(LOCAL_CAMERA_OPENING);
             return true;
@@ -279,8 +278,7 @@ public class MainPresenter extends BasePresenter implements
 
     public void onLoginChildUIFinished(int ret, Intent data) {
         if (isBState(B_PREPARE_PUBLISH_FLAG)) {
-            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-                    .getInstance().getCurrentUserId(), "", null);
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, 0, "", null);
             vs.requestOpenVideoDevice(duc, null);
             this.setState(LOCAL_CAMERA_OPENING);
         } else {
@@ -331,8 +329,7 @@ public class MainPresenter extends BasePresenter implements
         stopLocate();
 
         if (isBState(B_PREPARE_PUBLISH_FLAG)) {
-            UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-                    .getInstance().getCurrentUserId(), "", null);
+            UserDeviceConfig duc = new UserDeviceConfig(0, 0, 0, "", null);
             vs.requestOpenVideoDevice(duc, null);
             this.setState(LOCAL_CAMERA_OPENING);
         }
@@ -705,8 +702,7 @@ public class MainPresenter extends BasePresenter implements
                     VMessageAudioVideoRequestItem.ACTION_HANG_OFF);
             //close local camera
             UserDeviceConfig duc = new UserDeviceConfig(4,
-                    this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
-                    .getCurrentUserId(), "", null);
+                    this.currentViewLive.live.getLid(), 0, "", null);
             vs.requestCloseVideoDevice(duc, null);
             //clear connection state
             unsetBState(B_WATCHING_VIDEO_CONNECTED_FLAG);
@@ -927,8 +923,7 @@ public class MainPresenter extends BasePresenter implements
             } else if (isBState(B_WATCHING_FLAG) && isBState(B_WATCHING_VIDEO_CONNECTED_FLAG)) {
 
                 UserDeviceConfig duc = new UserDeviceConfig(4,
-                        this.currentViewLive.live.getLid(), GlobalHolder.getInstance()
-                        .getCurrentUserId(), "", null);
+                        this.currentViewLive.live.getLid(), 0, "", null);
                 vs.requestCloseVideoDevice(duc, null);
                 ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_P2P_VIDEO_CONNECTION_WATCHER, false, null);
             }
@@ -1045,8 +1040,7 @@ public class MainPresenter extends BasePresenter implements
             case VIDEO_PUBLISHER_SHOW:
                 break;
             case VIDEO_SHARE:
-                UserDeviceConfig duc = new UserDeviceConfig(0, 0, GlobalHolder
-                        .getInstance().getCurrentUserId(), "", null);
+                UserDeviceConfig duc = new UserDeviceConfig(0, 0, 0, "", null);
                 vs.requestOpenVideoDevice(duc, null);
                 ui.showUILayout(MainPresenterUI.UI_LAYOUT_TYPE_BOTTOM_BTN, false, null);
                 this.setState(LOCAL_CAMERA_OPENING | VIDEO_SHARE_BTN_SHOW);
@@ -1542,8 +1536,7 @@ public class MainPresenter extends BasePresenter implements
         }
 
         UserDeviceConfig duc = new UserDeviceConfig(4,
-                vl.live.getLid(), GlobalHolder.getInstance()
-                .getCurrentUserId(), "", null);
+                vl.live.getLid(), 0, "", null);
         vs.requestCloseVideoDevice(duc, null);
         vs.requestExitConference(vl.live, null);
         unsetBState(B_WATCHING_FLAG);
