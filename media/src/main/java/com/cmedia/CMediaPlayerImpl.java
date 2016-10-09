@@ -1,42 +1,41 @@
 package com.cmedia;
 
 import android.content.Context;
-import android.media.MediaCodec;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.view.Surface;
 
-import com.V2.jni.util.V2Log;
-import com.cmedia.rtmp.RtmpDataSource;
-import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecSelector;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
-import com.google.android.exoplayer.extractor.ExtractorSampleSource;
-import com.google.android.exoplayer.upstream.Allocator;
-import com.google.android.exoplayer.upstream.DataSource;
-import com.google.android.exoplayer.upstream.DefaultAllocator;
-
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by 28851274 on 9/7/16.
  */
 public class CMediaPlayerImpl implements  CMediaPlayer {
 
-    private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
-    private static final int BUFFER_SEGMENT_COUNT = 256;
-
-
-    private ExoPlayer player;
     private WeakReference<Context> wr;
+    private IjkMediaPlayer player;
+    private AudioManager am;
     private Surface surface;
-    private MediaCodecVideoTrackRenderer videoRenderer;
-    private MediaCodecAudioTrackRenderer audioRenderer;
 
+    static {
+        IjkMediaPlayer.loadLibrariesOnce(null);
+    }
 
     public CMediaPlayerImpl(Context ctx) {
         wr = new WeakReference<Context>(ctx);
-        player = ExoPlayer.Factory.newInstance(2);
+        am = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
+        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        player = new IjkMediaPlayer();
+        player.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG);
+        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 0);
+        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0);
+        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "overlay-format", IjkMediaPlayer.SDL_FCC_RV32);
+        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
+
+        player.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48);
     }
 
     @Override
@@ -45,21 +44,19 @@ public class CMediaPlayerImpl implements  CMediaPlayer {
     }
 
     @Override
-    public void play(Uri uri, int type, boolean videoRender, boolean audioRender) {
+    public void play(Uri uri, int type, boolean videoRender, boolean audioRender)  {
         //TODO should check render flag
         switch (type) {
             case URI_TYPE_VIDEO_RTMP:
-                Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
-                DataSource dataSource = new RtmpDataSource(uri);
-                ExtractorSampleSource sampleSource = new ExtractorSampleSource(
-                        uri, dataSource, allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
-                videoRenderer = new MediaCodecVideoTrackRenderer(
-                        wr.get(), sampleSource, MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-                audioRenderer = new MediaCodecAudioTrackRenderer(
-                        sampleSource, MediaCodecSelector.DEFAULT);
-                player.prepare(videoRenderer,  audioRenderer);
-                pushSurface(false);
-                player.setPlayWhenReady(true);
+                try {
+                    player.setDataSource(wr.get(), uri, null);
+                } catch (IOException e) {
+                    throw new RuntimeException(" uri failed "+ uri);
+                }
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setSurface(surface);
+                player.prepareAsync();
+                player.start();
                 break;
             case URI_TYPE_ADUDIO_AAC:
                 break;
@@ -110,19 +107,8 @@ public class CMediaPlayerImpl implements  CMediaPlayer {
     @Override
     public void setVideoRenderSurface(Surface surface) {
         this.surface = surface;
-        pushSurface(true);
     }
 
 
-    private void pushSurface(boolean sync) {
-        if (surface == null) {
-            V2Log.e(" surface is null");
-            return;
-        }
-        if (sync) {
-            player.blockingSendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
-        } else {
-            player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
-        }
-    }
+
 }
