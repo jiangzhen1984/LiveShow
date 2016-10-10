@@ -1,10 +1,5 @@
 package com.v2tech.service;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.os.Handler;
 import android.os.Message;
 
@@ -28,6 +23,11 @@ import com.v2tech.service.jni.JNIResponse;
 import com.v2tech.service.jni.SearchLiveResponse;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.Watcher;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class LiveService extends DeviceService {
 	
@@ -131,11 +131,13 @@ public class LiveService extends DeviceService {
 	
 	
 	public void reportLiveStatus(Live l, MessageListener caller) {
-		Packet resp = DeamonWorker.getInstance().request(
-				new LivePublishReqPacket(GlobalHolder.getInstance()
-						.getCurrentUser().nId, l.getLid(),
-						l.getLat(),
-						l.getLng()));
+
+		LivePublishReqPacket lrp = new LivePublishReqPacket(GlobalHolder.getInstance()
+				.getCurrentUser().nId, l.getLid(),
+				l.getLat(),
+				l.getLng());
+		lrp.url = l.getUrl();
+		Packet resp = DeamonWorker.getInstance().request(lrp);
 		if (!resp.getHeader().isError()) {
 			l.setNid(((LivePublishRespPacket)resp).nvid);
 		}
@@ -144,21 +146,27 @@ public class LiveService extends DeviceService {
 	
 	
 	public void lockLive(Live l, String pwd) {
-		Packet resp = DeamonWorker.getInstance().request(
-				new LivePublishReqPacket(GlobalHolder.getInstance()
-						.getCurrentUser().nId, l.getLid(), l.getNid(), 
-						l.getLat(),
-						l.getLng(), pwd));
+		LivePublishReqPacket lrp = new LivePublishReqPacket(GlobalHolder.getInstance()
+				.getCurrentUser().nId, l.getLid(), l.getNid(),
+				l.getLat(),
+				l.getLng(), pwd);
+
+		lrp.url = l.getUrl();
+		Packet resp = DeamonWorker.getInstance().request(lrp);
 		V2Log.i("== report live lock status : "  + resp.getHeader().isError());
 	}
 	
 	
 	public void unlockLive(Live l) {
-		Packet resp = DeamonWorker.getInstance().request(
-				new LivePublishReqPacket(GlobalHolder.getInstance()
-						.getCurrentUser().nId, l.getLid(), l.getNid(), 
-						l.getLat(),
-						l.getLng(), ""));
+
+		LivePublishReqPacket lrp =new LivePublishReqPacket(GlobalHolder.getInstance()
+				.getCurrentUser().nId, l.getLid(), l.getNid(),
+				l.getLat(),
+				l.getLng(), "");
+		lrp.url = l.getUrl();
+		Packet resp = DeamonWorker.getInstance().request(lrp);
+
+
 		V2Log.i("== report live unlock status : "  + resp.getHeader().isError());
 	}
 	

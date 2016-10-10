@@ -355,13 +355,12 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.Video.Builder video = WebPackage.Video.newBuilder();
-        video.setVideoNum(String.valueOf(p.lid));
+        video.setVideoNum(p.url);
         WebPackage.Position.Builder positon = WebPackage.Position.newBuilder();
         positon.setLongitude(p.lng);
         positon.setLatitude(p.lat);
         if (p.ot == LivePublishReqPacket.OptType.UPDATE_PWD) {
         	video.setId((int)p.nid);
-        	video.setVideoNum(p.lid +"");
         }
         video.setPosition(positon);
         video.setUserId((int)p.uid);
@@ -404,11 +403,13 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 		}
         
         WebPackage.Video video = webPackage.getData().getVideo(0);
-        lrp.lid = Long.parseLong(video.getVideoNum());
+        lrp.lid = 0;//Long.parseLong(video.getVideoNum());
         lrp.uid = video.getUserId();
         WebPackage.Position position = video.getPosition();
         lrp.lng = position.getLongitude();
         lrp.lat = position.getLatitude();
+        //FIXME should update
+        lrp.url = video.getVideoNum();
         if (webPackage.getData().getUserCount() > 0){
         	lrp.v2uid = webPackage.getData().getUser(0).getId();
         }

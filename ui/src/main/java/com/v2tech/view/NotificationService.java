@@ -1,6 +1,8 @@
 package com.v2tech.view;
 
-import java.io.Serializable;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
 
 import com.V2.jni.ChatRequest;
 import com.V2.jni.ChatRequestCallbackAdapter;
@@ -23,9 +25,7 @@ import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
 import com.v2tech.vo.inquiry.InquiryData;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
+import java.io.Serializable;
 
 public class NotificationService extends Service {
 	
@@ -89,6 +89,7 @@ public class NotificationService extends Service {
 				if (lpip.ot == LivePublishIndPacket.OptType.PUBLISH) {
 					Live live = new Live(new User(lpip.v2uid), lpip.lid, lpip.vid, lpip.lat,
 							lpip.lng);
+					live.setUrl(lpip.url);
 					live.getPublisher().nId = lpip.uid;
 					sendBroadCast(NOTIFICAITON_OBJ_TYPE_LIVE_PUBLISH, live);
 				} else if (lpip.ot == LivePublishIndPacket.OptType.UPDATE) {

@@ -69,7 +69,8 @@ public class CMediaPlayerImpl implements  CMediaPlayer {
 
     @Override
     public boolean pause() {
-        return false;
+        player.pause();
+        return true;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class CMediaPlayerImpl implements  CMediaPlayer {
     @Override
     public boolean stop() {
         player.stop();
-        return false;
+        return true;
     }
 
     @Override

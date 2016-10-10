@@ -10,6 +10,7 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import com.V2.jni.util.V2Log;
+import com.cmedia.CMediaPlayer;
 
 import java.nio.ByteBuffer;
 
@@ -57,6 +58,8 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 	private boolean isViewReady;
 	
 	private int currentIndex;
+
+	private CMediaPlayer player;
 	
 	
 	public interface ViewItemListener {
@@ -93,7 +96,10 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		mSurfaceH = holder;
 	}
 	
-	
+
+	public void setMediaPlayer(CMediaPlayer player) {
+		this.player = player;
+	}
 
 
 
@@ -123,6 +129,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 
 	
 	public void startTranslate() {
+		player.pause();
 	}
 	
 	/**
@@ -303,6 +310,7 @@ public class VideoPlayer implements SurfaceHolder.Callback {
 		}
 		
 		mSurfaceH = holder;
+		this.surface = holder.getSurface();
 		
 		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		rootCanvas = new Canvas(mBitmap);

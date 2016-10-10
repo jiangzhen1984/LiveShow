@@ -12,6 +12,7 @@ public class LivePublishReqPacket extends RequestPacket {
 	double lat;
 	double lng;
 	public String pwd;
+	public String url;
 	
 	public LivePublishReqPacket(long uid, long lid, double lat, double lng) {
 		super();
@@ -31,6 +32,7 @@ public class LivePublishReqPacket extends RequestPacket {
 		this.lat = lat;
 		this.lng = lng;
 		this.pwd = pwd;
+		this.url = url;
 		this.ot = OptType.UPDATE_PWD;
 	}
 	

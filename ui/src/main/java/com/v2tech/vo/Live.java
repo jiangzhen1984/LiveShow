@@ -1,11 +1,11 @@
 package com.v2tech.vo;
 
+import com.V2.jni.util.EscapedcharactersProcessing;
+import com.v2tech.service.GlobalHolder;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.V2.jni.util.EscapedcharactersProcessing;
-import com.v2tech.service.GlobalHolder;
 
 public class Live implements Serializable, Comparable<Live>{
 
@@ -16,7 +16,7 @@ public class Live implements Serializable, Comparable<Live>{
 	private static final long serialVersionUID = 5215649680130458839L;
 
 	protected long lid;
-	
+
 	protected User publisher;
 	
 	protected String url;
@@ -164,7 +164,7 @@ public class Live implements Serializable, Comparable<Live>{
 	}
 
 
-	
+
 
 
 

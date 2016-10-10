@@ -514,6 +514,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 
 				Channel lch = ctx.channel();
 				lch.write(packet.build());
+				lch.flush();
 			}
 		}
 	}

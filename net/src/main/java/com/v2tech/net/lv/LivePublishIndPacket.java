@@ -13,6 +13,7 @@ public class LivePublishIndPacket extends IndicationPacket {
 	public long v2uid;
 	public String pwd;
 	public OptType ot;
+	public String url;
 	
 	public LivePublishIndPacket() {
 		super();

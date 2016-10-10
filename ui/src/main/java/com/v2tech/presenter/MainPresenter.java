@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.V2.jni.util.V2Log;
+import com.cmedia.CMediaPlayer;
+import com.cmedia.CMediaPlayerImpl;
 import com.v2tech.R;
 import com.v2tech.map.LocationNameQueryResponseListener;
 import com.v2tech.map.LocationParameter;
@@ -188,6 +191,8 @@ public class MainPresenter extends BasePresenter implements
 
     private AudioManager audioManager;
 
+    private CMediaPlayer mediaPlayer;
+
     // /////
 
     public MainPresenter(Context context, MainPresenterUI ui) {
@@ -205,6 +210,8 @@ public class MainPresenter extends BasePresenter implements
         audioManager.setMicrophoneMute(false);
         audioManager.setMode(AudioManager.MODE_NORMAL);
         liveConnectionUserList = new ArrayList<LiveConnectionUser>(5);
+
+        mediaPlayer = new CMediaPlayerImpl(context);
     }
 
     public void videoShareButtonClicked() {
@@ -308,6 +315,7 @@ public class MainPresenter extends BasePresenter implements
         if (vpController == null) {
             vpController = ui.getVideoPlayer();
             vpController.setItemListener(this);
+            vpController.setMediaPlayer(mediaPlayer);
         }
 
         if (mapInstance == null) {
@@ -1411,12 +1419,13 @@ public class MainPresenter extends BasePresenter implements
                 continue;
             }
             long uid = Long.parseLong(d[1]);
-            long vid = Long.parseLong(d[5]);
+            long vid = 0; //Long.parseLong(d[5]);
             long nid = Long.parseLong(d[0]);
             double lng = Double.parseDouble(d[2]);
             double lat = Double.parseDouble(d[3]);
             Live live = new Live(new User(uid), vid, lat, lng);
             live.setNid(nid);
+            live.setUrl(d[5]);
 
             if (d[4] != null && !d[4].isEmpty()) {
                 live.watcherCount = Integer.parseInt(d[4]);
@@ -1550,7 +1559,10 @@ public class MainPresenter extends BasePresenter implements
         vl.surfaveViewIdx = vpController.getCurrentItemIdx();
         vs.requestEnterConference(vl.live, new MessageListener(h,
                 WATCHING_REQUEST_CALLBACK, null));
-        //TODO open rtmp
+        mediaPlayer.stop();
+        mediaPlayer.setVideoRenderSurface(vpController.getSurface());
+        //FIXME should use live url
+        mediaPlayer.play(Uri.parse("rtmp://live.hkstv.hk.lxdns.com/live/hks"), CMediaPlayer.URI_TYPE_VIDEO_RTMP);
         updateLiveScreen(vl.live);
         setBState(B_WATCHING_FLAG);
     }

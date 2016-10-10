@@ -1,7 +1,5 @@
 package com.v2tech.view;
 
-import java.util.List;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +9,8 @@ import com.v2tech.presenter.GlobalPresenterManager;
 import com.v2tech.service.LiveWathcingHandler;
 import com.v2tech.vo.Live;
 import com.v2tech.vo.User;
+
+import java.util.List;
 
 public class ReceiverLiveWatching extends BroadcastReceiver {
 
@@ -29,7 +29,7 @@ public class ReceiverLiveWatching extends BroadcastReceiver {
 		int type = intent.getIntExtra("type", -1);
 		List<LiveWathcingHandler> handlers = GlobalPresenterManager
 				.getInstance().getLiveWathcingHandler();
-		Live l = new Live(null, -1, nid, 0, 0);
+		Live l = new Live(null, nid, 0, 0);
 		for (LiveWathcingHandler h : handlers) {
 			// watching
 			if (type == LiveWatchingReqPacket.WATCHING) {
