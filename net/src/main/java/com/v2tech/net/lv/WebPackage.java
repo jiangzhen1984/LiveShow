@@ -9877,16 +9877,26 @@ public final class WebPackage {
     int getResultType();
 
     /**
-     * <code>optional bool HLSMode = 11;</code>
+     * <code>optional bool RTMPMode = 11;</code>
      */
-    boolean getHLSMode();
+    boolean getRTMPMode();
 
     /**
-     * <code>optional string videoPwd = 12;</code>
+     * <code>optional string RTMPURL = 12;</code>
+     */
+    java.lang.String getRTMPURL();
+    /**
+     * <code>optional string RTMPURL = 12;</code>
+     */
+    com.google.protobuf.ByteString
+    getRTMPURLBytes();
+
+    /**
+     * <code>optional string videoPwd = 13;</code>
      */
     java.lang.String getVideoPwd();
     /**
-     * <code>optional string videoPwd = 12;</code>
+     * <code>optional string videoPwd = 13;</code>
      */
     com.google.protobuf.ByteString
     getVideoPwdBytes();
@@ -9912,7 +9922,8 @@ public final class WebPackage {
       gratuityCount_ = 0F;
       degree_ = 0;
       resultType_ = 0;
-      hLSMode_ = false;
+      rTMPMode_ = false;
+      rTMPURL_ = "";
       videoPwd_ = "";
     }
 
@@ -10002,10 +10013,16 @@ public final class WebPackage {
             }
             case 88: {
 
-              hLSMode_ = input.readBool();
+              rTMPMode_ = input.readBool();
               break;
             }
             case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              rTMPURL_ = s;
+              break;
+            }
+            case 106: {
               java.lang.String s = input.readStringRequireUtf8();
 
               videoPwd_ = s;
@@ -10161,19 +10178,53 @@ public final class WebPackage {
       return resultType_;
     }
 
-    public static final int HLSMODE_FIELD_NUMBER = 11;
-    private boolean hLSMode_;
+    public static final int RTMPMODE_FIELD_NUMBER = 11;
+    private boolean rTMPMode_;
     /**
-     * <code>optional bool HLSMode = 11;</code>
+     * <code>optional bool RTMPMode = 11;</code>
      */
-    public boolean getHLSMode() {
-      return hLSMode_;
+    public boolean getRTMPMode() {
+      return rTMPMode_;
     }
 
-    public static final int VIDEOPWD_FIELD_NUMBER = 12;
+    public static final int RTMPURL_FIELD_NUMBER = 12;
+    private volatile java.lang.Object rTMPURL_;
+    /**
+     * <code>optional string RTMPURL = 12;</code>
+     */
+    public java.lang.String getRTMPURL() {
+      java.lang.Object ref = rTMPURL_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rTMPURL_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string RTMPURL = 12;</code>
+     */
+    public com.google.protobuf.ByteString
+    getRTMPURLBytes() {
+      java.lang.Object ref = rTMPURL_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        rTMPURL_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VIDEOPWD_FIELD_NUMBER = 13;
     private volatile java.lang.Object videoPwd_;
     /**
-     * <code>optional string videoPwd = 12;</code>
+     * <code>optional string videoPwd = 13;</code>
      */
     public java.lang.String getVideoPwd() {
       java.lang.Object ref = videoPwd_;
@@ -10188,7 +10239,7 @@ public final class WebPackage {
       }
     }
     /**
-     * <code>optional string videoPwd = 12;</code>
+     * <code>optional string videoPwd = 13;</code>
      */
     public com.google.protobuf.ByteString
     getVideoPwdBytes() {
@@ -10246,11 +10297,14 @@ public final class WebPackage {
       if (resultType_ != 0) {
         output.writeInt32(10, resultType_);
       }
-      if (hLSMode_ != false) {
-        output.writeBool(11, hLSMode_);
+      if (rTMPMode_ != false) {
+        output.writeBool(11, rTMPMode_);
+      }
+      if (!getRTMPURLBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, rTMPURL_);
       }
       if (!getVideoPwdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, videoPwd_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, videoPwd_);
       }
     }
 
@@ -10298,12 +10352,15 @@ public final class WebPackage {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(10, resultType_);
       }
-      if (hLSMode_ != false) {
+      if (rTMPMode_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(11, hLSMode_);
+                .computeBoolSize(11, rTMPMode_);
+      }
+      if (!getRTMPURLBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, rTMPURL_);
       }
       if (!getVideoPwdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, videoPwd_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, videoPwd_);
       }
       memoizedSize = size;
       return size;
@@ -10346,8 +10403,10 @@ public final class WebPackage {
               == other.getDegree());
       result = result && (getResultType()
               == other.getResultType());
-      result = result && (getHLSMode()
-              == other.getHLSMode());
+      result = result && (getRTMPMode()
+              == other.getRTMPMode());
+      result = result && getRTMPURL()
+              .equals(other.getRTMPURL());
       result = result && getVideoPwd()
               .equals(other.getVideoPwd());
       return result;
@@ -10383,9 +10442,11 @@ public final class WebPackage {
       hash = (53 * hash) + getDegree();
       hash = (37 * hash) + RESULTTYPE_FIELD_NUMBER;
       hash = (53 * hash) + getResultType();
-      hash = (37 * hash) + HLSMODE_FIELD_NUMBER;
+      hash = (37 * hash) + RTMPMODE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-              getHLSMode());
+              getRTMPMode());
+      hash = (37 * hash) + RTMPURL_FIELD_NUMBER;
+      hash = (53 * hash) + getRTMPURL().hashCode();
       hash = (37 * hash) + VIDEOPWD_FIELD_NUMBER;
       hash = (53 * hash) + getVideoPwd().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -10530,7 +10591,9 @@ public final class WebPackage {
 
         resultType_ = 0;
 
-        hLSMode_ = false;
+        rTMPMode_ = false;
+
+        rTMPURL_ = "";
 
         videoPwd_ = "";
 
@@ -10570,7 +10633,8 @@ public final class WebPackage {
         result.gratuityCount_ = gratuityCount_;
         result.degree_ = degree_;
         result.resultType_ = resultType_;
-        result.hLSMode_ = hLSMode_;
+        result.rTMPMode_ = rTMPMode_;
+        result.rTMPURL_ = rTMPURL_;
         result.videoPwd_ = videoPwd_;
         onBuilt();
         return result;
@@ -10644,8 +10708,12 @@ public final class WebPackage {
         if (other.getResultType() != 0) {
           setResultType(other.getResultType());
         }
-        if (other.getHLSMode() != false) {
-          setHLSMode(other.getHLSMode());
+        if (other.getRTMPMode() != false) {
+          setRTMPMode(other.getRTMPMode());
+        }
+        if (!other.getRTMPURL().isEmpty()) {
+          rTMPURL_ = other.rTMPURL_;
+          onChanged();
         }
         if (!other.getVideoPwd().isEmpty()) {
           videoPwd_ = other.videoPwd_;
@@ -11071,35 +11139,104 @@ public final class WebPackage {
         return this;
       }
 
-      private boolean hLSMode_ ;
+      private boolean rTMPMode_ ;
       /**
-       * <code>optional bool HLSMode = 11;</code>
+       * <code>optional bool RTMPMode = 11;</code>
        */
-      public boolean getHLSMode() {
-        return hLSMode_;
+      public boolean getRTMPMode() {
+        return rTMPMode_;
       }
       /**
-       * <code>optional bool HLSMode = 11;</code>
+       * <code>optional bool RTMPMode = 11;</code>
        */
-      public Builder setHLSMode(boolean value) {
+      public Builder setRTMPMode(boolean value) {
 
-        hLSMode_ = value;
+        rTMPMode_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool HLSMode = 11;</code>
+       * <code>optional bool RTMPMode = 11;</code>
        */
-      public Builder clearHLSMode() {
+      public Builder clearRTMPMode() {
 
-        hLSMode_ = false;
+        rTMPMode_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rTMPURL_ = "";
+      /**
+       * <code>optional string RTMPURL = 12;</code>
+       */
+      public java.lang.String getRTMPURL() {
+        java.lang.Object ref = rTMPURL_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rTMPURL_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string RTMPURL = 12;</code>
+       */
+      public com.google.protobuf.ByteString
+      getRTMPURLBytes() {
+        java.lang.Object ref = rTMPURL_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          rTMPURL_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string RTMPURL = 12;</code>
+       */
+      public Builder setRTMPURL(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        rTMPURL_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string RTMPURL = 12;</code>
+       */
+      public Builder clearRTMPURL() {
+
+        rTMPURL_ = getDefaultInstance().getRTMPURL();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string RTMPURL = 12;</code>
+       */
+      public Builder setRTMPURLBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        rTMPURL_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object videoPwd_ = "";
       /**
-       * <code>optional string videoPwd = 12;</code>
+       * <code>optional string videoPwd = 13;</code>
        */
       public java.lang.String getVideoPwd() {
         java.lang.Object ref = videoPwd_;
@@ -11114,7 +11251,7 @@ public final class WebPackage {
         }
       }
       /**
-       * <code>optional string videoPwd = 12;</code>
+       * <code>optional string videoPwd = 13;</code>
        */
       public com.google.protobuf.ByteString
       getVideoPwdBytes() {
@@ -11130,7 +11267,7 @@ public final class WebPackage {
         }
       }
       /**
-       * <code>optional string videoPwd = 12;</code>
+       * <code>optional string videoPwd = 13;</code>
        */
       public Builder setVideoPwd(
               java.lang.String value) {
@@ -11143,7 +11280,7 @@ public final class WebPackage {
         return this;
       }
       /**
-       * <code>optional string videoPwd = 12;</code>
+       * <code>optional string videoPwd = 13;</code>
        */
       public Builder clearVideoPwd() {
 
@@ -11152,7 +11289,7 @@ public final class WebPackage {
         return this;
       }
       /**
-       * <code>optional string videoPwd = 12;</code>
+       * <code>optional string videoPwd = 13;</code>
        */
       public Builder setVideoPwdBytes(
               com.google.protobuf.ByteString value) {
@@ -18263,46 +18400,46 @@ public final class WebPackage {
                     "\030\023 \001(\t\022\r\n\005v2Pwd\030\024 \001(\t\022\022\n\nvideoCount\030\025 \001(" +
                     "\005\022\023\n\013v2DeviceID1\030\026 \001(\t\022\023\n\013v2DeviceID2\030\027 " +
                     "\001(\t\"?\n\010Position\022\021\n\tlongitude\030\001 \001(\001\022\020\n\010la" +
-                    "titude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\346\001\n\005Video\022\n" +
+                    "titude\030\002 \001(\001\022\016\n\006radius\030\003 \001(\005\"\370\001\n\005Video\022\n" +
                     "\n\002id\030\001 \001(\005\022\020\n\010videoNum\030\002 \001(\t\022\016\n\006userId\030\003",
             " \001(\005\022\036\n\010position\030\004 \001(\0132\014.lv.Position\022\013\n\003" +
                     "sum\030\005 \001(\005\022\021\n\tuserCount\030\006 \001(\005\022\021\n\tlikeCoun" +
                     "t\030\007 \001(\005\022\025\n\rgratuityCount\030\010 \001(\002\022\016\n\006degree" +
-                    "\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\017\n\007HLSMode\030\013 " +
-                    "\001(\010\022\020\n\010videoPwd\030\014 \001(\t\"\330\001\n\010Gratuity\022\020\n\010gi" +
-                    "ftType\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\022\n\nfromUs" +
-                    "erID\030\003 \001(\005\022\016\n\006amount\030\004 \001(\002\022\023\n\013sumOrRemai" +
-                    "n\030\005 \001(\002\022#\n\006answer\030\006 \001(\0162\023.lv.Gratuity.An" +
-                    "swer\022\017\n\007videoId\030\007 \001(\005\"9\n\006Answer\022\013\n\007recei" +
-                    "ve\020\000\022\n\n\006accept\020\001\022\n\n\006refuse\020\002\022\n\n\006cancel\020\003",
-            "\"\317\002\n\006Reward\022\n\n\002id\030\001 \001(\005\022\021\n\tpowerTime\030\002 \001" +
-                    "(\005\022\023\n\013releaseTime\030\003 \001(\003\022\026\n\004gift\030\004 \003(\0132\010." +
-                    "lv.Gift\022\022\n\nfromUserID\030\005 \001(\005\022\024\n\014answerUse" +
-                    "rID\030\006 \001(\005\022#\n\007operate\030\007 \001(\0162\022.lv.Reward.O" +
-                    "perate\022\014\n\004desc\030\010 \001(\t\022\036\n\010position\030\t \001(\0132\014" +
-                    ".lv.Position\022\017\n\007pushSum\030\n \001(\005\022\022\n\nappealD" +
-                    "esc\030\013 \001(\t\022\022\n\nappealTime\030\014 \001(\003\"C\n\007Operate" +
-                    "\022\013\n\007release\020\000\022\n\n\006cancle\020\001\022\007\n\003pay\020\002\022\n\n\006an" +
-                    "swer\020\003\022\n\n\006appeal\020\004\"=\n\004Gift\022\020\n\010giftType\030\001" +
-                    " \001(\005\022\016\n\006amount\030\002 \001(\002\022\023\n\013sumOrRemain\030\003 \001(",
-            "\002\"\253\001\n\tUserState\022\016\n\006userId\030\001 \001(\005\022\021\n\topera" +
-                    "teId\030\002 \001(\005\022\"\n\005state\030\003 \001(\0162\023.lv.UserState" +
-                    ".State\022\014\n\004desc\030\004 \001(\t\"I\n\005State\022\n\n\006online\020" +
-                    "\000\022\013\n\007offline\020\001\022\014\n\010p2pVideo\020\002\022\016\n\nMultiVid" +
-                    "eo\020\003\022\t\n\005other\020\004\"\371\002\n\010AssetLog\022\022\n\nfromUser" +
-                    "ID\030\001 \001(\005\022\020\n\010toUserID\030\002 \001(\005\022\026\n\004gift\030\003 \003(\013" +
-                    "2\010.lv.Gift\022\014\n\004desc\030\004 \001(\t\022-\n\013operateType\030" +
-                    "\005 \001(\0162\030.lv.AssetLog.OperateType\022\023\n\013opera" +
-                    "teTime\030\006 \001(\003\022\016\n\006soType\030\007 \001(\005\022\017\n\007payType\030" +
-                    "\010 \001(\005\022\017\n\007payTime\030\t \001(\003\022\017\n\007videoId\030\n \001(\005\022",
-            "\020\n\010rewardId\030\013 \001(\005\022\022\n\nappealDesc\030\014 \001(\t\022\022\n" +
-                    "\nappealTime\030\r \001(\003\"`\n\013OperateType\022\014\n\010rech" +
-                    "arge\020\000\022\010\n\004cash\020\001\022\014\n\010gratuity\020\002\022\n\n\006reward" +
-                    "\020\003\022\007\n\003all\020\004\022\n\n\006income\020\005\022\n\n\006payout\020\006\"c\n\nS" +
-                    "erverBean\022\020\n\010serverId\030\001 \001(\005\022\017\n\007addr_zk\030\002" +
-                    " \001(\t\022\023\n\013addr_buffer\030\003 \001(\t\022\020\n\010addr_web\030\004 " +
-                    "\001(\t\022\013\n\003add\030\005 \001(\010B\037\n\021com.v2tech.net.lvB\nW" +
-                    "ebPackageb\006proto3"
+                    "\030\t \001(\005\022\022\n\nresultType\030\n \001(\005\022\020\n\010RTMPMode\030\013" +
+                    " \001(\010\022\017\n\007RTMPURL\030\014 \001(\t\022\020\n\010videoPwd\030\r \001(\t\"" +
+                    "\330\001\n\010Gratuity\022\020\n\010giftType\030\001 \001(\005\022\020\n\010toUser" +
+                    "ID\030\002 \001(\005\022\022\n\nfromUserID\030\003 \001(\005\022\016\n\006amount\030\004" +
+                    " \001(\002\022\023\n\013sumOrRemain\030\005 \001(\002\022#\n\006answer\030\006 \001(" +
+                    "\0162\023.lv.Gratuity.Answer\022\017\n\007videoId\030\007 \001(\005\"" +
+                    "9\n\006Answer\022\013\n\007receive\020\000\022\n\n\006accept\020\001\022\n\n\006re",
+            "fuse\020\002\022\n\n\006cancel\020\003\"\317\002\n\006Reward\022\n\n\002id\030\001 \001(" +
+                    "\005\022\021\n\tpowerTime\030\002 \001(\005\022\023\n\013releaseTime\030\003 \001(" +
+                    "\003\022\026\n\004gift\030\004 \003(\0132\010.lv.Gift\022\022\n\nfromUserID\030" +
+                    "\005 \001(\005\022\024\n\014answerUserID\030\006 \001(\005\022#\n\007operate\030\007" +
+                    " \001(\0162\022.lv.Reward.Operate\022\014\n\004desc\030\010 \001(\t\022\036" +
+                    "\n\010position\030\t \001(\0132\014.lv.Position\022\017\n\007pushSu" +
+                    "m\030\n \001(\005\022\022\n\nappealDesc\030\013 \001(\t\022\022\n\nappealTim" +
+                    "e\030\014 \001(\003\"C\n\007Operate\022\013\n\007release\020\000\022\n\n\006cancl" +
+                    "e\020\001\022\007\n\003pay\020\002\022\n\n\006answer\020\003\022\n\n\006appeal\020\004\"=\n\004" +
+                    "Gift\022\020\n\010giftType\030\001 \001(\005\022\016\n\006amount\030\002 \001(\002\022\023",
+            "\n\013sumOrRemain\030\003 \001(\002\"\253\001\n\tUserState\022\016\n\006use" +
+                    "rId\030\001 \001(\005\022\021\n\toperateId\030\002 \001(\005\022\"\n\005state\030\003 " +
+                    "\001(\0162\023.lv.UserState.State\022\014\n\004desc\030\004 \001(\t\"I" +
+                    "\n\005State\022\n\n\006online\020\000\022\013\n\007offline\020\001\022\014\n\010p2pV" +
+                    "ideo\020\002\022\016\n\nMultiVideo\020\003\022\t\n\005other\020\004\"\371\002\n\010As" +
+                    "setLog\022\022\n\nfromUserID\030\001 \001(\005\022\020\n\010toUserID\030\002" +
+                    " \001(\005\022\026\n\004gift\030\003 \003(\0132\010.lv.Gift\022\014\n\004desc\030\004 \001" +
+                    "(\t\022-\n\013operateType\030\005 \001(\0162\030.lv.AssetLog.Op" +
+                    "erateType\022\023\n\013operateTime\030\006 \001(\003\022\016\n\006soType" +
+                    "\030\007 \001(\005\022\017\n\007payType\030\010 \001(\005\022\017\n\007payTime\030\t \001(\003",
+            "\022\017\n\007videoId\030\n \001(\005\022\020\n\010rewardId\030\013 \001(\005\022\022\n\na" +
+                    "ppealDesc\030\014 \001(\t\022\022\n\nappealTime\030\r \001(\003\"`\n\013O" +
+                    "perateType\022\014\n\010recharge\020\000\022\010\n\004cash\020\001\022\014\n\010gr" +
+                    "atuity\020\002\022\n\n\006reward\020\003\022\007\n\003all\020\004\022\n\n\006income\020" +
+                    "\005\022\n\n\006payout\020\006\"c\n\nServerBean\022\020\n\010serverId\030" +
+                    "\001 \001(\005\022\017\n\007addr_zk\030\002 \001(\t\022\023\n\013addr_buffer\030\003 " +
+                    "\001(\t\022\020\n\010addr_web\030\004 \001(\t\022\013\n\003add\030\005 \001(\010B\037\n\021co" +
+                    "m.v2tech.net.lvB\nWebPackageb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -18351,7 +18488,7 @@ public final class WebPackage {
     internal_static_lv_Video_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_lv_Video_descriptor,
-            new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", "Degree", "ResultType", "HLSMode", "VideoPwd", });
+            new java.lang.String[] { "Id", "VideoNum", "UserId", "Position", "Sum", "UserCount", "LikeCount", "GratuityCount", "Degree", "ResultType", "RTMPMode", "RTMPURL", "VideoPwd", });
     internal_static_lv_Gratuity_descriptor =
             getDescriptor().getMessageTypes().get(6);
     internal_static_lv_Gratuity_fieldAccessorTable = new

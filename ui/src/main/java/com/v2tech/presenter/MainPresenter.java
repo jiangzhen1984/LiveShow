@@ -1418,14 +1418,15 @@ public class MainPresenter extends BasePresenter implements
                     || TextUtils.isEmpty(d[0])) {
                 continue;
             }
+            //FIXME need to optimze structure
             long uid = Long.parseLong(d[1]);
-            long vid = 0; //Long.parseLong(d[5]);
+            long vid = Long.parseLong(d[5]);
             long nid = Long.parseLong(d[0]);
             double lng = Double.parseDouble(d[2]);
             double lat = Double.parseDouble(d[3]);
             Live live = new Live(new User(uid), vid, lat, lng);
             live.setNid(nid);
-            live.setUrl(d[5]);
+            live.setUrl(d[6]);
 
             if (d[4] != null && !d[4].isEmpty()) {
                 live.watcherCount = Integer.parseInt(d[4]);
@@ -1557,12 +1558,12 @@ public class MainPresenter extends BasePresenter implements
         vl.playing = true;
         vl.showing = true;
         vl.surfaveViewIdx = vpController.getCurrentItemIdx();
-        vs.requestEnterConference(vl.live, new MessageListener(h,
-                WATCHING_REQUEST_CALLBACK, null));
+//        vs.requestEnterConference(vl.live, new MessageListener(h,
+//                WATCHING_REQUEST_CALLBACK, null));
         mediaPlayer.stop();
         mediaPlayer.setVideoRenderSurface(vpController.getSurface());
-        //FIXME should use live url
-        mediaPlayer.play(Uri.parse("rtmp://live.hkstv.hk.lxdns.com/live/hks"), CMediaPlayer.URI_TYPE_VIDEO_RTMP);
+        //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
+        mediaPlayer.play(Uri.parse(vl.live.getUrl()), CMediaPlayer.URI_TYPE_VIDEO_RTMP);
         updateLiveScreen(vl.live);
         setBState(B_WATCHING_FLAG);
     }

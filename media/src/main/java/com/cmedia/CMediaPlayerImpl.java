@@ -53,7 +53,8 @@ public class CMediaPlayerImpl implements  CMediaPlayer {
                 } catch (IOException e) {
                     throw new RuntimeException(" uri failed "+ uri);
                 }
-                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                //FIXME revert
+               // player.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 player.setSurface(surface);
                 player.prepareAsync();
                 player.start();

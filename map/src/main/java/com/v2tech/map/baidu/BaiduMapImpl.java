@@ -167,7 +167,7 @@ public class BaiduMapImpl implements MapAPI,
 			return;
 		}
 		BaiduLocationParameter bp = (BaiduLocationParameter) parameter;
-		mapImpl.setMyLocationEnabled(bp.isEnableSelfLocation());
+		//mapImpl.setMyLocationEnabled(bp.isEnableSelfLocation());
 		if (mapImpl.isMyLocationEnabled()) {
 			mapImpl.setMyLocationConfigeration(new MyLocationConfiguration(
 					LocationMode.NORMAL, true, null));

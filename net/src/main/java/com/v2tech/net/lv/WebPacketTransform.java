@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet>{
 	
-	private static final String VERSION = "1.3.0";
+	private static final String VERSION = "1.3.1";
 	
 	@Override
     public WebPackage.Packet serialize(Packet p){
@@ -275,7 +275,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         List<String[]> list = new ArrayList<String[]>(videoList.size());
         WebPackage.Position position;
         for (WebPackage.Video video : videoList){
-            String[] data = new String[6];
+            String[] data = new String[7];
             data[0] = String.valueOf(video.getId());
             data[1] = String.valueOf(video.getUserId());
             position = video.getPosition();
@@ -283,6 +283,7 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
             data[3] = String.valueOf(position.getLatitude());
             data[4] = String.valueOf(video.getSum());
             data[5] = video.getVideoNum();
+            data[6] = video.getRTMPURL();
             list.add(data);
         }
         lrp.videos = list;
@@ -355,16 +356,19 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
         
         WebPackage.Data.Builder data = WebPackage.Data.newBuilder();
         WebPackage.Video.Builder video = WebPackage.Video.newBuilder();
-        video.setVideoNum(p.url);
+        video.setVideoNum(String.valueOf(p.lid));
+        video.setRTMPURL(p.url);
+        video.setUserId((int)p.uid);
+        video.setVideoPwd(p.pwd);
+        video.setRTMPMode(true);
         WebPackage.Position.Builder positon = WebPackage.Position.newBuilder();
         positon.setLongitude(p.lng);
         positon.setLatitude(p.lat);
+        video.setPosition(positon);
         if (p.ot == LivePublishReqPacket.OptType.UPDATE_PWD) {
         	video.setId((int)p.nid);
         }
-        video.setPosition(positon);
-        video.setUserId((int)p.uid);
-        video.setVideoPwd(p.pwd);
+
         data.addVideo(video);
         packetBuilder.setData(data);
         return packetBuilder.build();
@@ -403,13 +407,12 @@ public class WebPacketTransform implements Transformer<Packet, WebPackage.Packet
 		}
         
         WebPackage.Video video = webPackage.getData().getVideo(0);
-        lrp.lid = 0;//Long.parseLong(video.getVideoNum());
+        lrp.lid = Long.parseLong(video.getVideoNum());
         lrp.uid = video.getUserId();
         WebPackage.Position position = video.getPosition();
         lrp.lng = position.getLongitude();
         lrp.lat = position.getLatitude();
-        //FIXME should update
-        lrp.url = video.getVideoNum();
+        lrp.url = video.getRTMPURL();
         if (webPackage.getData().getUserCount() > 0){
         	lrp.v2uid = webPackage.getData().getUser(0).getId();
         }
