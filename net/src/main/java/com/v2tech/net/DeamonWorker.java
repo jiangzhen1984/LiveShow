@@ -24,9 +24,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -37,7 +37,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class DeamonWorker implements Runnable, NetConnector,
 		TimeoutNotificator.TimeoutHandler {
 
-	NioEventLoopGroup group;
+	OioEventLoopGroup group;
 	Bootstrap strap;
 	private WorkerState st;
 	private ConnectionState cs;
@@ -64,7 +64,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 		csLock = new Object();
 		st = WorkerState.NONE;
 		cs = ConnectionState.IDLE;
-		group = new NioEventLoopGroup();
+		group = new OioEventLoopGroup();
 		strap = new Bootstrap();
 		pending = new PriorityBlockingQueue<LocalBind>();
 		waiting = new PriorityBlockingQueue<LocalBind>();
@@ -303,7 +303,7 @@ public class DeamonWorker implements Runnable, NetConnector,
 	private void startWorker() {
 
 		if (cs == ConnectionState.IDLE) {
-			strap.group(group).channel(NioSocketChannel.class)
+			strap.group(group).channel(OioSocketChannel.class)
 					.handler(new LocalChannel());
 			strap.option(ChannelOption.SO_KEEPALIVE, true);
 
